@@ -1,0 +1,79 @@
+buildscript {
+    ext.kotlin_version = '1.3.10'
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'me.champeau.gradle:antlr4-gradle-plugin:0.1'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'me.champeau.gradle.antlr4'
+apply plugin: 'idea'
+
+apply plugin: 'kotlin'
+apply plugin: 'application'
+
+mainClassName = 'miningtool.MainKt'
+
+defaultTasks 'run'
+
+repositories {
+    mavenCentral()
+}
+
+def generatedSourcesPath = "src/main/generated"
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    // https://mvnrepository.com/artifact/com.github.gumtreediff/core
+    compile group: 'com.github.gumtreediff', name: 'core', version: '2.1.0'
+    // https://mvnrepository.com/artifact/com.github.gumtreediff/client
+    compile group: 'com.github.gumtreediff', name: 'client', version: '2.1.0'
+    // https://mvnrepository.com/artifact/com.github.gumtreediff/gen.jdt
+    compile group: 'com.github.gumtreediff', name: 'gen.jdt', version: '2.1.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    testCompile "junit:junit:4.11"
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = "4.10.2"
+}
+
+
+antlr4 {
+    source = file('antlr')
+    output = file('src/main/generated/me/vovak/antlr/parser')
+    extraArgs = ['-package', 'me.vovak.antlr.parser']
+}
+
+
+
+compileKotlin.dependsOn antlr4
+compileJava.dependsOn antlr4
+configurations {
+    compile.extendsFrom antlr4
+}
+
+//sourceSets {
+//    generated {
+//        source {
+//            srcDirs += generatedSourcesPath
+//        }
+//    }
+//}
+
+
+
+sourceSets.main.java.srcDir file(generatedSourcesPath)
+
+
+idea {
+    module {
+        generatedSourceDirs += file(generatedSourcesPath)
+    }
+}
