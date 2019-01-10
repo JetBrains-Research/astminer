@@ -7,7 +7,7 @@ import miningtool.common.Parser
 import java.io.InputStream
 import java.io.InputStreamReader
 
-class GumTreeJavaParser : Parser<GumTreeJavaNode>() {
+class GumTreeJavaParser : Parser<GumTreeJavaNode> {
     init {
         Run.initGenerators()
     }

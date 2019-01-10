@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.CommonTokenStream
 import java.io.InputStream
 
-class PythonParser : Parser<SimpleNode>() {
+class PythonParser : Parser<SimpleNode> {
     override fun parse(content: InputStream): SimpleNode? {
         val lexer = Python3Lexer(ANTLRInputStream(content))
         val tokens = CommonTokenStream(lexer)

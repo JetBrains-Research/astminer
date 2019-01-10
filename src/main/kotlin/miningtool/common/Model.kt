@@ -13,8 +13,8 @@ interface Node {
     fun setMetadata(key: String, value: Any)
 }
 
-abstract class Parser<T : Node> {
-    abstract fun parse(content: InputStream): T?
+interface Parser<T : Node> {
+    fun parse(content: InputStream): T?
 }
 
 interface TreeSplitter<T : Node> {
