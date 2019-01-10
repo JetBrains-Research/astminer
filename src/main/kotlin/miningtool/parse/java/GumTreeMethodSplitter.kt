@@ -52,12 +52,15 @@ class GumTreeMethodSplitter : TreeSplitter<GumTreeJavaNode> {
 
     private fun getParameterTypes(methodNode: ITree, context: TreeContext): List<String> {
         val result: MutableList<String> = ArrayList()
-        val argDeclarationNodes = methodNode.children
+        methodNode.children
                 .filter { context.getTypeLabel(it.type) == TypeLabels.singleVariableDeclaration }
-        argDeclarationNodes.forEach {
-            val typeNode = it.children.filter { c -> context.getTypeLabel(c.type).endsWith("Type") }.firstOrNull()
-            if (typeNode != null) result.add(typeNode.label)
-        }
+                .forEach { node ->
+                    node.children.firstOrNull { c ->
+                        context.getTypeLabel(c.type).endsWith("Type")
+                    }?.let { typeNode ->
+                        result.add(typeNode.label)
+                    }
+                }
         return result
     }
 
