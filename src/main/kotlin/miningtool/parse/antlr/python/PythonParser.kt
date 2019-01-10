@@ -14,9 +14,7 @@ class PythonParser : Parser<SimpleNode> {
         val lexer = Python3Lexer(ANTLRInputStream(content))
         val tokens = CommonTokenStream(lexer)
         val parser = Python3Parser(tokens)
-
         val context = parser.file_input()
-
         return convertAntlrTree(context, Python3Parser.ruleNames)
     }
 

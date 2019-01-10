@@ -14,9 +14,7 @@ class JavaParser : Parser<SimpleNode> {
         val lexer = Java8Lexer(ANTLRInputStream(content))
         val tokens = CommonTokenStream(lexer)
         val parser = Java8Parser(tokens)
-
         val context = parser.compilationUnit()
-
         return convertAntlrTree(context, Java8Parser.ruleNames)
     }
 
