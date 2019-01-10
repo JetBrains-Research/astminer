@@ -31,9 +31,7 @@ class PathWorker {
         val paths: MutableCollection<ASTPath> = ArrayList()
         val sortedPieces = pathPieces.sortedBy { (it.nodes[0].getLeafIndex()) }
         sortedPieces.forEachIndexed { index, upPiece ->
-            for (i in (index + 1 until sortedPieces.size)) {
-
-                val downPiece = sortedPieces[i]
+            for (downPiece in sortedPieces.subList(index + 1, sortedPieces.size)) {
                 if (upPiece.childIndex == downPiece.childIndex) continue
 
                 val width = downPiece.nodes[0].getLeafIndex() - upPiece.nodes[0].getLeafIndex()
