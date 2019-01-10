@@ -46,7 +46,7 @@ class VocabularyPathStorage : PathStorage() {
         dumpIdStorage(pathsMap, "path", pathToCsvString, file)
     }
 
-    private fun savePathContexts(file: File) {
+    private fun dumpPathContexts(file: File) {
         val lines = mutableListOf("id,path_contexts")
         pathContextsPerEntity.forEach { id, pathContexts ->
             val pathContextsString = pathContexts.joinToString(separator = ";") { pathContextId ->
@@ -64,6 +64,6 @@ class VocabularyPathStorage : PathStorage() {
         dumpNodeTypesStorage(File("$directoryPath/node_types.csv"))
         dumpPathsStorage(File("$directoryPath/paths.csv"))
 
-        savePathContexts(File("$directoryPath/path_contexts.csv"))
+        dumpPathContexts(File("$directoryPath/path_contexts.csv"))
     }
 }
