@@ -5,17 +5,23 @@ import miningtool.common.Node
 import miningtool.common.postOrderIterator
 
 class PathWorker {
-    val LEAF_INDEX_KEY = "leaf_index"
-    private fun Node.setLeafIndex(index: Int) {
-        this.setMetadata(LEAF_INDEX_KEY, index)
-    }
-    private fun Node.getLeafIndex(): Int = this.getMetadata(LEAF_INDEX_KEY) as Int
 
-    val PATH_PIECES_KEY = "path_pieces"
-    private fun Node.setPathPieces(pathPieces: List<List<Node>>) {
-        this.setMetadata(PATH_PIECES_KEY, pathPieces)
+    companion object {
+        private const val LEAF_INDEX_KEY = "leaf_index"
+        private const val PATH_PIECES_KEY = "path_pieces"
+
+        private fun Node.setLeafIndex(index: Int) {
+            this.setMetadata(LEAF_INDEX_KEY, index)
+        }
+
+        private fun Node.getLeafIndex(): Int = this.getMetadata(LEAF_INDEX_KEY) as Int
+
+        private fun Node.setPathPieces(pathPieces: List<List<Node>>) {
+            this.setMetadata(PATH_PIECES_KEY, pathPieces)
+        }
+
+        private fun Node.getPathPieces(): List<List<Node>> = this.getMetadata(PATH_PIECES_KEY) as List<List<Node>>
     }
-    private fun Node.getPathPieces(): List<List<Node>> = this.getMetadata(PATH_PIECES_KEY) as List<List<Node>>
 
     fun retrievePaths(tree: Node) = retrievePaths(tree, Int.MAX_VALUE, Int.MAX_VALUE)
 
