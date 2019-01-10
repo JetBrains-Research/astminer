@@ -3,7 +3,6 @@ package miningtool.parse.java
 import com.github.gumtreediff.tree.ITree
 import com.github.gumtreediff.tree.TreeContext
 import miningtool.common.Node
-import miningtool.common.TreeSplitter
 
 class GumTreeJavaNode(val wrappedNode: ITree, val context: TreeContext, val parent: GumTreeJavaNode?) : Node {
     val myMetadata: MutableMap<String, Any> = HashMap()

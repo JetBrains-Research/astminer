@@ -2,7 +2,6 @@ package miningtool.parse.antlr.c
 
 import me.vovak.antlr.parser.CLexer
 import me.vovak.antlr.parser.CParser
-import miningtool.common.Node
 import miningtool.common.Parser
 import miningtool.parse.antlr.SimpleNode
 import miningtool.parse.antlr.convertAntlrTree
