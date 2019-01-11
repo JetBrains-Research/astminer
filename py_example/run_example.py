@@ -1,7 +1,9 @@
 import argparse
 import numpy as np
+from torch.utils.data import DataLoader
 
 from PathMinerLoader import PathMinerLoader
+from PathMinerDataset import PathMinerDataset
 
 
 # This example assumes that you've already loaded and processed data with data_extraction.sh
@@ -14,23 +16,27 @@ def label_contexts(path_contexts):
     path_contexts['project'] = path_contexts['id'].map(lambda filename: 0 if 'project1' in filename else 1)
 
 
-# Create training and validation samples from path contexts
-def split_files(path_contexts, test_size=0.5):
-    index = np.random.permutation(path_contexts.index)
-    n_test = int(test_size * len(path_contexts))
-    return index[:n_test], index[n_test:]
+# Create training and validation dataset from path contexts
+def split2datasets(loader, test_size=0.3):
+    index = np.random.permutation(loader.path_contexts.index)
+    n_test = int(test_size * len(loader.path_contexts))
+    test_indices = index[:n_test]
+    train_indices = index[n_test:]
+    return PathMinerDataset(loader, train_indices), PathMinerDataset(loader, test_indices)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('source_folder', type=str, help='Folder containing output of PathMiner')
+    parser.add_argument('--batch_size', type=int, default=4, help='Batch size for training')
     args = parser.parse_args()
 
     np.random.seed(42)
 
     loader = PathMinerLoader.from_folder(args.source_folder)
     label_contexts(loader.path_contexts)
-    train_indices, test_indices = split_files(loader.path_contexts)
-    print(train_indices, test_indices)
-    print(loader.path_contexts.iloc[train_indices])
-    print(loader.path_contexts.iloc[test_indices])
+    train_dataset, test_dataset = split2datasets(loader)
+    train_loader = DataLoader(train_dataset, args.batch_size, shuffle=True)
+    test_loader = DataLoader(test_dataset, args.batch_size)
+
+

@@ -1,4 +1,7 @@
 # coding=utf-8
+import torch
+
+
 class PathContext:
 
     def __init__(self, start_token, path, end_token):
@@ -12,6 +15,9 @@ class PathContext:
 
     def resolve(self, dataset):
         return dataset.get_token(self.start_token), dataset.get_path(self.path), dataset.get_token(self.end_token)
+
+    def to_tensor(self):
+        return torch.Tensor([self.start_token, self.path, self.end_token])
 
 
 class Path:
