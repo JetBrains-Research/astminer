@@ -15,7 +15,7 @@ class PathMinerLoader:
         self.path_contexts = self._load_path_contexts(path_contexts_file)
 
     @classmethod
-    def from_dir(cls, dataset_folder):
+    def from_folder(cls, dataset_folder):
         return cls(path.join(dataset_folder, 'tokens.csv'),
                    path.join(dataset_folder, 'paths.csv'),
                    path.join(dataset_folder, 'node_types.csv'),
