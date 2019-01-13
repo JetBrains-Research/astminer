@@ -1,7 +1,6 @@
 package miningtool.examples
 
 import miningtool.common.toPathContext
-import miningtool.parse.antlr.java.JavaParser
 import miningtool.parse.antlr.python.PythonParser
 import miningtool.paths.PathMiner
 import miningtool.paths.PathRetrievalSettings
