@@ -3,6 +3,6 @@ class ComplexArrayInitialization {
     private ComplexObject[] array;
 
     IntArrayInitialization() {
-        array = ComplexObject[1];
+        array = new ComplexObject[1];
     }
 }

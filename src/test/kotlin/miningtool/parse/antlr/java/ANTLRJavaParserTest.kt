@@ -10,7 +10,7 @@ class ANTLRJavaParserTest {
     @Test
     fun testIntArrayCallParsing() {
         val parser = JavaParser()
-        val file = File("testData/IntArrayInitialization.java")
+        val file = File("testData/arrayCalls/IntArrayInitialization.java")
 
         val node = parser.parse(FileInputStream(file))
         Assert.assertNotNull("Parse tree for a valid file should not be null", node)
@@ -19,7 +19,7 @@ class ANTLRJavaParserTest {
     @Test
     fun testStringArrayCallParsing() {
         val parser = JavaParser()
-        val file = File("testData/StringArrayInitialization.java")
+        val file = File("testData/arrayCalls/StringArrayInitialization.java")
 
         val node = parser.parse(FileInputStream(file))
         Assert.assertNotNull("Parse tree for a valid file should not be null", node)
@@ -28,7 +28,7 @@ class ANTLRJavaParserTest {
     @Test
     fun testComplexArrayCallParsing() {
         val parser = JavaParser()
-        val file = File("testData/ComplexArrayInitialization.java")
+        val file = File("testData/arrayCalls/ComplexArrayInitialization.java")
 
         val node = parser.parse(FileInputStream(file))
         Assert.assertNotNull("Parse tree for a valid file should not be null", node)
@@ -37,7 +37,16 @@ class ANTLRJavaParserTest {
     @Test
     fun testDoubleArrayCallParsing() {
         val parser = JavaParser()
-        val file = File("testData/DoubleArrayInitialization.java")
+        val file = File("testData/arrayCalls/DoubleArrayInitialization.java")
+
+        val node = parser.parse(FileInputStream(file))
+        Assert.assertNotNull("Parse tree for a valid file should not be null", node)
+    }
+
+    @Test
+    fun testComplexFile() {
+        val parser = JavaParser()
+        val file = File("testData/arrayCalls/ComplexTest.java")
 
         val node = parser.parse(FileInputStream(file))
         Assert.assertNotNull("Parse tree for a valid file should not be null", node)

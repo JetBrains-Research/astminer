@@ -3,6 +3,6 @@ class IntArrayInitialization {
     private int[] array;
 
     IntArrayInitialization() {
-        array = int[1];
+        array = new int[1];
     }
 }
