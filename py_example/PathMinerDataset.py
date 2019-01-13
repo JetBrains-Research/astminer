@@ -11,7 +11,7 @@ class PathMinerDataset(Dataset):
         self.size = len(indices)
         sample = loader.path_contexts.iloc[indices]
         self.ids = sample['id']
-        self.labels = torch.LongTensor(sample['project'].values)
+        self.labels = torch.FloatTensor(sample['project'].values)
         self.starts, self.paths, self.ends = self._cut_contexts(sample['path_contexts'], keep_contexts)
 
     # Pick random contexts from each file if there are too many of them

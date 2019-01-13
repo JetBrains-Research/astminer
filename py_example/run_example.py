@@ -1,9 +1,11 @@
 import argparse
 import numpy as np
+import torch
 from torch.utils.data import DataLoader
 
 from PathMinerLoader import PathMinerLoader
 from PathMinerDataset import PathMinerDataset
+from ProjectClassifier import ProjectClassifier
 
 
 # This example assumes that you've already loaded and processed data with data_extraction.sh
@@ -17,26 +19,67 @@ def label_contexts(path_contexts):
 
 
 # Create training and validation dataset from path contexts
-def split2datasets(loader, test_size=0.3):
+def split2datasets(loader, test_size=0.3, keep_contexts=200):
     index = np.random.permutation(loader.path_contexts.index)
     n_test = int(test_size * len(loader.path_contexts))
     test_indices = index[:n_test]
     train_indices = index[n_test:]
-    return PathMinerDataset(loader, train_indices), PathMinerDataset(loader, test_indices)
+    return PathMinerDataset(loader, train_indices, keep_contexts), PathMinerDataset(loader, test_indices, keep_contexts)
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('source_folder', type=str, help='Folder containing output of PathMiner')
-    parser.add_argument('--batch_size', type=int, default=4, help='Batch size for training')
-    args = parser.parse_args()
+def train(train_loader, test_loader, model, optimizer, loss_function, n_epochs=3, log_batches=5):
+    for epoch in range(n_epochs):
+        print("Epoch #{}".format(epoch + 1))
+        current_loss = 0
+        for n_batch, sample in enumerate(train_loader):
+            contexts, labels = sample['contexts'], sample['labels']
 
-    np.random.seed(42)
+            optimizer.zero_grad()
 
+            predictions = model(contexts)
+            loss = loss_function(predictions, labels)
+            loss.backward()
+            optimizer.step()
+
+            current_loss += loss.item()
+            if (n_batch + 1) % log_batches == 0:
+                print("After {} batches: average loss {}".format(n_batch + 1, current_loss / log_batches))
+                current_loss = 0
+
+        with torch.no_grad():
+            correct = 0
+            total = 0
+            for sample in test_loader:
+                contexts, labels = sample['contexts'], sample['labels']
+                predictions = model(contexts)
+                # binarize the prediction
+                predictions = predictions > 0.5
+                target = labels > 0.5
+                correct += (predictions == target).sum().item()
+                total += len(predictions)
+            print("Accuracy is {}%".format(correct / total))
+
+
+def main(args):
     loader = PathMinerLoader.from_folder(args.source_folder)
     label_contexts(loader.path_contexts)
-    train_dataset, test_dataset = split2datasets(loader)
+    train_dataset, test_dataset = split2datasets(loader, keep_contexts=10)
     train_loader = DataLoader(train_dataset, args.batch_size, shuffle=True)
     test_loader = DataLoader(test_dataset, args.batch_size)
 
+    model = ProjectClassifier(len(loader.tokens) + 1, len(loader.paths) + 1, 8)
+    optimizer = torch.optim.Adam(model.parameters())
+    loss_function = torch.nn.BCELoss()
 
+    train(train_loader, test_loader, model, optimizer, loss_function)
+
+
+if __name__ == '__main__':
+    np.random.seed(42)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('source_folder', type=str, help='Folder containing output of PathMiner')
+    parser.add_argument('--batch_size', type=int, default=4, help='Batch size for training')
+
+    args = parser.parse_args()
+    main(args)
