@@ -16,9 +16,6 @@ class PathContext:
     def resolve(self, dataset):
         return dataset.get_token(self.start_token), dataset.get_path(self.path), dataset.get_token(self.end_token)
 
-    def to_tensor(self):
-        return torch.Tensor([self.start_token, self.path, self.end_token])
-
 
 class Path:
 

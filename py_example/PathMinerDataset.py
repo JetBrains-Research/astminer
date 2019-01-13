@@ -1,22 +1,38 @@
+import numpy as np
+import torch
 from torch.utils.data import Dataset
 
 
 class PathMinerDataset(Dataset):
 
-    def __init__(self, loader, indices):
+    # Converts data to PyTorch Tensors for further usage in the model
+    # Number of contexts per file is limited as it was done in the original implementation of Code2Vec
+    def __init__(self, loader, indices, keep_contexts=200):
         self.size = len(indices)
         sample = loader.path_contexts.iloc[indices]
-        self.labels = sample['project']
         self.ids = sample['id']
-        # Convert PathContexts to PyTorch Tensors for further usage
-        self.contexts = sample['path_contexts'].map(
-            lambda contexts: list(map(lambda ctx: ctx.to_tensor(), contexts))
-        )
+        self.labels = torch.LongTensor(sample['project'].values)
+        self.starts, self.paths, self.ends = self._cut_contexts(sample['path_contexts'], keep_contexts)
+
+    # Pick random contexts from each file if there are too many of them
+    def _cut_contexts(self, all_contexts, keep_contexts):
+        starts = np.zeros((self.size, keep_contexts))
+        paths = np.zeros((self.size, keep_contexts))
+        ends = np.zeros((self.size, keep_contexts))
+        for i, contexts in enumerate(all_contexts):
+            if len(contexts) > keep_contexts:
+                np.random.shuffle(contexts)
+                contexts = contexts[:keep_contexts]
+            for j, context in enumerate(contexts):
+                starts[i, j] = context.start_token
+                paths[i, j] = context.path
+                ends[i, j] = context.end_token
+        return torch.LongTensor(starts), torch.LongTensor(paths), torch.LongTensor(ends)
 
     def __len__(self):
         return self.size
 
     def __getitem__(self, index):
-        return {'contexts': self.contexts.iloc[index],
-                'label': self.labels.iloc[index],
-                'id': self.ids.iloc[index]}
+        return {'contexts': (self.starts[index], self.paths[index], self.ends[index]),
+                'labels': self.labels[index],
+                'ids': self.ids.iloc[index]}
