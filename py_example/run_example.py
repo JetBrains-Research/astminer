@@ -1,5 +1,6 @@
 import argparse
 import numpy as np
+from sklearn.metrics import recall_score, precision_score, accuracy_score
 import torch
 from torch.utils.data import DataLoader
 
@@ -19,7 +20,7 @@ def label_contexts(path_contexts):
 
 
 # Create training and validation dataset from path contexts
-def split2datasets(loader, test_size=0.3, keep_contexts=200):
+def split2datasets(loader, test_size=0.5, keep_contexts=200):
     index = np.random.permutation(loader.path_contexts.index)
     n_test = int(test_size * len(loader.path_contexts))
     test_indices = index[:n_test]
@@ -28,6 +29,7 @@ def split2datasets(loader, test_size=0.3, keep_contexts=200):
 
 
 def train(train_loader, test_loader, model, optimizer, loss_function, n_epochs=3, log_batches=5):
+    print("Start training")
     for epoch in range(n_epochs):
         print("Epoch #{}".format(epoch + 1))
         current_loss = 0
@@ -47,23 +49,34 @@ def train(train_loader, test_loader, model, optimizer, loss_function, n_epochs=3
                 current_loss = 0
 
         with torch.no_grad():
-            correct = 0
-            total = 0
+            total = len(test_loader.dataset)
+            predictions = np.zeros(total)
+            targets = np.zeros(total)
+            cur = 0
             for sample in test_loader:
                 contexts, labels = sample['contexts'], sample['labels']
-                predictions = model(contexts)
+                batched_predictions = model(contexts)
                 # binarize the prediction
-                predictions = predictions > 0.5
-                target = labels > 0.5
-                correct += (predictions == target).sum().item()
-                total += len(predictions)
-            print("Accuracy is {}%".format(correct / total))
+                batched_predictions = (batched_predictions > 0.5).numpy()
+                batched_targets = (labels > 0.5).numpy()
+                predictions[cur:cur + len(batched_predictions)] = batched_predictions
+                targets[cur:cur + len(batched_targets)] = batched_targets
+                cur += len(batched_predictions)
+            print("accuracy: {:.3f}, precision: {:.3f}, recall: {:.3f}".format(
+                accuracy_score(targets, predictions),
+                precision_score(targets, predictions),
+                recall_score(targets, predictions)
+            ))
+    print("Training completed")
 
 
 def main(args):
+    print("Loading generated data")
     loader = PathMinerLoader.from_folder(args.source_folder)
+    print("Labeling contexts")
     label_contexts(loader.path_contexts)
-    train_dataset, test_dataset = split2datasets(loader, keep_contexts=10)
+    print("Creating datasets")
+    train_dataset, test_dataset = split2datasets(loader, keep_contexts=500)
     train_loader = DataLoader(train_dataset, args.batch_size, shuffle=True)
     test_loader = DataLoader(test_dataset, args.batch_size)
 
@@ -71,7 +84,7 @@ def main(args):
     optimizer = torch.optim.Adam(model.parameters())
     loss_function = torch.nn.BCELoss()
 
-    train(train_loader, test_loader, model, optimizer, loss_function)
+    train(train_loader, test_loader, model, optimizer, loss_function, n_epochs=10, log_batches=20)
 
 
 if __name__ == '__main__':
@@ -79,7 +92,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('source_folder', type=str, help='Folder containing output of PathMiner')
-    parser.add_argument('--batch_size', type=int, default=4, help='Batch size for training')
+    parser.add_argument('--batch_size', type=int, default=8, help='Batch size for training')
 
     args = parser.parse_args()
     main(args)

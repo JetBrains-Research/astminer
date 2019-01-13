@@ -1,7 +1,7 @@
 package miningtool.examples
 
 import miningtool.common.toPathContext
-import miningtool.parse.antlr.java.JavaParser
+import miningtool.parse.antlr.java.Java8Parser
 import miningtool.paths.PathMiner
 import miningtool.paths.PathRetrievalSettings
 import miningtool.paths.storage.VocabularyPathStorage
@@ -14,12 +14,9 @@ fun processTwoProjects() {
     val miner = PathMiner(PathRetrievalSettings(8, 3))
     val storage = VocabularyPathStorage()
 
-    File(folder).walkTopDown().filter { it.path.endsWith("Testing.java") }.forEach { file ->
-        println(file.name)
-        val node = JavaParser().parse(file.inputStream()) ?: return@forEach
-        println(file.name)
+    File(folder).walkTopDown().filter { it.path.endsWith(".java") }.forEach { file ->
+        val node = Java8Parser().parse(file.inputStream()) ?: return@forEach
         val paths = miner.retrievePaths(node)
-        println(file.name)
 
         storage.store(paths.map { toPathContext(it) }, entityId = file.path)
     }
