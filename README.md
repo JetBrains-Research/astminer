@@ -11,7 +11,7 @@ A new programming language can be supported in a few simple steps:
 1. Add the corresponding [ANTLR4 grammar file](https://github.com/antlr/grammars-v4) to the `antlr` directory;
 2. Run the `antlr4` Gradle task to generate the parser;
 3. Implement a very minimal wrapper around the generated parser.
-See [JavaParser](https://github.com/vovak/pathminer/blob/master/src/main/kotlin/miningtool/parse/antlr/java/JavaParser.kt) or [PythonParser](https://github.com/vovak/pathminer/blob/master/src/main/kotlin/miningtool/parse/antlr/python/PythonParser.kt) for reference
+See [JavaParser](https://github.com/vovak/pathminer/blob/master/src/main/kotlin/miningtool/parse/antlr/java/Java8Parser.kt) or [PythonParser](https://github.com/vovak/pathminer/blob/master/src/main/kotlin/miningtool/parse/antlr/python/PythonParser.kt) for reference
 
 A few [simple usage examples](https://github.com/vovak/pathminer/tree/master/src/main/kotlin/miningtool/examples) can be run with `./gradlew run`. 
 
