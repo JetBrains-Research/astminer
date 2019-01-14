@@ -6,9 +6,9 @@ from sklearn.metrics import recall_score, precision_score, accuracy_score
 import torch
 from torch.utils.data import DataLoader
 
-from PathMinerLoader import PathMinerLoader
-from PathMinerDataset import PathMinerDataset
-from ProjectClassifier import ProjectClassifier
+from data_processing.PathMinerLoader import PathMinerLoader
+from data_processing.PathMinerDataset import PathMinerDataset
+from model.ProjectClassifier import ProjectClassifier
 
 
 # This example assumes that you've already loaded and processed data with data_extraction.sh

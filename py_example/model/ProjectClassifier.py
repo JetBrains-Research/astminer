@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-from Code2Vec import Code2Vec
+from model.Code2Vec import Code2Vec
 
 
 # Vectorizes code snippets paths in format of contexts via Code2Vec and performs classification
