@@ -13,18 +13,18 @@ interface Node {
     fun setMetadata(key: String, value: Any)
 }
 
-abstract class Parser<T: Node> {
-    abstract fun parse(content: InputStream): T?
+interface Parser<T : Node> {
+    fun parse(content: InputStream): T?
 }
 
-
-interface TreeSplitter<T: Node> {
+interface TreeSplitter<T : Node> {
     fun split(root: T): Collection<T>
 }
 
 data class ASTPath(val upwardNodes: List<Node>, val downwardNodes: List<Node>)
 
-enum class Direction{UP, DOWN}
+enum class Direction { UP, DOWN }
+
 data class NodeType(val typeLabel: String, val direction: Direction)
 
 data class PathContext(val startToken: String, val nodeTypes: List<NodeType>, val endToken: String)

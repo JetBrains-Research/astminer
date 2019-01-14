@@ -6,6 +6,13 @@ import miningtool.common.PathStorage
 import java.io.File
 
 class VocabularyPathStorage : PathStorage() {
+
+    companion object {
+        private val tokenToCsvString: (String) -> String = { token -> token }
+        private val nodeTypeToCsvString: (NodeType) -> String = { nt -> "${nt.typeLabel} ${nt.direction}" }
+        private val pathToCsvString: (List<Long>) -> String = { path -> path.joinToString(separator = " ") }
+    }
+
     private val tokensMap: IncrementalIdStorage<String> = IncrementalIdStorage()
     private val nodeTypesMap: IncrementalIdStorage<NodeType> = IncrementalIdStorage()
     private val pathsMap: IncrementalIdStorage<List<Long>> = IncrementalIdStorage()
@@ -27,12 +34,8 @@ class VocabularyPathStorage : PathStorage() {
         pathContextsPerEntity[entityId] = pathContextIds
     }
 
-    private val nodeTypeToCsvString: (NodeType) -> String = { nt -> "${nt.typeLabel} ${nt.direction}" }
-    private val listOfLongToCsvString: (List<Long>) -> String = { list -> list.joinToString(separator = " ") }
-
-
     private fun dumpTokenStorage(file: File) {
-        dumpIdStorage(tokensMap, "token", { token -> token }, file)
+        dumpIdStorage(tokensMap, "token", tokenToCsvString, file)
     }
 
     private fun dumpNodeTypesStorage(file: File) {
@@ -40,15 +43,15 @@ class VocabularyPathStorage : PathStorage() {
     }
 
     private fun dumpPathsStorage(file: File) {
-        dumpIdStorage(pathsMap, "path", listOfLongToCsvString, file)
+        dumpIdStorage(pathsMap, "path", pathToCsvString, file)
     }
 
-    private fun savePathContexts(file: File) {
+    private fun dumpPathContexts(file: File) {
         val lines = mutableListOf("id,path_contexts")
         pathContextsPerEntity.forEach { id, pathContexts ->
-            val pathContextsString = pathContexts
-                    .map { "${it.startTokenId} ${it.pathId} ${it.endTokenId}" }
-                    .joinToString(separator = ";")
+            val pathContextsString = pathContexts.joinToString(separator = ";") { pathContextId ->
+                "${pathContextId.startTokenId} ${pathContextId.pathId} ${pathContextId.endTokenId}"
+            }
             lines.add("$id,$pathContextsString")
         }
 
@@ -61,6 +64,6 @@ class VocabularyPathStorage : PathStorage() {
         dumpNodeTypesStorage(File("$directoryPath/node_types.csv"))
         dumpPathsStorage(File("$directoryPath/paths.csv"))
 
-        savePathContexts(File("$directoryPath/path_contexts.csv"))
+        dumpPathContexts(File("$directoryPath/path_contexts.csv"))
     }
 }
