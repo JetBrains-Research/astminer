@@ -15,7 +15,7 @@ class IncrementalIdStorage<T> {
     }
 
     fun record(item: T): Long {
-        val id= idPerItem.getOrDefault(item, putAndIncrementKey(item))
+        val id = idPerItem.getOrDefault(item, putAndIncrementKey(item))
         incrementIdCount(id)
         return id
     }
