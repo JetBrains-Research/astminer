@@ -3,6 +3,8 @@ from torch.nn import functional as F
 from torch import nn
 
 
+# Implementation of code2vec's vectorization part in PyTorch.
+# Since it is a PyTorch Module, it can be reused as part of other pipeline.
 class Code2Vec(nn.Module):
 
     def __init__(self, n_tokens, n_paths, dim):

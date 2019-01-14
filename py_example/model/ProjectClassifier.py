@@ -3,7 +3,7 @@ from torch import nn
 from model.Code2Vec import Code2Vec
 
 
-# Vectorizes code snippets paths in format of contexts via Code2Vec and performs classification
+# Classifier distinguishing files between two projects based on code2vec vectorization for files.
 class ProjectClassifier(nn.Module):
 
     def __init__(self, n_tokens, n_paths, dim):

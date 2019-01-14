@@ -3,6 +3,7 @@ import torch
 from torch.utils.data import Dataset
 
 
+# Transforms data, loaded from PathMiner's output, to format suitable for model training.
 class PathMinerDataset(Dataset):
 
     # Converts data to PyTorch Tensors for further usage in the model
