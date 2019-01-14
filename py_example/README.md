@@ -11,17 +11,17 @@ To train a toy model on your local machine follow the instructions.
 Conda users:
 
 ~~~~
-conda install pytorch torchvision -c pytorch
-conda install pandas
-conda install parse -c conda-forge
-conda install scikit-learn -c anaconda
+conda create -n pathminer --file requirements_conda.txt
 ~~~~
 
 Pip users:
 ~~~~
-pip install torch torchvision
-pip install pandas parse scikit-learn
+python3 -m virtualenv env
+source env/bin/activate
+pip3 install -r requirements.txt
 ~~~~
+
+
 
 ### Load data
 
