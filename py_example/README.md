@@ -48,5 +48,5 @@ In `model/Code2Vec` there is a part of [code2vec](https://github.com/tech-srl/co
 model that vectorizes snippets of code based on their path-contexts representation. 
 It is implemented as PyTorch module and can be easily reused.
 
-Example of how to reuse it or build something on top of it can be found in `model/ProjectClassifier`.
+A usage example can be found in `model/ProjectClassifier`.
 It is a linear classifier that decides from which project does file come from based on file's vectorization.
