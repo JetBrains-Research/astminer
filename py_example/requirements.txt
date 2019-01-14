@@ -1,7 +1,7 @@
 certifi==2018.10.15
 cffi==1.11.5
-mkl-fft==1.0.10
-mkl-random==1.0.2
+mkl-fft>=1.0.6
+mkl-random>=1.0.1
 numpy==1.15.4
 olefile==0.46
 pandas==0.23.4
