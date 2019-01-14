@@ -44,6 +44,10 @@ task wrapper(type: Wrapper) {
     gradleVersion = "4.10.2"
 }
 
+task processPyExample(type: JavaExec) {
+    main = 'miningtool.examples.pyExample.PyExample'
+    classpath = sourceSets.main.runtimeClasspath
+}
 
 antlr4 {
     source = file('antlr')

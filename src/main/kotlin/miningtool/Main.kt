@@ -1,6 +1,6 @@
 package miningtool
 
-import miningtool.examples.*
+import miningtool.examples.pyExample.processPyExampleData
 
 fun main(args: Array<String>) {
     runExamples()
@@ -11,7 +11,7 @@ fun runExamples() {
 //    allJavaFiles()
 //    allJavaMethods()
 //    allPythonFiles()
-    processTwoProjects()
+    processPyExampleData()
 
 //    AllJavaFiles.runExample()
 }

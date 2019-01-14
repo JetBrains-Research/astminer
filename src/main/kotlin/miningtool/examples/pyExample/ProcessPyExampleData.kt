@@ -1,4 +1,6 @@
-package miningtool.examples
+@file:JvmName("PyExample")
+
+package miningtool.examples.pyExample
 
 import miningtool.common.toPathContext
 import miningtool.parse.antlr.java.Java8Parser
@@ -8,7 +10,7 @@ import miningtool.paths.storage.VocabularyPathStorage
 import java.io.File
 
 // Retrieve paths from two Java projects for further usage in python example.
-fun processTwoProjects() {
+fun processPyExampleData() {
     val folder = "./py_example/data/"
 
     val miner = PathMiner(PathRetrievalSettings(8, 3))
@@ -22,4 +24,8 @@ fun processTwoProjects() {
     }
 
     storage.save("py_example/processed_data/")
+}
+
+fun main(args: Array<String>) {
+    processPyExampleData()
 }
