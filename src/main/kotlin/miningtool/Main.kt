@@ -1,17 +1,16 @@
 package miningtool
 
-import miningtool.examples.pyExample.processPyExampleData
+import miningtool.examples.*
 
 fun main(args: Array<String>) {
     runExamples()
 }
 
 fun runExamples() {
-//    allJavaFilesGumTree()
-//    allJavaFiles()
-//    allJavaMethods()
-//    allPythonFiles()
-    processPyExampleData()
+    allJavaFilesGumTree()
+    allJavaFiles()
+    allJavaMethods()
+    allPythonFiles()
 
-//    AllJavaFiles.runExample()
+    AllJavaFiles.runExample()
 }
