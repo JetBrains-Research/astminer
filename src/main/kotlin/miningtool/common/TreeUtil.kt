@@ -1,7 +1,7 @@
 package miningtool.common
 
 fun Node.postOrderIterator(): Iterator<Node> {
-    //TODO implement prope  rly
+    //TODO implement properly
     return postOrder().listIterator()
 }
 

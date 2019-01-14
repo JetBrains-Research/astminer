@@ -8,7 +8,7 @@ import miningtool.common.preOrder
 
 data class MethodInfo(val enclosingClassName: String, val methodName: String, val parameterTypes: List<String>)
 
-val METHOD_INFO_KEY = "method_info"
+const val METHOD_INFO_KEY = "method_info"
 
 fun GumTreeJavaNode.setMethodInfo(methodInfo: MethodInfo) {
     this.setMetadata(METHOD_INFO_KEY, methodInfo)
@@ -19,32 +19,48 @@ fun GumTreeJavaNode.getMethodInfo(): MethodInfo? {
 }
 
 
-class GumTreeMethodSplitter() : TreeSplitter<GumTreeJavaNode> {
+class GumTreeMethodSplitter : TreeSplitter<GumTreeJavaNode> {
+
+    companion object {
+        private object TypeLabels {
+            const val methodDeclaration = "MethodDeclaration"
+            const val simpleName = "SimpleName"
+            const val typeDeclaration = "TypeDeclaration"
+            const val singleVariableDeclaration = "SingleVariableDeclaration"
+        }
+    }
+
     private fun getMethodNodes(treeContext: TreeContext): List<ITree> {
         return treeContext.root.descendants
-                .filter { treeContext.getTypeLabel(it.type) == "MethodDeclaration" }
+                .filter { treeContext.getTypeLabel(it.type) == TypeLabels.methodDeclaration }
     }
 
     private fun getMethodName(methodNode: ITree, context: TreeContext): String {
-        val nameNode = methodNode.children.firstOrNull { context.getTypeLabel(it.type) == "SimpleName" }
+        val nameNode = methodNode.children.firstOrNull { context.getTypeLabel(it.type) == TypeLabels.simpleName }
         return nameNode?.label ?: ""
     }
 
     private fun getEnclosingClassName(methodNode: ITree, context: TreeContext): String {
-        val classDeclarationNode = methodNode.parents.firstOrNull { context.getTypeLabel(it.type) == "TypeDeclaration" }
-                ?: return ""
-        val nameNode = classDeclarationNode.children.firstOrNull { context.getTypeLabel(it.type) == "SimpleName" }
+        val classDeclarationNode = methodNode.parents.firstOrNull {
+            context.getTypeLabel(it.type) == TypeLabels.typeDeclaration
+        } ?: return ""
+        val nameNode = classDeclarationNode.children.firstOrNull {
+            context.getTypeLabel(it.type) == TypeLabels.simpleName
+        }
         return nameNode?.label ?: ""
     }
 
     private fun getParameterTypes(methodNode: ITree, context: TreeContext): List<String> {
         val result: MutableList<String> = ArrayList()
-        val argDeclarationNodes = methodNode.children
-                .filter { context.getTypeLabel(it.type) == "SingleVariableDeclaration" }
-        argDeclarationNodes.forEach {
-            val typeNode = it.children.filter { c -> context.getTypeLabel(c.type).endsWith("Type") }.firstOrNull()
-            if (typeNode != null) result.add(typeNode.label)
-        }
+        methodNode.children
+                .filter { context.getTypeLabel(it.type) == TypeLabels.singleVariableDeclaration }
+                .forEach { node ->
+                    node.children.firstOrNull { c ->
+                        context.getTypeLabel(c.type).endsWith("Type")
+                    }?.let { typeNode ->
+                        result.add(typeNode.label)
+                    }
+                }
         return result
     }
 

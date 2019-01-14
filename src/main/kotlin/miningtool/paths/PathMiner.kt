@@ -2,12 +2,8 @@ package miningtool.paths
 
 import miningtool.common.ASTPath
 import miningtool.common.Node
-import miningtool.common.Parser
-import java.io.InputStream
 
-
-data class PathRetrievalSettings(val maxHeight: Int, val maxWidth: Int) {
-}
+data class PathRetrievalSettings(val maxHeight: Int, val maxWidth: Int)
 
 class PathMiner(val settings: PathRetrievalSettings) {
     private val pathWorker = PathWorker()

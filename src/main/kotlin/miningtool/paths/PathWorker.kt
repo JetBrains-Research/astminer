@@ -5,17 +5,23 @@ import miningtool.common.Node
 import miningtool.common.postOrderIterator
 
 class PathWorker {
-    val LEAF_INDEX_KEY = "leaf_index"
-    private fun Node.setLeafIndex(index: Int) {
-        this.setMetadata(LEAF_INDEX_KEY, index)
-    }
-    private fun Node.getLeafIndex(): Int = this.getMetadata(LEAF_INDEX_KEY) as Int
 
-    val PATH_PIECES_KEY = "path_pieces"
-    private fun Node.setPathPieces(pathPieces: List<List<Node>>) {
-        this.setMetadata(PATH_PIECES_KEY, pathPieces)
+    companion object {
+        private const val LEAF_INDEX_KEY = "leaf_index"
+        private const val PATH_PIECES_KEY = "path_pieces"
+
+        private fun Node.setLeafIndex(index: Int) {
+            this.setMetadata(LEAF_INDEX_KEY, index)
+        }
+
+        private fun Node.getLeafIndex(): Int = this.getMetadata(LEAF_INDEX_KEY) as Int
+
+        private fun Node.setPathPieces(pathPieces: List<List<Node>>) {
+            this.setMetadata(PATH_PIECES_KEY, pathPieces)
+        }
+
+        private fun Node.getPathPieces(): List<List<Node>> = this.getMetadata(PATH_PIECES_KEY) as List<List<Node>>
     }
-    private fun Node.getPathPieces(): List<List<Node>> = this.getMetadata(PATH_PIECES_KEY) as List<List<Node>>
 
     fun retrievePaths(tree: Node) = retrievePaths(tree, Int.MAX_VALUE, Int.MAX_VALUE)
 
@@ -25,9 +31,7 @@ class PathWorker {
         val paths: MutableCollection<ASTPath> = ArrayList()
         val sortedPieces = pathPieces.sortedBy { (it.nodes[0].getLeafIndex()) }
         sortedPieces.forEachIndexed { index, upPiece ->
-            for (i in (index + 1 until sortedPieces.size)) {
-
-                val downPiece = sortedPieces[i]
+            for (downPiece in sortedPieces.subList(index + 1, sortedPieces.size)) {
                 if (upPiece.childIndex == downPiece.childIndex) continue
 
                 val width = downPiece.nodes[0].getLeafIndex() - upPiece.nodes[0].getLeafIndex()

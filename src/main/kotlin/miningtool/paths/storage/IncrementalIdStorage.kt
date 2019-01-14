@@ -11,19 +11,16 @@ class IncrementalIdStorage<T> {
     }
 
     private fun incrementIdCount(id: Long) {
-        val count = idCountMap[id] ?: 0
-        idCountMap[id] = count + 1
+        idCountMap[id] = idCountMap.getOrDefault(id, 0) + 1
     }
 
     fun record(item: T): Long {
-        val id   = idPerItem[item] ?: putAndIncrementKey(item)
+        val id = idPerItem.getOrDefault(item, putAndIncrementKey(item))
         incrementIdCount(id)
         return id
     }
 
-    fun getIdCount(id: Long): Long {
-        return idCountMap[id]?:0
-    }
+    fun getIdCount(id: Long) = idCountMap.getOrDefault(id, 0)
 
     fun lookUpValue(id: Long): T? {
         return idPerItem.entries.firstOrNull { it.value == id }?.key

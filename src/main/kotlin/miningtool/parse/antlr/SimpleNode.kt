@@ -2,40 +2,40 @@ package miningtool.parse.antlr
 
 import miningtool.common.Node
 
-class SimpleNode(private val myTypeLabel: String, private val myParent: Node?, private val myToken: String?) : Node {
-    private val myMetadata: MutableMap<String, Any> = HashMap()
+class SimpleNode(private val typeLabel: String, private val parent: Node?, private val token: String?) : Node {
+    private val metadata: MutableMap<String, Any> = HashMap()
 
-    private var myChildren: List<Node> = emptyList()
+    private var children: List<Node> = emptyList()
 
     fun setChildren(newChildren: List<Node>) {
-        myChildren = newChildren
+        children = newChildren
     }
 
     override fun getTypeLabel(): String {
-        return myTypeLabel
+        return typeLabel
     }
 
     override fun getChildren(): List<Node> {
-        return myChildren
+        return children
     }
 
     override fun getParent(): Node? {
-        return myParent
+        return parent
     }
 
     override fun getToken(): String {
-        return myToken ?: "null"
+        return token ?: "null"
     }
 
     override fun isLeaf(): Boolean {
-        return myChildren.isEmpty()
+        return children.isEmpty()
     }
 
     override fun getMetadata(key: String): Any? {
-        return myMetadata[key]
+        return metadata[key]
     }
 
     override fun setMetadata(key: String, value: Any) {
-        myMetadata[key] = value
+        metadata[key] = value
     }
 }
