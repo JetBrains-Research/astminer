@@ -45,7 +45,7 @@ PathMiner's generated output into easy-to-integrate format.
 ### Model
 
 `model/Code2Vec` contains a model to vectorize snippets of code based on their path-context representation.
-model that vectorizes snippets of code based on their path-contexts representation. 
+This model had been originally implemented as a part of [code2vec](https://github.com/tech-srl/code2vec).
 It is implemented as a PyTorch module and can be easily reused.
 
 A usage example can be found in `model/ProjectClassifier`.
