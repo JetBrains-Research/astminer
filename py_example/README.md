@@ -11,7 +11,7 @@ To train a toy model on your local machine follow the instructions.
 Conda users:
 
 ~~~~
-conda create -n pathminer --file requirements_conda.txt
+conda create -n pathminer --file requirements_conda.txt -c pytorch -c conda-forge -c anaconda
 ~~~~
 
 Pip users:
