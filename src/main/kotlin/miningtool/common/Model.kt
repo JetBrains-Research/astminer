@@ -13,7 +13,12 @@ interface Node {
     fun setMetadata(key: String, value: Any)
     fun prettyPrint(indent: Int = 0, indentSymbol: String = "--") {
         repeat(indent) { print(indentSymbol) }
-        println(getTypeLabel())
+        print(getTypeLabel())
+        if (getToken().isNotEmpty()) {
+            println(" : ${getToken()}")
+        } else {
+            println()
+        }
         getChildren().forEach { it.prettyPrint(indent + 1, indentSymbol) }
     }
 }
