@@ -25,14 +25,16 @@ pip3 install -r requirements.txt
 
 ### Load data
 
-Data will be loaded as one of the steps of `run_example.py` script. 
-However, to use custom projects you can put them in `data/` folder
-as `project1` and `project2`.
+Two projects will be loaded as one of the steps of `run_example.py` script. Their total size is about 200MB. 
+If you want to use custom projects put them in `data/` folder as `project1` and `project2`.
 
 ### Run the example
 
 To run the example execute `run_example.py` script. 
-Data loading and processing take several minutes.
+Projects are loaded unless `data/project1` and `data/project2` folders are already present.
+PathMiner's processing takes around 1.5-2 minutes.
+
+When loading and processing are completed, a model is trained for 10 epochs. Training takes approximately a minute.
 
 
 ## Useful modules
