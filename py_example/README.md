@@ -36,6 +36,26 @@ PathMiner's processing takes around 1.5-2 minutes.
 
 When loading and processing are completed, a model is trained for 10 epochs. Training takes approximately a minute.
 
+Successful output should look like this:
+~~~~
+Loading generated data
+Labeling contexts
+Creating datasets
+Start training
+Epoch #1
+After 20 batches: average loss 0.6637925207614899
+After 40 batches: average loss 0.6571866393089294
+After 60 batches: average loss 0.676651856303215
+...
+Epoch #10
+After 20 batches: average loss 0.023688357206992805
+After 40 batches: average loss 0.013494743884075433
+...
+After 160 batches: average loss 0.008080246101599187
+After 180 batches: average loss 0.009434921143110842
+accuracy: 0.988, precision: 0.983, recall: 0.985
+Training completed
+~~~~
 
 ## Useful modules
 
