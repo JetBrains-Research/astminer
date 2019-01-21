@@ -1,12 +1,31 @@
-language: java
+language: python
+  python:
+    - "3.6"
 
-jdk:
-  - oraclejdk8
+addons:
+  apt:
+    packages:
+      - oracle-java8-set-default
 
 before_install:
   - chmod +x gradlew
   - chmod +x gradle/wrapper/gradle-wrapper.jar
 
+install:
+  # Install conda
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda env create -f py_example/conda_environment.yml
+  - conda activate pathminer
+
 script:
+  # Build library and run tests
   - ./gradlew build
   - ./gradlew test
+  # Run python example
+  - cd py_example
+  - python3 run_example.py
