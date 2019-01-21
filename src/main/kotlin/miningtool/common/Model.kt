@@ -11,6 +11,11 @@ interface Node {
 
     fun getMetadata(key: String): Any?
     fun setMetadata(key: String, value: Any)
+    fun prettyPrint(indent: Int = 0, indentSymbol: String = "--") {
+        repeat(indent) { print(indentSymbol) }
+        println(getTypeLabel())
+        getChildren().forEach { it.prettyPrint(indent + 1, indentSymbol) }
+    }
 }
 
 interface Parser<T : Node> {
