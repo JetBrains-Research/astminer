@@ -20,7 +20,7 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda env create -f py_example/conda_environment.yml
-  - conda activate pathminer
+  - source activate pathminer
 
 script:
   # Build library and run tests
