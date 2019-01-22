@@ -12,8 +12,10 @@ import java.io.InputStream
 class PythonParser : Parser<SimpleNode> {
     override fun parse(content: InputStream): SimpleNode? {
         val lexer = Python3Lexer(ANTLRInputStream(content))
+        lexer.removeErrorListeners()
         val tokens = CommonTokenStream(lexer)
         val parser = Python3Parser(tokens)
+        parser.removeErrorListeners()
         val context = parser.file_input()
         return convertAntlrTree(context, Python3Parser.ruleNames)
     }

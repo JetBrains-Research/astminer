@@ -9,7 +9,7 @@ import java.io.File
 
 //Retrieve paths from Java files, using a generated parser.
 fun allJavaFiles() {
-    val folder = "./testData"
+    val folder = "./testData/examples/"
 
     val miner = PathMiner(PathRetrievalSettings(5, 5))
     val storage = VocabularyPathStorage()
