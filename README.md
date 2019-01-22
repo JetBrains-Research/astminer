@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/egor-bogomolov/pbr-lib.svg?branch=master)](https://travis-ci.org/egor-bogomolov/pbr-lib)
+[![Build Status](https://travis-ci.org/vovak/pbr-lib.svg?branch=master)](https://travis-ci.org/egor-bogomolov/pbr-lib)
 
 # PathMiner
 A tool/library for mining of [path-based representations of code](https://arxiv.org/pdf/1803.09544.pdf).
