@@ -16,7 +16,7 @@ private fun createAndSplitTree(filename: String): Collection<GumTreeJavaNode> {
 class GumTreeMethodSplitterTest {
     @Test
     fun testMethodExtraction1() {
-        val methodNodes = createAndSplitTree("testData/gumTreeMethodSplitter/1.java")
+        val methodNodes = createAndSplitTree("testData/examples/gumTreeMethodSplitter/1.java")
 
         Assert.assertEquals(1, methodNodes.size)
         Assert.assertEquals(MethodInfo("SingleFunction", "fun", listOf("String[]", "int")), methodNodes.first().getMethodInfo())
@@ -24,7 +24,7 @@ class GumTreeMethodSplitterTest {
 
     @Test
     fun testMethodExtraction2() {
-        val methodNodes = createAndSplitTree("testData/gumTreeMethodSplitter/2.java")
+        val methodNodes = createAndSplitTree("testData/examples/gumTreeMethodSplitter/2.java")
 
         Assert.assertEquals(1, methodNodes.size)
         Assert.assertEquals(MethodInfo("InnerClass", "main", listOf("String[]")), methodNodes.first().getMethodInfo())
@@ -32,7 +32,7 @@ class GumTreeMethodSplitterTest {
 
     @Test
     fun testMethodExtraction3() {
-        val methodNodes = createAndSplitTree("testData/gumTreeMethodSplitter/3.java")
+        val methodNodes = createAndSplitTree("testData/examples/gumTreeMethodSplitter/3.java")
 
         Assert.assertEquals(2, methodNodes.size)
         Assert.assertTrue(methodNodes.map { it.getMethodInfo() }.contains(MethodInfo("InnerClass","main", listOf("String[]"))))
@@ -41,7 +41,7 @@ class GumTreeMethodSplitterTest {
 
     @Test
     fun testMethodExtraction4() {
-        val methodNodes = createAndSplitTree("testData/gumTreeMethodSplitter/4.java")
+        val methodNodes = createAndSplitTree("testData/examples/gumTreeMethodSplitter/4.java")
 
         Assert.assertEquals(1, methodNodes.size)
         Assert.assertEquals(MethodInfo("SingleFunction", "fun", listOf("int", "int")), methodNodes.first().getMethodInfo())
