@@ -7,7 +7,7 @@ A tool/library for mining of [path-based representations of code](https://arxiv.
 ## About
 This is an offspring of an internal utility from our ongoing research project.
 
-Currently it supports extraction of path-based representations from code in Java, Python, and C, but it is designed to be very easily extensible. 
+Currently it supports extraction of path-based representations from code in Java and Python, but it is designed to be very easily extensible. 
 
 A new programming language can be supported in a few simple steps:
 1. Add the corresponding [ANTLR4 grammar file](https://github.com/antlr/grammars-v4) to the `antlr` directory;
