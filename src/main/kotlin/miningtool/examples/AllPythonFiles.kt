@@ -9,7 +9,7 @@ import java.io.File
 
 
 fun allPythonFiles() {
-    val folder = "./testData"
+    val folder = "./testData/examples/"
 
     val miner = PathMiner(PathRetrievalSettings(5, 5))
     val storage = VocabularyPathStorage()
