@@ -7,7 +7,7 @@ from torch.utils.data import Dataset
 class PathMinerDataset(Dataset):
 
     # Converts data to PyTorch Tensors for further usage in the model
-    # Number of contexts per file is limited as it was done in the original implementation of Code2Vec
+    # Number of contexts per file is limited to allow fast computations
     def __init__(self, loader, indices, keep_contexts=200):
         self.size = len(indices)
         sample = loader.path_contexts.iloc[indices]

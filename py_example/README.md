@@ -74,8 +74,8 @@ of `PathMinerLoader` to i.e. Tensorflow tensors or ndarrays.
 
 ### Model
 
-`model.Code2Vec` contains a model to vectorize snippets of code based on their path-context representation.
-This model had been originally implemented as a part of [code2vec](https://github.com/tech-srl/code2vec).
+`model.CodeVectorizer` contains a model to vectorize snippets of code based on their path-context representation.
+This model works similarly to the part of [code2vec's](https://github.com/tech-srl/code2vec) that is responsible for code vectorization.
 It is implemented as a PyTorch module and can be easily reused.
 
 A usage example can be found in `model.ProjectClassifier`.

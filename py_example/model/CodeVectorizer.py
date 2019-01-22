@@ -5,10 +5,10 @@ from torch import nn
 
 # Implementation of code2vec's vectorization part in PyTorch.
 # Since it is a PyTorch Module, it can be reused as a part of another pipeline.
-class Code2Vec(nn.Module):
+class CodeVectorizer(nn.Module):
 
     def __init__(self, n_tokens, n_paths, dim):
-        super(Code2Vec, self).__init__()
+        super(CodeVectorizer, self).__init__()
         self.tokens_embed = nn.Embedding(n_tokens, dim)
         self.paths_embed = nn.Embedding(n_paths, dim)
         self.transform = nn.Sequential(nn.Linear(3 * dim, dim), nn.Tanh())
