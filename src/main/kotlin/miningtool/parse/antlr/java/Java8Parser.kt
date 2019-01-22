@@ -12,8 +12,10 @@ import java.io.InputStream
 class Java8Parser : Parser<SimpleNode> {
     override fun parse(content: InputStream): SimpleNode? {
         val lexer = JavaLexer(ANTLRInputStream(content))
+        lexer.removeErrorListeners()
         val tokens = CommonTokenStream(lexer)
         val parser = JavaParser(tokens)
+        parser.removeErrorListeners()
         val context = parser.compilationUnit()
         return convertAntlrTree(context, JavaParser.ruleNames)
     }

@@ -12,6 +12,7 @@ import miningtool.paths.PathMiner
 import miningtool.paths.PathRetrievalSettings
 import miningtool.paths.storage.VocabularyPathStorage
 import java.io.File
+import java.lang.IllegalStateException
 
 fun <NodeType : Node, LangParser : Parser<NodeType>> langPerformanceTest(language: String,
                                                                          langSuffix: String,
@@ -37,18 +38,22 @@ fun <NodeType : Node, LangParser : Parser<NodeType>> langPerformanceTest(languag
         filesNumber++
         locNumber += file.readLines().size
 
-        var currentTime = System.currentTimeMillis()
-        val node = parser.parse(file.inputStream())
-        parsingElapsedTime += System.currentTimeMillis() - currentTime
-        if (node == null) return@forEach
+        try {
+            var currentTime = System.currentTimeMillis()
+            val node = parser.parse(file.inputStream())
+            parsingElapsedTime += System.currentTimeMillis() - currentTime
+            if (node == null) return@forEach
 
-        currentTime = System.currentTimeMillis()
-        val paths = miner.retrievePaths(node)
-        retrievingElapsedTime += System.currentTimeMillis() - currentTime
+            currentTime = System.currentTimeMillis()
+            val paths = miner.retrievePaths(node)
+            retrievingElapsedTime += System.currentTimeMillis() - currentTime
 
-        currentTime = System.currentTimeMillis()
-        storage.store(paths.map { toPathContext(it) }, entityId = file.path)
-        storingElapsedTime += System.currentTimeMillis() - currentTime
+            currentTime = System.currentTimeMillis()
+            storage.store(paths.map { toPathContext(it) }, entityId = file.path)
+            storingElapsedTime += System.currentTimeMillis() - currentTime
+        } catch (e: IllegalStateException) {
+            println("Unable to parse ${file.path}")
+        }
     }
 
     val currentTime = System.currentTimeMillis()
@@ -69,6 +74,7 @@ fun <NodeType : Node, LangParser : Parser<NodeType>> langPerformanceTest(languag
     println("Storing overall time: ${storingElapsedTime / 1000} sec")
     println("Storing speed: ${filesNumber * 1000 / storingElapsedTime} files/sec, " +
             "${locNumber * 1000 / storingElapsedTime} loc/sec")
+    println()
 }
 
 fun main(args: Array<String>) {
