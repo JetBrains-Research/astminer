@@ -16,13 +16,3 @@ fi
 if [[ ! -d "py/public-apis" ]]; then
     git clone https://github.com/toddmotto/public-apis.git py/public-apis
 fi
-
-if [[ ! -d "c/scrcpy.git" ]]; then
-    git clone https://github.com/Genymobile/scrcpy.git c/scrcpy
-fi
-if [[ ! -d "c/circuitpython" ]]; then
-    git clone https://github.com/adafruit/circuitpython.git c/circuitpython
-fi
-if [[ ! -d "c/tmux" ]]; then
-    git clone https://github.com/tmux/tmux.git c/tmux
-fi

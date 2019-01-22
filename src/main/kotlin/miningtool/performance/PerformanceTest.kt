@@ -5,7 +5,6 @@ package miningtool.performance
 import miningtool.common.Node
 import miningtool.common.Parser
 import miningtool.common.toPathContext
-import miningtool.parse.antlr.c.ANTLRCParser
 import miningtool.parse.antlr.java.Java8Parser
 import miningtool.parse.antlr.python.PythonParser
 import miningtool.paths.PathMiner
@@ -29,15 +28,13 @@ fun <NodeType : Node, LangParser : Parser<NodeType>> langPerformanceTest(languag
     val storage = VocabularyPathStorage()
 
     var filesNumber = 0L
+    var filesFailed = 0L
     var locNumber = 0L
     var parsingElapsedTime = 0L
     var retrievingElapsedTime = 0L
     var storingElapsedTime = 0L
 
     File(folder).walkTopDown().filter { it.path.endsWith(".$langSuffix") }.forEach { file ->
-        filesNumber++
-        locNumber += file.readLines().size
-
         try {
             var currentTime = System.currentTimeMillis()
             val node = parser.parse(file.inputStream())
@@ -51,8 +48,13 @@ fun <NodeType : Node, LangParser : Parser<NodeType>> langPerformanceTest(languag
             currentTime = System.currentTimeMillis()
             storage.store(paths.map { toPathContext(it) }, entityId = file.path)
             storingElapsedTime += System.currentTimeMillis() - currentTime
+
+            // If parsing is successful
+            filesNumber++
+            locNumber += file.readLines().size
         } catch (e: IllegalStateException) {
             println("Unable to parse ${file.path}")
+            filesFailed++
         }
     }
 
@@ -62,6 +64,7 @@ fun <NodeType : Node, LangParser : Parser<NodeType>> langPerformanceTest(languag
 
     println("Performance test took ${(System.currentTimeMillis() - startTime) / 1000} sec")
     println("Processed $filesNumber files, $locNumber lines of code")
+    println("Failed to parse $filesFailed files")
     println()
     println("Parsing overall time: ${parsingElapsedTime / 1000} sec")
     println("Parsing speed: ${filesNumber * 1000 / parsingElapsedTime} files/sec, " +
@@ -80,6 +83,5 @@ fun <NodeType : Node, LangParser : Parser<NodeType>> langPerformanceTest(languag
 fun main(args: Array<String>) {
     val retrievalSettings = PathRetrievalSettings(5, 5)
     langPerformanceTest("Python", "py", PythonParser(), retrievalSettings)
-    langPerformanceTest("C", "c", ANTLRCParser(), retrievalSettings)
     langPerformanceTest("Java", "java", Java8Parser(), retrievalSettings)
 }
