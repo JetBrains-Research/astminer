@@ -49,6 +49,11 @@ task processPyExample(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
+task performanceTest(type: JavaExec) {
+    main = 'miningtool.performance.PerformanceTest'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
 antlr4 {
     source = file('antlr')
     output = file('src/main/generated/me/vovak/antlr/parser')
