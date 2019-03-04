@@ -5,7 +5,7 @@ package miningtool.performance
 import miningtool.common.Node
 import miningtool.common.Parser
 import miningtool.common.toPathContext
-import miningtool.parse.antlr.java.Java8Parser
+import miningtool.parse.antlr.java.JavaParser
 import miningtool.parse.antlr.python.PythonParser
 import miningtool.paths.PathMiner
 import miningtool.paths.PathRetrievalSettings
@@ -83,5 +83,5 @@ fun <NodeType : Node, LangParser : Parser<NodeType>> langPerformanceTest(languag
 fun main(args: Array<String>) {
     val retrievalSettings = PathRetrievalSettings(5, 5)
     langPerformanceTest("Python", "py", PythonParser(), retrievalSettings)
-    langPerformanceTest("Java", "java", Java8Parser(), retrievalSettings)
+    langPerformanceTest("Java", "java", JavaParser(), retrievalSettings)
 }

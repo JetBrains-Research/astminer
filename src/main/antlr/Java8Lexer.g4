@@ -27,7 +27,7 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-lexer grammar JavaLexer;
+lexer grammar Java8Lexer;
 
 // Keywords
 

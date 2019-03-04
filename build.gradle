@@ -6,12 +6,11 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'me.champeau.gradle:antlr4-gradle-plugin:0.1'
     }
 }
 
 apply plugin: 'java'
-apply plugin: 'me.champeau.gradle.antlr4'
+apply plugin: 'antlr'
 apply plugin: 'idea'
 
 apply plugin: 'kotlin'
@@ -22,12 +21,25 @@ mainClassName = 'miningtool.MainKt'
 defaultTasks 'run'
 
 repositories {
+    mavenLocal()
     mavenCentral()
+}
+
+/**
+ * Without the next section Gradle will add a 'compile' dependency on Antlr3:
+ * https://github.com/gradle/gradle/issues/820
+ */
+configurations {
+    compile {
+        extendsFrom = extendsFrom.findAll { it != configurations.antlr }
+    }
 }
 
 def generatedSourcesPath = "src/main/generated"
 
 dependencies {
+    antlr "org.antlr:antlr4:4.7.1"
+    compile "org.antlr:antlr4-runtime:4.7.1"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     // https://mvnrepository.com/artifact/com.github.gumtreediff/core
     compile group: 'com.github.gumtreediff', name: 'core', version: '2.1.0'
@@ -53,32 +65,32 @@ task performanceTest(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
-antlr4 {
-    source = file('antlr')
-    output = file('src/main/generated/me/vovak/antlr/parser')
-    extraArgs = ['-package', 'me.vovak.antlr.parser']
+generateGrammarSource {
+    maxHeapSize = "64m"
+    exclude(["CoarseSimpleDecl.g4", "Common.g4", "Expressions.g4", "FineSimpleDecl.g4",
+             "FunctionDef.g4", "ModuleLex.g4", "SimpleDecl.g4"])
+    arguments += ['-package', 'me.vovak.antlr.parser']
+    // Keep a copy of generated sources
+    doLast {
+        println "Copying generated grammar lexer/parser files to main directory."
+        copy {
+            from "${buildDir}/generated-src/antlr/main"
+            into "${generatedSourcesPath}/me/vovak/antlr/parser"
+        }
+        file("${buildDir}/generated-src/antlr").deleteDir()
+    }
+    // Run when source dir has changed or was removed
+    outputs.dir(generatedSourcesPath)
 }
 
-
-
-compileKotlin.dependsOn antlr4
-compileJava.dependsOn antlr4
-configurations {
-    compile.extendsFrom antlr4
+clean.doLast {
+    file(generatedSourcesPath).deleteDir()
 }
 
-//sourceSets {
-//    generated {
-//        source {
-//            srcDirs += generatedSourcesPath
-//        }
-//    }
-//}
-
-
+compileKotlin.dependsOn generateGrammarSource
+compileJava.dependsOn generateGrammarSource
 
 sourceSets.main.java.srcDir file(generatedSourcesPath)
-
 
 idea {
     module {
