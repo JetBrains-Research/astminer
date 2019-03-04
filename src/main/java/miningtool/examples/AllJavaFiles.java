@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 //Retrieve paths from Java files, using a GumTree parser.
 public class AllJavaFiles {
-    private static final String INPUT_FOLDER = "./testData";
+    private static final String INPUT_FOLDER = "./testData/gumTreeMethodSplitter";
     private static final String OUTPUT_FOLDER = "out_examples/allJavaFiles_GumTree_java";
 
     public static void runExample() {
