@@ -6,12 +6,10 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-//        classpath 'me.champeau.gradle:antlr4-gradle-plugin:0.1'
     }
 }
 
 apply plugin: 'java'
-//apply plugin: 'me.champeau.gradle.antlr4'
 apply plugin: 'antlr'
 apply plugin: 'idea'
 
@@ -66,12 +64,6 @@ task performanceTest(type: JavaExec) {
     main = 'miningtool.performance.PerformanceTest'
     classpath = sourceSets.main.runtimeClasspath
 }
-//
-//antlr4 {
-//    source = file('antlr')
-//    output = file(generatedSourcesPath + 'me/vovak/antlr/parser')
-//    extraArgs = ['-package', 'me.vovak.antlr.parser']
-//}
 
 generateGrammarSource {
     maxHeapSize = "64m"
@@ -88,29 +80,13 @@ generateGrammarSource {
 }
 
 clean.doLast {
-    file('generated-src').deleteDir()
+    file(generatedSourcesPath).deleteDir()
 }
 
-
-
-//compileKotlin.dependsOn antlr4
-//compileJava.dependsOn antlr4
-//configurations {
-//    compile.extendsFrom antlr4
-//}
-
-//sourceSets {
-//    generated {
-//        source {
-//            srcDirs += generatedSourcesPath
-//        }
-//    }
-//}
-
-
+compileKotlin.dependsOn generateGrammarSource
+compileJava.dependsOn generateGrammarSource
 
 sourceSets.main.java.srcDir file(generatedSourcesPath)
-
 
 idea {
     module {
