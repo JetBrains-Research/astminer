@@ -1,3 +1,8 @@
+/***
+Grammar copied from joern project:
+https://github.com/octopus-platform/joern
+***/
+
 grammar SimpleDecl;
 
 simple_decl : (TYPEDEF? template_decl_start?) var_decl;

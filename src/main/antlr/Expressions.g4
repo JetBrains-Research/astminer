@@ -1,3 +1,8 @@
+/***
+Grammar copied from joern project:
+https://github.com/octopus-platform/joern
+***/
+
 grammar Expressions;
 
 expr: assign_expr (',' expr)?;

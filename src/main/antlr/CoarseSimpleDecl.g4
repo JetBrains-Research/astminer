@@ -1,3 +1,8 @@
+/***
+Grammar copied from joern project:
+https://github.com/octopus-platform/joern
+***/
+
 // Encompasses declarations in the module scope, e.g. variable declarations in C++ classes
 
 grammar CoarseSimpleDecl;

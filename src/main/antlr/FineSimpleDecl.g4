@@ -1,3 +1,8 @@
+/***
+Grammar copied from joern project:
+https://github.com/octopus-platform/joern
+***/
+
 // Encompasses declarations in the function scope, e.g. local variable declarations
 
 grammar FineSimpleDecl;

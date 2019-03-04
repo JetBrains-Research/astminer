@@ -1,3 +1,8 @@
+/***
+Grammar copied from joern project:
+https://github.com/octopus-platform/joern
+***/
+
 grammar Function;
 import ModuleLex, Common, Expressions, FineSimpleDecl;
 
