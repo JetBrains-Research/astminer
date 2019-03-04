@@ -67,6 +67,8 @@ task performanceTest(type: JavaExec) {
 
 generateGrammarSource {
     maxHeapSize = "64m"
+    exclude(["CoarseSimpleDecl.g4", "Common.g4", "Expressions.g4", "FineSimpleDecl.g4",
+             "FunctionDef.g4", "ModuleLex.g4", "SimpleDecl.g4"])
     arguments += ['-package', 'me.vovak.antlr.parser']
     // Keep a copy of generated sources
     doLast {
@@ -77,6 +79,8 @@ generateGrammarSource {
         }
         file("${buildDir}/generated-src/antlr").deleteDir()
     }
+    // Run when source dir has changed or was removed
+    outputs.dir(generatedSourcesPath)
 }
 
 clean.doLast {
