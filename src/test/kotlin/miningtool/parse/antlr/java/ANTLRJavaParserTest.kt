@@ -5,11 +5,11 @@ import org.junit.Test
 import java.io.File
 import java.io.FileInputStream
 
-class ANTLRJava8ParserTest {
+class ANTLRJavaParserTest {
 
     @Test
     fun testIntArrayCallParsing() {
-        val parser = Java8Parser()
+        val parser = JavaParser()
         val file = File("testData/arrayCalls/IntArrayInitialization.java")
 
         val node = parser.parse(FileInputStream(file))
@@ -18,7 +18,7 @@ class ANTLRJava8ParserTest {
 
     @Test
     fun testStringArrayCallParsing() {
-        val parser = Java8Parser()
+        val parser = JavaParser()
         val file = File("testData/arrayCalls/StringArrayInitialization.java")
 
         val node = parser.parse(FileInputStream(file))
@@ -27,7 +27,7 @@ class ANTLRJava8ParserTest {
 
     @Test
     fun testComplexArrayCallParsing() {
-        val parser = Java8Parser()
+        val parser = JavaParser()
         val file = File("testData/arrayCalls/ComplexArrayInitialization.java")
 
         val node = parser.parse(FileInputStream(file))
@@ -36,7 +36,7 @@ class ANTLRJava8ParserTest {
 
     @Test
     fun testDoubleArrayCallParsing() {
-        val parser = Java8Parser()
+        val parser = JavaParser()
         val file = File("testData/arrayCalls/DoubleArrayInitialization.java")
 
         val node = parser.parse(FileInputStream(file))
@@ -45,7 +45,7 @@ class ANTLRJava8ParserTest {
 
     @Test
     fun testComplexFile() {
-        val parser = Java8Parser()
+        val parser = JavaParser()
         val file = File("testData/arrayCalls/ComplexTest.java")
 
         val node = parser.parse(FileInputStream(file))
