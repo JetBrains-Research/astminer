@@ -1,6 +1,6 @@
 package astminer.paths
 
-import astminer.common.NodeType
+import astminer.common.OrientedNode
 import astminer.common.PathContext
 import astminer.common.PathStorage
 import astminer.common.storage.*
@@ -9,7 +9,7 @@ import java.io.File
 class VocabularyPathStorage : PathStorage {
 
     private val tokensMap: IncrementalIdStorage<String> = IncrementalIdStorage()
-    private val nodeTypesMap: IncrementalIdStorage<NodeType> = IncrementalIdStorage()
+    private val orientedNodesMap: IncrementalIdStorage<OrientedNode> = IncrementalIdStorage()
     private val pathsMap: IncrementalIdStorage<List<Long>> = IncrementalIdStorage()
 
     private val pathContextsPerEntity: MutableMap<String, Collection<PathContextId>> = HashMap()
@@ -19,7 +19,7 @@ class VocabularyPathStorage : PathStorage {
     private fun doStore(pathContext: PathContext): PathContextId {
         val startTokenId = tokensMap.record(pathContext.startToken)
         val endTokenId = tokensMap.record(pathContext.endToken)
-        val nodeTypesIds = pathContext.nodeTypes.map { nodeTypesMap.record(it) }
+        val nodeTypesIds = pathContext.orientedNodes.map { orientedNodesMap.record(it) }
         val pathId = pathsMap.record(nodeTypesIds)
         return PathContextId(startTokenId, pathId, endTokenId)
     }
@@ -34,7 +34,7 @@ class VocabularyPathStorage : PathStorage {
     }
 
     private fun dumpNodeTypesStorage(file: File) {
-        dumpIdStorage(nodeTypesMap, "node_type", nodeTypeToCsvString, file)
+        dumpIdStorage(orientedNodesMap, "node_type", nodeTypeToCsvString, file)
     }
 
     private fun dumpPathsStorage(file: File) {

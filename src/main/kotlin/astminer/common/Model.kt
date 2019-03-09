@@ -35,9 +35,9 @@ data class ASTPath(val upwardNodes: List<Node>, val downwardNodes: List<Node>)
 
 enum class Direction { UP, DOWN }
 
-data class NodeType(val typeLabel: String, val direction: Direction)
+data class OrientedNode(val typeLabel: String, val direction: Direction)
 
-data class PathContext(val startToken: String, val nodeTypes: List<NodeType>, val endToken: String)
+data class PathContext(val startToken: String, val orientedNodes: List<OrientedNode>, val endToken: String)
 
 interface PathStorage {
     fun store(pathContexts: Collection<PathContext>, entityId: String)
