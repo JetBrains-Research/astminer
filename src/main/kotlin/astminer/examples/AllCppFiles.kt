@@ -1,10 +1,10 @@
 package astminer.examples
 
-import astminer.common.toPathContext
+import astminer.paths.toPathContext
 import astminer.parse.antlr.joern.CppParser
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
-import astminer.paths.storage.VocabularyPathStorage
+import astminer.paths.VocabularyPathStorage
 import java.io.File
 
 //Retrieve paths from .cpp files, using a generated parser.

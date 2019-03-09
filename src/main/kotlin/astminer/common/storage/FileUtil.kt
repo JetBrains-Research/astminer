@@ -1,4 +1,4 @@
-package astminer.paths.storage
+package astminer.common.storage
 
 import java.io.File
 

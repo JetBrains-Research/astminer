@@ -1,8 +1,11 @@
-package astminer.paths.storage
+package astminer.paths
 
 import astminer.common.NodeType
 import astminer.common.PathContext
 import astminer.common.PathStorage
+import astminer.common.storage.IncrementalIdStorage
+import astminer.common.storage.dumpIdStorage
+import astminer.common.storage.writeLinesToFile
 import java.io.File
 
 class VocabularyPathStorage : PathStorage() {

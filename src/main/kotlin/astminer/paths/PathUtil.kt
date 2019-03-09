@@ -1,4 +1,9 @@
-package astminer.common
+package astminer.paths
+
+import astminer.common.ASTPath
+import astminer.common.Direction
+import astminer.common.NodeType
+import astminer.common.PathContext
 
 fun toPathContext(path: ASTPath): PathContext {
     val startToken = path.upwardNodes.first().getToken()

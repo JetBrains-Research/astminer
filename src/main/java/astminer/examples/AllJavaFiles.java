@@ -4,7 +4,8 @@ import astminer.common.*;
 import astminer.parse.java.GumTreeJavaParser;
 import astminer.paths.PathMiner;
 import astminer.paths.PathRetrievalSettings;
-import astminer.paths.storage.VocabularyPathStorage;
+import astminer.paths.PathUtilKt;
+import astminer.paths.VocabularyPathStorage;
 
 import java.io.FileInputStream;
 import java.io.IOException;

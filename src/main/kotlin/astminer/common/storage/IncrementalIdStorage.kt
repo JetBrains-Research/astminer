@@ -1,4 +1,4 @@
-package astminer.paths.storage
+package astminer.common.storage
 
 class IncrementalIdStorage<T> {
     private var keyCounter = 0L

@@ -1,13 +1,13 @@
 package astminer.examples
 
-import astminer.common.toPathContext
+import astminer.paths.toPathContext
 import astminer.parse.java.GumTreeJavaParser
 import astminer.parse.java.GumTreeMethodSplitter
 import astminer.parse.java.MethodInfo
 import astminer.parse.java.getMethodInfo
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
-import astminer.paths.storage.VocabularyPathStorage
+import astminer.paths.VocabularyPathStorage
 import java.io.File
 
 
