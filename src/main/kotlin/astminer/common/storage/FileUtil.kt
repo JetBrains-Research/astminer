@@ -1,6 +1,6 @@
 package astminer.common.storage
 
-import astminer.common.OrientedNode
+import astminer.common.OrientedNodeType
 import java.io.File
 
 fun <T> dumpIdStorage(storage: IncrementalIdStorage<T>,
@@ -26,6 +26,6 @@ fun writeLinesToFile(lines: Collection<String>, file: File) {
 
 val tokenToCsvString: (String) -> String = { token -> token }
 
-val nodeTypeToCsvString: (OrientedNode) -> String = { nt -> "${nt.typeLabel} ${nt.direction}" }
+val orientedNodeToCsvString: (OrientedNodeType) -> String = { nt -> "${nt.typeLabel} ${nt.direction}" }
 
 val pathToCsvString: (List<Long>) -> String = { path -> path.joinToString(separator = " ") }
