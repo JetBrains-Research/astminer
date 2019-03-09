@@ -33,7 +33,7 @@ class VocabularyPathStorage : PathStorage {
         dumpIdStorage(tokensMap, "token", tokenToCsvString, file)
     }
 
-    private fun dumpOrientedNodesStorage(file: File) {
+    private fun dumpOrientedNodeTypesStorage(file: File) {
         dumpIdStorage(orientedNodeTypesMap, "node_type", orientedNodeToCsvString, file)
     }
 
@@ -56,7 +56,7 @@ class VocabularyPathStorage : PathStorage {
     override fun save(directoryPath: String) {
         File(directoryPath).mkdirs()
         dumpTokenStorage(File("$directoryPath/tokens.csv"))
-        dumpOrientedNodesStorage(File("$directoryPath/node_types.csv"))
+        dumpOrientedNodeTypesStorage(File("$directoryPath/node_types.csv"))
         dumpPathsStorage(File("$directoryPath/paths.csv"))
 
         dumpPathContexts(File("$directoryPath/path_contexts.csv"))
