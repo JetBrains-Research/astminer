@@ -39,7 +39,7 @@ data class NodeType(val typeLabel: String, val direction: Direction)
 
 data class PathContext(val startToken: String, val nodeTypes: List<NodeType>, val endToken: String)
 
-abstract class PathStorage {
-    abstract fun store(pathContexts: Collection<PathContext>, entityId: String)
-    abstract fun save(directoryPath: String)
+interface PathStorage {
+    fun store(pathContexts: Collection<PathContext>, entityId: String)
+    fun save(directoryPath: String)
 }

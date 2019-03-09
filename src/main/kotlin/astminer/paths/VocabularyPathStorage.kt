@@ -3,18 +3,10 @@ package astminer.paths
 import astminer.common.NodeType
 import astminer.common.PathContext
 import astminer.common.PathStorage
-import astminer.common.storage.IncrementalIdStorage
-import astminer.common.storage.dumpIdStorage
-import astminer.common.storage.writeLinesToFile
+import astminer.common.storage.*
 import java.io.File
 
-class VocabularyPathStorage : PathStorage() {
-
-    companion object {
-        private val tokenToCsvString: (String) -> String = { token -> token }
-        private val nodeTypeToCsvString: (NodeType) -> String = { nt -> "${nt.typeLabel} ${nt.direction}" }
-        private val pathToCsvString: (List<Long>) -> String = { path -> path.joinToString(separator = " ") }
-    }
+class VocabularyPathStorage : PathStorage {
 
     private val tokensMap: IncrementalIdStorage<String> = IncrementalIdStorage()
     private val nodeTypesMap: IncrementalIdStorage<NodeType> = IncrementalIdStorage()
