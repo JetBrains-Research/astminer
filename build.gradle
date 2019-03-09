@@ -9,22 +9,20 @@ buildscript {
     }
 }
 
-plugins {
-    id 'java-library'
-    id 'maven-publish'
-}
-
-group = 'org.miningtool'
+group = 'io.github.vovak.astminer'
 version = '0.1'
 
 apply plugin: 'java'
-apply plugin: 'antlr'
-apply plugin: 'idea'
-
 apply plugin: 'kotlin'
+apply plugin: 'antlr'
+
+apply plugin: 'idea'
 apply plugin: 'application'
 
-mainClassName = 'miningtool.MainKt'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+mainClassName = 'astminer.MainKt'
 
 defaultTasks 'run'
 
@@ -64,12 +62,12 @@ task wrapper(type: Wrapper) {
 }
 
 task processPyExample(type: JavaExec) {
-    main = 'miningtool.examples.pyExample.PyExample'
+    main = 'astminer.examples.pyExample.PyExample'
     classpath = sourceSets.main.runtimeClasspath
 }
 
 task performanceTest(type: JavaExec) {
-    main = 'miningtool.performance.PerformanceTest'
+    main = 'astminer.performance.PerformanceTest'
     classpath = sourceSets.main.runtimeClasspath
 }
 
@@ -106,18 +104,142 @@ idea {
     }
 }
 
+task sourceJar(type: Jar) {
+    classifier "sources"
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier "javadoc"
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives jar
+    archives sourceJar
+    archives javadocJar
+}
+
+signing {
+    sign configurations.archives
+}
 
 publishing {
     publications {
-        miningtoolLibrary(MavenPublication) {
+        mavenJava(MavenPublication) {
+            customizePom(pom)
+            groupId 'io.github.vovak'
+            artifactId 'astminer'
+            version '0.1'
+
             from components.java
+
+            // create the sign pom artifact
+            pom.withXml {
+                def pomFile = file("${project.buildDir}/generated-pom.xml")
+                writeTo(pomFile)
+                def pomAscFile = signing.sign(pomFile).signatureFiles[0]
+                artifact(pomAscFile) {
+                    classifier = null
+                    extension = 'pom.asc'
+                }
+            }
+
+            artifact(sourceJar) {
+                classifier = 'sources'
+            }
+
+            artifact(javadocJar) {
+                classifier = 'javadoc'
+            }
+
+            // create the signed artifacts
+            project.tasks.signArchives.signatureFiles.each {
+                artifact(it) {
+                    def matcher = it.file =~ /-(sources|javadoc)\.jar\.asc$/
+                    if (matcher.find()) {
+                        classifier = matcher.group(1)
+                        println(it.file)
+                    } else {
+                        println('!')
+                        println(it.file)
+                        classifier = null
+                    }
+                    extension = it.file.path.reverse().take(7).reverse()
+                }
+            }
         }
     }
 
     repositories {
         maven {
-            name = 'miningtool'
-            url = "file://${buildDir}/repo"
+            url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            credentials {
+                username sonatypeUsername
+                password sonatypePassword
+            }
         }
+    }
+}
+
+def customizePom(pom) {
+    pom.withXml {
+        def root = asNode()
+
+        // eliminate test-scoped dependencies (no need in maven central POMs)
+        root.dependencies.removeAll { dep ->
+            dep.scope == "test"
+        }
+
+        // add all items necessary for maven central publication
+        root.children().last() + {
+            resolveStrategy = Closure.DELEGATE_FIRST
+
+            description 'Extract AST and AST-related metrics from source code'
+            name 'AST miner'
+            url 'https://github.com/vovak/astminer'
+            organization {
+                name 'io.github.vovak'
+                url 'https://github.com/vovak'
+            }
+            issueManagement {
+                system 'GitHub'
+                url 'https://github.com/vovak/astminer/issues'
+            }
+            licenses {
+                license {
+                    name 'MIT License'
+                    url 'https://github.com/vovak/astminer/blob/master/LICENSE'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                url 'https://github.com/vovak/astminer'
+                connection 'scm:git:git://github.com/vovak/astminer.git'
+                developerConnection 'scm:git:ssh://git@github.com:vovak/astminer.git'
+            }
+            developers {
+                developer {
+                    name 'Egor Bogomolov'
+                    email 'eobogomolov@edu.hse.ru'
+                }
+                developer {
+                    name 'Vladimir Kovalenko'
+                    email 'V.V.Kovalenko@tudelft.nl'
+                }
+            }
+        }
+    }
+}
+
+model {
+    tasks.generatePomFileForMavenJavaPublication {
+        destination = file("$buildDir/generated-pom.xml")
+    }
+    tasks.publishMavenJavaPublicationToMavenLocal {
+        dependsOn project.tasks.signArchives
+    }
+    tasks.publishMavenJavaPublicationToMavenRepository {
+        dependsOn project.tasks.signArchives
     }
 }

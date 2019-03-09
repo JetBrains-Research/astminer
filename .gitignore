@@ -2,3 +2,4 @@
 .idea/
 .gradle/
 examples/out/
+/gradle.properties
