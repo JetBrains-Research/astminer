@@ -4,7 +4,7 @@ import astminer.ast.VocabularyAstStorage
 import astminer.parse.antlr.java.JavaParser
 import java.io.File
 
-//Retrieve paths from Java files, using a generated parser.
+// Retrieve ASTs from Java files, using a generated parser.
 fun allJavaAsts() {
     val folder = "./testData/examples/"
 
