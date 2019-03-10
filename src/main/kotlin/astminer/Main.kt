@@ -14,4 +14,6 @@ fun runExamples() {
     allCppFiles()
 
     AllJavaFiles.runExample()
+
+    allJavaAsts()
 }
