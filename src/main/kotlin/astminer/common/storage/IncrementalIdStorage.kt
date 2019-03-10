@@ -20,6 +20,8 @@ class IncrementalIdStorage<T> {
         return id
     }
 
+    fun getId(item: T): Long = idPerItem[item] ?: 0
+
     fun getIdCount(id: Long) = idCountMap.getOrDefault(id, 0)
 
     fun lookUpValue(id: Long): T? {

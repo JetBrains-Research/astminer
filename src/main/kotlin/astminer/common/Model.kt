@@ -39,7 +39,18 @@ data class OrientedNodeType(val typeLabel: String, val direction: Direction)
 
 data class PathContext(val startToken: String, val orientedNodeTypes: List<OrientedNodeType>, val endToken: String)
 
+/**
+ * Stores path-contexts and saves them to directory.
+ */
 interface PathStorage {
     fun store(pathContexts: Collection<PathContext>, entityId: String)
+    fun save(directoryPath: String)
+}
+
+/**
+ * Stores ASTs in form of their root and saves them to directory.
+ */
+interface AstStorage {
+    fun store(root: Node, entityId: String)
     fun save(directoryPath: String)
 }
