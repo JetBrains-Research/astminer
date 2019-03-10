@@ -159,10 +159,7 @@ publishing {
                     def matcher = it.file =~ /-(sources|javadoc)\.jar\.asc$/
                     if (matcher.find()) {
                         classifier = matcher.group(1)
-                        println(it.file)
                     } else {
-                        println('!')
-                        println(it.file)
                         classifier = null
                     }
                     extension = it.file.path.reverse().take(7).reverse()
