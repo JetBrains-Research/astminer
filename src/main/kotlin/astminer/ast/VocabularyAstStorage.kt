@@ -49,8 +49,8 @@ class VocabularyAstStorage : AstStorage {
     }
 
     private fun astString(node: Node): String {
-        return "${tokensMap.getId(node.getToken())} ${nodeTypesMap.getId(node.getTypeLabel())} { ${
-        node.getChildren().joinToString(separator = " ", transform = ::astString)
-        } }"
+        return "${tokensMap.getId(node.getToken())} ${nodeTypesMap.getId(node.getTypeLabel())}{${
+        node.getChildren().joinToString(separator = "", transform = ::astString)
+        }}"
     }
 }
