@@ -1,6 +1,8 @@
 package astminer.ast
 
-import astminer.common.*
+import astminer.common.AstStorage
+import astminer.common.Node
+import astminer.common.preOrder
 import astminer.common.storage.*
 import java.io.File
 
@@ -48,7 +50,7 @@ class VocabularyAstStorage : AstStorage {
         writeLinesToFile(lines, file)
     }
 
-    private fun astString(node: Node): String {
+    internal fun astString(node: Node): String {
         return "${tokensMap.getId(node.getToken())} ${nodeTypesMap.getId(node.getTypeLabel())}{${
         node.getChildren().joinToString(separator = "", transform = ::astString)
         }}"
