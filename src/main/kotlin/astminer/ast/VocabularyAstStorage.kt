@@ -28,6 +28,7 @@ class VocabularyAstStorage : AstStorage {
         dumpTokenStorage(File("$directoryPath/tokens.csv"))
         dumpNodeTypesStorage(File("$directoryPath/node_types.csv"))
 
+        dumpAsts(File("$directoryPath/asts.csv"))
     }
 
     private fun dumpTokenStorage(file: File) {
