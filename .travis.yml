@@ -24,8 +24,7 @@ install:
 
 script:
   # Build library and run tests
-  - ./gradlew build
-  - ./gradlew test
+  - ./gradlew build -x publish -x signArchives -x javadoc
   # Run python example
   - cd py_example
   - python3 run_example.py
