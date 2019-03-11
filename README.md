@@ -6,6 +6,10 @@ A tool/library for mining of [path-based representations of code](https://arxiv.
 
 ### Version history
 
+#### 0.2
+
+* Mining of ASTs
+
 #### 0.1
 * AstMiner is available via Maven Central
 * Support of Java and Python
