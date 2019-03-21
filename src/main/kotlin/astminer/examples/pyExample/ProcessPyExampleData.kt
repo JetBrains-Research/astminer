@@ -2,11 +2,11 @@
 
 package astminer.examples.pyExample
 
-import astminer.common.toPathContext
+import astminer.paths.toPathContext
 import astminer.parse.antlr.java.JavaParser
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
-import astminer.paths.storage.VocabularyPathStorage
+import astminer.paths.VocabularyPathStorage
 import java.io.File
 
 // Retrieve paths from two Java projects for further usage in python example.

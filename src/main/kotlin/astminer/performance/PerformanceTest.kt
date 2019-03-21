@@ -4,12 +4,12 @@ package astminer.performance
 
 import astminer.common.Node
 import astminer.common.Parser
-import astminer.common.toPathContext
+import astminer.paths.toPathContext
 import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.python.PythonParser
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
-import astminer.paths.storage.VocabularyPathStorage
+import astminer.paths.VocabularyPathStorage
 import java.io.File
 import java.lang.IllegalStateException
 

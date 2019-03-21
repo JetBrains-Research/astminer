@@ -1,4 +1,4 @@
-package astminer.paths.storage
+package astminer.common.storage
 
 class IncrementalIdStorage<T> {
     private var keyCounter = 0L
@@ -19,6 +19,8 @@ class IncrementalIdStorage<T> {
         incrementIdCount(id)
         return id
     }
+
+    fun getId(item: T): Long = idPerItem[item] ?: 0
 
     fun getIdCount(id: Long) = idCountMap.getOrDefault(id, 0)
 

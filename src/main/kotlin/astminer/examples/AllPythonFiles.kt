@@ -1,10 +1,10 @@
 package astminer.examples
 
-import astminer.common.toPathContext
+import astminer.paths.toPathContext
 import astminer.parse.antlr.python.PythonParser
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
-import astminer.paths.storage.VocabularyPathStorage
+import astminer.paths.VocabularyPathStorage
 import java.io.File
 
 
