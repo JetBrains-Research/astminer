@@ -2,6 +2,28 @@ package astminer.parse.antlr.joern
 
 import java.io.File
 
+fun parseJoernAst(pathToDirectory: String): List<JoernNode?> {
+    runJoern(pathToDirectory)
+
+    val parsedDir = if (pathToDirectory[0] == '/') {
+        "parsed$pathToDirectory"
+    } else {
+        "parsed/$pathToDirectory"
+    }
+
+    val parsedFiles = mutableListOf<JoernNode?>()
+    File(parsedDir).walkTopDown().filter { it.path.endsWith(".cpp") && it.isDirectory }.forEach { directory ->
+        println(directory.path)
+        val nodesFile = File(directory, "nodes.csv")
+        val edgesFile = File(directory, "edges.csv")
+
+        val node = parseJoernAst(nodesFile, edgesFile)
+        node?.prettyPrint()
+        parsedFiles.add(node)
+    }
+    return parsedFiles
+}
+
 fun parseJoernAst(nodesFile: File, edgesFile: File): JoernNode? {
     val nodesRaw = nodesFile.readLines()
     val nodesByIndex = nodesRaw.subList(1, nodesRaw.size).map { line ->
