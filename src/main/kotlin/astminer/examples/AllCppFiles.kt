@@ -1,24 +1,27 @@
 package astminer.examples
 
-import astminer.paths.toPathContext
-import astminer.parse.antlr.joern.CppParser
+import astminer.parse.antlr.joern.parseJoernAst
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
 import astminer.paths.VocabularyPathStorage
-import java.io.File
+import astminer.paths.toPathContext
 
-//Retrieve paths from .cpp files, using a generated parser.
+// Retrieve paths from .cpp files, using a generated parser.
 fun allCppFiles() {
-    val folder = "./testData/examples/cpp/"
+    val folder = "testData/examples/cpp/"
 
     val miner = PathMiner(PathRetrievalSettings(5, 5))
     val storage = VocabularyPathStorage()
 
-    File(folder).walkTopDown().filter { it.path.endsWith(".cpp") }.forEach { file ->
-        val node = CppParser().parse(file.inputStream()) ?: return@forEach
+    val parsedFiles = parseJoernAst(folder)
+    parsedFiles.forEach { node ->
+        if (node == null) {
+            return@forEach
+        }
         val paths = miner.retrievePaths(node)
 
-        storage.store(paths.map { toPathContext(it) }, entityId = file.path)
+        // Root node is of type File and stores path to the file.
+        storage.store(paths.map { toPathContext(it) }, entityId = node.getToken())
     }
 
     storage.save("out_examples/allCppFiles")
