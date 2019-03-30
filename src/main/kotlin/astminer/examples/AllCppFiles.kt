@@ -1,3 +1,5 @@
+@file:JvmName("CppExample")
+
 package astminer.examples
 
 import astminer.parse.antlr.joern.parseJoernAst
@@ -7,7 +9,7 @@ import astminer.paths.VocabularyPathStorage
 import astminer.paths.toPathContext
 
 // Retrieve paths from .cpp files, using a generated parser.
-fun allCppFiles() {
+fun main(args: Array<String>) {
     val folder = "testData/examples/cpp/"
 
     val miner = PathMiner(PathRetrievalSettings(5, 5))

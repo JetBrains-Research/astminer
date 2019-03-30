@@ -66,6 +66,11 @@ task processPyExample(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
+task runCppExample(type: JavaExec) {
+    main = 'astminer.examples.CppExample'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
 task performanceTest(type: JavaExec) {
     main = 'astminer.performance.PerformanceTest'
     classpath = sourceSets.main.runtimeClasspath
