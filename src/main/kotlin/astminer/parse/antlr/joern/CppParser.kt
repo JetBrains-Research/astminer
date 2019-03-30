@@ -18,7 +18,6 @@ fun parseJoernAst(pathToDirectory: String): List<JoernNode?> {
         val edgesFile = File(directory, "edges.csv")
 
         val node = parseJoernAst(nodesFile, edgesFile)
-        node?.prettyPrint()
         parsedFiles.add(node)
     }
     return parsedFiles
