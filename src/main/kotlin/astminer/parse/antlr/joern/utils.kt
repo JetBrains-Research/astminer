@@ -15,3 +15,5 @@ private fun String.runCommand() {
 internal fun runJoern(pathToDirectory: String) = "scripts/joern/run.sh $pathToDirectory".runCommand()
 
 internal fun cleanJoern() = "scripts/joern/clean.sh".runCommand()
+
+internal fun setupJoern() = "scripts/joern/setup.sh".runCommand()
