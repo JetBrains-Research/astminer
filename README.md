@@ -16,7 +16,15 @@ A tool/library for mining of [path-based representations of code](https://arxiv.
 * Mining of [path-based representations of code](https://arxiv.org/pdf/1803.09544.pdf)
 
 
-## About
+## About@proceedings{vladimir_kovalenko_2019_2595271,
+  title        = {{PathMiner : A Library for Mining of Path-Based 
+                   Representations of Code}},
+  year         = 2019,
+  publisher    = {Zenodo},
+  month        = mar,
+  doi          = {10.5281/zenodo.2595271},
+  url          = {https://doi.org/10.5281/zenodo.2595271}
+}
 This is an offspring of an internal utility from our ongoing research project.
 
 Currently it supports extraction of path-based representations from code in Java and Python, but it is designed to be very easily extensible.
@@ -55,3 +63,6 @@ However, our vision of potential applications is tunneled by our own work.
 
 Please help make AstMiner easier to use by sharing your potential use cases.
 We would also appreciate pull requests with code improvements, more usage examples, documentation, etc.
+
+## Papers
+The paper about AstMiner (more precisely, it's older version [PathMiner](https://github.com/vovak/astminer/tree/pathminer)) was accepted for [MSR'19](https://2019.msrconf.org/). [Preprint](https://zenodo.org/record/2595271/export/hx).
