@@ -55,3 +55,6 @@ However, our vision of potential applications is tunneled by our own work.
 
 Please help make AstMiner easier to use by sharing your potential use cases.
 We would also appreciate pull requests with code improvements, more usage examples, documentation, etc.
+
+## Papers
+The paper about AstMiner (more precisely, it's older version [PathMiner](https://github.com/vovak/astminer/tree/pathminer)) was accepted for [MSR'19](https://2019.msrconf.org/). [Preprint](https://zenodo.org/record/2595271/export/hx).
