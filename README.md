@@ -31,7 +31,7 @@ Library is available via Maven Central repository. You can add the dependency in
 
 ```
 dependencies {
-    compile "io.github.vovak:astminer:0.1"
+    compile "io.github.vovak:astminer:0.2"
 }
 ```
 

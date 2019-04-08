@@ -10,7 +10,7 @@ buildscript {
 }
 
 group = 'io.github.vovak.astminer'
-version = '0.1'
+version = '0.2'
 
 apply plugin: 'java'
 apply plugin: 'kotlin'
@@ -130,7 +130,7 @@ publishing {
             customizePom(pom)
             groupId 'io.github.vovak'
             artifactId 'astminer'
-            version '0.1'
+            version '0.2'
 
             from components.java
 
