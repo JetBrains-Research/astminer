@@ -1,20 +1,30 @@
 package astminer.parse.antlr.joern
 
+import org.junit.AfterClass
 import org.junit.Assert
+import org.junit.BeforeClass
 import org.junit.Test
-import java.io.File
-import java.io.FileInputStream
 
 class ANTLRCppParserTest {
 
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun setup() {
+            setupJoern()
+        }
+
+        @AfterClass
+        @JvmStatic
+        fun clean() {
+            cleanJoern()
+        }
+    }
+
     @Test
     fun testNodeIsNotNull() {
-        val parser = CppParser()
-        for (i in 1..5) {
-            val file = File("testData/examples/cpp/realExamples/$i.cpp")
-
-            val node = parser.parse(FileInputStream(file))
-            Assert.assertNotNull("Parse tree for a valid file should not be null", node)
-        }
+        val parsedRoots = parseJoernAst("testData/examples/cpp/")
+        Assert.assertEquals("Found 5 files", 5, parsedRoots.size)
+        parsedRoots.forEach { Assert.assertNotNull("Parsed all 5 files", it) }
     }
 }
