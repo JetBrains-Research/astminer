@@ -1,8 +1,7 @@
 [![Build Status](https://travis-ci.org/vovak/astminer.svg?branch=master)](https://travis-ci.org/vovak/astminer)
 
-# AstMiner
+# astminer
 A tool/library for mining of [path-based representations of code](https://arxiv.org/pdf/1803.09544.pdf).
-*Work in progress.*
 
 ### Version history
 
@@ -11,15 +10,15 @@ A tool/library for mining of [path-based representations of code](https://arxiv.
 * Mining of ASTs
 
 #### 0.1
-* AstMiner is available via Maven Central
+* astminer is available via Maven Central
 * Support of Java and Python
 * Mining of [path-based representations of code](https://arxiv.org/pdf/1803.09544.pdf)
 
 
 ## About
-This is an offspring of an internal utility from our ongoing research project.
+Astminer is an offspring of an internal utility from our ongoing research project.
 
-Currently it supports extraction of path-based representations from code in Java and Python, but it is designed to be very easily extensible.
+Currently it supports extraction of path-based representations and raw ASTs from code in Java and Python, but it is designed to be very easily extensible.
 
 The default output format is inspired by [code2vec](https://github.com/tech-srl/code2vec).
 
@@ -27,7 +26,7 @@ The default output format is inspired by [code2vec](https://github.com/tech-srl/
 
 ### Import
 
-Library is available via Maven Central repository. You can add the dependency in your `build.gradle` file:
+Astminer is available via Maven Central repository. You can add the dependency in your `build.gradle` file:
 
 ```
 dependencies {
@@ -44,9 +43,9 @@ A somewhat more verbose [example of usage in Java](src/main/kotlin/astminer/exam
 ### Parsing C/C++
 
 For now C/C++ support is handled by wrapping [Joern](https://github.com/octopus-platform/joern) parser 
-(in fact, it's [extended version](https://github.com/egor-bogomolov/joern)). 
+(in fact, by its [extended version](https://github.com/egor-bogomolov/joern)). 
 
-In order to use it, you need a few additional steps. They can be done by scripts:
+You need to make a few extra steps to use astminer with C/C++ code:
 
 * `scripts/joern/setup.sh` &ndash; download and build Joern (after this step you can use the wrapper);
 * `scripts/joern/run.sh pathToDirectory` &ndash; process the directory recursively by Joern (if you want to use it separately from the wrapper); 
@@ -64,11 +63,24 @@ A new programming language can be supported in a few simple steps:
 See [JavaParser](src/main/kotlin/astminer/parse/antlr/java/JavaParser.kt) or [PythonParser](src/main/kotlin/astminer/parse/antlr/python/PythonParser.kt) for reference.
 
 ## Contribution
-We believe that, thanks to extensibility, AstMiner could be valuable for many other researchers.
+We believe that, thanks to extensibility, astminer could be valuable for many other researchers.
 However, our vision of potential applications is tunneled by our own work.
 
-Please help make AstMiner easier to use by sharing your potential use cases.
+Please help make astminer easier to use by sharing your potential use cases.
 We would also appreciate pull requests with code improvements, more usage examples, documentation, etc.
 
-## Papers
-The paper about AstMiner (more precisely, it's older version [PathMiner](https://github.com/vovak/astminer/tree/pathminer)) was accepted for [MSR'19](https://2019.msrconf.org/). [Preprint](https://zenodo.org/record/2595271/export/hx).
+## Citing astminer
+The paper describing astminer (more precisely, its older version [PathMiner](https://github.com/vovak/astminer/tree/pathminer)) was accepted for [MSR'19](https://2019.msrconf.org/). [Preprint](https://zenodo.org/record/2595271/export/hx).
+
+If you use astminer in your academic work, please consider citing the preprint:
+```
+@proceedings{vladimir_kovalenko_2019_2595271,
+  title        = {{PathMiner : A Library for Mining of Path-Based 
+                   Representations of Code}},
+  year         = 2019,
+  publisher    = {Zenodo},
+  month        = mar,
+  doi          = {10.5281/zenodo.2595271},
+  url          = {https://doi.org/10.5281/zenodo.2595271}
+}
+```
