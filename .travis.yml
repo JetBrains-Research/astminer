@@ -1,11 +1,7 @@
-language: python
-python:
-  - "3.6"
+language: java
 
-addons:
-  apt:
-    packages:
-      - oracle-java8-set-default
+jdk:
+  - oraclejdk11
 
 before_install:
   - chmod +x gradlew
