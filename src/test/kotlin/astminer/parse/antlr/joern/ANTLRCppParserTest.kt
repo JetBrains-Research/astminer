@@ -11,6 +11,7 @@ class ANTLRCppParserTest {
         @BeforeClass
         @JvmStatic
         fun setup() {
+            cleanJoern()
             setupJoern()
         }
 
