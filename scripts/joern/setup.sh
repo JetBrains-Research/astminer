@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-mkdir external
+mkdir -p external
 cd external
 git clone https://github.com/egor-bogomolov/joern.git joern
+
 cd joern
-./build.sh
+./gradlew deploy -x test
 cd ../..
