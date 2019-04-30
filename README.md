@@ -70,7 +70,7 @@ Please help make astminer easier to use by sharing your potential use cases.
 We would also appreciate pull requests with code improvements, more usage examples, documentation, etc.
 
 ## Citing astminer
-The paper describing astminer (more precisely, its older version [PathMiner](https://github.com/vovak/astminer/tree/pathminer)) was accepted for [MSR'19](https://2019.msrconf.org/). [Preprint](https://zenodo.org/record/2595271/export/hx).
+The paper describing astminer (more precisely, its older version [PathMiner](https://github.com/vovak/astminer/tree/pathminer)) was accepted for [MSR'19](https://2019.msrconf.org/). [Preprint](https://zenodo.org/record/2595271).
 
 If you use astminer in your academic work, please consider citing the preprint:
 ```
