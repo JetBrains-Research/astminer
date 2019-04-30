@@ -57,11 +57,6 @@ dependencies {
     testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
 }
 
-task processPyExample(type: JavaExec) {
-    main = 'astminer.examples.pyExample.PyExample'
-    classpath = sourceSets.main.runtimeClasspath
-}
-
 task runCppExample(type: JavaExec) {
     main = 'astminer.examples.CppExample'
     classpath = sourceSets.main.runtimeClasspath
