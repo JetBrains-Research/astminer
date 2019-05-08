@@ -236,3 +236,9 @@ model {
         dependsOn project.tasks.signArchives
     }
 }
+
+subprojects {
+    dependencies {
+        compile project(':astminer')
+    }
+}
