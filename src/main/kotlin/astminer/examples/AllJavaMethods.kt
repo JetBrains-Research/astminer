@@ -1,6 +1,5 @@
 package astminer.examples
 
-import astminer.paths.toPathContext
 import astminer.parse.java.GumTreeJavaParser
 import astminer.parse.java.GumTreeMethodSplitter
 import astminer.parse.java.MethodInfo
@@ -8,6 +7,7 @@ import astminer.parse.java.getMethodInfo
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
 import astminer.paths.VocabularyPathStorage
+import astminer.paths.toPathContext
 import java.io.File
 
 
@@ -26,9 +26,9 @@ fun allJavaMethods() {
 
     val storage = VocabularyPathStorage()
 
-    File(folder).walkTopDown().filter { it.path.endsWith(".java") }.forEach { file ->
+    File(folder).forFilesWithSuffix(".java") { file ->
         //parse file
-        val fileNode = GumTreeJavaParser().parse(file.inputStream()) ?: return@forEach
+        val fileNode = GumTreeJavaParser().parse(file.inputStream()) ?: return@forFilesWithSuffix
 
         //extract method nodes
         val methodNodes = GumTreeMethodSplitter().split(fileNode)

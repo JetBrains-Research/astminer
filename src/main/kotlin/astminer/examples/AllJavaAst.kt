@@ -10,8 +10,8 @@ fun allJavaAsts() {
 
     val storage = VocabularyAstStorage()
 
-    File(folder).walkTopDown().filter { it.path.endsWith(".java") }.forEach { file ->
-        val node = JavaParser().parse(file.inputStream()) ?: return@forEach
+    File(folder).forFilesWithSuffix(".java") { file ->
+        val node = JavaParser().parse(file.inputStream()) ?: return@forFilesWithSuffix
         storage.store(node, entityId = file.path)
     }
 
