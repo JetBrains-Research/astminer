@@ -74,13 +74,12 @@ The paper describing astminer (more precisely, its older version [PathMiner](htt
 
 If you use astminer in your academic work, please consider citing the preprint:
 ```
-@proceedings{vladimir_kovalenko_2019_2595271,
-  title        = {{PathMiner : A Library for Mining of Path-Based 
-                   Representations of Code}},
-  year         = 2019,
-  publisher    = {Zenodo},
-  month        = mar,
-  doi          = {10.5281/zenodo.2595271},
-  url          = {https://doi.org/10.5281/zenodo.2595271}
+@inproceedings{kovalenko2019pathminer,
+  title={PathMiner: a library for mining of path-based representations of code},
+  author={Kovalenko, Vladimir and Bogomolov, Egor and Bryksin, Timofey and Bacchelli, Alberto},
+  booktitle={Proceedings of the 16th International Conference on Mining Software Repositories},
+  pages={13--17},
+  year={2019},
+  organization={IEEE Press}
 }
 ```
