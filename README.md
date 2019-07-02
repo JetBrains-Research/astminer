@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/vovak/astminer.svg?branch=master)](https://travis-ci.org/vovak/astminer)
 
 # astminer
-A tool/library for mining of [path-based representations of code](https://arxiv.org/pdf/1803.09544.pdf).
+A library for mining of [path-based representations of code](https://arxiv.org/pdf/1803.09544.pdf).
 
 ### Version history
 
@@ -54,25 +54,24 @@ You need to make a few extra steps to use astminer with C/C++ code:
 
 A [usage example](src/main/kotlin/astminer/examples/AllCppFiles.kt) is available.
 
-## Extend to other languages
+## Other languages
 
-A new programming language can be supported in a few simple steps:
+Support for a new programming language can be implemented in a few simple steps:
 1. Add the corresponding [ANTLR4 grammar file](https://github.com/antlr/grammars-v4) to the `antlr` directory;
 2. Run the `antlr4` Gradle task to generate the parser;
 3. Implement a very minimal wrapper around the generated parser.
-See [JavaParser](src/main/kotlin/astminer/parse/antlr/java/JavaParser.kt) or [PythonParser](src/main/kotlin/astminer/parse/antlr/python/PythonParser.kt) for reference.
+See [JavaParser](src/main/kotlin/astminer/parse/antlr/java/JavaParser.kt) or [PythonParser](src/main/kotlin/astminer/parse/antlr/python/PythonParser.kt) for an example of a wrapper.
 
 ## Contribution
-We believe that, thanks to extensibility, astminer could be valuable for many other researchers.
-However, our vision of potential applications is tunneled by our own work.
+We believe that astminer could find use beyond our own mining tasks.
 
 Please help make astminer easier to use by sharing your potential use cases.
-We would also appreciate pull requests with code improvements, more usage examples, documentation, etc.
+Pull requests are welcome as well! Support for other languages and documentation are the key areas of improvement. 
 
 ## Citing astminer
-The paper describing astminer (more precisely, its older version [PathMiner](https://github.com/vovak/astminer/tree/pathminer)) was accepted for [MSR'19](https://2019.msrconf.org/). [Preprint](https://zenodo.org/record/2595271).
+A paper dedicated to astminer (more precisely, to its older version [PathMiner](https://github.com/vovak/astminer/tree/pathminer)) was presented at [MSR'19](https://2019.msrconf.org/). [Preprint](https://zenodo.org/record/2595271).
 
-If you use astminer in your academic work, please consider citing the preprint:
+If you use astminer in your academic work, please consider citing the paper:
 ```
 @inproceedings{kovalenko2019pathminer,
   title={PathMiner: a library for mining of path-based representations of code},
