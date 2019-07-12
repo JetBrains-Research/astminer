@@ -1,5 +1,12 @@
-class Clazz
-    public static void main(String[] args) {
-        System.out.println("Hello World!");
+class A {
+    void hi() {
+        String hi = "Hello";
+        int a = 5;
+        if (a > 0) {
+            a = 0;
+        }
     }
+
+
 }
+
