@@ -16,7 +16,7 @@ interface TreeFeature<T> {
 
 interface TreeFeatureList<T> : TreeFeature<List<T>> {
     override fun findAsString(tree: Node): String {
-        return "\"${find(tree).joinToString().replace("\"", "\"\"")}\""
+        return "\"${find(tree).joinToString().replace("\"","\"\"")}\""
     }
 }
 

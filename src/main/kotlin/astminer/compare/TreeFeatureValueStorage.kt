@@ -16,10 +16,10 @@ class TreeFeatureValueStorage(private val separator: String) {
     private val parsedTrees: MutableList<ParsedTree> = ArrayList()
     private val features: MutableSet<TreeFeature<out Any>> = HashSet()
 
-    private val idField = Field("id") { parsedTrees.indexOf(it).toString() }
-    private val parserField = Field("parser_name") { it.parserName }
-    private val fileNameField = Field("file_name") { it.fileName }
-    private val NOLField = Field("number_of_lines") { it.numberOfLines.toString() }
+    private val idField = Field("Id") { parsedTrees.indexOf(it).toString() }
+    private val parserField = Field("ParserName") { it.parserName }
+    private val fileNameField = Field("FileName") { it.fileName }
+    private val NOLField = Field("NumberOfLines") { it.numberOfLines.toString() }
 
     private val fields: List<Field> = listOf(idField, parserField, fileNameField, NOLField)
 
