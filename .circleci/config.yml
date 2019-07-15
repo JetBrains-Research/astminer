@@ -1,0 +1,24 @@
+# Java Gradle CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+#
+version: 2
+jobs:
+  build:
+    machine:
+      enabled: true
+
+    working_directory: ~/astminer-fork
+
+    environment:
+      # Customize the JVM maximum heap limit
+      JVM_OPTS: -Xmx64g
+      TERM: dumb
+
+    steps:
+      - checkout
+
+      - run: gradle dependencies
+
+      # run tests!
+      - run: gradle test
