@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.org/vovak/astminer.svg?branch=master)](https://travis-ci.org/vovak/astminer)
-
+[![CircleCI](https://circleci.com/gh/elena-lyulina/astminer/tree/master.svg?style=svg)](https://circleci.com/gh/elena-lyulina/astminer/tree/master)
 # astminer
 A library for mining of [path-based representations of code](https://arxiv.org/pdf/1803.09544.pdf).
 
