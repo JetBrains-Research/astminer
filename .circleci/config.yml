@@ -1,24 +1,9 @@
-# Java Gradle CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-java/ for more details
-#
-version: 2
-jobs:
-  build:
-    machine:
-      enabled: true
+version: 2.1
 
-    working_directory: ~/astminer-fork
+orbs:
+  hello: circleci/hello-build@0.0.7 # uses the circleci/buildpack-deps Docker image
 
-    environment:
-      # Customize the JVM maximum heap limit
-      JVM_OPTS: -Xmx64g
-      TERM: dumb
-
-    steps:
-      - checkout
-
-      - run: gradle dependencies
-
-      # run tests!
-      - run: gradle test
+workflows:
+  "Hello Workflow":
+    jobs:
+      - hello/hello-build
