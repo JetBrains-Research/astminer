@@ -13,10 +13,10 @@ jobs:
   python-example:
     docker:
       - image: circleci/python:3.7
-    working_directory: ~/py_example
+    working_directory: ~
     steps:
       - checkout
-      - run: python3 run_example.py
+      - run: docker run -it --rm --name my-running-script -v "$PWD":/py_example -w /py_example python:3 python run_example.py
 
   # release
   release:
