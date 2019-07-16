@@ -7,7 +7,7 @@ jobs:
     working_directory: ~
     steps:
       - checkout
-      - run: ./gradlew build
+      - run: ./gradlew build --stacktrace
 
   # run python example in docker container
 #  python-example:
