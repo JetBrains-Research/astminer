@@ -10,13 +10,13 @@ jobs:
       - run: ./gradlew build
 
   # run python example in docker container
-  python-example:
-    docker:
-      - image: circleci/python:3.7
-    working_directory: ~
-    steps:
-      - checkout
-      - run: docker run -it --rm --name my-running-script -v "$PWD":/py_example -w /py_example python:3 python run_example.py
+#  python-example:
+#    docker:
+#      - image: circleci/python:3.7
+#    working_directory: ~
+#    steps:
+#      - checkout
+#      - run: docker run -it --rm --name my-running-script -v "$PWD":/py_example -w /py_example python:3 python run_example.py
 
   # release
   release:
