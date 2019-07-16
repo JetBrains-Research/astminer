@@ -29,8 +29,9 @@ plugins {
 }
 
 
-// move to application block&
-//mainClassName = "astminer.MainKt"
+application {
+    mainClassName = "astminer.MainKt"
+}
 
 defaultTasks("run")
 
