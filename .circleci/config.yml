@@ -32,6 +32,9 @@ workflows:
   build:
     jobs:
       - build
+      - python-example:
+          requires:
+            -build
 
   # release with manual approval in CircleCI app
   release:
