@@ -16,6 +16,8 @@ jobs:
     working_directory: ~
     steps:
       - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run: docker run -it --rm --name my-running-script -v "$PWD":/py_example -w /py_example python:3 python run_example.py
 
   # release
