@@ -83,10 +83,10 @@ task<JavaExec>("processPyExample") {
     classpath = sourceSets["main"].runtimeClasspath
 }
 
-task<JavaExec>("runCppExample") {
-    main = "astminer.examples.CppExample"
-    classpath = sourceSets["main"].runtimeClasspath
-}
+//task<JavaExec>("runCppExample") {
+//    main = "astminer.examples.CppExample"
+//    classpath = sourceSets["main"].runtimeClasspath
+//}
 
 task<JavaExec> ("performanceTest") {
     main = "astminer.performance.PerformanceTest"
@@ -128,11 +128,11 @@ tasks.compileJava {
 sourceSets["main"].java.srcDir(file(generatedSourcesPath))
 
 
-//idea {
-//    module {
-//        generatedSourceDirs += file(generatedSourcesPath)
-//    }
-//}
+idea {
+    module {
+        generatedSourceDirs.add(file(generatedSourcesPath))
+    }
+}
 //
 //task sourceJar(type: Jar) {
 //    classifier("sources")
@@ -232,7 +232,7 @@ sourceSets["main"].java.srcDir(file(generatedSourcesPath))
 //            issueManagement {
 //                system = "GitHub"
 //                url = "https://github.com/vovak/astminer/issues"
-//            }
+//            gradlew}
 //            licenses {
 //                license {
 //                    name = "MIT License"
