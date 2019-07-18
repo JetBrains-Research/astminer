@@ -111,6 +111,8 @@ publishJar {
     bintray {
 
        // If username and secretKey not set, will be taken from System environment param `bintray_user`, 'bintray_key'
+        username = System.getenv("bintray_user")
+        secretKey = System.getenv("bintray_key")
         repository = "astminer-fork"
 
         info {
