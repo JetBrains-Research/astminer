@@ -116,7 +116,7 @@ publishJar {
         repository = "astminer-fork"
 
         info {
-            githubRepo = "elena-lyulina/astminer-fork"
+            githubRepo = "elena-lyulina/astminer"
             vcsUrl = "https://github.com/elena-lyulina/astminer"
             license = "MIT"
             description = "Extract AST and AST-related metrics from source code: forked from vovak/astminer"
