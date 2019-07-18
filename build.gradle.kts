@@ -103,43 +103,21 @@ idea {
 }
 
 
-//
-//task sourceJar(type: Jar) {
-//    classifier("sources")
-//    from(sourceSets.main.allSource)
-//}
-//
-//task javadocJar(type: Jar, dependsOn: javadoc) {
-//    classifier("javadoc")
-//    from(javadoc.destinationDir)
-//}
-//
-//artifacts {
-//    archives(jar)
-//    archives(sourceJar)
-//    archives(javadocJar)
-//}
-//
-//signing {
-//    sign(configurations.archives)
-//}
-//
-
-
 publishJar {
     publication {
         artifactId = "astminer"
     }
 
     bintray {
-        username = "vovak"
-        repository = "astminer"
+
+       // If username and secretKey not set, will be taken from System environment param `bintray_user`, 'bintray_key'
+        repository = "astminer-fork"
+
         info {
-            githubRepo = "vovak/astminer"
-            vcsUrl = "https://github.com/vovak/astminer"
+            githubRepo = "elena-lyulina/astminer-fork"
+            vcsUrl = "https://github.com/elena-lyulina/astminer"
             license = "MIT"
-            description = "Extract AST and AST-related metrics from source code"
+            description = "Extract AST and AST-related metrics from source code: forked from vovak/astminer"
         }
     }
 }
-
