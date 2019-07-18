@@ -13,7 +13,7 @@ buildscript {
 }
 
 group = "io.github.vovak.astminer"
-version = "0.2"
+version = "0.0-TEST"
 
 plugins {
     id("java")
@@ -55,7 +55,6 @@ dependencies {
     testCompile("junit:junit:4.11")
     testCompile("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
-
 
 
 task<JavaExec> ("performanceTest") {
@@ -111,8 +110,6 @@ publishJar {
     bintray {
 
        // If username and secretKey not set, will be taken from System environment param `bintray_user`, 'bintray_key'
-        username = System.getenv("bintray_user")
-        secretKey = System.getenv("bintray_key")
         repository = "astminer-fork"
 
         info {
