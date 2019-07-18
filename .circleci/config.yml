@@ -9,17 +9,6 @@ jobs:
       - checkout
       - run: ./gradlew build --stacktrace
 
-  # run python example in docker container
-  python-example:
-    docker:
-      - image: circleci/python:3.7
-    working_directory: ~
-    steps:
-      - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run: docker run -it --rm --name my-running-script -v "$PWD":/py_example -w /py_example python:3 python run_example.py
-
   # release
   release:
     machine:
