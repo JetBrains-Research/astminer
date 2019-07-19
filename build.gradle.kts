@@ -13,7 +13,7 @@ buildscript {
 }
 
 group = "io.github.vovak.astminer"
-version = "0.2"
+version = "0.0-TEST2"
 
 plugins {
     id("java")
