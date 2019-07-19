@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile
 import tanvd.kosogor.proxy.publishJar
 
 buildscript {
@@ -13,17 +12,14 @@ buildscript {
 }
 
 group = "io.github.vovak.astminer"
-version = "0.0-TEST2"
+version = "0.2"
 
 plugins {
     id("java")
-    // check https://kotlinlang.org/docs/reference/using-gradle.html
     kotlin("jvm") version "1.3.41" apply true
     id("antlr")
     id("idea")
     id("application")
-    id("signing")
-    id("maven-publish")
     id("tanvd.kosogor") version "1.0.6"
 }
 
@@ -110,13 +106,13 @@ publishJar {
     bintray {
 
        // If username and secretKey not set, will be taken from System environment param `bintray_user`, 'bintray_key'
-        repository = "astminer-fork"
+        repository = "bintray_maven_repo"
 
         info {
-            githubRepo = "elena-lyulina/astminer"
-            vcsUrl = "https://github.com/elena-lyulina/astminer"
+            githubRepo = "vovak/astminer"
+            vcsUrl = "https://github.com/vovak/astminer"
             license = "MIT"
-            description = "Extract AST and AST-related metrics from source code: forked from vovak/astminer"
+            description = "Extract AST and AST-related metrics from source code"
         }
     }
 }
