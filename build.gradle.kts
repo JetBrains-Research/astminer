@@ -1,16 +1,5 @@
 import tanvd.kosogor.proxy.publishJar
 
-buildscript {
-    extra.set("kotlin_version", "1.3.41")
-    repositories {
-        mavenCentral()
-        jcenter()
-    }
-    dependencies {
-        classpath(kotlin("gradle-plugin", version = extra.get("kotlin_version") as String))
-    }
-}
-
 group = "io.github.vovak.astminer"
 version = "0.2"
 
@@ -37,19 +26,18 @@ repositories {
 
 
 val generatedSourcesPath = "src/main/generated"
-val kotlin_version = extra.get("kotlin_version")
 
 dependencies {
     antlr("org.antlr:antlr4:4.7.1")
-    compile("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
+    implementation(kotlin("stdlib"))
 
     // https://mvnrepository.com/artifact/com.github.gumtreediff
-    compile("com.github.gumtreediff", "core", "2.1.0")
-    compile("com.github.gumtreediff", "client", "2.1.0")
-    compile("com.github.gumtreediff", "gen.jdt", "2.1.0")
+    api("com.github.gumtreediff", "core", "2.1.0")
+    api("com.github.gumtreediff", "client", "2.1.0")
+    api("com.github.gumtreediff", "gen.jdt", "2.1.0")
 
-    testCompile("junit:junit:4.11")
-    testCompile("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    testImplementation("junit:junit:4.11")
+    testImplementation(kotlin("test-junit"))
 }
 
 
@@ -105,14 +93,14 @@ publishJar {
 
     bintray {
 
-       // If username and secretKey not set, will be taken from System environment param `bintray_user`, 'bintray_key'
+        // If username and secretKey not set, will be taken from System environment param `bintray_user`, 'bintray_key'
         repository = "bintray_maven_repo"
 
         info {
             githubRepo = "vovak/astminer"
             vcsUrl = "https://github.com/vovak/astminer"
             license = "MIT"
-            description = "Extract AST and AST-related metrics from source code"
+            description = "Extract AST, AST-related metrics and path-based representation from source code"
         }
     }
 }
