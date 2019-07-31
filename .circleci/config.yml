@@ -21,10 +21,9 @@ jobs:
       - run: ./gradlew bintrayUpload
 
   # run the Python example
-  py_example:
+  prepare_py_example:
     docker:
       - image: circleci/python:3.6.4
-      - image: circleci/openjdk:11.0.3-jdk-stretch
     working_directory: ~/astminer/py_example
     steps:
       - checkout:
@@ -38,9 +37,25 @@ jobs:
       - run:
           name: Install requirements
           command: pip3 install --user -r requirements.txt
+#      - run:
+#          name: Run processing
+#          command: python3 run_example.py
+
+  run_py_example:
+    docker:
+      - image: circleci/openjdk:11.0.3-jdk-stretch
+    working_directory: ~/astminer/py_example
+    steps:
+      - checkout:
+          path: ~/astminer
       - run:
-          name: Run processing
-          command: python3 run_example.py
+          name: Activate environment
+          command: source env/bin/activate
+      - run:
+           name: Run processing
+           command: python3 run_example.py
+
+
 
 workflows:
   version: 2
@@ -62,4 +77,6 @@ workflows:
 
   py_example:
     jobs:
-      - py_example
+      - run_py_example:
+          requires:
+            - prepare_py_example
