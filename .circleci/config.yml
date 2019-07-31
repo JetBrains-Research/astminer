@@ -7,7 +7,7 @@ jobs:
     working_directory: ~/astminer
     steps:
       - checkout:
-          - path: ~/astminer
+          path: ~/astminer
       - run: ./gradlew build --stacktrace
 
   # release
@@ -17,7 +17,7 @@ jobs:
     working_directory: ~/astminer
     steps:
       - checkout:
-          - path: ~/astminer
+          path: ~/astminer
       - run: ./gradlew bintrayUpload
 
   # run the Python example
@@ -27,7 +27,7 @@ jobs:
     working_directory: ~/astminer/py_example
     steps:
       - checkout:
-          - path: ~/astminer
+          path: ~/astminer
       - run:
           name: Create environment
           command: python3 -m virtualenv env
