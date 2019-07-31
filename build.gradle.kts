@@ -40,12 +40,15 @@ dependencies {
     testImplementation(kotlin("test-junit"))
 }
 
-
 task<JavaExec> ("performanceTest") {
     main = "astminer.performance.PerformanceTest"
     classpath = sourceSets["main"].runtimeClasspath
 }
 
+task<JavaExec>("processPyExample") {
+    main = "astminer.examples.pyExample.PyExample"
+    classpath = sourceSets["main"].runtimeClasspath
+}
 
 tasks.generateGrammarSource {
     maxHeapSize = "64m"
