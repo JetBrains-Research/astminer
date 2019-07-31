@@ -33,6 +33,9 @@ jobs:
       - checkout:
           path: ~/astminer
       - run:
+          name: Disable gradle daemon
+          command: mkdir -p ~/.gradle && echo "org.gradle.daemon=false" >> ~/.gradle/gradle.properties
+      - run:
           name: Create environment
           command: python3 -m virtualenv env
       - run:
