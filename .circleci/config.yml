@@ -22,10 +22,18 @@ jobs:
   py_example:
     machine:
       enabled: true
-    working_directory: ~
+    working_directory: ~/py_example
     steps:
       - checkout
-      - run: ./gradlew processPyExample
+      - run:
+          name: Activate environment
+          command: python3 -m virtualenv env && source env/bin/activate
+      - run:
+          name: Install requirements
+          command: pip3 install -r requirements.txt
+      - run:
+          name: Run processing
+          command: python3 run_example.py
 
 workflows:
   version: 2
