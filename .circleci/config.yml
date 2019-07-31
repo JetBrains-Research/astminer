@@ -27,8 +27,8 @@ jobs:
     working_directory: ~/astminer/py_example
     # Unless we restrict JVM memory, Kotlin compilation fails
     environment:
-      JVM_OPTS: -Xmx1024m
-      GRADLE_OPTS: -Xmx1024m -XX:+HeapDumpOnOutOfMemoryError -Dorg.gradle.caching=true -Dkotlin.compiler.execution.strategy=in-process -Dkotlin.incremental=false
+      JVM_OPTS: -Xmx2048m
+      GRADLE_OPTS: -Xmx1536m -XX:+HeapDumpOnOutOfMemoryError -Dkotlin.incremental=false
     steps:
       - checkout:
           path: ~/astminer
