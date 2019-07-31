@@ -26,8 +26,11 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Create environment
+          command: python3 -m virtualenv env
+      - run:
           name: Activate environment
-          command: python3 -m virtualenv env && source env/bin/activate
+          command: source env/bin/activate
       - run:
           name: Install requirements
           command: pip3 install -r requirements.txt
