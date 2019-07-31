@@ -4,27 +4,30 @@ jobs:
   build:
     machine:
       enabled: true
-    working_directory: ~
+    working_directory: ~/astminer
     steps:
-      - checkout
+      - checkout:
+          - path: ~/astminer
       - run: ./gradlew build --stacktrace
 
   # release
   release:
     machine:
       enabled: true
-    working_directory: ~
+    working_directory: ~/astminer
     steps:
-      - checkout
+      - checkout:
+          - path: ~/astminer
       - run: ./gradlew bintrayUpload
 
   # run the Python example
   py_example:
     docker:
       - image: circleci/python:3.6.4
-    working_directory: ~/py_example
+    working_directory: ~/astminer/py_example
     steps:
-      - checkout
+      - checkout:
+          - path: ~/astminer
       - run:
           name: Create environment
           command: python3 -m virtualenv env
