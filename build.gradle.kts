@@ -89,9 +89,6 @@ idea {
     }
 }
 
-kapt {
-    useBuildCache = true
-}
 
 
 publishJar {

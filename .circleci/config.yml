@@ -67,6 +67,6 @@ workflows:
           requires:
             - approve-release
 
-  py_example:
-    jobs:
-      - py_example
+#  py_example:
+#    jobs:
+#      - py_example
