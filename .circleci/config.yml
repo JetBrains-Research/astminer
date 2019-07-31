@@ -77,6 +77,7 @@ workflows:
 
   py_example:
     jobs:
+      - prepare_py_example
       - run_py_example:
           requires:
             - prepare_py_example
