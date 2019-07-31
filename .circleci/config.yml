@@ -33,7 +33,7 @@ jobs:
           command: source env/bin/activate
       - run:
           name: Install requirements
-          command: pip3 install -r requirements.txt
+          command: pwd && pip3 install -r requirements.txt
       - run:
           name: Run processing
           command: python3 run_example.py
