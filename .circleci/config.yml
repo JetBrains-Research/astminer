@@ -28,7 +28,7 @@ jobs:
     # Unless we restrict JVM memory, Kotlin compilation fails
     environment:
       JVM_OPTS: -Xmx2048m
-      GRADLE_OPTS: -Xmx1536m -XX:+HeapDumpOnOutOfMemoryError -Dkotlin.incremental=false
+      GRADLE_OPTS: -Xmx1536m -XX:+HeapDumpOnOutOfMemoryError -Dorg.gradle.parallel=false -Dkotlin.incremental=false
     steps:
       - checkout:
           path: ~/astminer
