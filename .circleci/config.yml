@@ -20,14 +20,16 @@ jobs:
 
   # run the Python example
   py_example:
-    machine:
-      enabled: true
+    docker:
+      - image: circleci/python:3.6.4
     working_directory: ~/py_example
     steps:
       - checkout
       - run:
           name: Activate environment
-          command: python3 -m virtualenv env && source env/bin/activate
+          command:
+            python3 -m virtualenv env
+            source env/bin/activate
       - run:
           name: Install requirements
           command: pip3 install -r requirements.txt
