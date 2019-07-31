@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 import tanvd.kosogor.proxy.publishJar
 
 group = "io.github.vovak.astminer"
@@ -86,6 +87,10 @@ idea {
     module {
         generatedSourceDirs.add(file(generatedSourcesPath))
     }
+}
+
+kapt {
+    useBuildCache = true
 }
 
 
