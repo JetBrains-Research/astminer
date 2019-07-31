@@ -25,6 +25,9 @@ jobs:
     docker:
       - image: openkbs/jdk-mvn-py3
     working_directory: ~/astminer/py_example
+    # Unless we restrict JVM memory, Kotlin compilation fails
+    environment:
+      JVM_OPTS: -Xmx2048m
     steps:
       - checkout:
           path: ~/astminer
