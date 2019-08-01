@@ -4,6 +4,7 @@ import org.junit.AfterClass
 import org.junit.Assert
 import org.junit.BeforeClass
 import org.junit.Test
+import kotlin.test.Ignore
 
 class ANTLRCppParserTest {
 
@@ -22,7 +23,7 @@ class ANTLRCppParserTest {
         }
     }
 
-    @Test
+    @Ignore
     fun testNodeIsNotNull() {
         val parsedRoots = parseJoernAst("testData/examples/cpp/")
         Assert.assertEquals("Found 5 files", 5, parsedRoots.size)
