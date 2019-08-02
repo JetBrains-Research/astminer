@@ -19,9 +19,12 @@ fun numberOfLines(file: File) : Int {
  * Changes extension of a given file to the new one.
  * @param file file which extension is changed
  * @param extension new extension of a given file
+ * @return file with new extension
  */
-fun changeExtensionTo(file: File, extension: String) {
-    file.renameTo(File("${file.parent}/${file.nameWithoutExtension}.$extension"))
+fun changeExtensionTo(file: File, extension: String) : File {
+    val name = "${file.parent}/${file.nameWithoutExtension}.$extension"
+    file.renameTo(File(name))
+    return File(name)
 }
 
 /**
@@ -31,7 +34,7 @@ fun changeExtensionTo(file: File, extension: String) {
  * @param className class name using in wrapper
  */
 fun addClassWrapper(file: File, className: String) {
-    file.writeText("class $className { \n ${file.readText()} \n }")
+    file.writeText("class $className {\n${file.readText()}\n}")
 }
 
 /**
