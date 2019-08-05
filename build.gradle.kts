@@ -11,6 +11,7 @@ plugins {
     id("idea")
     id("application")
     id("tanvd.kosogor") version "1.0.6"
+    id ("org.jetbrains.dokka") version "0.9.18"
 }
 
 
@@ -23,6 +24,7 @@ defaultTasks("run")
 repositories {
     mavenLocal()
     mavenCentral()
+    jcenter()
 }
 
 
@@ -89,8 +91,6 @@ idea {
     }
 }
 
-
-
 publishJar {
     publication {
         artifactId = "astminer"
@@ -108,4 +108,9 @@ publishJar {
             description = "Extract AST, AST-related metrics and path-based representation from source code"
         }
     }
+}
+
+tasks.dokka {
+    outputFormat = "html"
+    outputDirectory = "$buildDir/javadoc"
 }
