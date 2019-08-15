@@ -1,13 +1,28 @@
-package astminer.parse.antlr.joern
+package astminer.parse.cpp
 
 import astminer.common.Node
+import com.google.common.collect.TreeMultiset
 
-class JoernNode(private val typeLabel: String, private val token: String?) : Node {
+/**
+ * Node for AST, created by fuzzyc2cpg.
+ * @param typeLabel - node's label
+ * @param token - node's token
+ * @param order - node's order, which used to express the ordering of children in the AST when it matters
+ */
+class FuzzyNode(private val typeLabel: String, private val token: String?, order: Int?) : Node {
+    private val order = order ?: -1
     private val metadata: MutableMap<String, Any> = HashMap()
     private var parent: Node? = null
-    private var children: MutableList<Node> = mutableListOf()
+    private var children = TreeMultiset.create<FuzzyNode>(compareBy(
+            { it.order },
+            { System.identityHashCode(it) }
+    ))
 
-    fun addChild(node: JoernNode) {
+    fun getOrder() : Int {
+        return order
+    }
+
+    fun addChild(node: FuzzyNode) {
         children.add(node)
         node.setParent(this)
     }
@@ -17,7 +32,7 @@ class JoernNode(private val typeLabel: String, private val token: String?) : Nod
     }
 
     override fun getChildren(): List<Node> {
-        return children
+        return children.toList()
     }
 
     override fun getParent(): Node? {
