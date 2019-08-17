@@ -15,6 +15,7 @@ import org.apache.tinkerpop.gremlin.structure.Element
 import org.apache.tinkerpop.gremlin.structure.Vertex
 import java.io.File
 import java.io.InputStream
+import java.lang.StringBuilder
 
 
 class FuzzyCppParser : Parser<FuzzyNode> {
@@ -78,19 +79,22 @@ class FuzzyCppParser : Parser<FuzzyNode> {
     }
 
 
+    /**
+     * Create string from element with its label and all its properties.
+     * @param e - element for converting to string
+     * @return created string
+     */
+    fun elementToString(e: Element) = with(StringBuilder()) {
+        append("${e.label()}  |  ")
+        e.keys().forEach { k -> append("$k:${e.value<Any>(k)}  ") }
+        appendln()
+        toString()
+    }
+
     private fun addNodesFromEdge(e: Edge, map: HashMap<Vertex, FuzzyNode>) {
         val parentNode = map.getOrPut(e.outVertex()) { createNodeFromVertex(e.outVertex()) }
         val childNode = map.getOrPut(e.inVertex()) { createNodeFromVertex(e.inVertex()) }
         parentNode.addChild(childNode)
-    }
-
-    private fun elementToString(e: Element) : String {
-        val sb = StringBuilder()
-        sb.append("${e.label()}  |||  ")
-        e.keys().forEach { k -> sb.append("$k:${e.value<Any>(k)}  ") }
-        sb.append("\n")
-
-        return sb.toString()
     }
 
     private fun createNodeFromVertex(v: Vertex) : FuzzyNode {
