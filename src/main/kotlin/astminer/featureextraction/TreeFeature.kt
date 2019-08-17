@@ -34,9 +34,9 @@ object BranchingFactor : TreeFeature<Double> {
         if (tree.isLeaf()) {
             return 0.0
         }
-        val leavesMap = tree.preOrder().groupBy { it.isLeaf() }
-        val leavesNumber = leavesMap[true]?.size ?: 0
-        val branchingNodesNumber = leavesMap[false]?.size ?: 0
+        val isLeafByNodes = tree.preOrder().groupBy { it.isLeaf() }
+        val leavesNumber = isLeafByNodes[true]?.size ?: 0
+        val branchingNodesNumber = isLeafByNodes[false]?.size ?: 0
         val edgesNumber = (branchingNodesNumber + leavesNumber - 1).toDouble()
 
         return edgesNumber / branchingNodesNumber
@@ -94,7 +94,7 @@ object CompressiblePathLengths : TreeFeature<List<Int>> {
     }
 
     private fun Node.isStartingNode() : Boolean {
-        return this.hasOneChild() && (this.getParent()?.hasOneChild() ?: true)
+        return this.hasOneChild() && !(this.getParent()?.hasOneChild() ?: false)
     }
 
     private fun Node.hasOneChild() : Boolean = getChildren().size == 1
