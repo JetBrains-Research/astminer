@@ -7,6 +7,7 @@ import org.antlr.v4.runtime.CommonTokenStream
 import me.vovak.antlr.parser.Java8Lexer
 import me.vovak.antlr.parser.Java8Parser
 import org.antlr.v4.runtime.CharStreams
+import java.io.File
 import java.io.InputStream
 
 class JavaParser : Parser<SimpleNode> {
@@ -20,4 +21,7 @@ class JavaParser : Parser<SimpleNode> {
         return convertAntlrTree(context, Java8Parser.ruleNames)
     }
 
+    override fun parseProject(projectRoot: File, getFilesToParse: (File) -> List<File>): List<SimpleNode?> {
+        return getFilesToParse(projectRoot).map { parse(it.inputStream()) }
+    }
 }
