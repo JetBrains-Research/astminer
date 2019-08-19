@@ -24,7 +24,7 @@ class FuzzyCppParser : Parser<FuzzyNode> {
 
     /**
      * Parse input stream and create AST.
-     * If you already have file with code you need to parse, better use [this method][astminer.parse.cpp.FuzzyCppParser.parse],
+     * If you already have file with code you need to parse, better use [parseProject] or [parse],
      * otherwise temporary file for input stream will be created because of fuzzyc2cpg API.
      * @param content to parse
      * @return root of AST if content was parsed, null otherwise
@@ -39,6 +39,17 @@ class FuzzyCppParser : Parser<FuzzyNode> {
         } else {
             null
         }
+    }
+
+    /**
+     * Parse files, getting from [projectRoot] with [getFilesToParse].
+     * Make sure that [getFilesToParse] returns files only with .cpp, .hpp, .c or .h extensions, otherwise fuzzyc2cpg will skip them.
+     * @param projectRoot folder containing files to parse
+     * @param getFilesToParse lambda expression for getting files to parse from [projectRoot]
+     * @return list of tree's roots for each parsed file
+     */
+    override fun parseProject(projectRoot: File, getFilesToParse: (File) -> List<File>): List<FuzzyNode?> {
+        return parse(getFilesToParse(projectRoot).map { it.absolutePath } )
     }
 
     /**

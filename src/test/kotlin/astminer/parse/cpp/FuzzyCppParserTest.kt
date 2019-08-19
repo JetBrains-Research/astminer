@@ -30,6 +30,14 @@ class FuzzyCppParserTest {
     }
 
     @Test
+    fun testProjectParsing() {
+        val folder = "testData/fuzzy/"
+        val parser = FuzzyCppParser()
+        val nodes = parser.parseProject(File(folder)) { it.walkTopDown().filter { it.isFile }.toList() }
+        Assert.assertEquals("There is only 6 file with .py extension in 'testData/examples' folder",6, nodes.filterNotNull().size)
+    }
+
+    @Test
     fun testPreprocessing() {
         val folder = "testData/fuzzy"
         val includeFile = "preprocIncludeTest.cpp"
