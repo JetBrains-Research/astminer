@@ -34,7 +34,7 @@ class FuzzyCppParserTest {
         val folder = "testData/fuzzy/"
         val parser = FuzzyCppParser()
         val nodes = parser.parseProject(File(folder)) { it.walkTopDown().filter { it.isFile }.toList() }
-        Assert.assertEquals("There is only 6 file with .py extension in 'testData/examples' folder",6, nodes.filterNotNull().size)
+        Assert.assertEquals("There is only 3 file with .py extension in 'testData/examples' folder",3, nodes.filterNotNull().size)
     }
 
     @Test
@@ -58,6 +58,7 @@ class FuzzyCppParserTest {
         val parser = FuzzyCppParser()
         parser.preprocessWithoutIncludes(File("$folder/$fileName"))
         val nodes = parser.parse(arrayListOf("$folder/${parser.preprocDirName}/$fileName"))
+        File("$folder/${parser.preprocDirName}").deleteRecursively()
         Assert.assertTrue("Parse tree for a valid file should not be null", nodes.size == 1 && nodes[0] != null)
     }
 }
