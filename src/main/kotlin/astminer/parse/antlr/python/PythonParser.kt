@@ -7,6 +7,7 @@ import astminer.parse.antlr.SimpleNode
 import astminer.parse.antlr.convertAntlrTree
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
+import java.io.File
 import java.io.InputStream
 
 class PythonParser : Parser<SimpleNode> {
@@ -20,4 +21,7 @@ class PythonParser : Parser<SimpleNode> {
         return convertAntlrTree(context, Python3Parser.ruleNames)
     }
 
+    override fun parseProject(projectRoot: File, getFilesToParse: (File) -> List<File>): List<SimpleNode?> {
+        return getFilesToParse(projectRoot).map { parse(it.inputStream()) }
+    }
 }

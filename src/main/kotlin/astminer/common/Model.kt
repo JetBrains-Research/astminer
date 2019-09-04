@@ -1,5 +1,6 @@
 package astminer.common
 
+import java.io.File
 import java.io.InputStream
 
 interface Node {
@@ -24,7 +25,20 @@ interface Node {
 }
 
 interface Parser<T : Node> {
+    /**
+     * Parse input stream into the tree.
+     * @param content - input stream to parse
+     * @return root of the tree
+     */
     fun parse(content: InputStream): T?
+
+    /**
+     * Parse files, received with [getFilesToParse] from [root folder][projectRoot], into trees.
+     * @param projectRoot folder containing files to parse
+     * @param getFilesToParse lambda expression for getting files to parse from [projectRoot]
+     * @return list of tree roots, one for each parsed file
+     */
+    fun parseProject(projectRoot: File, getFilesToParse: (File) -> List<File>) : List<T?>
 }
 
 interface TreeSplitter<T : Node> {

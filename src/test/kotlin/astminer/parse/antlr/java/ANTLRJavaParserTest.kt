@@ -51,4 +51,13 @@ class ANTLRJavaParserTest {
         val node = parser.parse(FileInputStream(file))
         Assert.assertNotNull("Parse tree for a valid file should not be null", node)
     }
+
+    @Test
+    fun testProjectParsing() {
+        val parser = JavaParser()
+        val projectRoot = File("testData/arrayCalls")
+        val trees = parser.parseProject(projectRoot) { it.walkTopDown().filter { it.isFile && it.extension == "java" } .toList() }
+        Assert.assertEquals("There is only 5 file with .java extension in 'testData/arrayCalls' folder",5, trees.size)
+        trees.forEach { Assert.assertNotNull("Parse tree for a valid file should not be null", it) }
+    }
 }
