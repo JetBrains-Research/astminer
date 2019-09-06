@@ -39,6 +39,12 @@ dependencies {
     api("com.github.gumtreediff", "client", "2.1.0")
     api("com.github.gumtreediff", "gen.jdt", "2.1.0")
 
+    // https://mvnrepository.com/artifact/io.shiftleft/fuzzyc2cpg
+    api("io.shiftleft", "fuzzyc2cpg_2.12", "0.1.74") {
+        exclude("org.slf4j", "slf4j-simple")
+    }
+
+
     testImplementation("junit:junit:4.11")
     testImplementation(kotlin("test-junit"))
 }
