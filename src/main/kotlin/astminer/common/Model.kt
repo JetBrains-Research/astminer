@@ -36,7 +36,7 @@ interface Parser<T : Node> {
      * Parse files, received with [getFilesToParse] from [root folder][projectRoot], into trees.
      * @param projectRoot folder containing files to parse
      * @param getFilesToParse lambda expression for getting files to parse from [projectRoot]
-     * @return list of tree roots, one for each parsed file
+     * @return list of AST roots, one for each parsed file
      */
     fun parseProject(projectRoot: File, getFilesToParse: (File) -> List<File>) : List<T?>
 }

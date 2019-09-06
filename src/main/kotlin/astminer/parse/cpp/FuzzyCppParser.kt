@@ -42,11 +42,11 @@ class FuzzyCppParser : Parser<FuzzyNode> {
     }
 
     /**
-     * Parse files, getting from [projectRoot] with [getFilesToParse].
-     * Make sure that [getFilesToParse] returns files only with .cpp, .hpp, .c or .h extensions, otherwise fuzzyc2cpg will skip them.
+     * Find all files in a subtree of [projectRoot] with [getFilesToParse] and parser them.
+     * Make sure that [getFilesToParse] returns files only with .cpp, .hpp, .c or .h extensions, otherwise the parser will skip them.
      * @param projectRoot folder containing files to parse
-     * @param getFilesToParse lambda expression for getting files to parse from [projectRoot]
-     * @return list of tree's roots for each parsed file
+     * @param getFilesToParse lambda expression that checks which files should be parsed
+     * @return list of AST roots, one for each parsed file
      */
     override fun parseProject(projectRoot: File, getFilesToParse: (File) -> List<File>): List<FuzzyNode?> {
         return parse(getFilesToParse(projectRoot).map { it.absolutePath } )
@@ -54,8 +54,8 @@ class FuzzyCppParser : Parser<FuzzyNode> {
 
     /**
      * Parse code from all C/C++ files, found in given paths, and create AST for each file.
-     * @param paths in which all C/C++ files are determined; it may contain paths to both files and folders
-     * @return list of AST roots for each C/C++ file
+     * @param paths where all C/C++ files are determined; it may contain paths to both files and folders
+     * @return list of AST roots, one for each C/C++ file
      */
     fun parse(paths: List<String>) : List<FuzzyNode?> {
         val outputModuleFactory = OutputModuleFactory()
@@ -66,11 +66,11 @@ class FuzzyCppParser : Parser<FuzzyNode> {
 
     /**
      * Convert [cpg][io.shiftleft.codepropertygraph.Cpg] created by fuzzyc2cpg to list of [FuzzyNode][astminer.parse.cpp.FuzzyNode].
-     * Cpg can contain graphs for several files, in that case several AST will be created.
+     * Cpg may contain graphs for several files, in that case several ASTs will be created.
      * @param cpg to be converted
      * @return list of AST roots
      */
-    fun cpg2nodes(cpg: Cpg) : List<FuzzyNode?> {
+    private fun cpg2nodes(cpg: Cpg) : List<FuzzyNode?> {
         val g = cpg.graph().traversal()
         val vertexToNode = HashMap<Vertex, FuzzyNode>()
         g.E().hasLabel(EdgeTypes.AST).forEach { addNodesFromEdge(it, vertexToNode) }
