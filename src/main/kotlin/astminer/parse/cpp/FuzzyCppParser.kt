@@ -77,7 +77,6 @@ class FuzzyCppParser : Parser<FuzzyNode> {
         return g.V().hasLabel(NodeTypes.FILE).toList().map { vertexToNode[it] }
     }
 
-
     /**
      * Run gcc preprocessor on a given file excluding 'include' directives.
      * The result of preprocessing is stored in created directory named [outputDirName]
@@ -86,7 +85,6 @@ class FuzzyCppParser : Parser<FuzzyNode> {
     fun preprocessWithoutIncludes(file: File, outputDirName: String = preprocessDirName) {
         preprocessCppCode(file, outputDirName).runCommand(file.absoluteFile.parentFile)
     }
-
 
     /**
      * Create string from element with its label and all its properties.
