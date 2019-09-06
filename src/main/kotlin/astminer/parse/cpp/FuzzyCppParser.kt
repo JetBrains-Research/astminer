@@ -84,9 +84,7 @@ class FuzzyCppParser : Parser<FuzzyNode> {
      * @param file to preprocess
      */
     fun preprocessWithoutIncludes(file: File, outputDirName: String = preprocessDirName) {
-        val scriptPath = "${File(System.getProperty("user.dir")).absolutePath}/scripts/fuzzy/convert.sh"
-        "chmod +x $scriptPath".runCommand(file.absoluteFile.parentFile)
-        "$scriptPath ${file.name} $outputDirName".runCommand(file.absoluteFile.parentFile)
+        preprocessCppCode(file, outputDirName).runCommand(file.absoluteFile.parentFile)
     }
 
 
