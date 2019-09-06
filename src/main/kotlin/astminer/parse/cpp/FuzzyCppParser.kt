@@ -7,7 +7,6 @@ import io.shiftleft.codepropertygraph.generated.EdgeTypes
 import io.shiftleft.codepropertygraph.generated.NodeKeys
 import io.shiftleft.codepropertygraph.generated.NodeTypes
 import io.shiftleft.fuzzyc2cpg.FuzzyC2Cpg
-import io.shiftleft.fuzzyc2cpg.SourceFiles
 import io.shiftleft.fuzzyc2cpg.output.inmemory.OutputModuleFactory
 import org.apache.commons.io.FileUtils
 import org.apache.tinkerpop.gremlin.structure.Edge
@@ -19,7 +18,8 @@ import java.lang.StringBuilder
 
 
 class FuzzyCppParser : Parser<FuzzyNode> {
-    var preprocDirName = "preproc"
+
+    var preprocessDirName = "preprocess"
         private set
 
     /**
@@ -83,7 +83,7 @@ class FuzzyCppParser : Parser<FuzzyNode> {
      * The result of preprocessing is stored in created directory named [outputDirName]
      * @param file to preprocess
      */
-    fun preprocessWithoutIncludes(file: File, outputDirName: String = preprocDirName) {
+    fun preprocessWithoutIncludes(file: File, outputDirName: String = preprocessDirName) {
         val scriptPath = "${File(System.getProperty("user.dir")).absolutePath}/scripts/fuzzy/convert.sh"
         "chmod +x $scriptPath".runCommand(file.absoluteFile.parentFile)
         "$scriptPath ${file.name} $outputDirName".runCommand(file.absoluteFile.parentFile)

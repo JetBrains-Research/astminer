@@ -16,7 +16,7 @@ fun allCppFiles() {
     val miner = PathMiner(PathRetrievalSettings(5, 5))
     val storage = VocabularyPathStorage()
     val parser = FuzzyCppParser()
-    val preprocOutputFolder = "${System.getProperty("user.dir")}/$folder${parser.preprocDirName}"
+    val preprocOutputFolder = "${System.getProperty("user.dir")}/$folder${parser.preprocessDirName}"
 
 
     File(folder).forFilesWithSuffix(".cpp") { file ->
