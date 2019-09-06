@@ -38,17 +38,27 @@ class FuzzyCppParserTest {
     }
 
     @Test
-    fun testPreprocessing() {
+    fun testPreprocessingDefine() {
         val folder = "testData/fuzzy"
-        val includeFile = "preprocIncludeTest.cpp"
         val defineFile = "preprocDefineTest.cpp"
         val parser = FuzzyCppParser()
 
-        parser.preprocessWithoutIncludes(File("$folder/$includeFile"))
         parser.preprocessWithoutIncludes(File("$folder/$defineFile"))
 
-        Assert.assertEquals("'include' directives should not be replaced", File("$folder/$includeFile").readInOneLine(), File("$folder/${parser.preprocessDirName}/$includeFile").readInOneLine())
         Assert.assertEquals("'define' directives should be replaced", "for (int i = (0); i < (10); ++i) { }", File("$folder/${parser.preprocessDirName}/$defineFile").readInOneLine())
+        File("$folder/${parser.preprocessDirName}").deleteRecursively()
+    }
+
+    @Test
+    fun testPreprocessingInclude() {
+        val folder = "testData/fuzzy"
+        val includeFile = "preprocIncludeTest.cpp"
+        val parser = FuzzyCppParser()
+
+        parser.preprocessWithoutIncludes(File("$folder/$includeFile"))
+
+        Assert.assertEquals("'include' directives should not be replaced", File("$folder/$includeFile").readInOneLine(), File("$folder/${parser.preprocessDirName}/$includeFile").readInOneLine())
+        File("$folder/${parser.preprocessDirName}").deleteRecursively()
     }
 
     @Test
@@ -58,7 +68,7 @@ class FuzzyCppParserTest {
         val parser = FuzzyCppParser()
         parser.preprocessWithoutIncludes(File("$folder/$fileName"))
         val nodes = parser.parse(arrayListOf("$folder/${parser.preprocessDirName}/$fileName"))
-        File("$folder/${parser.preprocessDirName}").deleteRecursively()
         Assert.assertTrue("Parse tree for a valid file should not be null", nodes.size == 1 && nodes[0] != null)
+        File("$folder/${parser.preprocessDirName}").deleteRecursively()
     }
 }
