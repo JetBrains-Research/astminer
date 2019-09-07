@@ -1,5 +1,4 @@
 [![CircleCI](https://circleci.com/gh/vovak/astminer/tree/master.svg?style=svg)](https://circleci.com/gh/vovak/astminer/tree/master)
-[ ![Download](https://api.bintray.com/packages/egor-bogomolov/astminer/astminer/images/download.svg?version=0.3) ](https://bintray.com/egor-bogomolov/astminer/astminer/0.3/link)
 
 # astminer
 A library for mining of [path-based representations of code](https://arxiv.org/pdf/1803.09544.pdf).
