@@ -10,19 +10,19 @@ class FuzzyCppParserTest {
     @Test
     fun testNodeIsNotNull() {
         val parser = FuzzyCppParser()
-        val fileName = "testData/fuzzy/test.cpp"
+        val file = File("testData/fuzzy/test.cpp")
 
-        val nodes = parser.parse(arrayListOf(fileName))
+        val nodes = parser.parse(listOf(file))
         Assert.assertTrue("Parse tree for a valid file should not be null", nodes.size == 1 && nodes[0] != null)
     }
 
     @Test
     fun testInputStreamParsing() {
-        val folder = "testData/fuzzy/"
+        val folder = File("testData/fuzzy/")
         val nodes = ArrayList<FuzzyNode>()
         var n = 0
         val parser = FuzzyCppParser()
-        File(folder).forFilesWithSuffix(".cpp") { file ->
+        folder.forFilesWithSuffix(".cpp") { file ->
             n++
             parser.parse(file.inputStream())?.let { nodes.add(it) }
         }
@@ -31,44 +31,67 @@ class FuzzyCppParserTest {
 
     @Test
     fun testProjectParsing() {
-        val folder = "testData/fuzzy/"
+        val folder = File("testData/fuzzy/")
         val parser = FuzzyCppParser()
-        val nodes = parser.parseProject(File(folder)) { it.walkTopDown().filter { it.isFile }.toList() }
-        Assert.assertEquals("There is only 3 file with .py extension in 'testData/examples' folder",3, nodes.filterNotNull().size)
+        val nodes = parser.parseProject(folder) { file -> file.extension == "cpp" }
+        Assert.assertEquals(
+                "There is only 3 file with .cpp extension in 'testData/examples' folder",
+                3,
+                nodes.filterNotNull().size
+        )
     }
 
     @Test
     fun testPreprocessingDefine() {
-        val folder = "testData/fuzzy"
-        val defineFile = "preprocDefineTest.cpp"
+        val folder = File("testData/fuzzy")
+        val preprocessedFolder = folder.resolve("preprocessed")
+        preprocessedFolder.mkdir()
+        val defineFileName = "preprocDefineTest.cpp"
         val parser = FuzzyCppParser()
 
-        parser.preprocessWithoutIncludes(File("$folder/$defineFile"))
+        parser.preprocessFile(folder.resolve(defineFileName), preprocessedFolder)
 
-        Assert.assertEquals("'define' directives should be replaced", "for (int i = (0); i < (10); ++i) { }", File("$folder/${parser.preprocessDirName}/$defineFile").readInOneLine())
-        File("$folder/${parser.preprocessDirName}").deleteRecursively()
+        Assert.assertEquals(
+                "'define' directives should be replaced",
+                "for (int i = (0); i < (10); ++i) { }",
+                preprocessedFolder.resolve(defineFileName).readInOneLine()
+        )
+        preprocessedFolder.deleteRecursively()
     }
 
     @Test
     fun testPreprocessingInclude() {
-        val folder = "testData/fuzzy"
-        val includeFile = "preprocIncludeTest.cpp"
+        val folder = File("testData/fuzzy")
+        val preprocessedFolder = folder.resolve("preprocessed")
+        preprocessedFolder.mkdir()
+        val includeFileName = "preprocIncludeTest.cpp"
         val parser = FuzzyCppParser()
 
-        parser.preprocessWithoutIncludes(File("$folder/$includeFile"))
+        parser.preprocessFile(folder.resolve(includeFileName), preprocessedFolder)
 
-        Assert.assertEquals("'include' directives should not be replaced", File("$folder/$includeFile").readInOneLine(), File("$folder/${parser.preprocessDirName}/$includeFile").readInOneLine())
-        File("$folder/${parser.preprocessDirName}").deleteRecursively()
+        Assert.assertEquals(
+                "'include' directives should not be replaced",
+                folder.resolve(includeFileName).readInOneLine(),
+                preprocessedFolder.resolve(includeFileName).readInOneLine()
+        )
+        preprocessedFolder.deleteRecursively()
     }
 
     @Test
-    fun testPreprocessingAndParsing() {
-        val folder = "testData/fuzzy"
-        val fileName = "test.cpp"
+    fun testPreprocessingProject() {
+        val projectRoot = File("testData/examples/cpp")
+        val preprocessedRoot = File("testData/examples/preprocessed")
+        preprocessedRoot.mkdir()
         val parser = FuzzyCppParser()
-        parser.preprocessWithoutIncludes(File("$folder/$fileName"))
-        val nodes = parser.parse(arrayListOf("$folder/${parser.preprocessDirName}/$fileName"))
-        Assert.assertTrue("Parse tree for a valid file should not be null", nodes.size == 1 && nodes[0] != null)
-        File("$folder/${parser.preprocessDirName}").deleteRecursively()
+
+        parser.preprocessProject(projectRoot, preprocessedRoot)
+        val nodes = parser.parseProject(projectRoot) { file -> file.extension == "cpp" }
+
+        Assert.assertEquals(
+                "Parse tree for a valid file should not be null. There are 5 files in example project.",
+                5,
+                nodes.filterNotNull().size
+        )
+        preprocessedRoot.deleteRecursively()
     }
 }
