@@ -86,14 +86,10 @@ class FuzzyCppParser : Parser<FuzzyNode> {
      * @param outputDir directory where the preprocessed files will be stored
      */
     fun preprocessProject(projectRoot: File, outputDir: File) {
-        println(projectRoot.path)
         val files = projectRoot.walkTopDown().filter { file -> supportedExtensions.contains(file.extension) }
-        println(files.map {it.path})
         files.forEach { file ->
             val relativeFilePath = file.relativeTo(projectRoot)
             val outputPath = outputDir.resolve(relativeFilePath.parent)
-            println(relativeFilePath)
-            println(outputPath)
             outputPath.mkdirs()
             preprocessFile(file, outputPath)
         }
