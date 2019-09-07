@@ -16,11 +16,13 @@ import java.io.File
 import java.io.InputStream
 import java.lang.StringBuilder
 
-
+/**
+ * Parser of C/C++ files based of [FuzzyC2Cpg].
+ * By default, it assumes that files have been preprocessed and skips all macroses.
+ */
 class FuzzyCppParser : Parser<FuzzyNode> {
 
-    var preprocessDirName = "preprocess"
-        private set
+    private val supportedExtensions = listOf("c", "cpp")
 
     /**
      * Parse input stream and create AST.
@@ -33,7 +35,7 @@ class FuzzyCppParser : Parser<FuzzyNode> {
         val file = File.createTempFile("fuzzy", ".cpp")
         file.deleteOnExit()
         FileUtils.copyInputStreamToFile(content, file)
-        val nodes = parse(arrayListOf(file.canonicalPath))
+        val nodes = parse(listOf(file))
         return if (nodes.size == 1) {
             nodes[0]
         } else {
@@ -42,23 +44,11 @@ class FuzzyCppParser : Parser<FuzzyNode> {
     }
 
     /**
-     * Find all files in a subtree of [projectRoot] with [getFilesToParse] and parser them.
-     * Make sure that [getFilesToParse] returns files only with .cpp, .hpp, .c or .h extensions, otherwise the parser will skip them.
-     * @param projectRoot folder containing files to parse
-     * @param getFilesToParse lambda expression that checks which files should be parsed
-     * @return list of AST roots, one for each parsed file
+     * @see [Parser.parse]
      */
-    override fun parseProject(projectRoot: File, getFilesToParse: (File) -> List<File>): List<FuzzyNode?> {
-        return parse(getFilesToParse(projectRoot).map { it.absolutePath } )
-    }
-
-    /**
-     * Parse code from all C/C++ files, found in given paths, and create AST for each file.
-     * @param paths where all C/C++ files are determined; it may contain paths to both files and folders
-     * @return list of AST roots, one for each C/C++ file
-     */
-    fun parse(paths: List<String>) : List<FuzzyNode?> {
+    override fun parse(files: List<File>) : List<FuzzyNode?> {
         val outputModuleFactory = OutputModuleFactory()
+        val paths = files.map { it.path }
         FuzzyC2Cpg(outputModuleFactory).runAndOutput(paths.toTypedArray())
         val cpg = outputModuleFactory.internalGraph
         return cpg2nodes(cpg)
@@ -78,12 +68,35 @@ class FuzzyCppParser : Parser<FuzzyNode> {
     }
 
     /**
-     * Run gcc preprocessor on a given file excluding 'include' directives.
-     * The result of preprocessing is stored in created directory named [outputDirName]
-     * @param file to preprocess
+     * Run g++ preprocessor (if [preprocessCommand] is set) on a given file excluding 'include' directives.
+     * The result of preprocessing is stored in created directory [outputDir]
+     * @param file file to preprocess
+     * @param outputDir directory where the preprocessed file will be stored
+     * @param preprocessCommand bash command that runs preprocessing, "g++ -E" by default
      */
-    fun preprocessWithoutIncludes(file: File, outputDirName: String = preprocessDirName) {
-        preprocessCppCode(file, outputDirName).runCommand(file.absoluteFile.parentFile)
+    fun preprocessFile(file: File, outputDir: File, preprocessCommand: String = "g++ -E") {
+        outputDir.mkdirs()
+        preprocessCppCode(file, outputDir, preprocessCommand).runCommand(file.absoluteFile.parentFile)
+    }
+
+    /**
+     * Run preprocessing for all .c and .cpp files in the [project][projectRoot].
+     * The preprocessed files will be stored in [outputDir], replicating file hierarchy of the original project.
+     * @param projectRoot root of the project that should be preprocessed
+     * @param outputDir directory where the preprocessed files will be stored
+     */
+    fun preprocessProject(projectRoot: File, outputDir: File) {
+        println(projectRoot.path)
+        val files = projectRoot.walkTopDown().filter { file -> supportedExtensions.contains(file.extension) }
+        println(files.map {it.path})
+        files.forEach { file ->
+            val relativeFilePath = file.relativeTo(projectRoot)
+            val outputPath = outputDir.resolve(relativeFilePath.parent)
+            println(relativeFilePath)
+            println(outputPath)
+            outputPath.mkdirs()
+            preprocessFile(file, outputPath)
+        }
     }
 
     /**
