@@ -110,8 +110,9 @@ publishJar {
         info {
             githubRepo = "vovak/astminer"
             vcsUrl = "https://github.com/vovak/astminer"
+            labels.addAll(listOf("mining", "ast", "ml4se", "code2vec", "path-based representations"))
             license = "MIT"
-            description = "Extract AST, AST-related metrics and path-based representation from source code"
+            description = "Extract AST, AST-related metrics, and path-based representations from source code"
         }
     }
 }
