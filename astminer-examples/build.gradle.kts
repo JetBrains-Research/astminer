@@ -1,8 +1,13 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    java
+    id("java")
     kotlin("jvm") version "1.3.41"
+    id("application")
+}
+
+application {
+    mainClassName = "examples.MainKt"
 }
 
 group = "io.github.vovak.astminer"
@@ -14,6 +19,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
+//    compile("io.github.vovak.astminer", "astminer", "0.3")
     testCompile("junit", "junit", "4.12")
 }
 
