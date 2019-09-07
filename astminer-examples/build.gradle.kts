@@ -15,11 +15,12 @@ version = "0.3"
 
 repositories {
     mavenCentral()
+    maven(url = "https://dl.bintray.com/egor-bogomolov/astminer/")
 }
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-//    compile("io.github.vovak.astminer", "astminer", "0.3")
+    compile("io.github.vovak.astminer", "astminer", "0.3")
     testCompile("junit", "junit", "4.12")
 }
 
