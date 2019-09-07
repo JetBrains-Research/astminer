@@ -21,7 +21,8 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     compile("io.github.vovak.astminer", "astminer", "0.3")
-    testCompile("junit", "junit", "4.12")
+    compile("com.github.ajalt", "clikt", "2.1.0")
+    testCompile("junit", "kotlinx-cli", "4.12")
 }
 
 configure<JavaPluginConvention> {
