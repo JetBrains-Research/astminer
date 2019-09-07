@@ -11,7 +11,7 @@ application {
 }
 
 group = "io.github.vovak.astminer"
-version = "0.3"
+version = "0.3-dev"
 
 repositories {
     mavenCentral()
@@ -20,7 +20,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    compile("io.github.vovak.astminer", "astminer", "0.3")
+    compile("io.github.vovak.astminer", "astminer", "0.3-dev")
     compile("com.github.ajalt", "clikt", "2.1.0")
     testCompile("junit", "kotlinx-cli", "4.12")
 }
