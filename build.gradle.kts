@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 import tanvd.kosogor.proxy.publishJar
 
 group = "io.github.vovak.astminer"
-version = "0.3-dev"
+version = "0.3.1-dev"
 
 plugins {
     id("java")
