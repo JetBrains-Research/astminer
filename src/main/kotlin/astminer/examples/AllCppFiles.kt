@@ -22,13 +22,13 @@ fun allCppFiles() {
 
     val parsedFiles = parser.parseWithExtension(preprocOutputFolder, "cpp")
 
-    parsedFiles.forEach { node ->
-        if (node == null) {
+    parsedFiles.forEach { parseResult ->
+        if (parseResult.root == null) {
             return@forEach
         }
-        val paths = miner.retrievePaths(node)
+        val paths = miner.retrievePaths(parseResult.root)
 
-        storage.store(paths.map { toPathContext(it) }, entityId = node.getToken())
+        storage.store(paths.map { toPathContext(it) }, entityId = parseResult.filePath)
     }
 
     storage.save("out_examples/allCppFiles")

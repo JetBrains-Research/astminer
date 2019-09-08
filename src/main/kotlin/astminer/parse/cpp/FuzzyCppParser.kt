@@ -1,5 +1,6 @@
 package astminer.parse.cpp
 
+import astminer.common.ParseResult
 import astminer.common.Parser
 import gremlin.scala.Key
 import io.shiftleft.codepropertygraph.Cpg
@@ -37,7 +38,7 @@ class FuzzyCppParser : Parser<FuzzyNode> {
         FileUtils.copyInputStreamToFile(content, file)
         val nodes = parse(listOf(file))
         return if (nodes.size == 1) {
-            nodes[0]
+            nodes[0].root
         } else {
             null
         }
@@ -46,7 +47,7 @@ class FuzzyCppParser : Parser<FuzzyNode> {
     /**
      * @see [Parser.parse]
      */
-    override fun parse(files: List<File>) : List<FuzzyNode?> {
+    override fun parse(files: List<File>) : List<ParseResult<FuzzyNode>> {
         val outputModuleFactory = OutputModuleFactory()
         val paths = files.map { it.path }
         FuzzyC2Cpg(outputModuleFactory).runAndOutput(paths.toTypedArray())
@@ -60,11 +61,11 @@ class FuzzyCppParser : Parser<FuzzyNode> {
      * @param cpg to be converted
      * @return list of AST roots
      */
-    private fun cpg2nodes(cpg: Cpg) : List<FuzzyNode?> {
+    private fun cpg2nodes(cpg: Cpg) : List<ParseResult<FuzzyNode>> {
         val g = cpg.graph().traversal()
         val vertexToNode = HashMap<Vertex, FuzzyNode>()
         g.E().hasLabel(EdgeTypes.AST).forEach { addNodesFromEdge(it, vertexToNode) }
-        return g.V().hasLabel(NodeTypes.FILE).toList().map { vertexToNode[it] }
+        return g.V().hasLabel(NodeTypes.FILE).toList().map { ParseResult(vertexToNode[it], it.value("NAME")) }
     }
 
     /**

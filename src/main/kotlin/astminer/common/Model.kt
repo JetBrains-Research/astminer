@@ -37,7 +37,7 @@ interface Parser<T : Node> {
      * @param files files to parse
      * @return list of AST roots, one for each parsed file
      */
-    fun parse(files: List<File>): List<T?> = files.map { parse(it.inputStream()) }
+    fun parse(files: List<File>): List<ParseResult<T>> = files.map { ParseResult(parse(it.inputStream()), it.path) }
 
     /**
      * Parse all files that pass [filter][filter] in [root folder][projectRoot] and its sub-folders.
@@ -45,7 +45,7 @@ interface Parser<T : Node> {
      * @param filter lambda expression that determines which files should be parsed
      * @return list of AST roots, one for each parsed file
      */
-    fun parseProject(projectRoot: File, filter: (File) -> Boolean): List<T?> {
+    fun parseProject(projectRoot: File, filter: (File) -> Boolean): List<ParseResult<T>> {
         val files = projectRoot.walkTopDown().filter(filter).toList()
         return parse(files)
     }
@@ -58,6 +58,8 @@ interface Parser<T : Node> {
      */
     fun parseWithExtension(projectRoot: File, extension: String) = parseProject(projectRoot) { it.isFile && it.extension == extension }
 }
+
+data class ParseResult<T : Node>(val root: T?, val filePath: String)
 
 interface TreeSplitter<T : Node> {
     fun split(root: T): Collection<T>
