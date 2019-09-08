@@ -63,13 +63,24 @@ class ProjectParser : CliktCommand() {
     }
 
     private fun parsing() {
+        if (outputDir == null) {
+            throw Exception("For parsing, output directory should be provided")
+        }
+
         val storage = VocabularyAstStorage()
         for (extension in extensions) {
             val parser = getParser(extension)
             val roots = parser.parseWithExtension(File(projectRoot), extension)
-            roots.filterNotNull().forEach { root ->
-//                storage.store(root, entityId = )
+            roots.forEach { parseResult ->
+                val root = parseResult.root
+                val filePath = parseResult.filePath
+                root?.apply {
+                    storage.store(root, entityId = filePath)
+                }
             }
+        }
+        outputDir?.let {
+            storage.save(it)
         }
     }
 
