@@ -14,7 +14,7 @@ fun String.runCommand(workingDir: File) {
 
 fun preprocessCppCode(file: File, outputDir: File, preprocessCommand: String) = """
     grep '^\s*#\s*include' ${file.absolutePath} >__tmp_include.cpp
-    grep -Pv '^\s*#\s*include\b' ${file.absolutePath} >__tmp_code.cpp
+    grep -v '^\s*#\s*include\b' ${file.absolutePath} >__tmp_code.cpp
     touch __tmp_preprocessed.cpp
     if [ -s __tmp_code.cpp ] 
     then 
