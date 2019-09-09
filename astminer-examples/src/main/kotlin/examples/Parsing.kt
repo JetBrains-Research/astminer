@@ -42,7 +42,7 @@ class ProjectParser : CliktCommand() {
         help = "Path to the project that will be parsed"
     ).required()
 
-    val outputDir: String by option(
+    val outputDirName: String by option(
         "--output",
         help = "Path to directory where the output will be stored"
     ).required()
@@ -58,8 +58,9 @@ class ProjectParser : CliktCommand() {
 
 
     private fun parsing() {
-        val storage = VocabularyAstStorage()
+        val outputDir = File(outputDirName)
         for (extension in extensions) {
+            val storage = VocabularyAstStorage()
             val parser = getParser(extension)
             val roots = parser.parseWithExtension(File(projectRoot), extension)
             roots.forEach { parseResult ->
@@ -69,9 +70,11 @@ class ProjectParser : CliktCommand() {
                     storage.store(root, entityId = filePath)
                 }
             }
+            val outputDirForLanguage = outputDir.resolve(extension)
+            outputDirForLanguage.mkdir()
+            storage.save(outputDirForLanguage.path)
         }
 
-        storage.save(outputDir)
     }
 
     override fun run() {

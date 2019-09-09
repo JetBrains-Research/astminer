@@ -18,7 +18,7 @@ class ProjectPreprocessor : CliktCommand() {
     ).required()
 
     val preprocessDir: String by option(
-        "--preprocDir",
+        "--output",
         help = "Path to directory where the preprocessed data will be stored"
     ).required()
 
