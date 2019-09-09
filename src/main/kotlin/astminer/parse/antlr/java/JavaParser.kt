@@ -20,8 +20,4 @@ class JavaParser : Parser<SimpleNode> {
         val context = parser.compilationUnit()
         return convertAntlrTree(context, Java8Parser.ruleNames)
     }
-
-    override fun parseProject(projectRoot: File, getFilesToParse: (File) -> List<File>): List<SimpleNode?> {
-        return getFilesToParse(projectRoot).map { parse(it.inputStream()) }
-    }
 }

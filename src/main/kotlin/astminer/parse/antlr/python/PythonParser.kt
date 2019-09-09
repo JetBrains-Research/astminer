@@ -20,8 +20,4 @@ class PythonParser : Parser<SimpleNode> {
         val context = parser.file_input()
         return convertAntlrTree(context, Python3Parser.ruleNames)
     }
-
-    override fun parseProject(projectRoot: File, getFilesToParse: (File) -> List<File>): List<SimpleNode?> {
-        return getFilesToParse(projectRoot).map { parse(it.inputStream()) }
-    }
 }

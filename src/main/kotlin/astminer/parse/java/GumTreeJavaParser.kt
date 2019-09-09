@@ -17,10 +17,6 @@ class GumTreeJavaParser : Parser<GumTreeJavaNode> {
         val treeContext = JdtTreeGenerator().generate(InputStreamReader(content))
         return wrapGumTreeNode(treeContext)
     }
-
-    override fun parseProject(projectRoot: File, getFilesToParse: (File) -> List<File>): List<GumTreeJavaNode?> {
-        return getFilesToParse(projectRoot).map { parse(it.inputStream()) }
-    }
 }
 
 fun wrapGumTreeNode(treeContext: TreeContext): GumTreeJavaNode {

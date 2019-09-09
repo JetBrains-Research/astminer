@@ -26,20 +26,40 @@ interface Node {
 
 interface Parser<T : Node> {
     /**
-     * Parse input stream into the tree.
-     * @param content - input stream to parse
-     * @return root of the tree
+     * Parse input stream into an AST.
+     * @param content input stream to parse
+     * @return root of the AST
      */
     fun parse(content: InputStream): T?
 
     /**
-     * Parse files, received with [getFilesToParse] from [root folder][projectRoot], into trees.
-     * @param projectRoot folder containing files to parse
-     * @param getFilesToParse lambda expression for getting files to parse from [projectRoot]
+     * Parse list of files.
+     * @param files files to parse
      * @return list of AST roots, one for each parsed file
      */
-    fun parseProject(projectRoot: File, getFilesToParse: (File) -> List<File>) : List<T?>
+    fun parse(files: List<File>): List<ParseResult<T>> = files.map { ParseResult(parse(it.inputStream()), it.path) }
+
+    /**
+     * Parse all files that pass [filter][filter] in [root folder][projectRoot] and its sub-folders.
+     * @param projectRoot root folder containing files to parse
+     * @param filter lambda expression that determines which files should be parsed
+     * @return list of AST roots, one for each parsed file
+     */
+    fun parseProject(projectRoot: File, filter: (File) -> Boolean): List<ParseResult<T>> {
+        val files = projectRoot.walkTopDown().filter(filter).toList()
+        return parse(files)
+    }
+
+    /**
+     * Parse all files with given extension in [root folder][projectRoot] and its sub-folders.
+     * @param projectRoot root folder containing files to parse
+     * @param extension extension of files that should be parsed
+     * @return list of AST roots, one for each parsed file
+     */
+    fun parseWithExtension(projectRoot: File, extension: String) = parseProject(projectRoot) { it.isFile && it.extension == extension }
 }
+
+data class ParseResult<T : Node>(val root: T?, val filePath: String)
 
 interface TreeSplitter<T : Node> {
     fun split(root: T): Collection<T>

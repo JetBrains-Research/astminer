@@ -18,7 +18,7 @@ class FuzzyNode(private val typeLabel: String, private val token: String?, order
             { System.identityHashCode(it) }
     ))
 
-    fun getOrder() : Int {
+    fun getOrder(): Int {
         return order
     }
 
