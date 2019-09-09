@@ -37,11 +37,7 @@ class FuzzyCppParser : Parser<FuzzyNode> {
         file.deleteOnExit()
         FileUtils.copyInputStreamToFile(content, file)
         val nodes = parse(listOf(file))
-        return if (nodes.size == 1) {
-            nodes[0].root
-        } else {
-            null
-        }
+        return nodes[0].root
     }
 
     /**
