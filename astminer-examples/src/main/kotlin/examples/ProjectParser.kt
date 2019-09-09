@@ -60,6 +60,7 @@ class ProjectParser : CliktCommand() {
     private fun parsing() {
         val outputDir = File(outputDirName)
         for (extension in extensions) {
+            // Choose type of storage
             val storage = VocabularyAstStorage()
             val parser = getParser(extension)
             val roots = parser.parseWithExtension(File(projectRoot), extension)
@@ -67,11 +68,13 @@ class ProjectParser : CliktCommand() {
                 val root = parseResult.root
                 val filePath = parseResult.filePath
                 root?.apply {
+                    // Save AST as it is or process it to extract features / path-based representations
                     storage.store(root, entityId = filePath)
                 }
             }
             val outputDirForLanguage = outputDir.resolve(extension)
             outputDirForLanguage.mkdir()
+            // Save stored data on disk
             storage.save(outputDirForLanguage.path)
         }
 
