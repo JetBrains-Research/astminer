@@ -7,10 +7,11 @@ import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.python.PythonParser
 import astminer.parse.cpp.FuzzyCppParser
 import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.parameters.options.*
+import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.required
+import com.github.ajalt.clikt.parameters.options.split
 import java.io.File
-import java.lang.Exception
-import java.lang.UnsupportedOperationException
 
 
 class ProjectParser : CliktCommand() {
@@ -22,7 +23,7 @@ class ProjectParser : CliktCommand() {
     private data class SupportedLanguage(val parser: Parser<out Node>, val extension: String)
 
     /**
-     * List of supported languages
+     * List of supported language extensions and corresponding parsers.
      */
     private val supportedLanguages = listOf(
         SupportedLanguage(JavaParser(), "java"),
@@ -31,18 +32,20 @@ class ProjectParser : CliktCommand() {
         SupportedLanguage(PythonParser(), "py")
     )
 
-    val extensions: List<String> by option("--lang", help = "File extensions that will be parsed")
-        .split(",")
-        .default(supportedLanguages.map { it.extension })
+    val extensions: List<String> by option(
+        "--lang",
+        help = "File extensions that will be parsed"
+    ).split(",").default(supportedLanguages.map { it.extension })
 
-    val projectRoot: String by option("--project", help = "Path to the project that will be parsed").required()
-    val shouldPreprocess: Boolean by option(
-        "--preprocess", help =
-        "If the flag is set, the project will be preprocessed before parsing"
-    ).flag(default = false)
+    val projectRoot: String by option(
+        "--project",
+        help = "Path to the project that will be parsed"
+    ).required()
 
-    val preprocessDir: String? by option("--preprocDir", "Path to directory where the preprocessed data will be stored")
-    val outputDir: String? by option("--output", help = "Path to directory where the output will be stored")
+    val outputDir: String by option(
+        "--output",
+        help = "Path to directory where the output will be stored"
+    ).required()
 
     private fun getParser(extension: String): Parser<out Node> {
         for (language in supportedLanguages) {
@@ -53,20 +56,8 @@ class ProjectParser : CliktCommand() {
         throw UnsupportedOperationException("Unsupported extension $extension")
     }
 
-    private fun preprocessing() {
-        if (preprocessDir != null) {
-            throw Exception("If the preprocessing flag was set, you should provide proprocessDir path")
-        } else {
-            val parser = FuzzyCppParser()
-            parser.preprocessProject(File(projectRoot), File(preprocessDir))
-        }
-    }
 
     private fun parsing() {
-        if (outputDir == null) {
-            throw Exception("For parsing, output directory should be provided")
-        }
-
         val storage = VocabularyAstStorage()
         for (extension in extensions) {
             val parser = getParser(extension)
@@ -79,16 +70,11 @@ class ProjectParser : CliktCommand() {
                 }
             }
         }
-        outputDir?.let {
-            storage.save(it)
-        }
+
+        storage.save(outputDir)
     }
 
     override fun run() {
-        if (shouldPreprocess) {
-            preprocessing()
-        } else {
-            parsing()
-        }
+        parsing()
     }
 }
