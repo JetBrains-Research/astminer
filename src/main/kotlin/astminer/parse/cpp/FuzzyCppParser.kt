@@ -15,10 +15,9 @@ import org.apache.tinkerpop.gremlin.structure.Element
 import org.apache.tinkerpop.gremlin.structure.Vertex
 import java.io.File
 import java.io.InputStream
-import java.lang.StringBuilder
 
 /**
- * Parser of C/C++ files based of [FuzzyC2Cpg].
+ * Parser of C/C++ files based on [FuzzyC2Cpg].
  * By default, it assumes that files have been preprocessed and skips all macroses.
  */
 class FuzzyCppParser : Parser<FuzzyNode> {
@@ -26,13 +25,13 @@ class FuzzyCppParser : Parser<FuzzyNode> {
     private val supportedExtensions = listOf("c", "cpp")
 
     /**
-     * Parse input stream and create AST.
-     * If you already have file with code you need to parse, better use [parseProject] or [parse],
+     * Parse input stream and create an AST.
+     * If you already have a file with code you need to parse, better use [parseProject] or [parse],
      * otherwise temporary file for input stream will be created because of fuzzyc2cpg API.
      * @param content to parse
      * @return root of AST if content was parsed, null otherwise
      */
-    override fun parse(content: InputStream) : FuzzyNode? {
+    override fun parse(content: InputStream): FuzzyNode? {
         val file = File.createTempFile("fuzzy", ".cpp")
         file.deleteOnExit()
         FileUtils.copyInputStreamToFile(content, file)
@@ -43,21 +42,22 @@ class FuzzyCppParser : Parser<FuzzyNode> {
     /**
      * @see [Parser.parse]
      */
-    override fun parse(files: List<File>) : List<ParseResult<FuzzyNode>> {
+    override fun parse(files: List<File>): List<ParseResult<FuzzyNode>> {
         val outputModuleFactory = OutputModuleFactory()
         val paths = files.map { it.path }
         FuzzyC2Cpg(outputModuleFactory).runAndOutput(paths.toTypedArray())
         val cpg = outputModuleFactory.internalGraph
-        return cpg2nodes(cpg)
+        return cpg2Nodes(cpg)
     }
 
     /**
-     * Convert [cpg][io.shiftleft.codepropertygraph.Cpg] created by fuzzyc2cpg to list of [FuzzyNode][astminer.parse.cpp.FuzzyNode].
+     * Convert [cpg][io.shiftleft.codepropertygraph.Cpg] created by fuzzyc2cpg
+     * to list of [FuzzyNode][astminer.parse.cpp.FuzzyNode].
      * Cpg may contain graphs for several files, in that case several ASTs will be created.
      * @param cpg to be converted
      * @return list of AST roots
      */
-    private fun cpg2nodes(cpg: Cpg) : List<ParseResult<FuzzyNode>> {
+    private fun cpg2Nodes(cpg: Cpg): List<ParseResult<FuzzyNode>> {
         val g = cpg.graph().traversal()
         val vertexToNode = HashMap<Vertex, FuzzyNode>()
         g.E().hasLabel(EdgeTypes.AST).forEach { addNodesFromEdge(it, vertexToNode) }
@@ -83,7 +83,8 @@ class FuzzyCppParser : Parser<FuzzyNode> {
      * @param outputDir directory where the preprocessed files will be stored
      */
     fun preprocessProject(projectRoot: File, outputDir: File) {
-        val files = projectRoot.walkTopDown().filter { file -> supportedExtensions.contains(file.extension) }
+        val files = projectRoot.walkTopDown()
+                .filter { file -> supportedExtensions.contains(file.extension) }
         files.forEach { file ->
             val relativeFilePath = file.relativeTo(projectRoot)
             val outputPath = outputDir.resolve(relativeFilePath.parent)
@@ -110,7 +111,7 @@ class FuzzyCppParser : Parser<FuzzyNode> {
         parentNode.addChild(childNode)
     }
 
-    private fun createNodeFromVertex(v: Vertex) : FuzzyNode {
+    private fun createNodeFromVertex(v: Vertex): FuzzyNode {
         val token: String? = v.getValueOrNull(NodeKeys.CODE)
         val order: Int? = v.getValueOrNull(NodeKeys.ORDER)
         val node = FuzzyNode(v.label(), token, order)
@@ -118,7 +119,7 @@ class FuzzyCppParser : Parser<FuzzyNode> {
         return node
     }
 
-    private fun <T> Vertex.getValueOrNull(key: Key<out Any>) : T? {
+    private fun <T> Vertex.getValueOrNull(key: Key<out Any>): T? {
         return try {
             this.value<T>(key.name())
         } catch (e: IllegalStateException) {
