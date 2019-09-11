@@ -96,7 +96,7 @@ workflows:
           type: approval
           requires:
             - build-cli
-      - release:
+      - release-cli:
           requires:
             - approve-release-cli
 
