@@ -27,7 +27,7 @@ jobs:
     steps:
       - checkout:
           path: ~/astminer-cli
-      - run: cd astminer-examples && ./gradlew shadowJar
+      - run: cd astminer-cli && ./gradlew shadowJar
 
   release-cli:
     machine:
@@ -36,7 +36,7 @@ jobs:
     steps:
       - checkout:
           path: ~/astminer-cli
-      - run: cd astminer-examples && ./gradlew bintrayUpload
+      - run: cd astminer-cli && ./gradlew bintrayUpload
 
   # run the Python example
   py_example:
