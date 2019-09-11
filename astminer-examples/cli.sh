@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./build/install/astminer-examples/bin/astminer-examples "$@"
+java -jar build/shadow/cli.jar "$@"
