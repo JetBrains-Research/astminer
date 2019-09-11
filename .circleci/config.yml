@@ -23,20 +23,20 @@ jobs:
   build-cli:
     machine:
       enabled: true
-    working_directory: ~/astminer/astminer-examples
+    working_directory: ~/astminer-cli
     steps:
       - checkout:
-          path: ~/astminer/astminer-examples
-      - run: pwd && ./gradlew shadowJar
+          path: ~/astminer-cli
+      - run: cd astminer-examples && ./gradlew shadowJar
 
   release-cli:
     machine:
       enabled: true
-    working_directory: ~/astminer/astminer-examples
+    working_directory: ~/astminer-cli
     steps:
       - checkout:
-          path: ~/astminer/astminer-examples
-      - run: ./gradlew bintrayUpload
+          path: ~/astminer-cli
+      - run: cd astminer-examples && ./gradlew bintrayUpload
 
   # run the Python example
   py_example:
