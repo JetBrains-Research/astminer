@@ -27,7 +27,7 @@ jobs:
     steps:
       - checkout:
           path: ~/astminer/astminer-examples
-      - run: ./gradlew shadowJar
+      - run: pwd && ./gradlew shadowJar
 
   release-cli:
     machine:
