@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
+import tanvd.kosogor.proxy.publishJar
 import tanvd.kosogor.proxy.shadowJar
 
 plugins {
@@ -26,10 +28,36 @@ dependencies {
     compile("com.github.ajalt", "clikt", "2.1.0")
 }
 
-shadowJar {
+val shadowJar = shadowJar {
     jar {
-        archiveName = "cli.jar"
+        archiveName = "cli-$version.jar"
         mainClass = "examples.MainKt"
+    }
+}.apply {
+    task.archiveClassifier.set("")
+}
+
+publishJar {
+    publication {
+        artifactId = "astminer-cli"
+    }
+
+    jar {
+        components = { shadowJar.task.archiveFile.get() }
+    }
+
+    bintray {
+
+        // If username and secretKey not set, will be taken from System environment param `bintray_user`, 'bintray_key'
+        repository = "astminer-cli"
+
+        info {
+            githubRepo = "vovak/astminer"
+            vcsUrl = "https://github.com/vovak/astminer/astminer-examples"
+            labels.addAll(listOf("mining", "ast", "ml4se", "code2vec", "path-based representations"))
+            license = "MIT"
+            description = "CLI for AstMiner library"
+        }
     }
 }
 
@@ -38,4 +66,8 @@ configure<JavaPluginConvention> {
 }
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+tasks.withType(BintrayUploadTask::class) {
+    dependsOn("shadowJar")
 }
