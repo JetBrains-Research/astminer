@@ -43,7 +43,8 @@ publishJar {
     }
 
     jar {
-        components = { shadowJar.task.archiveFile.get() }
+//        components = { setArtifacts(listOf(shadowJar.artifact(this))) }
+        components = { shadowJar.artifact(this) }
     }
 
     bintray {
