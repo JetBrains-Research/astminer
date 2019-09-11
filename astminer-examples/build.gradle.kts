@@ -43,7 +43,6 @@ publishJar {
     }
 
     jar {
-//        components = { setArtifacts(listOf(shadowJar.artifact(this))) }
         components = { shadowJar.artifact(this) }
     }
 
