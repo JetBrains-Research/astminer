@@ -32,11 +32,11 @@ jobs:
   release-cli:
     machine:
       enabled: true
-      working_directory: ~/astminer/astminer-examples
-      steps:
-        - checkout:
-            path: ~/astminer/astminer-examples
-        - run: ./gradlew bintrayUpload
+    working_directory: ~/astminer/astminer-examples
+    steps:
+      - checkout:
+          path: ~/astminer/astminer-examples
+      - run: ./gradlew bintrayUpload
 
   # run the Python example
   py_example:
