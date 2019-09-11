@@ -35,6 +35,6 @@ To evaluate CLI on test data, run:
 
 ## Extending the CLI
 
-To add another task, go to [Main.kt](src/main/kotlin/examples/Main.kt) and add another case to _when_ statement.
+To add another task, go to [Main.kt](src/main/kotlin/cli/Main.kt) and add another case to _when_ statement.
 
-To configure extracted data see `parsing` function in [ProjectParser.kt](src/main/kotlin/examples/ProjectParser.kt).
+To configure extracted data see `parsing` function in [ProjectParser.kt](src/main/kotlin/cli/ProjectParser.kt).

@@ -11,7 +11,7 @@ plugins {
 }
 
 application {
-    mainClassName = "examples.MainKt"
+    mainClassName = "cli.MainKt"
 }
 
 group = "io.github.vovak.astminer"
@@ -31,7 +31,7 @@ dependencies {
 val shadowJar = shadowJar {
     jar {
         archiveName = "cli-$version.jar"
-        mainClass = "examples.MainKt"
+        mainClass = "cli.MainKt"
     }
 }.apply {
     task.archiveClassifier.set("")
@@ -53,7 +53,7 @@ publishJar {
 
         info {
             githubRepo = "vovak/astminer"
-            vcsUrl = "https://github.com/vovak/astminer/astminer-examples"
+            vcsUrl = "https://github.com/vovak/astminer/astminer-cli"
             labels.addAll(listOf("mining", "ast", "ml4se", "code2vec", "path-based representations"))
             license = "MIT"
             description = "CLI for AstMiner library"

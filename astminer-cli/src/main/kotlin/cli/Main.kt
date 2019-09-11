@@ -1,4 +1,4 @@
-package examples
+package cli
 
 fun main(args: Array<String>) {
     if (args.isEmpty()) {

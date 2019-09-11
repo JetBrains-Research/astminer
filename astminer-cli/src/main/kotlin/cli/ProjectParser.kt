@@ -1,4 +1,4 @@
-package examples
+package cli
 
 import astminer.ast.VocabularyAstStorage
 import astminer.common.Node

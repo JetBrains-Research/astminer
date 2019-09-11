@@ -1,4 +1,4 @@
-package examples
+package cli
 
 import astminer.parse.cpp.FuzzyCppParser
 import com.github.ajalt.clikt.core.CliktCommand
