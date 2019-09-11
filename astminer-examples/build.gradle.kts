@@ -49,7 +49,7 @@ publishJar {
     bintray {
 
         // If username and secretKey not set, will be taken from System environment param `bintray_user`, 'bintray_key'
-        repository = "astminer-cli"
+        repository = "astminer"
 
         info {
             githubRepo = "vovak/astminer"
