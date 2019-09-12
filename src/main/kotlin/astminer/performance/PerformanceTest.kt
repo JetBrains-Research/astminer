@@ -2,6 +2,7 @@
 
 package astminer.performance
 
+import astminer.common.LabeledPathContexts
 import astminer.common.Node
 import astminer.common.Parser
 import astminer.paths.toPathContext
@@ -9,7 +10,7 @@ import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.python.PythonParser
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
-import astminer.paths.VocabularyPathStorage
+import astminer.paths.CsvPathStorage
 import java.io.File
 import java.lang.IllegalStateException
 
@@ -25,7 +26,7 @@ fun <NodeType : Node, LangParser : Parser<NodeType>> langPerformanceTest(languag
     println("Using files in $folder")
 
     val miner = PathMiner(retrievalSettings)
-    val storage = VocabularyPathStorage()
+    val storage = CsvPathStorage()
 
     var filesNumber = 0L
     var filesFailed = 0L
@@ -46,7 +47,7 @@ fun <NodeType : Node, LangParser : Parser<NodeType>> langPerformanceTest(languag
             retrievingElapsedTime += System.currentTimeMillis() - currentTime
 
             currentTime = System.currentTimeMillis()
-            storage.store(paths.map { toPathContext(it) }, entityId = file.path)
+            storage.store(LabeledPathContexts(file.path, paths.map { toPathContext(it) }))
             storingElapsedTime += System.currentTimeMillis() - currentTime
 
             // If parsing is successful
@@ -80,7 +81,7 @@ fun <NodeType : Node, LangParser : Parser<NodeType>> langPerformanceTest(languag
     println()
 }
 
-fun main(args: Array<String>) {
+fun main() {
     val retrievalSettings = PathRetrievalSettings(5, 5)
     langPerformanceTest("Python", "py", PythonParser(), retrievalSettings)
     langPerformanceTest("Java", "java", JavaParser(), retrievalSettings)
