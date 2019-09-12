@@ -17,12 +17,12 @@ class VocabularyAstStorage : AstStorage {
 
     private val rootsPerEntity: MutableMap<String, Node> = HashMap()
 
-    override fun store(root: Node, entityId: String) {
+    override fun store(root: Node, label: String) {
         for (node in root.preOrder()) {
             tokensMap.record(node.getToken())
             nodeTypesMap.record(node.getTypeLabel())
         }
-        rootsPerEntity[entityId] = root
+        rootsPerEntity[label] = root
     }
 
     override fun save(directoryPath: String) {
@@ -34,11 +34,11 @@ class VocabularyAstStorage : AstStorage {
     }
 
     private fun dumpTokenStorage(file: File) {
-        dumpIdStorage(tokensMap, "token", tokenToCsvString, file)
+        dumpIdStorageToCsv(tokensMap, "token", tokenToCsvString, file)
     }
 
     private fun dumpNodeTypesStorage(file: File) {
-        dumpIdStorage(nodeTypesMap, "node_type", nodeTypeToCsvString, file)
+        dumpIdStorageToCsv(nodeTypesMap, "node_type", nodeTypeToCsvString, file)
     }
 
     private fun dumpAsts(file: File) {

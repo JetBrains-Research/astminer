@@ -3,10 +3,10 @@ package astminer.common.storage
 import astminer.common.OrientedNodeType
 import java.io.File
 
-fun <T> dumpIdStorage(storage: IncrementalIdStorage<T>,
-                      typeHeader: String,
-                      csvSerializer: (T) -> String,
-                      file: File) {
+fun <T> dumpIdStorageToCsv(storage: IncrementalIdStorage<T>,
+                           typeHeader: String,
+                           csvSerializer: (T) -> String,
+                           file: File) {
     val lines = mutableListOf("id,$typeHeader")
 
     storage.idPerItem.forEach {
