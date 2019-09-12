@@ -2,7 +2,7 @@ package astminer.featureextraction
 
 import astminer.common.Node
 
-class PrettyNode(private val type: String, private val token: String) : Node {
+class PrettyNode(private val type: String, private var token: String) : Node {
     private var children: MutableList<PrettyNode> = ArrayList()
     private var parent: PrettyNode? = null
     private val metadata: MutableMap<String, Any> = HashMap()
@@ -31,6 +31,10 @@ class PrettyNode(private val type: String, private val token: String) : Node {
     }
 
     override fun getToken(): String =  token
+
+    override fun setToken(newToken: String) {
+        token = newToken
+    }
 
     override fun isLeaf(): Boolean =  children.isEmpty()
 

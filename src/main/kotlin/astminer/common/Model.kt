@@ -8,6 +8,7 @@ interface Node {
     fun getChildren(): List<Node>
     fun getParent(): Node?
     fun getToken(): String
+    fun setToken(newToken: String)
     fun isLeaf(): Boolean
 
     fun getMetadata(key: String): Any?
