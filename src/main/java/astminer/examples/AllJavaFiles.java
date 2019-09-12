@@ -5,7 +5,7 @@ import astminer.parse.java.GumTreeJavaParser;
 import astminer.paths.PathMiner;
 import astminer.paths.PathRetrievalSettings;
 import astminer.paths.PathUtilKt;
-import astminer.paths.VocabularyPathStorage;
+import astminer.paths.CsvPathStorage;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,7 +21,7 @@ public class AllJavaFiles {
 
     public static void runExample() {
         final PathMiner miner = new PathMiner(new PathRetrievalSettings(5,5));
-        final PathStorage pathStorage = new VocabularyPathStorage();
+        final PathStorage pathStorage = new CsvPathStorage();
 
         final Path inputFolder = Paths.get(INPUT_FOLDER);
 
@@ -36,7 +36,7 @@ public class AllJavaFiles {
                 final Collection<PathContext> pathContexts = paths
                         .stream().map(PathUtilKt::toPathContext).collect(Collectors.toList());
 
-                pathStorage.store(pathContexts, file.toAbsolutePath().toString());
+                pathStorage.store(new LabeledPathContexts(file.toAbsolutePath().toString(), pathContexts));
 
                 return FileVisitResult.CONTINUE;
             }
