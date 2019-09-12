@@ -12,7 +12,7 @@ fun allJavaAsts() {
 
     File(folder).forFilesWithSuffix(".java") { file ->
         val node = JavaParser().parse(file.inputStream()) ?: return@forFilesWithSuffix
-        storage.store(node, entityId = file.path)
+        storage.store(node, label = file.path)
     }
 
     storage.save("out_examples/allJavaAstsAntlr")

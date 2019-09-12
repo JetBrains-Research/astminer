@@ -2,10 +2,11 @@
 
 package astminer.examples
 
+import astminer.common.LabeledPathContexts
 import astminer.parse.cpp.FuzzyCppParser
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
-import astminer.paths.VocabularyPathStorage
+import astminer.paths.CsvPathStorage
 import astminer.paths.toPathContext
 import java.io.File
 
@@ -14,7 +15,7 @@ fun allCppFiles() {
     val folder = File("testData/examples/cpp")
 
     val miner = PathMiner(PathRetrievalSettings(5, 5))
-    val storage = VocabularyPathStorage()
+    val storage = CsvPathStorage()
     val parser = FuzzyCppParser()
     val preprocOutputFolder = File("preprocessed")
 
@@ -28,7 +29,7 @@ fun allCppFiles() {
         }
         val paths = miner.retrievePaths(parseResult.root)
 
-        storage.store(paths.map { toPathContext(it) }, entityId = parseResult.filePath)
+        storage.store(LabeledPathContexts(parseResult.filePath, paths.map { toPathContext(it) }))
     }
 
     storage.save("out_examples/allCppFiles")
