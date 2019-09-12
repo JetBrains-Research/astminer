@@ -73,11 +73,17 @@ data class OrientedNodeType(val typeLabel: String, val direction: Direction)
 
 data class PathContext(val startToken: String, val orientedNodeTypes: List<OrientedNodeType>, val endToken: String)
 
+data class PathContextId(val startTokenId: Long, val pathId: Long, val endTokenId: Long)
+
+data class LabeledPathContexts<T>(val label: T, val pathContexts: Collection<PathContext>)
+
+data class LabeledPathContextIds<T>(val label: T, val pathContexts: Collection<PathContextId>)
+
 /**
- * Stores path-contexts and saves them to directory.
+ * Stores path-contexts and their labels and saves them to directory.
  */
-interface PathStorage {
-    fun store(pathContexts: Collection<PathContext>, entityId: String)
+interface PathStorage<LabelType> {
+    fun store(labeledPathContexts: LabeledPathContexts<LabelType>)
     fun save(directoryPath: String)
 }
 
@@ -85,6 +91,6 @@ interface PathStorage {
  * Stores ASTs in form of their root and saves them to directory.
  */
 interface AstStorage {
-    fun store(root: Node, entityId: String)
+    fun store(root: Node, label: String)
     fun save(directoryPath: String)
 }
