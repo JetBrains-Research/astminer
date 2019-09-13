@@ -1,7 +1,7 @@
 package astminer.common
 
 
-class DummyNode(var data: String, val childrenList: List<DummyNode>) : Node {
+class DummyNode(val data: String, val childrenList: List<DummyNode>) : Node {
     override fun setMetadata(key: String, value: Any) {
 
     }
@@ -30,9 +30,6 @@ class DummyNode(var data: String, val childrenList: List<DummyNode>) : Node {
         return data
     }
 
-    override fun setToken(newToken: String) {
-        data = newToken
-    }
 }
 
 fun createDummyTree(): DummyNode {

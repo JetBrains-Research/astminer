@@ -39,7 +39,4 @@ class GumTreeJavaNode(val wrappedNode: ITree, val context: TreeContext, val pare
         return wrappedNode.label
     }
 
-    override fun setToken(newToken: String) {
-        wrappedNode.label = newToken
-    }
 }

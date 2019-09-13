@@ -9,7 +9,7 @@ import com.google.common.collect.TreeMultiset
  * @param token - node's token
  * @param order - node's order, which used to express the ordering of children in the AST when it matters
  */
-class FuzzyNode(private val typeLabel: String, private var token: String?, order: Int?) : Node {
+class FuzzyNode(private val typeLabel: String, private val token: String?, order: Int?) : Node {
     private val order = order ?: -1
     private val metadata: MutableMap<String, Any> = HashMap()
     private var parent: Node? = null
@@ -41,10 +41,6 @@ class FuzzyNode(private val typeLabel: String, private var token: String?, order
 
     override fun getToken(): String {
         return token ?: "null"
-    }
-
-    override fun setToken(newToken: String) {
-        token = newToken
     }
 
     override fun isLeaf(): Boolean {

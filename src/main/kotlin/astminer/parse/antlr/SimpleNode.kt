@@ -2,7 +2,7 @@ package astminer.parse.antlr
 
 import astminer.common.Node
 
-class SimpleNode(private val typeLabel: String, private val parent: Node?, private var token: String?) : Node {
+class SimpleNode(private val typeLabel: String, private val parent: Node?, private val token: String?) : Node {
     private val metadata: MutableMap<String, Any> = HashMap()
 
     private var children: List<Node> = emptyList()
@@ -25,10 +25,6 @@ class SimpleNode(private val typeLabel: String, private val parent: Node?, priva
 
     override fun getToken(): String {
         return token ?: "null"
-    }
-
-    override fun setToken(newToken: String) {
-        token = newToken
     }
 
     override fun isLeaf(): Boolean {
