@@ -1,9 +1,6 @@
 package astminer.examples
 
-import astminer.common.LabeledPathContexts
-import astminer.common.normalizeTokenInNode
-import astminer.common.preOrder
-import astminer.common.splitToSubtokens
+import astminer.common.*
 import astminer.parse.java.GumTreeJavaParser
 import astminer.parse.java.GumTreeMethodSplitter
 import astminer.parse.java.MethodInfo
@@ -39,12 +36,12 @@ fun code2vecJavaMethods() {
                 it.getTypeLabel() == "SimpleName"
             } ?: return@forEach
             val label = splitToSubtokens(methodNameNode.getToken()).joinToString("|")
-            methodNode.preOrder().forEach { normalizeTokenInNode(it, "EMPTY_TOKEN") }
-            methodNameNode.setToken("METHOD_NAME")
+            methodNode.preOrder().forEach { it.setNormalizedToken() }
+            methodNameNode.setNormalizedToken("METHOD_NAME")
 
-            //Retrieve paths from every node individually
+            // Retrieve paths from every node individually
             val paths = miner.retrievePaths(methodNode)
-            //Retrieve a method identifier
+            // Retrieve a method identifier
             val entityId = "${file.path}::${getCsvFriendlyMethodId(methodNode.getMethodInfo())}"
             storage.store(LabeledPathContexts(label, paths.map { toPathContext(it) }))
         }
