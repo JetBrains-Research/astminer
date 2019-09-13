@@ -7,9 +7,10 @@ fun main(args: Array<String>) {
 }
 
 fun runExamples() {
+    code2vecJavaMethods()
 //    allJavaFilesGumTree()
 //    allJavaFiles()
-    allJavaMethods()
+//    allJavaMethods()
 //    allPythonFiles()
 //    allCppFiles()
 //
