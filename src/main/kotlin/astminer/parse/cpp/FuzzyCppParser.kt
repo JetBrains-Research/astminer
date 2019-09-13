@@ -49,6 +49,18 @@ class FuzzyCppParser : Parser<FuzzyNode> {
                         NodeTypes.UNKNOWN
                 ), 0)
         )
+
+        data class ReplaceableNodeKey(val key: String, val condition: (Vertex) -> Boolean)
+
+        private val replaceableNodeKeys = listOf(
+                ReplaceableNodeKey("NAME") { v ->
+                    v.keys().contains("NAME") &&
+                            v.value<String>("NAME").startsWith("<operator>")
+                },
+                ReplaceableNodeKey("PARSER_TYPE_NAME") { v ->
+                    v.keys().contains("PARSER_TYPE_NAME")
+                }
+        )
     }
 
     /**
@@ -141,20 +153,17 @@ class FuzzyCppParser : Parser<FuzzyNode> {
     private fun createNodeFromVertex(v: Vertex): FuzzyNode {
         val token: String? = v.getValueOrNull(NodeKeys.CODE)
         val order: Int? = v.getValueOrNull(NodeKeys.ORDER)
-        if (v.keys().contains("PARSER_TYPE_NAME")) {
-            val node = FuzzyNode(v.value<String>("PARSER_TYPE_NAME"), token, order)
-            v.keys().forEach { k ->
-                node.setMetadata(k, v.value(k))
+
+        for (replaceableNodeKey in replaceableNodeKeys) {
+            if (replaceableNodeKey.condition(v)) {
+                val node = FuzzyNode(v.value<String>(replaceableNodeKey.key), token, order)
+                v.keys().forEach { k ->
+                    node.setMetadata(k, v.value(k))
+                }
+                return node
             }
-            return node
         }
-        if (v.keys().contains("NAME") && v.value<String>("NAME").startsWith("<operator>")) {
-            val node = FuzzyNode(v.value<String>("NAME"), token, order)
-            v.keys().forEach { k ->
-                node.setMetadata(k, v.value(k))
-            }
-            return node
-        }
+
         val node = FuzzyNode(v.label(), token, order)
         v.keys().forEach { k ->
             for (expandableNodeKey in expandableNodeKeys) {
