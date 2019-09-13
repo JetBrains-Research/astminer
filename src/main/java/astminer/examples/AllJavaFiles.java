@@ -34,7 +34,10 @@ public class AllJavaFiles {
                 }
                 final Collection<ASTPath> paths = miner.retrievePaths(fileTree);
                 final Collection<PathContext> pathContexts = paths
-                        .stream().map(PathUtilKt::toPathContext).collect(Collectors.toList());
+                        .stream()
+                        .map(node ->
+                                PathUtilKt.toPathContext(node, (Node::getToken))
+                        ).collect(Collectors.toList());
 
                 pathStorage.store(new LabeledPathContexts(file.toAbsolutePath().toString(), pathContexts));
 
