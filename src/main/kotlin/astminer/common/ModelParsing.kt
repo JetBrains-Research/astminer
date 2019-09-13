@@ -3,6 +3,7 @@ package astminer.common
 import java.io.File
 import java.io.InputStream
 
+
 interface Node {
     fun getTypeLabel(): String
     fun getChildren(): List<Node>
@@ -60,37 +61,3 @@ interface Parser<T : Node> {
 }
 
 data class ParseResult<T : Node>(val root: T?, val filePath: String)
-
-interface TreeSplitter<T : Node> {
-    fun split(root: T): Collection<T>
-}
-
-data class ASTPath(val upwardNodes: List<Node>, val downwardNodes: List<Node>)
-
-enum class Direction { UP, DOWN }
-
-data class OrientedNodeType(val typeLabel: String, val direction: Direction)
-
-data class PathContext(val startToken: String, val orientedNodeTypes: List<OrientedNodeType>, val endToken: String)
-
-data class PathContextId(val startTokenId: Long, val pathId: Long, val endTokenId: Long)
-
-data class LabeledPathContexts<T>(val label: T, val pathContexts: Collection<PathContext>)
-
-data class LabeledPathContextIds<T>(val label: T, val pathContexts: Collection<PathContextId>)
-
-/**
- * Stores path-contexts and their labels and saves them to directory.
- */
-interface PathStorage<LabelType> {
-    fun store(labeledPathContexts: LabeledPathContexts<LabelType>)
-    fun save(directoryPath: String)
-}
-
-/**
- * Stores ASTs in form of their root and saves them to directory.
- */
-interface AstStorage {
-    fun store(root: Node, label: String)
-    fun save(directoryPath: String)
-}
