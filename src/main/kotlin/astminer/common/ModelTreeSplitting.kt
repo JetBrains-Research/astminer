@@ -22,7 +22,7 @@ data class MethodNode<T>(
 )
 
 data class ClassNode<T>(
-        val root: T,
+        val root: T?,
         val nameNode: T?
 )
 

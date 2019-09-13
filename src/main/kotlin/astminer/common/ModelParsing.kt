@@ -13,6 +13,7 @@ interface Node {
 
     fun getMetadata(key: String): Any?
     fun setMetadata(key: String, value: Any)
+
     fun prettyPrint(indent: Int = 0, indentSymbol: String = "--") {
         repeat(indent) { print(indentSymbol) }
         print(getTypeLabel())
@@ -23,6 +24,9 @@ interface Node {
         }
         getChildren().forEach { it.prettyPrint(indent + 1, indentSymbol) }
     }
+
+    fun getChildrenOfType(typeLabel: String) = getChildren().filter { it.getTypeLabel() == typeLabel }
+    fun getChildOfType(typeLabel: String) = getChildrenOfType(typeLabel).firstOrNull()
 }
 
 interface Parser<T : Node> {
