@@ -61,7 +61,7 @@ class PythonMethodSplitter : TreeMethodSplitter<SimpleNode> {
     }
 
     private fun getListOfParameters(parameterRoot: SimpleNode): List<ParameterNode<SimpleNode>> {
-        var expectParameterName: Boolean = true
+        var expectParameterName = true
         val extractedParameters: MutableList<ParameterNode<SimpleNode>> = mutableListOf()
         for (parameter in parameterRoot.getChildren()) {
             when(parameter.getTypeLabel()) {
