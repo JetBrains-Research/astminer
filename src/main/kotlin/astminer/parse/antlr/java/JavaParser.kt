@@ -18,6 +18,6 @@ class JavaParser : Parser<SimpleNode> {
         val parser = Java8Parser(tokens)
         parser.removeErrorListeners()
         val context = parser.compilationUnit()
-        return convertAntlrTree(context, Java8Parser.ruleNames)
+        return convertAntlrTree(context, Java8Parser.ruleNames, Java8Parser.VOCABULARY)
     }
 }

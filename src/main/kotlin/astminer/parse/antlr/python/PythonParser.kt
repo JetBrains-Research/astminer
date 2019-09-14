@@ -18,6 +18,6 @@ class PythonParser : Parser<SimpleNode> {
         val parser = Python3Parser(tokens)
         parser.removeErrorListeners()
         val context = parser.file_input()
-        return convertAntlrTree(context, Python3Parser.ruleNames)
+        return convertAntlrTree(context, Python3Parser.ruleNames, Python3Parser.VOCABULARY)
     }
 }
