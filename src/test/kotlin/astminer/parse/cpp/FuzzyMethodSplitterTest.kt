@@ -19,7 +19,7 @@ class FuzzyMethodSplitterTest {
 
     @BeforeTest
     fun parseTree() {
-        val testTree =  parser.parse(File("testData/fuzzy/testMethodSplitting.cpp").inputStream())
+        val testTree =  parser.parse(File("testData/methodSplitting/testMethodSplitting.cpp").inputStream())
         assertNotNull(testTree)
         methodInfos = methodSplitter.splitIntoMethods(testTree)
     }
