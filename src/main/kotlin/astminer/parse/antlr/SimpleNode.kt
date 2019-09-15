@@ -38,4 +38,8 @@ class SimpleNode(private val typeLabel: String, private val parent: Node?, priva
     override fun setMetadata(key: String, value: Any) {
         metadata[key] = value
     }
+
+    override fun getChildrenOfType(typeLabel: String) = getChildren().filter {
+        decompressTypeLabel(it.getTypeLabel()).firstOrNull() == typeLabel
+    }
 }

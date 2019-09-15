@@ -7,7 +7,7 @@ import org.antlr.v4.runtime.tree.ErrorNode
 import org.antlr.v4.runtime.tree.TerminalNode
 
 fun convertAntlrTree(tree: ParserRuleContext, ruleNames: Array<String>, vocabulary: Vocabulary): SimpleNode {
-    return simplifyTree(convertRuleContext(tree, ruleNames, null, vocabulary))
+    return compressTree(convertRuleContext(tree, ruleNames, null, vocabulary))
 }
 
 private fun convertRuleContext(ruleContext: ParserRuleContext, ruleNames: Array<String>, parent: Node?, vocabulary: Vocabulary): SimpleNode {
@@ -39,7 +39,10 @@ private fun convertErrorNode(errorNode: ErrorNode, parent: Node?): SimpleNode {
     return SimpleNode("Error", parent, errorNode.text)
 }
 
-private fun simplifyTree(tree: SimpleNode): SimpleNode {
+/**
+ * Remove intermediate nodes that have a single child.
+ */
+fun simplifyTree(tree: SimpleNode): SimpleNode {
     return if (tree.getChildren().size == 1) {
         simplifyTree(tree.getChildren().first() as SimpleNode)
     } else {
@@ -48,3 +51,23 @@ private fun simplifyTree(tree: SimpleNode): SimpleNode {
     }
 }
 
+/**
+ * Compress paths of intermediate nodes that have a single child into individual nodes.
+ */
+fun compressTree(root: SimpleNode): SimpleNode {
+    return if (root.getChildren().size == 1) {
+        val child = compressTree(root.getChildren().first() as SimpleNode)
+        val compressedNode = SimpleNode(
+                root.getTypeLabel() + "|" + child.getTypeLabel(),
+                root.getParent(),
+                child.getToken()
+        )
+        compressedNode.setChildren(child.getChildren())
+        compressedNode
+    } else {
+        root.setChildren(root.getChildren().map { compressTree(it as SimpleNode) })
+        root
+    }
+}
+
+fun decompressTypeLabel(typeLabel: String) = typeLabel.split("|")
