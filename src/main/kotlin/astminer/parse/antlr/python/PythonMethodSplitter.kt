@@ -2,6 +2,7 @@ package astminer.parse.antlr.python
 
 import astminer.common.*
 import astminer.parse.antlr.SimpleNode
+import astminer.parse.antlr.decompressTypeLabel
 
 
 class PythonMethodSplitter : TreeMethodSplitter<SimpleNode> {
@@ -15,13 +16,14 @@ class PythonMethodSplitter : TreeMethodSplitter<SimpleNode> {
 
         private const val METHOD_PARAMETER_NODE = "parameters"
         private const val METHOD_PARAMETER_INNER_NODE = "typedargslist"
-        private const val METHOD_TYPED_PARAMETER_NODE = "tfpdef"
+        private const val METHOD_SINGLE_PARAMETER_NODE = "tfpdef"
         private const val PARAMETER_NAME_NODE = "NAME"
-        private const val PARAMETER_SEPARATOR_NODE = "COMMA"
     }
 
     override fun splitIntoMethods(root: SimpleNode): Collection<MethodInfo<SimpleNode>> {
-        val methodRoots = root.preOrder().filter { it.getTypeLabel() == METHOD_NODE }
+        val methodRoots = root.preOrder().filter {
+            decompressTypeLabel(it.getTypeLabel()).last() == METHOD_NODE
+        }
         return methodRoots.map { collectMethodInfo(it as SimpleNode) }
     }
 
@@ -50,7 +52,7 @@ class PythonMethodSplitter : TreeMethodSplitter<SimpleNode> {
     }
 
     private fun getEnclosingClass(node: SimpleNode): SimpleNode? {
-        if (node.getTypeLabel() == CLASS_DECLARATION_NODE) {
+        if (decompressTypeLabel(node.getTypeLabel()).last() == CLASS_DECLARATION_NODE) {
             return node
         }
         val parentNode = node.getParent() as? SimpleNode
@@ -61,28 +63,15 @@ class PythonMethodSplitter : TreeMethodSplitter<SimpleNode> {
     }
 
     private fun getListOfParameters(parameterRoot: SimpleNode): List<ParameterNode<SimpleNode>> {
-        var expectParameterName = true
-        val extractedParameters: MutableList<ParameterNode<SimpleNode>> = mutableListOf()
-        for (parameter in parameterRoot.getChildren()) {
-            when(parameter.getTypeLabel()) {
-                PARAMETER_SEPARATOR_NODE -> expectParameterName = true
-                METHOD_TYPED_PARAMETER_NODE -> {
-                    val parameterNode = parameter.getChildOfType(PARAMETER_NAME_NODE) as? SimpleNode
-                    parameterNode?.let {
-                        extractedParameters.add(ParameterNode(it, null, it))
-                    }
-                    expectParameterName = false
-                }
-                PARAMETER_NAME_NODE -> {
-                    if (expectParameterName) {
-                        (parameter as SimpleNode).let {
-                            extractedParameters.add(ParameterNode(it, null, it))
-                        }
-                        expectParameterName = false
-                    }
-                }
+        if (decompressTypeLabel(parameterRoot.getTypeLabel()).last() == PARAMETER_NAME_NODE) {
+            return listOf(ParameterNode(parameterRoot, null, parameterRoot))
+        }
+        return parameterRoot.getChildrenOfType(METHOD_SINGLE_PARAMETER_NODE).map {
+            if (decompressTypeLabel(it.getTypeLabel()).last() == PARAMETER_NAME_NODE) {
+                ParameterNode(it as SimpleNode, null, it)
+            } else {
+                ParameterNode(it as SimpleNode, null, it.getChildOfType(PARAMETER_NAME_NODE) as SimpleNode)
             }
         }
-        return extractedParameters
     }
 }
