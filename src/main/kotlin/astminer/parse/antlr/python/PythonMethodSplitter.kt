@@ -36,12 +36,10 @@ class PythonMethodSplitter : TreeMethodSplitter<SimpleNode> {
         val parametersRoot = methodNode.getChildOfType(METHOD_PARAMETER_NODE) as? SimpleNode
         val innerParametersRoot = parametersRoot?.getChildOfType(METHOD_PARAMETER_INNER_NODE) as? SimpleNode
 
-        val parametersList = if (innerParametersRoot != null) {
-            getListOfParameters(innerParametersRoot)
-        } else if (parametersRoot != null) {
-            getListOfParameters(parametersRoot)
-        } else {
-            emptyList()
+        val parametersList = when {
+            innerParametersRoot != null -> getListOfParameters(innerParametersRoot)
+            parametersRoot != null -> getListOfParameters(parametersRoot)
+            else -> emptyList()
         }
 
         return MethodInfo(
