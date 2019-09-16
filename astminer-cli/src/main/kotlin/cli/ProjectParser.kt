@@ -1,8 +1,8 @@
 package cli
 
-import astminer.ast.VocabularyAstStorage
-import astminer.common.Node
-import astminer.common.Parser
+import astminer.ast.CsvAstStorage
+import astminer.common.model.Node
+import astminer.common.model.Parser
 import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.python.PythonParser
 import astminer.parse.cpp.FuzzyCppParser
@@ -61,7 +61,7 @@ class ProjectParser : CliktCommand() {
         val outputDir = File(outputDirName)
         for (extension in extensions) {
             // Choose type of storage
-            val storage = VocabularyAstStorage()
+            val storage = CsvAstStorage()
             val parser = getParser(extension)
             val roots = parser.parseWithExtension(File(projectRoot), extension)
             roots.forEach { parseResult ->
@@ -69,7 +69,7 @@ class ProjectParser : CliktCommand() {
                 val filePath = parseResult.filePath
                 root?.apply {
                     // Save AST as it is or process it to extract features / path-based representations
-                    storage.store(root, entityId = filePath)
+                    storage.store(root, label = filePath)
                 }
             }
             val outputDirForLanguage = outputDir.resolve(extension)
