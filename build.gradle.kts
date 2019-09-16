@@ -1,8 +1,7 @@
-import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 import tanvd.kosogor.proxy.publishJar
 
 group = "io.github.vovak.astminer"
-version = "0.3.1-dev"
+version = "0.4.0"
 
 plugins {
     id("java")
@@ -105,7 +104,7 @@ publishJar {
     bintray {
 
         // If username and secretKey not set, will be taken from System environment param `bintray_user`, 'bintray_key'
-        repository = "astminer"
+        repository = "astminer-dev"
 
         info {
             githubRepo = "vovak/astminer"
