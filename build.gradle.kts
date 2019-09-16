@@ -44,7 +44,6 @@ dependencies {
         exclude("org.slf4j", "slf4j-simple")
     }
 
-
     testImplementation("junit:junit:4.11")
     testImplementation(kotlin("test-junit"))
 }
