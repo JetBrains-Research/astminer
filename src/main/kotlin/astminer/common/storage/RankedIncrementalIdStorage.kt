@@ -1,6 +1,6 @@
 package astminer.common.storage
 
-class IncrementalIdStorage<T> {
+class RankedIncrementalIdStorage<T> {
     private var keyCounter = 0L
     val idPerItem: MutableMap<T, Long> = HashMap()
     private val idCountMap: MutableMap<Long, Long> = HashMap()

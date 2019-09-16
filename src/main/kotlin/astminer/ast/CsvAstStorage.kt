@@ -12,8 +12,8 @@ import java.io.File
  */
 class CsvAstStorage : AstStorage {
 
-    private val tokensMap: IncrementalIdStorage<String> = IncrementalIdStorage()
-    private val nodeTypesMap: IncrementalIdStorage<String> = IncrementalIdStorage()
+    private val tokensMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
+    private val nodeTypesMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
 
     private val rootsPerEntity: MutableMap<String, Node> = HashMap()
 

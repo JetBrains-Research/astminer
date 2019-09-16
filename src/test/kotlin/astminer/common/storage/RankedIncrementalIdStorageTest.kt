@@ -4,12 +4,12 @@ import org.junit.Test
 import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
 
-class IncrementalIdStorageTest {
-    var storage = IncrementalIdStorage<Int>()
+class RankedIncrementalIdStorageTest {
+    var storage = RankedIncrementalIdStorage<Int>()
 
     @BeforeTest
     fun initStorage() {
-        storage = IncrementalIdStorage()
+        storage = RankedIncrementalIdStorage()
     }
 
     @Test

@@ -3,7 +3,7 @@ package astminer.common.storage
 import astminer.common.model.OrientedNodeType
 import java.io.File
 
-fun <T> dumpIdStorageToCsv(storage: IncrementalIdStorage<T>,
+fun <T> dumpIdStorageToCsv(storage: RankedIncrementalIdStorage<T>,
                            typeHeader: String,
                            csvSerializer: (T) -> String,
                            file: File,

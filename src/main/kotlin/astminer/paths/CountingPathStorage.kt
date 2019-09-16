@@ -6,9 +6,9 @@ import java.io.File
 
 abstract class CountingPathStorage<LabelType> : PathStorage<LabelType> {
 
-    protected val tokensMap: IncrementalIdStorage<String> = IncrementalIdStorage()
-    protected val orientedNodeTypesMap: IncrementalIdStorage<OrientedNodeType> = IncrementalIdStorage()
-    protected val pathsMap: IncrementalIdStorage<List<Long>> = IncrementalIdStorage()
+    protected val tokensMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
+    protected val orientedNodeTypesMap: RankedIncrementalIdStorage<OrientedNodeType> = RankedIncrementalIdStorage()
+    protected val pathsMap: RankedIncrementalIdStorage<List<Long>> = RankedIncrementalIdStorage()
 
     protected val labeledPathContextIdsList: MutableList<LabeledPathContextIds<LabelType>> = mutableListOf()
 
