@@ -2,7 +2,7 @@
 
 package astminer.examples.pyExample
 
-import astminer.common.LabeledPathContexts
+import astminer.common.model.LabeledPathContexts
 import astminer.paths.toPathContext
 import astminer.parse.antlr.java.JavaParser
 import astminer.paths.PathMiner

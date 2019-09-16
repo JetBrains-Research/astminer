@@ -1,6 +1,6 @@
 package astminer.parse.antlr
 
-import astminer.common.Node
+import astminer.common.model.Node
 
 class SimpleNode(private val typeLabel: String, private val parent: Node?, private var token: String?) : Node {
     private val metadata: MutableMap<String, Any> = HashMap()

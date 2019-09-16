@@ -1,4 +1,4 @@
-package astminer.common
+package astminer.common.model
 
 
 data class ASTPath(val upwardNodes: List<Node>, val downwardNodes: List<Node>)

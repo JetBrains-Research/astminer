@@ -1,6 +1,6 @@
 package astminer.parse.antlr.java
 
-import astminer.common.Parser
+import astminer.common.model.Parser
 import astminer.parse.antlr.SimpleNode
 import astminer.parse.antlr.convertAntlrTree
 import org.antlr.v4.runtime.CommonTokenStream

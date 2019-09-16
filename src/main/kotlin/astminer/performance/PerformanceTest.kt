@@ -2,9 +2,9 @@
 
 package astminer.performance
 
-import astminer.common.LabeledPathContexts
-import astminer.common.Node
-import astminer.common.Parser
+import astminer.common.model.LabeledPathContexts
+import astminer.common.model.Node
+import astminer.common.model.Parser
 import astminer.paths.toPathContext
 import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.python.PythonParser
@@ -15,9 +15,9 @@ import java.io.File
 import java.lang.IllegalStateException
 
 fun <NodeType : Node, LangParser : Parser<NodeType>> langPerformanceTest(language: String,
-                                                                         langSuffix: String,
-                                                                         parser: LangParser,
-                                                                         retrievalSettings: PathRetrievalSettings) {
+                                                                                                                     langSuffix: String,
+                                                                                                                     parser: LangParser,
+                                                                                                                     retrievalSettings: PathRetrievalSettings) {
     val startTime = System.currentTimeMillis()
 
     println("Running performance test for $language")

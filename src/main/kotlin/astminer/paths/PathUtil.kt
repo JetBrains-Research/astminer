@@ -1,6 +1,6 @@
 package astminer.paths
 
-import astminer.common.*
+import astminer.common.model.*
 
 fun toPathContext(path: ASTPath, getToken: (Node) -> String = { node -> node.getToken()}): PathContext {
     val startToken = getToken(path.upwardNodes.first())

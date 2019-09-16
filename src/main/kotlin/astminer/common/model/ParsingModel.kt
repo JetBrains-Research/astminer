@@ -1,4 +1,4 @@
-package astminer.common
+package astminer.common.model
 
 import java.io.File
 import java.io.InputStream

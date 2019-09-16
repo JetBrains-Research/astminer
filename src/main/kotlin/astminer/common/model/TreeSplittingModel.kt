@@ -1,4 +1,4 @@
-package astminer.common
+package astminer.common.model
 
 
 interface TreeSplitter<T : Node> {

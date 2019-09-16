@@ -1,6 +1,6 @@
 package astminer.common.storage
 
-import astminer.common.OrientedNodeType
+import astminer.common.model.OrientedNodeType
 import java.io.File
 
 fun <T> dumpIdStorageToCsv(storage: IncrementalIdStorage<T>,

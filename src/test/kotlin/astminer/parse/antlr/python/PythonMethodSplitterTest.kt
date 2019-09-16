@@ -1,6 +1,6 @@
 package astminer.parse.antlr.python
 
-import astminer.common.MethodInfo
+import astminer.common.model.MethodInfo
 import astminer.parse.antlr.SimpleNode
 import org.junit.Test
 import kotlin.test.assertEquals

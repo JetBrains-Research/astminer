@@ -1,6 +1,7 @@
 package astminer.parse.antlr.python
 
 import astminer.common.*
+import astminer.common.model.*
 import astminer.parse.antlr.SimpleNode
 import astminer.parse.antlr.decompressTypeLabel
 

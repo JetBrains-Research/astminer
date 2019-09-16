@@ -1,6 +1,6 @@
 package astminer.examples;
 
-import astminer.common.*;
+import astminer.common.model.*;
 import astminer.parse.java.GumTreeJavaParser;
 import astminer.paths.PathMiner;
 import astminer.paths.PathRetrievalSettings;

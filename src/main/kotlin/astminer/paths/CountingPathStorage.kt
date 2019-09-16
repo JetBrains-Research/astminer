@@ -1,6 +1,6 @@
 package astminer.paths
 
-import astminer.common.*
+import astminer.common.model.*
 import astminer.common.storage.*
 import java.io.File
 

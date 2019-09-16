@@ -2,7 +2,7 @@ package astminer.parse.antlr.python
 
 import me.vovak.antlr.parser.Python3Lexer
 import me.vovak.antlr.parser.Python3Parser
-import astminer.common.Parser
+import astminer.common.model.Parser
 import astminer.parse.antlr.SimpleNode
 import astminer.parse.antlr.convertAntlrTree
 import org.antlr.v4.runtime.CharStreams

@@ -1,6 +1,7 @@
 package astminer.parse.cpp
 
 import astminer.common.*
+import astminer.common.model.*
 
 class FuzzyMethodSplitter : TreeMethodSplitter<FuzzyNode> {
 

@@ -1,7 +1,7 @@
 package astminer.ast
 
-import astminer.common.AstStorage
-import astminer.common.Node
+import astminer.common.model.AstStorage
+import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.common.storage.*
 import java.io.File

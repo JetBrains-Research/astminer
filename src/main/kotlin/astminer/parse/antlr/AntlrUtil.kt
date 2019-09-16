@@ -1,6 +1,6 @@
 package astminer.parse.antlr
 
-import astminer.common.Node
+import astminer.common.model.Node
 import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.Vocabulary
 import org.antlr.v4.runtime.tree.ErrorNode

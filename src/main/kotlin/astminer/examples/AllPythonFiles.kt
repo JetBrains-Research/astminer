@@ -1,6 +1,6 @@
 package astminer.examples
 
-import astminer.common.LabeledPathContexts
+import astminer.common.model.LabeledPathContexts
 import astminer.parse.antlr.python.PythonParser
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings

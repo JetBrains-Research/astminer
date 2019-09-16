@@ -1,6 +1,6 @@
 package astminer.examples
 
-import astminer.common.LabeledPathContexts
+import astminer.common.model.LabeledPathContexts
 import astminer.parse.java.GumTreeJavaParser
 import astminer.parse.java.GumTreeMethodSplitter
 import astminer.parse.java.MethodInfo

@@ -1,7 +1,7 @@
 package astminer.parse.cpp
 
-import astminer.common.ParseResult
-import astminer.common.Parser
+import astminer.common.model.ParseResult
+import astminer.common.model.Parser
 import gremlin.scala.Key
 import io.shiftleft.codepropertygraph.Cpg
 import io.shiftleft.codepropertygraph.generated.EdgeTypes

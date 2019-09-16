@@ -1,6 +1,6 @@
 package astminer.parse.cpp
 
-import astminer.common.MethodInfo
+import astminer.common.model.MethodInfo
 import org.junit.Test
 import kotlin.test.assertEquals
 import java.io.File

@@ -1,5 +1,6 @@
 package astminer.common
 
+import astminer.common.model.Node
 import java.util.ArrayList
 
 
