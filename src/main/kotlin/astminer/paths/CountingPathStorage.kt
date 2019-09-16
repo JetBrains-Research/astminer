@@ -6,25 +6,25 @@ import java.io.File
 
 abstract class CountingPathStorage<LabelType> : PathStorage<LabelType> {
 
-    private val tokensMap: IncrementalIdStorage<String> = IncrementalIdStorage()
-    private val orientedNodeTypesMap: IncrementalIdStorage<OrientedNodeType> = IncrementalIdStorage()
-    private val pathsMap: IncrementalIdStorage<List<Long>> = IncrementalIdStorage()
+    protected val tokensMap: IncrementalIdStorage<String> = IncrementalIdStorage()
+    protected val orientedNodeTypesMap: IncrementalIdStorage<OrientedNodeType> = IncrementalIdStorage()
+    protected val pathsMap: IncrementalIdStorage<List<Long>> = IncrementalIdStorage()
 
     protected val labeledPathContextIdsList: MutableList<LabeledPathContextIds<LabelType>> = mutableListOf()
 
-    private fun dumpTokenStorage(file: File) {
-        dumpIdStorageToCsv(tokensMap, "token", tokenToCsvString, file)
+    private fun dumpTokenStorage(file: File, tokensLimit: Long) {
+        dumpIdStorageToCsv(tokensMap, "token", tokenToCsvString, file, tokensLimit)
     }
 
     private fun dumpOrientedNodeTypesStorage(file: File) {
-        dumpIdStorageToCsv(orientedNodeTypesMap, "node_type", orientedNodeToCsvString, file)
+        dumpIdStorageToCsv(orientedNodeTypesMap, "node_type", orientedNodeToCsvString, file, Long.MAX_VALUE)
     }
 
-    private fun dumpPathsStorage(file: File) {
-        dumpIdStorageToCsv(pathsMap, "path", pathToCsvString, file)
+    private fun dumpPathsStorage(file: File, pathsLimit: Long) {
+        dumpIdStorageToCsv(pathsMap, "path", pathToCsvString, file, pathsLimit)
     }
 
-    abstract fun dumpPathContexts(file: File)
+    abstract fun dumpPathContexts(file: File, tokensLimit: Long, pathsLimit: Long)
 
     private fun doStore(pathContext: PathContext): PathContextId {
         val startTokenId = tokensMap.record(pathContext.startToken)
@@ -43,11 +43,15 @@ abstract class CountingPathStorage<LabelType> : PathStorage<LabelType> {
     }
 
     override fun save(directoryPath: String) {
-        File(directoryPath).mkdirs()
-        dumpTokenStorage(File("$directoryPath/tokens.csv"))
-        dumpOrientedNodeTypesStorage(File("$directoryPath/node_types.csv"))
-        dumpPathsStorage(File("$directoryPath/paths.csv"))
+        save(directoryPath, Long.MAX_VALUE, Long.MAX_VALUE)
+    }
 
-        dumpPathContexts(File("$directoryPath/path_contexts.csv"))
+    override fun save(directoryPath: String, pathsLimit: Long, tokensLimit: Long) {
+        File(directoryPath).mkdirs()
+        dumpTokenStorage(File("$directoryPath/tokens.csv"), tokensLimit)
+        dumpOrientedNodeTypesStorage(File("$directoryPath/node_types.csv"))
+        dumpPathsStorage(File("$directoryPath/paths.csv"), pathsLimit)
+
+        dumpPathContexts(File("$directoryPath/path_contexts.csv"), tokensLimit, pathsLimit)
     }
 }

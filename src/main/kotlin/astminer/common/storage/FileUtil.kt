@@ -6,13 +6,16 @@ import java.io.File
 fun <T> dumpIdStorageToCsv(storage: IncrementalIdStorage<T>,
                            typeHeader: String,
                            csvSerializer: (T) -> String,
-                           file: File) {
+                           file: File,
+                           limit: Long) {
     val lines = mutableListOf("id,$typeHeader")
 
     storage.idPerItem.forEach {
         val id = it.value
         val item = it.key
-        lines.add("$id,${csvSerializer.invoke(item)}")
+        if (storage.getKeyRank(item) <= limit) {
+            lines.add("$id,${csvSerializer.invoke(item)}")
+        }
     }
 
     writeLinesToFile(lines, file)

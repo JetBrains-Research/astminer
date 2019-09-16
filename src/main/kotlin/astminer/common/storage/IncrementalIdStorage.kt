@@ -29,11 +29,13 @@ class IncrementalIdStorage<T> {
         return idPerItem.entries.firstOrNull { it.value == id }?.key
     }
 
-    fun getKeyRank(item: T): Long {
+    fun getKeyRank(item: T) = getIdRank(getId(item))
+
+    fun getIdRank(id: Long): Long {
         if (idCountRanks == null) {
             computeRanks()
         }
-        return idCountRanks?.get(getId(item)) ?: 0
+        return idCountRanks?.get(id) ?: 0
     }
 
     fun computeRanks() {

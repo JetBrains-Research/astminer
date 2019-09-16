@@ -7,6 +7,7 @@ package astminer.common
 interface PathStorage<LabelType> {
     fun store(labeledPathContexts: LabeledPathContexts<LabelType>)
     fun save(directoryPath: String)
+    fun save(directoryPath: String, pathsLimit: Long, tokensLimit: Long)
 }
 
 /**
