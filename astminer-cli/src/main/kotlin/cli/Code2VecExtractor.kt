@@ -1,8 +1,10 @@
 package cli
 
-import astminer.common.model.Node
-import astminer.common.model.Parser
-import astminer.common.model.TreeMethodSplitter
+import astminer.common.getNormalizedToken
+import astminer.common.model.*
+import astminer.common.preOrder
+import astminer.common.setNormalizedToken
+import astminer.common.splitToSubtokens
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.python.PythonMethodSplitter
@@ -12,6 +14,7 @@ import astminer.parse.cpp.FuzzyMethodSplitter
 import astminer.paths.Code2VecPathStorage
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
+import astminer.paths.toPathContext
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
@@ -32,20 +35,10 @@ class Code2VecExtractor : CliktCommand() {
         val extension: String
     )
 
-    /**
-     * List of supported language extensions and corresponding parsers.
-     */
-    private val supportedLanguages = listOf(
-        SupportedLanguage(JavaParser(), JavaMethodSplitter(),"java"),
-        SupportedLanguage(FuzzyCppParser(), FuzzyMethodSplitter(),"c"),
-        SupportedLanguage(FuzzyCppParser(), FuzzyMethodSplitter(), "cpp"),
-        SupportedLanguage(PythonParser(), PythonMethodSplitter(), "py")
-    )
-
     val extensions: List<String> by option(
         "--lang",
         help = "File extensions that will be parsed"
-    ).split(",").default(supportedLanguages.map { it.extension })
+    ).split(",").required()
 
     val projectRoot: String by option(
         "--project",
@@ -68,43 +61,60 @@ class Code2VecExtractor : CliktCommand() {
                 "Note, that here width is the difference between token indices in contrast to the original code2vec."
     ).int().default(3)
 
-    private fun getParser(extension: String): Parser<out Node> {
-        for (language in supportedLanguages) {
-            if (extension == language.extension) {
-                return language.parser
-            }
+    private fun <T : Node> extractFromMethods(
+        roots: List<ParseResult<T>>,
+        methodSplitter: TreeMethodSplitter<T>,
+        miner: PathMiner,
+        storage: Code2VecPathStorage
+    ) {
+        val methods = roots.mapNotNull {
+            it.root
+        }.flatMap {
+            methodSplitter.splitIntoMethods(it)
         }
-        throw UnsupportedOperationException("Unsupported extension $extension")
+        methods.forEach { methodInfo ->
+            val methodNameNode = methodInfo.method.nameNode ?: return@forEach
+            val methodRoot = methodInfo.method.root
+            val label = splitToSubtokens(methodNameNode.getToken()).joinToString("|")
+            methodRoot.preOrder().forEach { it.setNormalizedToken() }
+            methodNameNode.setNormalizedToken("METHOD_NAME")
+
+            // Retrieve paths from every node individually
+            val paths = miner.retrievePaths(methodRoot)
+            storage.store(LabeledPathContexts(label, paths.map {
+                println(it.downwardNodes.last().getNormalizedToken() + " " + it.upwardNodes.first().getNormalizedToken())
+                toPathContext(it) { node ->
+                    node.getNormalizedToken()
+                }
+            }))
+        }
     }
 
-    private fun getMethodSplitter(extension: String): TreeMethodSplitter<out Node> {
-        for (language in supportedLanguages) {
-            if (extension == language.extension) {
-                return language.methodSplitter
-            }
-        }
-        throw UnsupportedOperationException("Unsupported extension $extension")
-    }
-
-    fun extract() {
+    private fun extract() {
         val outputDir = File(outputDirName)
         for (extension in extensions) {
             val miner = PathMiner(PathRetrievalSettings(maxPathHeight, maxPathWidth))
             val storage = Code2VecPathStorage()
-            val parser = getParser(extension)
-            val methodSplitter = getMethodSplitter(extension)
 
-            val roots = parser.parseWithExtension(File(projectRoot), extension)
-            roots.forEach { parseResult ->
-                val root = parseResult.root
-                val filePath = parseResult.filePath
-                val methods = methodSplitter.splitIntoMethods(root)
-
-                root?.apply {
-                    // Save AST as it is or process it to extract features / path-based representations
-//                    storage.store(root, label = filePath)
+            when (extension) {
+                "c", "cpp" -> {
+                    val parser = FuzzyCppParser()
+                    val roots = parser.parseWithExtension(File(projectRoot), extension)
+                    extractFromMethods(roots, FuzzyMethodSplitter(), miner, storage)
                 }
+                "java" -> {
+                    val parser = JavaParser()
+                    val roots = parser.parseWithExtension(File(projectRoot), extension)
+                    extractFromMethods(roots, JavaMethodSplitter(), miner, storage)
+                }
+                "py" -> {
+                    val parser = PythonParser()
+                    val roots = parser.parseWithExtension(File(projectRoot), extension)
+                    extractFromMethods(roots, PythonMethodSplitter(), miner, storage)
+                }
+                else -> throw UnsupportedOperationException("Unsupported extension $extension")
             }
+
             val outputDirForLanguage = outputDir.resolve(extension)
             outputDirForLanguage.mkdir()
             // Save stored data on disk
