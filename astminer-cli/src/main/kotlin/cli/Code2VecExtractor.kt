@@ -98,7 +98,6 @@ class Code2VecExtractor : CliktCommand() {
             // Retrieve paths from every node individually
             val paths = miner.retrievePaths(methodRoot).take(maxPathContexts)
             storage.store(LabeledPathContexts(label, paths.map {
-                println(it.downwardNodes.last().getNormalizedToken() + " " + it.upwardNodes.first().getNormalizedToken())
                 toPathContext(it) { node ->
                     node.getNormalizedToken()
                 }
