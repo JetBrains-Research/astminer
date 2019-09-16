@@ -10,7 +10,7 @@ import java.io.File
  * Stores multiple ASTs by their roots and saves them in .csv format.
  * Output consists of 3 .csv files: with node types, with tokens and with ASTs.
  */
-class VocabularyAstStorage : AstStorage {
+class CsvAstStorage : AstStorage {
 
     private val tokensMap: IncrementalIdStorage<String> = IncrementalIdStorage()
     private val nodeTypesMap: IncrementalIdStorage<String> = IncrementalIdStorage()
