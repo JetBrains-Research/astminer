@@ -1,6 +1,8 @@
 package astminer.examples
 
 import astminer.common.*
+import astminer.parse.antlr.java.JavaMethodSplitter
+import astminer.parse.antlr.java.JavaParser
 import astminer.parse.java.GumTreeJavaParser
 import astminer.parse.java.GumTreeMethodSplitter
 import astminer.parse.java.MethodInfo
@@ -26,22 +28,21 @@ fun code2vecJavaMethods() {
 
     File(folder).forFilesWithSuffix(".java") { file ->
         //parse file
-        val fileNode = GumTreeJavaParser().parse(file.inputStream()) ?: return@forFilesWithSuffix
+        val fileNode = JavaParser().parse(file.inputStream()) ?: return@forFilesWithSuffix
 
         //extract method nodes
-        val methodNodes = GumTreeMethodSplitter().split(fileNode)
+        val methods = JavaMethodSplitter().splitIntoMethods(fileNode)
 
-        methodNodes.forEach { methodNode ->
-            val methodNameNode = methodNode.getChildren().firstOrNull {
-                it.getTypeLabel() == "SimpleName"
-            } ?: return@forEach
+        methods.forEach { methodInfo ->
+            val methodNameNode = methodInfo.method.nameNode ?: return@forEach
+            val methodRoot = methodInfo.method.root
             val label = splitToSubtokens(methodNameNode.getToken()).joinToString("|")
-            methodNode.preOrder().forEach { it.setNormalizedToken() }
+            methodRoot.preOrder().forEach { it.setNormalizedToken() }
             methodNameNode.setNormalizedToken("METHOD_NAME")
 
             // Retrieve paths from every node individually
-            val paths = miner.retrievePaths(methodNode)
-            storage.store(LabeledPathContexts(label, paths.map { toPathContext(it) }))
+            val paths = miner.retrievePaths(methodRoot)
+            storage.store(LabeledPathContexts(label, paths.map { toPathContext(it) { node -> node.getNormalizedToken() } }))
         }
     }
 
