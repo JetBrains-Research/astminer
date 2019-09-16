@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 import tanvd.kosogor.proxy.publishJar
 
 group = "io.github.vovak.astminer"
@@ -11,7 +10,7 @@ plugins {
     id("idea")
     id("application")
     id("tanvd.kosogor") version "1.0.6"
-    id ("org.jetbrains.dokka") version "0.9.18"
+    id("org.jetbrains.dokka") version "0.9.18"
 }
 
 
@@ -48,7 +47,7 @@ dependencies {
     testImplementation(kotlin("test-junit"))
 }
 
-task<JavaExec> ("performanceTest") {
+task<JavaExec>("performanceTest") {
     main = "astminer.performance.PerformanceTest"
     classpath = sourceSets["main"].runtimeClasspath
 }
