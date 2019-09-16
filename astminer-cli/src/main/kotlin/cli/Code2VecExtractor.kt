@@ -21,6 +21,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.options.split
 import com.github.ajalt.clikt.parameters.types.int
+import com.github.ajalt.clikt.parameters.types.long
 import java.io.File
 
 class Code2VecExtractor : CliktCommand() {
@@ -61,6 +62,21 @@ class Code2VecExtractor : CliktCommand() {
                 "Note, that here width is the difference between token indices in contrast to the original code2vec."
     ).int().default(3)
 
+    val maxPathContexts: Int by option(
+        "--maxContexts",
+        help = "Number of path contexts to keep from each method."
+    ).int().default(500)
+
+    val maxTokens: Long by option(
+        "--maxTokens",
+        help = "Keep only contexts with maxTokens most popular tokens."
+    ).long().default(Long.MAX_VALUE)
+
+    val maxPaths: Long by option(
+        "--maxPaths",
+        help = "Keep only contexts with maxTokens most popular paths."
+    ).long().default(Long.MAX_VALUE)
+
     private fun <T : Node> extractFromMethods(
         roots: List<ParseResult<T>>,
         methodSplitter: TreeMethodSplitter<T>,
@@ -80,7 +96,7 @@ class Code2VecExtractor : CliktCommand() {
             methodNameNode.setNormalizedToken("METHOD_NAME")
 
             // Retrieve paths from every node individually
-            val paths = miner.retrievePaths(methodRoot)
+            val paths = miner.retrievePaths(methodRoot).take(maxPathContexts)
             storage.store(LabeledPathContexts(label, paths.map {
                 println(it.downwardNodes.last().getNormalizedToken() + " " + it.upwardNodes.first().getNormalizedToken())
                 toPathContext(it) { node ->
@@ -118,7 +134,7 @@ class Code2VecExtractor : CliktCommand() {
             val outputDirForLanguage = outputDir.resolve(extension)
             outputDirForLanguage.mkdir()
             // Save stored data on disk
-            storage.save(outputDirForLanguage.path)
+            storage.save(outputDirForLanguage.path, maxPaths, maxTokens)
         }
     }
 
