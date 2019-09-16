@@ -6,6 +6,7 @@ import kotlin.test.assertEquals
 import java.io.File
 import kotlin.test.BeforeTest
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class FuzzyMethodSplitterTest {
 
@@ -55,6 +56,13 @@ class FuzzyMethodSplitterTest {
         val methodClass = methodInfos.find { it.name() == "functionReturningClass"  }
         assertNotNull(methodClass)
         assertEquals( "Class", methodClass.returnType())
+    }
+
+    @Test
+    fun testFunctionNotInClass() {
+        val methodClass = methodInfos.find { it.name() == "functionWithNoClass"  }
+        assertNotNull(methodClass)
+        assertNull(methodClass.enclosingClass.root)
     }
 
     @Test
