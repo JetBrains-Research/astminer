@@ -7,7 +7,7 @@ fun <T> dumpIdStorageToCsv(storage: IncrementalIdStorage<T>,
                            typeHeader: String,
                            csvSerializer: (T) -> String,
                            file: File,
-                           limit: Long) {
+                           limit: Long = Long.MAX_VALUE) {
     val lines = mutableListOf("id,$typeHeader")
 
     storage.idPerItem.forEach {
