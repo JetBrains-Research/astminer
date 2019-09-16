@@ -1,6 +1,7 @@
 package astminer.examples
 
 import astminer.common.LabeledPathContexts
+import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.java.JavaParser
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
@@ -15,10 +16,18 @@ fun allJavaFiles() {
     val miner = PathMiner(PathRetrievalSettings(5, 5))
     val storage = CsvPathStorage()
 
-    File(folder).forFilesWithSuffix(".java") { file ->
+    File(folder).forFilesWithSuffix("11.java") { file ->
         val node = JavaParser().parse(file.inputStream()) ?: return@forFilesWithSuffix
         val paths = miner.retrievePaths(node)
-
+        node.prettyPrint()
+        JavaMethodSplitter().splitIntoMethods(node).forEach {
+            println(it.name())
+            println(it.returnType())
+            println(it.className())
+            it.methodParameters.forEach { parameters ->
+                println("${parameters.name()} ${parameters.returnType()}")
+            }
+        }
         storage.store(LabeledPathContexts(file.path, paths.map { toPathContext(it) }))
     }
 
