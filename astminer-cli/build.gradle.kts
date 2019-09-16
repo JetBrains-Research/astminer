@@ -15,7 +15,7 @@ application {
 }
 
 group = "io.github.vovak.astminer"
-version = "0.1"
+version = "0.2"
 
 repositories {
     mavenCentral()
