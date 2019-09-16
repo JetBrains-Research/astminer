@@ -98,13 +98,13 @@ idea {
 
 publishJar {
     publication {
-        artifactId = "astminer"
+        artifactId = "astminer-dev"
     }
 
     bintray {
 
         // If username and secretKey not set, will be taken from System environment param `bintray_user`, 'bintray_key'
-        repository = "astminer-dev"
+        repository = "astminer"
 
         info {
             githubRepo = "vovak/astminer"
