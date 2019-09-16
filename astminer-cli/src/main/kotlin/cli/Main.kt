@@ -10,6 +10,7 @@ fun main(args: Array<String>) {
         return when (args[0]) {
             "preprocess" -> ProjectPreprocessor().main(args.sliceArray(1 until args.size))
             "parse" -> ProjectParser().main(args.sliceArray(1 until args.size))
+            "code2vec" -> Code2VecExtractor().main(args.sliceArray(1 until args.size))
             else -> throw Exception("The first argument should be task's name: either 'preprocess' or 'parse'")
         }
     }
