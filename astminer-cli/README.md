@@ -1,24 +1,23 @@
 # Astminer usage example / CLI
 
-The project implements a CLI for [Astminer](github.com/vovak/astminer).  
+The project implements a CLI for [Astminer](github.com/vovak/astminer) and serves as a usage example of the library.  
 
-For now it has two options:
+For now the CLI provides two options:
 
-* Parsing projects in Java, Python, C, and C++ and saving extracted data
-* Preprocess code in C/C++ to unfold `#define` directives 
+* Parse a project in Java, Python, C, and C++, and save the resulting ASTs;
+* Preprocess code in C/C++ to unfold `#define` directives to enable further processing.
 
-We hope, that the implementation is short and clear enough to be extended to other tasks available in Astminer 
-(e.g., mining of path-based representations or AST features). 
-If it's not the case, don't hesitate to contact us for any support! 
+This short implementation can be extended to other features of astminer, such as mining of path-based representations and AST features. 
+Don't hesitate to contact us for any support with this. 
 
 ## Usage
 
-1. Download the project
+1. Clone the repository
 2. Run `./gradlew install` to build the project as an application
-3. Call `./build/install/astminer-examples/bin/astminer-examples` or `./cli.sh` to run the CLI
+3. Run `./cli.sh` to run the CLI
 
 ## CLI
-CLI takes `preprocess` or `parse` as the first parameter to choose the task.
+The CLI takes `preprocess` or `parse` as the first parameter to choose the task.
 
 To get help and information about other parameters, run:
 ```$xslt
@@ -35,6 +34,6 @@ To evaluate CLI on test data, run:
 
 ## Extending the CLI
 
-To add another task, go to [Main.kt](src/main/kotlin/cli/Main.kt) and add another case to _when_ statement.
+To add another task, go to [Main.kt](src/main/kotlin/cli/Main.kt) and add a new case to the `when` statement.
 
-To configure extracted data see `parsing` function in [ProjectParser.kt](src/main/kotlin/cli/ProjectParser.kt).
+To configure extracted data, see `parsing` function in [ProjectParser.kt](src/main/kotlin/cli/ProjectParser.kt).
