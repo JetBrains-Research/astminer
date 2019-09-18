@@ -26,16 +26,6 @@ import java.io.File
 
 class Code2VecExtractor : CliktCommand() {
 
-    /**
-     * @param parser class that implements parsing
-     * @param extension file extension to choose files for parsing
-     */
-    private data class SupportedLanguage<T : Node>(
-        val parser: Parser<T>,
-        val methodSplitter: TreeMethodSplitter<T>,
-        val extension: String
-    )
-
     val extensions: List<String> by option(
         "--lang",
         help = "File extensions that will be parsed"
