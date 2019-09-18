@@ -4,10 +4,11 @@
 
 The project implements a CLI for [Astminer](github.com/vovak/astminer) and serves as a usage example of the library.  
 
-For now the CLI provides three options:
+For now the CLI provides four options:
 
 * Extract data (method names and path contexts) suitable as input for [code2vec](https://github.com/tech-srl/code2vec);
-* Parse a project in Java, Python, C, or C++, and save the extracted ASTs;
+* Parse a project in one of supported languages and save the extracted ASTs;
+* Extract path contexts from the project files and save them in code2vec format;
 * Preprocess code in C/C++ to unfold `#define` directives to enable further processing.
 
 ## Supported languages
@@ -45,10 +46,17 @@ Extract ASTs from all the files in supported languages.
 java -jar cli.jar parse --lang py,java,c,cpp --project path/to/project --output path/to/result
 ```
 
+#### PathContexts
+
+Extract path contexts from all the files in supported languages and store in form `fileName triplesOfPathContexts`.
+```shell script
+java -jar cli.jar pathContexts --lang py,java,c,cpp --project path/to/project --output path/to/results --maxH H --maxW W --maxContexts C --maxTokens T --maxPaths P
+```
+
 #### Code2vec
 
 Extract data suitable as input for [code2vec](https://github.com/tech-srl/code2vec) model.
-All files written in specified language are parsed into ASTs, split into methods, and stored in form `method|name triplesOfPathContexts`.
+Parse all files written in specified language into ASTs, split into methods, and store in form `method|name triplesOfPathContexts`.
 ```shell script
 java -jar cli.jar code2vec --lang py,java,c,cpp --project path/to/project --output path/to/results --maxH H --maxW W --maxContexts C --maxTokens T --maxPaths P
 ```
