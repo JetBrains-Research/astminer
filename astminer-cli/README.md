@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/vovak/astminer.svg?style=svg)](https://circleci.com/gh/vovak/astminer) [ ![Download](https://api.bintray.com/packages/egor-bogomolov/astminer/astminer-cli/images/download.svg?version=0.2) ](https://bintray.com/egor-bogomolov/astminer/astminer-cli/0.2/link)
+
 # Astminer usage example / CLI
 
 The project implements a CLI for [Astminer](github.com/vovak/astminer) and serves as a usage example of the library.  
