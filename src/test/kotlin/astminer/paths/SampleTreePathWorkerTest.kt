@@ -1,6 +1,6 @@
 package astminer.paths
 
-import astminer.common.Node
+import astminer.common.model.Node
 
 class SampleTreePathWorkerTest : PathWorkerTestBase() {
     override fun getTree(): Node {

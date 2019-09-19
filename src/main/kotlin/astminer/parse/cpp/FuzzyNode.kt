@@ -1,6 +1,6 @@
 package astminer.parse.cpp
 
-import astminer.common.Node
+import astminer.common.model.Node
 import com.google.common.collect.TreeMultiset
 
 /**

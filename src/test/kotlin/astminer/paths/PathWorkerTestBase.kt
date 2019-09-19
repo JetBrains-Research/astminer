@@ -1,6 +1,6 @@
 package astminer.paths
 
-import astminer.common.Node
+import astminer.common.model.Node
 import astminer.common.postOrder
 import org.junit.Assert
 import org.junit.Test

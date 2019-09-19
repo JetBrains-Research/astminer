@@ -1,7 +1,7 @@
 package astminer.parse.cpp
 
-import astminer.common.ParseResult
-import astminer.common.Parser
+import astminer.common.model.ParseResult
+import astminer.common.model.Parser
 import gremlin.scala.Key
 import io.shiftleft.codepropertygraph.Cpg
 import io.shiftleft.codepropertygraph.generated.EdgeTypes
@@ -22,7 +22,46 @@ import java.io.InputStream
  */
 class FuzzyCppParser : Parser<FuzzyNode> {
 
-    private val supportedExtensions = listOf("c", "cpp")
+    companion object {
+        private val supportedExtensions = listOf("c", "cpp")
+
+        data class ExpandableNodeKey(
+                val key: String,
+                val supportedNodeLabels: List<String>,
+                val order: Int
+        )
+
+        private val expandableNodeKeys = listOf(
+                ExpandableNodeKey("NAME", listOf(
+                        NodeTypes.TYPE, NodeTypes.TYPE_DECL, NodeTypes.TYPE_PARAMETER, NodeTypes.MEMBER, NodeTypes.TYPE_ARGUMENT,
+                        NodeTypes.METHOD, NodeTypes.METHOD_PARAMETER_IN, NodeTypes.LOCAL, NodeTypes.MODIFIER,
+                        NodeTypes.IDENTIFIER, NodeTypes.CALL,
+                        NodeTypes.UNKNOWN
+                ), 0),
+                ExpandableNodeKey("TYPE_FULL_NAME", listOf(
+                        NodeTypes.TYPE,
+                        NodeTypes.METHOD_RETURN, NodeTypes.METHOD_PARAMETER_IN, NodeTypes.LOCAL,
+                        NodeTypes.IDENTIFIER,
+                        NodeTypes.UNKNOWN
+                ), 0),
+                ExpandableNodeKey("ALIAS_TYPE_FULL_NAME", listOf(
+                        NodeTypes.TYPE_DECL,
+                        NodeTypes.UNKNOWN
+                ), 0)
+        )
+
+        data class ReplaceableNodeKey(val key: String, val condition: (Vertex) -> Boolean)
+
+        private val replaceableNodeKeys = listOf(
+                ReplaceableNodeKey("NAME") { v ->
+                    v.keys().contains("NAME") &&
+                            v.value<String>("NAME").startsWith("<operator>")
+                },
+                ReplaceableNodeKey("PARSER_TYPE_NAME") { v ->
+                    v.keys().contains("PARSER_TYPE_NAME")
+                }
+        )
+    }
 
     /**
      * Parse input stream and create an AST.
@@ -114,8 +153,28 @@ class FuzzyCppParser : Parser<FuzzyNode> {
     private fun createNodeFromVertex(v: Vertex): FuzzyNode {
         val token: String? = v.getValueOrNull(NodeKeys.CODE)
         val order: Int? = v.getValueOrNull(NodeKeys.ORDER)
+
+        for (replaceableNodeKey in replaceableNodeKeys) {
+            if (replaceableNodeKey.condition(v)) {
+                val node = FuzzyNode(v.value<String>(replaceableNodeKey.key), token, order)
+                v.keys().forEach { k ->
+                    node.setMetadata(k, v.value(k))
+                }
+                return node
+            }
+        }
+
         val node = FuzzyNode(v.label(), token, order)
-        v.keys().forEach { k -> node.setMetadata(k, v.value(k)) }
+        v.keys().forEach { k ->
+            for (expandableNodeKey in expandableNodeKeys) {
+                if (expandableNodeKey.key == k && expandableNodeKey.supportedNodeLabels.contains(v.label())) {
+                    val keyNode = FuzzyNode(k, v.value<Any>(k).toString(), expandableNodeKey.order)
+                    node.addChild(keyNode)
+                    return@forEach
+                }
+            }
+            node.setMetadata(k, v.value(k))
+        }
         return node
     }
 

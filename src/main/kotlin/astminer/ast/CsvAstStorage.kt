@@ -1,7 +1,7 @@
 package astminer.ast
 
-import astminer.common.AstStorage
-import astminer.common.Node
+import astminer.common.model.AstStorage
+import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.common.storage.*
 import java.io.File
@@ -10,19 +10,19 @@ import java.io.File
  * Stores multiple ASTs by their roots and saves them in .csv format.
  * Output consists of 3 .csv files: with node types, with tokens and with ASTs.
  */
-class VocabularyAstStorage : AstStorage {
+class CsvAstStorage : AstStorage {
 
-    private val tokensMap: IncrementalIdStorage<String> = IncrementalIdStorage()
-    private val nodeTypesMap: IncrementalIdStorage<String> = IncrementalIdStorage()
+    private val tokensMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
+    private val nodeTypesMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
 
     private val rootsPerEntity: MutableMap<String, Node> = HashMap()
 
-    override fun store(root: Node, entityId: String) {
+    override fun store(root: Node, label: String) {
         for (node in root.preOrder()) {
             tokensMap.record(node.getToken())
             nodeTypesMap.record(node.getTypeLabel())
         }
-        rootsPerEntity[entityId] = root
+        rootsPerEntity[label] = root
     }
 
     override fun save(directoryPath: String) {
@@ -34,11 +34,11 @@ class VocabularyAstStorage : AstStorage {
     }
 
     private fun dumpTokenStorage(file: File) {
-        dumpIdStorage(tokensMap, "token", tokenToCsvString, file)
+        dumpIdStorageToCsv(tokensMap, "token", tokenToCsvString, file)
     }
 
     private fun dumpNodeTypesStorage(file: File) {
-        dumpIdStorage(nodeTypesMap, "node_type", nodeTypeToCsvString, file)
+        dumpIdStorageToCsv(nodeTypesMap, "node_type", nodeTypeToCsvString, file)
     }
 
     private fun dumpAsts(file: File) {

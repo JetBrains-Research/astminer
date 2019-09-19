@@ -1,6 +1,6 @@
 package astminer.featureextraction
 
-import astminer.common.Node
+import astminer.common.model.Node
 
 class PrettyNode(private val type: String, private val token: String) : Node {
     private var children: MutableList<PrettyNode> = ArrayList()

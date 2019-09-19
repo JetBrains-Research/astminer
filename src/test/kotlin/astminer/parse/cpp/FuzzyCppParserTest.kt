@@ -13,7 +13,8 @@ class FuzzyCppParserTest {
         val file = File("testData/fuzzy/test.cpp")
 
         val nodes = parser.parse(listOf(file))
-        Assert.assertTrue("Parse tree for a valid file should not be null", nodes.size == 1 && nodes[0] != null)
+        Assert.assertTrue("Parse tree for a valid file should not be null",
+                nodes.size == 1 && nodes[0].root != null)
     }
 
     @Test

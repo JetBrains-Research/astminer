@@ -1,6 +1,6 @@
 package astminer.examples
 
-import astminer.ast.VocabularyAstStorage
+import astminer.ast.CsvAstStorage
 import astminer.parse.antlr.java.JavaParser
 import java.io.File
 
@@ -8,11 +8,11 @@ import java.io.File
 fun allJavaAsts() {
     val folder = "./testData/examples/"
 
-    val storage = VocabularyAstStorage()
+    val storage = CsvAstStorage()
 
     File(folder).forFilesWithSuffix(".java") { file ->
         val node = JavaParser().parse(file.inputStream()) ?: return@forFilesWithSuffix
-        storage.store(node, entityId = file.path)
+        storage.store(node, label = file.path)
     }
 
     storage.save("out_examples/allJavaAstsAntlr")
