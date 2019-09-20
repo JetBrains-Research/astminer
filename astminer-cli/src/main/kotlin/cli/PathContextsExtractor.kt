@@ -1,20 +1,26 @@
 package cli
 
-import astminer.ast.CsvAstStorage
-import astminer.common.model.Node
-import astminer.common.model.Parser
+import astminer.common.getNormalizedToken
+import astminer.common.model.*
+import astminer.common.preOrder
+import astminer.common.setNormalizedToken
 import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.python.PythonParser
 import astminer.parse.cpp.FuzzyCppParser
+import astminer.paths.Code2VecPathStorage
+import astminer.paths.PathMiner
+import astminer.paths.PathRetrievalSettings
+import astminer.paths.toPathContext
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.options.split
+import com.github.ajalt.clikt.parameters.types.int
+import com.github.ajalt.clikt.parameters.types.long
 import java.io.File
 
-
-class ProjectParser : CliktCommand() {
+class PathContextsExtractor : CliktCommand() {
 
     /**
      * @param parser class that implements parsing
@@ -47,6 +53,32 @@ class ProjectParser : CliktCommand() {
         help = "Path to directory where the output will be stored"
     ).required()
 
+    val maxPathHeight: Int by option(
+        "--maxH",
+        help = "Maximum height of path for code2vec"
+    ).int().default(8)
+
+    val maxPathWidth: Int by option(
+        "--maxW",
+        help = "Maximum width of path. " +
+                "Note, that here width is the difference between token indices in contrast to the original code2vec."
+    ).int().default(3)
+
+    val maxPathContexts: Int by option(
+        "--maxContexts",
+        help = "Number of path contexts to keep from each method."
+    ).int().default(500)
+
+    val maxTokens: Long by option(
+        "--maxTokens",
+        help = "Keep only contexts with maxTokens most popular tokens."
+    ).long().default(Long.MAX_VALUE)
+
+    val maxPaths: Long by option(
+        "--maxPaths",
+        help = "Keep only contexts with maxTokens most popular paths."
+    ).long().default(Long.MAX_VALUE)
+
     private fun getParser(extension: String): Parser<out Node> {
         for (language in supportedLanguages) {
             if (extension == language.extension) {
@@ -56,31 +88,36 @@ class ProjectParser : CliktCommand() {
         throw UnsupportedOperationException("Unsupported extension $extension")
     }
 
-
-    private fun parsing() {
+    private fun extractPathContexts() {
         val outputDir = File(outputDirName)
         for (extension in extensions) {
-            // Choose type of storage
-            val storage = CsvAstStorage()
+            val miner = PathMiner(PathRetrievalSettings(maxPathHeight, maxPathWidth))
+            val storage = Code2VecPathStorage()
             val parser = getParser(extension)
-            val roots = parser.parseWithExtension(File(projectRoot), extension)
-            roots.forEach { parseResult ->
-                val root = parseResult.root
+            val parsedFiles = parser.parseWithExtension(File(projectRoot), extension)
+
+            parsedFiles.forEach { parseResult ->
+                val root = parseResult.root ?: return@forEach
                 val filePath = parseResult.filePath
-                root?.apply {
-                    // Save AST as it is or process it to extract features / path-based representations
-                    storage.store(root, label = filePath)
-                }
+
+                root.preOrder().forEach { node -> node.setNormalizedToken() }
+
+                val paths = miner.retrievePaths(root).take(maxPathContexts)
+                storage.store(LabeledPathContexts(filePath, paths.map { astPath ->
+                    toPathContext(astPath) { node ->
+                        node.getNormalizedToken()
+                    }
+                }))
             }
+
             val outputDirForLanguage = outputDir.resolve(extension)
             outputDirForLanguage.mkdir()
             // Save stored data on disk
-            storage.save(outputDirForLanguage.path)
+            storage.save(outputDirForLanguage.path, maxPaths, maxTokens)
         }
-
     }
 
     override fun run() {
-        parsing()
+        extractPathContexts()
     }
 }
