@@ -5,9 +5,10 @@ package astminer.common.model
  * Stores path-contexts and their labels and saves them to directory.
  */
 interface PathStorage<LabelType> {
+    val outputFolder: String
     fun store(labeledPathContexts: LabeledPathContexts<LabelType>)
-    fun save(directoryPath: String)
-    fun save(directoryPath: String, pathsLimit: Long, tokensLimit: Long)
+    fun save()
+    fun save(pathsLimit: Long, tokensLimit: Long)
 }
 
 /**

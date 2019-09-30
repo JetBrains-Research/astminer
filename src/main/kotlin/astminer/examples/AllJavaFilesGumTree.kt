@@ -10,17 +10,18 @@ import java.io.File
 
 //Retrieve paths from Java files, using a GumTree parser.
 fun allJavaFilesGumTree() {
-    val folder = "./testData/gumTreeMethodSplitter/"
+    val inputDir = "./testData/gumTreeMethodSplitter/"
 
     val miner = PathMiner(PathRetrievalSettings(5, 5))
-    val storage = CsvPathStorage()
+    val outputDir = "out_examples/allJavaFilesGumTree"
+    val storage = CsvPathStorage(outputDir)
 
-    File(folder).forFilesWithSuffix(".java") { file ->
+    File(inputDir).forFilesWithSuffix(".java") { file ->
         val node = GumTreeJavaParser().parse(file.inputStream()) ?: return@forFilesWithSuffix
         val paths = miner.retrievePaths(node)
 
         storage.store(LabeledPathContexts(file.path, paths.map { toPathContext(it) }))
     }
 
-    storage.save("out_examples/allJavaFilesGumTree")
+    storage.save()
 }

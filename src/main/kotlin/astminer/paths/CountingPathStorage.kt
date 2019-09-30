@@ -4,7 +4,8 @@ import astminer.common.model.*
 import astminer.common.storage.*
 import java.io.File
 
-abstract class CountingPathStorage<LabelType> : PathStorage<LabelType> {
+abstract class CountingPathStorage<LabelType>(private val outputFolderPath: String): PathStorage<LabelType> {
+    override val outputFolder = outputFolderPath
 
     protected val tokensMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
     protected val orientedNodeTypesMap: RankedIncrementalIdStorage<OrientedNodeType> = RankedIncrementalIdStorage()
@@ -42,16 +43,16 @@ abstract class CountingPathStorage<LabelType> : PathStorage<LabelType> {
         labeledPathContextIdsList.add(labeledPathContextIds)
     }
 
-    override fun save(directoryPath: String) {
-        save(directoryPath, Long.MAX_VALUE, Long.MAX_VALUE)
+    override fun save() {
+        save(pathsLimit = Long.MAX_VALUE, tokensLimit = Long.MAX_VALUE)
     }
 
-    override fun save(directoryPath: String, pathsLimit: Long, tokensLimit: Long) {
-        File(directoryPath).mkdirs()
-        dumpTokenStorage(File("$directoryPath/tokens.csv"), tokensLimit)
-        dumpOrientedNodeTypesStorage(File("$directoryPath/node_types.csv"))
-        dumpPathsStorage(File("$directoryPath/paths.csv"), pathsLimit)
+    override fun save(pathsLimit: Long, tokensLimit: Long) {
+        File(outputFolderPath).mkdirs()
+        dumpTokenStorage(File("$outputFolderPath/tokens.csv"), tokensLimit)
+        dumpOrientedNodeTypesStorage(File("$outputFolderPath/node_types.csv"))
+        dumpPathsStorage(File("$outputFolderPath/paths.csv"), pathsLimit)
 
-        dumpPathContexts(File("$directoryPath/path_contexts.csv"), tokensLimit, pathsLimit)
+        dumpPathContexts(File("$outputFolderPath/path_contexts.csv"), tokensLimit, pathsLimit)
     }
 }

@@ -3,7 +3,7 @@ package astminer.paths
 import astminer.common.storage.*
 import java.io.File
 
-class Code2VecPathStorage : CountingPathStorage<String>() {
+class Code2VecPathStorage(directoryPath: String) : CountingPathStorage<String>(directoryPath) {
 
     override fun dumpPathContexts(file: File, tokensLimit: Long, pathsLimit: Long) {
         val lines = mutableListOf<String>()

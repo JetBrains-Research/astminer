@@ -5,28 +5,28 @@ package astminer.performance
 import astminer.common.model.LabeledPathContexts
 import astminer.common.model.Node
 import astminer.common.model.Parser
-import astminer.paths.toPathContext
 import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.python.PythonParser
+import astminer.paths.CsvPathStorage
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
-import astminer.paths.CsvPathStorage
+import astminer.paths.toPathContext
 import java.io.File
-import java.lang.IllegalStateException
 
 fun <NodeType : Node, LangParser : Parser<NodeType>> langPerformanceTest(language: String,
-                                                                                                                     langSuffix: String,
-                                                                                                                     parser: LangParser,
-                                                                                                                     retrievalSettings: PathRetrievalSettings) {
+                                                                         langSuffix: String,
+                                                                         parser: LangParser,
+                                                                         retrievalSettings: PathRetrievalSettings) {
     val startTime = System.currentTimeMillis()
 
     println("Running performance test for $language")
 
-    val folder = "./testData/performanceTest/$langSuffix/"
-    println("Using files in $folder")
+    val inputDir = "./testData/performanceTest/$langSuffix/"
+    println("Using files in $inputDir")
 
     val miner = PathMiner(retrievalSettings)
-    val storage = CsvPathStorage()
+    val outputDir = "out_examples/performanceTest$language"
+    val storage = CsvPathStorage(outputDir)
 
     var filesNumber = 0L
     var filesFailed = 0L
@@ -35,7 +35,7 @@ fun <NodeType : Node, LangParser : Parser<NodeType>> langPerformanceTest(languag
     var retrievingElapsedTime = 0L
     var storingElapsedTime = 0L
 
-    File(folder).walkTopDown().filter { it.path.endsWith(".$langSuffix") }.forEach { file ->
+    File(inputDir).walkTopDown().filter { it.path.endsWith(".$langSuffix") }.forEach { file ->
         try {
             var currentTime = System.currentTimeMillis()
             val node = parser.parse(file.inputStream())
@@ -60,7 +60,7 @@ fun <NodeType : Node, LangParser : Parser<NodeType>> langPerformanceTest(languag
     }
 
     val currentTime = System.currentTimeMillis()
-    storage.save("out_examples/performanceTest$language")
+    storage.save()
     storingElapsedTime += System.currentTimeMillis() - currentTime
 
     println("Performance test took ${(System.currentTimeMillis() - startTime) / 1000} sec")
