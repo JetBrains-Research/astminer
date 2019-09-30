@@ -1,12 +1,13 @@
 package astminer.examples
 
+import astminer.common.model.LabeledPathContexts
 import astminer.parse.java.GumTreeJavaParser
 import astminer.parse.java.GumTreeMethodSplitter
 import astminer.parse.java.MethodInfo
 import astminer.parse.java.getMethodInfo
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
-import astminer.paths.VocabularyPathStorage
+import astminer.paths.CsvPathStorage
 import astminer.paths.toPathContext
 import java.io.File
 
@@ -24,7 +25,7 @@ fun allJavaMethods() {
 
     val miner = PathMiner(PathRetrievalSettings(5, 5))
 
-    val storage = VocabularyPathStorage()
+    val storage = CsvPathStorage()
 
     File(folder).forFilesWithSuffix(".java") { file ->
         //parse file
@@ -38,7 +39,7 @@ fun allJavaMethods() {
             val paths = miner.retrievePaths(methodNode)
             //Retrieve a method identifier
             val entityId = "${file.path}::${getCsvFriendlyMethodId(methodNode.getMethodInfo())}"
-            storage.store(paths.map { toPathContext(it) }, entityId)
+            storage.store(LabeledPathContexts(entityId, paths.map { toPathContext(it) }))
         }
     }
 

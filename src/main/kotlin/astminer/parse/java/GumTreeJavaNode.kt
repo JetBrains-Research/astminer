@@ -2,7 +2,7 @@ package astminer.parse.java
 
 import com.github.gumtreediff.tree.ITree
 import com.github.gumtreediff.tree.TreeContext
-import astminer.common.Node
+import astminer.common.model.Node
 
 class GumTreeJavaNode(val wrappedNode: ITree, val context: TreeContext, val parent: GumTreeJavaNode?) : Node {
     private val metadata: MutableMap<String, Any> = HashMap()
@@ -38,4 +38,5 @@ class GumTreeJavaNode(val wrappedNode: ITree, val context: TreeContext, val pare
     override fun getToken(): String {
         return wrappedNode.label
     }
+
 }

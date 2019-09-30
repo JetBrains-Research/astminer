@@ -2,28 +2,34 @@
 
 package astminer.examples
 
-import astminer.parse.antlr.joern.parseJoernAst
+import astminer.common.model.LabeledPathContexts
+import astminer.parse.cpp.FuzzyCppParser
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
-import astminer.paths.VocabularyPathStorage
+import astminer.paths.CsvPathStorage
 import astminer.paths.toPathContext
+import java.io.File
 
-// Retrieve paths from .cpp files, using a generated parser.
-fun main(args: Array<String>) {
-    val folder = "testData/examples/cpp/"
+// Retrieve paths from .cpp preprocessed files, using a fuzzyc2cpg parser.
+fun allCppFiles() {
+    val folder = File("testData/examples/cpp")
 
     val miner = PathMiner(PathRetrievalSettings(5, 5))
-    val storage = VocabularyPathStorage()
+    val storage = CsvPathStorage()
+    val parser = FuzzyCppParser()
+    val preprocOutputFolder = File("preprocessed")
 
-    val parsedFiles = parseJoernAst(folder)
-    parsedFiles.forEach { node ->
-        if (node == null) {
+    parser.preprocessProject(folder, preprocOutputFolder)
+
+    val parsedFiles = parser.parseWithExtension(preprocOutputFolder, "cpp")
+
+    parsedFiles.forEach { parseResult ->
+        if (parseResult.root == null) {
             return@forEach
         }
-        val paths = miner.retrievePaths(node)
+        val paths = miner.retrievePaths(parseResult.root)
 
-        // Root node is of type File and stores path to the file.
-        storage.store(paths.map { toPathContext(it) }, entityId = node.getToken())
+        storage.store(LabeledPathContexts(parseResult.filePath, paths.map { toPathContext(it) }))
     }
 
     storage.save("out_examples/allCppFiles")

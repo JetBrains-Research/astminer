@@ -1,7 +1,7 @@
 package astminer.paths
 
-import astminer.common.ASTPath
-import astminer.common.Node
+import astminer.common.model.ASTPath
+import astminer.common.model.Node
 
 data class PathRetrievalSettings(val maxHeight: Int, val maxWidth: Int)
 

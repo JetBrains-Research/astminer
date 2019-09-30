@@ -2,7 +2,7 @@ package astminer.parse.java
 
 import com.github.gumtreediff.tree.ITree
 import com.github.gumtreediff.tree.TreeContext
-import astminer.common.TreeSplitter
+import astminer.common.model.TreeSplitter
 import astminer.common.preOrder
 
 

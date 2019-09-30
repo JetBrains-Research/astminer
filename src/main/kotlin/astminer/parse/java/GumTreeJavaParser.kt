@@ -3,7 +3,7 @@ package astminer.parse.java
 import com.github.gumtreediff.client.Run
 import com.github.gumtreediff.gen.jdt.JdtTreeGenerator
 import com.github.gumtreediff.tree.TreeContext
-import astminer.common.Parser
+import astminer.common.model.Parser
 import java.io.InputStream
 import java.io.InputStreamReader
 
