@@ -4,11 +4,11 @@ import astminer.common.model.*
 import astminer.common.storage.*
 import java.io.File
 
-const val PATH_CONTEXTS_BATCH_SIZE = 5L;
+const val DEFAULT_FILES_PER_BATCH = 100L
 
 abstract class CountingPathStorage<LabelType>(
         private val outputFolderPath: String,
-        val batchMode: Boolean = true, val batchSize: Long = PATH_CONTEXTS_BATCH_SIZE) : PathStorage<LabelType> {
+        val batchMode: Boolean = true, val filesPerBatch: Long = DEFAULT_FILES_PER_BATCH) : PathStorage<LabelType> {
 
     override val outputFolder = outputFolderPath
     private var contextsFileIndex = 0
@@ -43,9 +43,10 @@ abstract class CountingPathStorage<LabelType>(
     }
 
     private fun dumpPathContextsIfNeeded() {
-        if (!batchMode || currentFilesCount < batchSize){
+        if (!batchMode || currentFilesCount < filesPerBatch){
             return
         }
+        File(outputFolderPath).mkdirs()
         dumpPathContexts(File("$outputFolderPath/path_contexts_${contextsFileIndex++}.csv"),
                 Long.MAX_VALUE, Long.MAX_VALUE)
         labeledPathContextIdsList.clear()
