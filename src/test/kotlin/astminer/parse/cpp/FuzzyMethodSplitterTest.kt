@@ -62,21 +62,21 @@ class FuzzyMethodSplitterTest {
     fun testFunctionNotInClass() {
         val methodClass = methodInfos.find { it.name() == "functionWithNoClass"  }
         assertNotNull(methodClass)
-        assertNull(methodClass.enclosingClass.root)
+        assertNull(methodClass.enclosingElement.root)
     }
 
     @Test
     fun testFunctionInClass() {
         val methodClass = methodInfos.find { it.name() == "functionInClass1"  }
         assertNotNull(methodClass)
-        assertEquals( "Class1", methodClass.className())
+        assertEquals( "Class1", methodClass.enclosingElementName())
     }
 
     @Test
     fun testFunctionInNestedClass() {
         val methodClass = methodInfos.find { it.name() == "functionInClass2"  }
         assertNotNull(methodClass)
-        assertEquals( "Class2", methodClass.className())
+        assertEquals( "Class2", methodClass.enclosingElementName())
     }
 
     @Test

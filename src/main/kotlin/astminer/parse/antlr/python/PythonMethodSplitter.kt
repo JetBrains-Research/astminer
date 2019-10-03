@@ -45,7 +45,7 @@ class PythonMethodSplitter : TreeMethodSplitter<SimpleNode> {
 
         return MethodInfo(
                 MethodNode(methodNode, null, methodName),
-                ClassNode(classRoot, className),
+                ElementNode(classRoot, className),
                 parametersList
         )
     }

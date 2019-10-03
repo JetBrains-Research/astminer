@@ -47,7 +47,7 @@ class JavaMethodSplitter : TreeMethodSplitter<SimpleNode> {
 
         return MethodInfo(
                 MethodNode(methodNode, methodReturnTypeNode, methodName),
-                ClassNode(classRoot, className),
+                ElementNode(classRoot, className),
                 parametersList
         )
     }

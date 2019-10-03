@@ -11,13 +11,13 @@ interface TreeMethodSplitter<T : Node> {
 
 class MethodInfo<T : Node>(
         val method: MethodNode<T>,
-        val enclosingClass: ClassNode<T>,
+        val enclosingElement: ElementNode<T>,
         val methodParameters: List<ParameterNode<T>>
 ) {
     fun name() = method.name()
     fun returnType() = method.returnType()
 
-    fun className() = enclosingClass.name()
+    fun enclosingElementName() = enclosingElement.name()
 }
 
 class MethodNode<T : Node>(
@@ -29,7 +29,7 @@ class MethodNode<T : Node>(
     fun returnType() = returnTypeNode?.getToken()
 }
 
-class ClassNode<T : Node>(
+class ElementNode<T : Node>(
         val root: T?,
         val nameNode: T?
 ) {

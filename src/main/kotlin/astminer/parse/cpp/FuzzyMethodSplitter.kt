@@ -44,7 +44,7 @@ class FuzzyMethodSplitter : TreeMethodSplitter<FuzzyNode> {
 
         return MethodInfo(
                 MethodNode(methodNode, methodReturnType, methodName),
-                ClassNode(classRoot, className),
+                ElementNode(classRoot, className),
                 parameterNodes
         )
     }
