@@ -6,10 +6,10 @@ A library for mining of [path-based representations of code](https://arxiv.org/p
 
 List of supported languages:
 
--[x] Java
--[x] Python
--[x] C/C++
--[ ] Javascript (see [issue](https://github.com/vovak/astminer/issues/22))
+- [x] Java
+- [x] Python
+- [x] C/C++
+- [ ] Javascript (see [issue](https://github.com/vovak/astminer/issues/22))
 
 ### Version history
 
