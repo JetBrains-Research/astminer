@@ -4,15 +4,15 @@ import astminer.common.model.*
 import astminer.common.storage.*
 import java.io.File
 
-const val DEFAULT_FILES_PER_BATCH = 100L
+const val DEFAULT_FRAGMENTS_PER_BATCH = 100L
 
 abstract class CountingPathStorage<LabelType>(
         private val outputFolderPath: String,
-        val batchMode: Boolean = true, val filesPerBatch: Long = DEFAULT_FILES_PER_BATCH) : PathStorage<LabelType> {
+        val batchMode: Boolean = true,
+        val fragmentsPerBatch: Long = DEFAULT_FRAGMENTS_PER_BATCH) : PathStorage<LabelType> {
 
-    override val outputFolder = outputFolderPath
     private var contextsFileIndex = 0
-    private var currentFilesCount = 0
+    private var currentFragmentsCount = 0
 
     protected val tokensMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
     protected val orientedNodeTypesMap: RankedIncrementalIdStorage<OrientedNodeType> = RankedIncrementalIdStorage()
@@ -43,14 +43,14 @@ abstract class CountingPathStorage<LabelType>(
     }
 
     private fun dumpPathContextsIfNeeded() {
-        if (!batchMode || currentFilesCount < filesPerBatch){
+        if (!batchMode || currentFragmentsCount < fragmentsPerBatch) {
             return
         }
         File(outputFolderPath).mkdirs()
         dumpPathContexts(File("$outputFolderPath/path_contexts_${contextsFileIndex++}.csv"),
                 Long.MAX_VALUE, Long.MAX_VALUE)
         labeledPathContextIdsList.clear()
-        currentFilesCount = 0
+        currentFragmentsCount = 0
     }
 
     override fun store(labeledPathContexts: LabeledPathContexts<LabelType>) {
@@ -59,7 +59,7 @@ abstract class CountingPathStorage<LabelType>(
                 labeledPathContexts.pathContexts.map { doStore(it) }
         )
         labeledPathContextIdsList.add(labeledPathContextIds)
-        currentFilesCount++
+        currentFragmentsCount++
 
 
         dumpPathContextsIfNeeded()
