@@ -21,13 +21,13 @@ private fun getCsvFriendlyMethodId(methodInfo: MethodInfo?): String {
 //Retrieve paths from all Java files, using a GumTree parser.
 //GumTreeMethodSplitter is used to extract individual method nodes from the compilation unit tree.
 fun allJavaMethods() {
-    val folder = "./testData/gumTreeMethodSplitter"
+    val inputDir = "./testData/gumTreeMethodSplitter"
 
     val miner = PathMiner(PathRetrievalSettings(5, 5))
+    val outputDir = "out_examples/allJavaMethods"
+    val storage = CsvPathStorage(outputDir)
 
-    val storage = CsvPathStorage()
-
-    File(folder).forFilesWithSuffix(".java") { file ->
+    File(inputDir).forFilesWithSuffix(".java") { file ->
         //parse file
         val fileNode = GumTreeJavaParser().parse(file.inputStream()) ?: return@forFilesWithSuffix
 
@@ -43,5 +43,5 @@ fun allJavaMethods() {
         }
     }
 
-    storage.save("out_examples/allJavaMethods")
+    storage.save()
 }

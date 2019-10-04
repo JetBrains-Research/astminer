@@ -12,14 +12,15 @@ import java.io.File
 
 // Retrieve paths from .cpp preprocessed files, using a fuzzyc2cpg parser.
 fun allCppFiles() {
-    val folder = File("testData/examples/cpp")
+    val inputDir = File("testData/examples/cpp")
 
     val miner = PathMiner(PathRetrievalSettings(5, 5))
-    val storage = CsvPathStorage()
+    val outputDir = "out_examples/allCppFiles"
+    val storage = CsvPathStorage(outputDir)
     val parser = FuzzyCppParser()
     val preprocOutputFolder = File("preprocessed")
 
-    parser.preprocessProject(folder, preprocOutputFolder)
+    parser.preprocessProject(inputDir, preprocOutputFolder)
 
     val parsedFiles = parser.parseWithExtension(preprocOutputFolder, "cpp")
 
@@ -32,5 +33,5 @@ fun allCppFiles() {
         storage.store(LabeledPathContexts(parseResult.filePath, paths.map { toPathContext(it) }))
     }
 
-    storage.save("out_examples/allCppFiles")
+    storage.save()
 }

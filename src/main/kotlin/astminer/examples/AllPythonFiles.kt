@@ -10,20 +10,18 @@ import java.io.File
 
 
 fun allPythonFiles() {
-    val folder = "./testData/examples/"
+    val inputDir = "./testData/examples/"
 
     val miner = PathMiner(PathRetrievalSettings(5, 5))
-    val storage = CsvPathStorage()
+    val outputDir = "out_examples/allPythonFiles"
+    val storage = CsvPathStorage(outputDir)
 
-    File(folder).forFilesWithSuffix(".py") { file ->
+    File(inputDir).forFilesWithSuffix(".py") { file ->
         val node = PythonParser().parse(file.inputStream()) ?: return@forFilesWithSuffix
         val paths = miner.retrievePaths(node)
 
         storage.store(LabeledPathContexts(file.path, paths.map { toPathContext(it) }))
     }
 
-
-
-
-    storage.save("out_examples/allPythonFiles")
+    storage.save()
 }

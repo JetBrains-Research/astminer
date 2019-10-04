@@ -4,7 +4,15 @@ import astminer.common.model.*
 import astminer.common.storage.*
 import java.io.File
 
-abstract class CountingPathStorage<LabelType> : PathStorage<LabelType> {
+const val DEFAULT_FRAGMENTS_PER_BATCH = 100L
+
+abstract class CountingPathStorage<LabelType>(
+        private val outputFolderPath: String,
+        val batchMode: Boolean = true,
+        val fragmentsPerBatch: Long = DEFAULT_FRAGMENTS_PER_BATCH) : PathStorage<LabelType> {
+
+    private var contextsFileIndex = 0
+    private var currentFragmentsCount = 0
 
     protected val tokensMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
     protected val orientedNodeTypesMap: RankedIncrementalIdStorage<OrientedNodeType> = RankedIncrementalIdStorage()
@@ -34,24 +42,47 @@ abstract class CountingPathStorage<LabelType> : PathStorage<LabelType> {
         return PathContextId(startTokenId, pathId, endTokenId)
     }
 
+    private fun dumpPathContextsIfNeeded() {
+        if (!batchMode || currentFragmentsCount < fragmentsPerBatch) {
+            return
+        }
+        File(outputFolderPath).mkdirs()
+        dumpPathContexts(File("$outputFolderPath/path_contexts_${contextsFileIndex++}.csv"),
+                Long.MAX_VALUE, Long.MAX_VALUE)
+        labeledPathContextIdsList.clear()
+        currentFragmentsCount = 0
+    }
+
     override fun store(labeledPathContexts: LabeledPathContexts<LabelType>) {
         val labeledPathContextIds = LabeledPathContextIds(
                 labeledPathContexts.label,
                 labeledPathContexts.pathContexts.map { doStore(it) }
         )
         labeledPathContextIdsList.add(labeledPathContextIds)
+        currentFragmentsCount++
+
+
+        dumpPathContextsIfNeeded()
     }
 
-    override fun save(directoryPath: String) {
-        save(directoryPath, Long.MAX_VALUE, Long.MAX_VALUE)
+    override fun save() {
+        save(pathsLimit = Long.MAX_VALUE, tokensLimit = Long.MAX_VALUE)
     }
 
-    override fun save(directoryPath: String, pathsLimit: Long, tokensLimit: Long) {
-        File(directoryPath).mkdirs()
-        dumpTokenStorage(File("$directoryPath/tokens.csv"), tokensLimit)
-        dumpOrientedNodeTypesStorage(File("$directoryPath/node_types.csv"))
-        dumpPathsStorage(File("$directoryPath/paths.csv"), pathsLimit)
+    override fun save(pathsLimit: Long, tokensLimit: Long) {
+        if (batchMode && (pathsLimit < Long.MAX_VALUE || tokensLimit < Long.MAX_VALUE)) {
+            println("Ignoring path and token limit settings due to batchMode processing")
+        }
+        File(outputFolderPath).mkdirs()
+        dumpTokenStorage(File("$outputFolderPath/tokens.csv"), tokensLimit)
+        dumpOrientedNodeTypesStorage(File("$outputFolderPath/node_types.csv"))
+        dumpPathsStorage(File("$outputFolderPath/paths.csv"), pathsLimit)
 
-        dumpPathContexts(File("$directoryPath/path_contexts.csv"), tokensLimit, pathsLimit)
+        if (!batchMode) {
+            dumpPathContexts(File("$outputFolderPath/path_contexts.csv"), tokensLimit, pathsLimit)
+        } else {
+            dumpPathContexts(File("$outputFolderPath/path_contexts_${contextsFileIndex++}.csv"),
+                    Long.MAX_VALUE, Long.MAX_VALUE)
+        }
     }
 }

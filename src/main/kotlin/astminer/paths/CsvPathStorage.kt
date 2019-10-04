@@ -1,9 +1,9 @@
 package astminer.paths
 
-import astminer.common.storage.*
+import astminer.common.storage.writeLinesToFile
 import java.io.File
 
-class CsvPathStorage : CountingPathStorage<String>() {
+class CsvPathStorage(directoryPath: String) : CountingPathStorage<String>(directoryPath) {
 
     override fun dumpPathContexts(file: File, tokensLimit: Long, pathsLimit: Long) {
         val lines = mutableListOf("label,path_contexts")
