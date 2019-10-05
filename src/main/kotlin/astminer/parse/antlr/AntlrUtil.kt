@@ -70,4 +70,5 @@ fun compressTree(root: SimpleNode): SimpleNode {
     }
 }
 
+
 fun decompressTypeLabel(typeLabel: String) = typeLabel.split("|")

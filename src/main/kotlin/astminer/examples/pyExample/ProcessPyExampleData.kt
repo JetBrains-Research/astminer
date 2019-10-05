@@ -12,19 +12,20 @@ import java.io.File
 
 // Retrieve paths from two Java projects for further usage in python example.
 fun processPyExampleData() {
-    val folder = "./py_example/data/"
+    val inputDir = "./py_example/data/"
 
     val miner = PathMiner(PathRetrievalSettings(8, 3))
-    val storage = CsvPathStorage()
+    val outputDir = "py_example/processed_data/"
+    val storage = CsvPathStorage(outputDir)
 
-    File(folder).walkTopDown().filter { it.path.endsWith(".java") }.forEach { file ->
+    File(inputDir).walkTopDown().filter { it.path.endsWith(".java") }.forEach { file ->
         val node = JavaParser().parse(file.inputStream()) ?: return@forEach
         val paths = miner.retrievePaths(node)
 
         storage.store(LabeledPathContexts(file.path, paths.map { toPathContext(it) }))
     }
 
-    storage.save("py_example/processed_data/")
+    storage.save()
 }
 
 fun main(args: Array<String>) {

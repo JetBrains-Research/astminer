@@ -2,10 +2,7 @@ package astminer.examples;
 
 import astminer.common.model.*;
 import astminer.parse.java.GumTreeJavaParser;
-import astminer.paths.PathMiner;
-import astminer.paths.PathRetrievalSettings;
-import astminer.paths.PathUtilKt;
-import astminer.paths.CsvPathStorage;
+import astminer.paths.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,7 +18,7 @@ public class AllJavaFiles {
 
     public static void runExample() {
         final PathMiner miner = new PathMiner(new PathRetrievalSettings(5,5));
-        final PathStorage pathStorage = new CsvPathStorage();
+        final CountingPathStorage<String> pathStorage = new CsvPathStorage(OUTPUT_FOLDER);
 
         final Path inputFolder = Paths.get(INPUT_FOLDER);
 
@@ -39,7 +36,7 @@ public class AllJavaFiles {
                                 PathUtilKt.toPathContext(node, (Node::getToken))
                         ).collect(Collectors.toList());
 
-                pathStorage.store(new LabeledPathContexts(file.toAbsolutePath().toString(), pathContexts));
+                pathStorage.store(new LabeledPathContexts<>(file.toAbsolutePath().toString(), pathContexts));
 
                 return FileVisitResult.CONTINUE;
             }
@@ -47,7 +44,7 @@ public class AllJavaFiles {
 
         try {
             Files.walkFileTree(inputFolder, fileVisitor);
-            pathStorage.save(OUTPUT_FOLDER);
+            pathStorage.save();
         } catch (IOException e) {
             e.printStackTrace();
         }

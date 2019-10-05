@@ -19,10 +19,11 @@ private fun getCsvFriendlyMethodId(methodInfo: MethodInfo?): String {
 //GumTreeMethodSplitter is used to extract individual method nodes from the compilation unit tree.
 fun code2vecJavaMethods() {
     val folder = "./testData/code2vecPathMining"
+    val outputDir = "out_examples/code2vecPathMining"
 
     val miner = PathMiner(PathRetrievalSettings(5, 5))
 
-    val storage = Code2VecPathStorage()
+    val storage = Code2VecPathStorage(outputDir)
 
     File(folder).forFilesWithSuffix(".java") { file ->
         //parse file
@@ -44,5 +45,5 @@ fun code2vecJavaMethods() {
         }
     }
 
-    storage.save("out_examples/code2vecPathMining")
+    storage.save()
 }
