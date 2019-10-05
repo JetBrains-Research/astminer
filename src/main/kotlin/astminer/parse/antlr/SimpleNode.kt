@@ -2,13 +2,18 @@ package astminer.parse.antlr
 
 import astminer.common.model.Node
 
-class SimpleNode(private val typeLabel: String, private val parent: Node?, private var token: String?) : Node {
+class SimpleNode(private val typeLabel: String, private var parent: Node?, private var token: String?) : Node {
     private val metadata: MutableMap<String, Any> = HashMap()
 
     private var children: List<Node> = emptyList()
 
     fun setChildren(newChildren: List<Node>) {
         children = newChildren
+        children.forEach { (it as SimpleNode).setParent(this) }
+    }
+
+    fun setParent(newParent: Node?) {
+        parent = newParent
     }
 
     override fun getTypeLabel(): String {

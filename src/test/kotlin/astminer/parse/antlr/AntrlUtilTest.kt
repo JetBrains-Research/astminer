@@ -14,10 +14,10 @@ class AntrlUtilTest {
         val file = File("testData/methodSplitting/testMethodSplitting.java")
 
         val node = parser.parse(FileInputStream(file))
-        var errorNodeSize = 0
+        var adoptedNodesSize = 0
         node?.preOrder()?.forEach { node ->
-            errorNodeSize += node.getChildren().filter { it.getParent() != node }.size
+            adoptedNodesSize += node.getChildren().filter { it.getParent() != node }.size
         }
-        Assert.assertEquals("There should be no children with different parent", 0, errorNodeSize)
+        Assert.assertEquals("There should be no children with different parent", 0, adoptedNodesSize)
     }
 }

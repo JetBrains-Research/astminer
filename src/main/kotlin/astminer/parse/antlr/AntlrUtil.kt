@@ -62,9 +62,7 @@ fun compressTree(root: SimpleNode): SimpleNode {
                 root.getParent(),
                 child.getToken()
         )
-        compressedNode.setChildren(child.getChildren().map {
-            SimpleNode(it.getTypeLabel(), compressedNode, it.getToken())
-        } )
+        compressedNode.setChildren(child.getChildren())
         compressedNode
     } else {
         root.setChildren(root.getChildren().map { compressTree(it as SimpleNode) })
