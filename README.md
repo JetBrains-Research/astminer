@@ -16,8 +16,8 @@ List of supported languages:
 #### Upcoming in 0.4
 
 * Support of code2vec output format
-* Extraction of ASTs or path-based representations of individual methods
-* Extraction of data for method name prediction task
+* Extraction of ASTs and path-based representations of individual methods
+* Extraction of data for the task of method name prediction ([code2vec paper](https://arxiv.org/abs/1803.09473))
 
 #### 0.3
 
@@ -81,11 +81,13 @@ dependencies {
 
 #### Examples
 
-If you want to use astminer as a library in your Java/Kotlin mining pipeline, check the following examples:
+If you want to use astminer as a library in your Java/Kotlin based data mining tool, check the following examples:
 
 * A few [simple usage examples](src/main/kotlin/astminer/examples) can be run with `./gradlew run`.
 
-* A somewhat more verbose [example of usage in Java](src/main/kotlin/astminer/examples/AllJavaFiles.kt) is available as well.
+* A somewhat more verbose [example of usage in Java](src/main/kotlin/astminer/examples/AllJavaFiles.kt) is available as well. 
+
+Please consider trying Kotlin for your data mining pipelines: from our experience, it is much better suited for data collection and transformation instruments.
 
 ### Output format
 
@@ -105,27 +107,26 @@ Each triple contains start token id, path id, end token id, separated with space
 
 Support for a new programming language can be implemented in a few simple steps.
 
-If the language has valid ANTLR grammar:
+If there is an ANTLR grammar for the language:
 1. Add the corresponding [ANTLR4 grammar file](https://github.com/antlr/grammars-v4) to the `antlr` directory;
 2. Run the `generateGrammarSource` Gradle task to generate the parser;
-3. Implement a very minimal wrapper around the generated parser.
+3. Implement a small wrapper around the generated parser.
 See [JavaParser](src/main/kotlin/astminer/parse/antlr/java/JavaParser.kt) or [PythonParser](src/main/kotlin/astminer/parse/antlr/python/PythonParser.kt) for an example of a wrapper.
 
-If the language has a parsing tool that is available as Java-library:
+If the language has a parsing tool that is available as Java library:
 1. Add the library as a dependency in [build.gradle.kts](/build.gradle.kts);
-2. Implement a wrapper for the parsing tool;
+2. Implement a wrapper for the parsing tool.
 See [FuzzyCppParser](src/main/kotlin/astminer/parse/cpp/FuzzyCppParser.kt) for an example of a wrapper.
 
 ## Contribution
 We believe that astminer could find use beyond our own mining tasks.
 
-Please help make astminer easier to use by sharing your potential use cases.
-Pull requests are welcome as well! Support for other languages and documentation are the key areas of improvement. 
+Please help make astminer easier to use by sharing your use cases. Pull requests are welcome as well.
+Support for other languages and documentation are the key areas of improvement.
 
 ## Citing astminer
-A paper dedicated to astminer (more precisely, to its older version [PathMiner](https://github.com/vovak/astminer/tree/pathminer)) was presented at [MSR'19](https://2019.msrconf.org/). [Preprint](https://zenodo.org/record/2595271).
-
-If you use astminer in your academic work, please consider citing the paper:
+A [paper](https://zenodo.org/record/2595271) dedicated to astminer (more precisely, to its older version [PathMiner](https://github.com/vovak/astminer/tree/pathminer)) was presented at [MSR'19](https://2019.msrconf.org/). 
+If you use astminer in your academic work, please consider citing it.
 ```
 @inproceedings{kovalenko2019pathminer,
   title={PathMiner: a library for mining of path-based representations of code},
