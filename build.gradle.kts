@@ -97,7 +97,7 @@ idea {
 
 publishJar {
     publication {
-        artifactId = "astminer"
+        artifactId = "astminer-dev"
     }
 
     bintray {
