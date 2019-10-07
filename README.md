@@ -13,7 +13,7 @@ Supported languages of the input:
 
 ### Version history
 
-#### Upcoming in 0.4
+#### 0.4
 
 * Support of code2vec output format
 * Extraction of ASTs and path-based representations of individual methods
