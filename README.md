@@ -64,7 +64,7 @@ repositories {
 }
 
 dependencies {
-    compile 'io.github.vovak.astminer:astminer:0.3'
+    compile 'io.github.vovak.astminer:astminer:0.4'
 }
 ```
 
@@ -75,7 +75,7 @@ repositories {
 }
 
 dependencies {
-    compile("io.github.vovak.astminer", "astminer", "0.3")
+    compile("io.github.vovak.astminer", "astminer", "0.4")
 }
 ```
 
