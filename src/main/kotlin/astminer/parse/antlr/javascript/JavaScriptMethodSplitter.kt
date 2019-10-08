@@ -5,6 +5,10 @@ import astminer.common.preOrder
 import astminer.parse.antlr.SimpleNode
 import astminer.parse.antlr.decompressTypeLabel
 
+/**
+ * Gets all methods (for JavaScript there are divided into functions, arrow functions and methods) and information
+ * about their names, enclosing elements and lists of parameters.
+ */
 class JavaScriptMethodSplitter : TreeMethodSplitter<SimpleNode> {
     companion object {
         private const val METHOD_NODE = "methodDefinition"
@@ -30,9 +34,11 @@ class JavaScriptMethodSplitter : TreeMethodSplitter<SimpleNode> {
     private fun Node.isMethodElement() = decompressTypeLabel(this.getTypeLabel()).last() == METHOD_NODE
 }
 
+/**
+ Base class for describing JavaScript methods, functions or arrow functions.
+ */
 abstract class JavaScriptElement(private val element: SimpleNode) {
     companion object {
-        private const val ENCLOSING_ELEMENT_NODE = "statement"
         private val ENCLOSING_ELEMENT_NODES = listOf("functionDeclaration", "variableDeclaration", "classDeclaration", "methodDefinition", "statement")
         private const val ENCLOSING_ELEMENT_NAME_NODE = "Identifier"
 
@@ -40,8 +46,12 @@ abstract class JavaScriptElement(private val element: SimpleNode) {
         private const val PARAMETER_NAME_NODE = "Identifier"
     }
 
+    /**
+     * Gets [element]'s information about its root, name, enclosing elements and list of parameters.
+     * @return element info
+     */
     fun getElementInfo() : MethodInfo<SimpleNode> {
-        val enclosingRoot = getEnclosingElement(element.getParent() as SimpleNode)
+        val enclosingRoot = getEnclosingElementRoot(element.getParent() as SimpleNode)
         return MethodInfo(
                 MethodNode(element, null, getElementName()),
                 ElementNode(enclosingRoot, getEnclosingElementName(enclosingRoot)),
@@ -49,17 +59,32 @@ abstract class JavaScriptElement(private val element: SimpleNode) {
         )
     }
 
-    open fun getEnclosingElement(node: SimpleNode?): SimpleNode? {
+    /**
+     * Gets root of [element]'s enclosing element as first one with typeLabel from [ENCLOSING_ELEMENT_NAME_NODE].
+     * @param node for checking if it is root of enclosing element
+     * @return root of enclosing element
+     */
+    open fun getEnclosingElementRoot(node: SimpleNode?): SimpleNode? {
         if (node == null || decompressTypeLabel(node.getTypeLabel()).intersect(ENCLOSING_ELEMENT_NODES).isNotEmpty()) {
             return node
         }
-        return getEnclosingElement(node.getParent() as? SimpleNode)
+        return getEnclosingElementRoot(node.getParent() as? SimpleNode)
     }
 
+    /**
+     * Gets name node of [element]'s enclosing element.
+     * @param enclosingRoot - root of enclosing element
+     * @return name node of enclosing element
+     */
     open fun getEnclosingElementName(enclosingRoot: SimpleNode?) : SimpleNode? {
         return enclosingRoot?.getChildOfType(ENCLOSING_ELEMENT_NAME_NODE) as? SimpleNode
     }
 
+    /**
+     * Gets list of [element]'s parameters by looking for them among [parameterRoot]'s children.
+     * @param parameterRoot - parent node of all parameter's nodes
+     * @return list of [element]'s parameters
+     */
     open fun getElementParametersList(parameterRoot: SimpleNode?): List<ParameterNode<SimpleNode>> {
         return when {
             parameterRoot == null -> emptyList()
@@ -82,7 +107,16 @@ abstract class JavaScriptElement(private val element: SimpleNode) {
         }
     }
 
+    /**
+     * Gets name of [element].
+     * @return [element]'s name node
+     */
     abstract fun getElementName(): SimpleNode?
+
+    /**
+     * Gets parent node of all [element]'s parameter nodes.
+     * @return parameters' parent node
+     */
     abstract fun getElementParametersRoot(): SimpleNode?
 }
 
