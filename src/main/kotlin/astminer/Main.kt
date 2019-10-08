@@ -13,7 +13,7 @@ fun runExamples() {
     allJavaFiles()
     allJavaMethods()
     allPythonFiles()
-    allJSFiles()
+    allJavaScriptFiles()
     allCppFiles()
 
 
