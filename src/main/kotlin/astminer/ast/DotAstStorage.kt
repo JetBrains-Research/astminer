@@ -1,8 +1,10 @@
 package astminer.ast
 
+import astminer.common.getNormalizedToken
 import astminer.common.model.AstStorage
 import astminer.common.model.Node
 import astminer.common.preOrder
+import astminer.common.setNormalizedToken
 import astminer.common.storage.RankedIncrementalIdStorage
 import astminer.common.storage.writeLinesToFile
 import java.io.File
@@ -31,8 +33,9 @@ class DotAstStorage : AstStorage {
             val nodesMap = dumpAst(root, File(astDirectoryPath, astFilenameFormat.format(index)), File(label).name)
             val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$label,%d,%s,%s"
             for (node in root.preOrder()) {
+                node.setNormalizedToken()
                 descriptionLines.add(
-                        nodeDescriptionFormat.format(nodesMap.getId(node) - 1, node.getToken(), node.getTypeLabel())
+                        nodeDescriptionFormat.format(nodesMap.getId(node) - 1, node.getNormalizedToken(), node.getTypeLabel())
                 )
             }
         }
