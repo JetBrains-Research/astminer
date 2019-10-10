@@ -34,21 +34,21 @@ class PythonMethodSplitterTest {
     fun testFunctionNotInClass() {
         val methodClass = methodInfos.find { it.name() == "funWithNoClass"  }
         assertNotNull(methodClass)
-        assertNull(methodClass.enclosingClass.root)
+        assertNull(methodClass.enclosingElement.root)
     }
 
     @Test
     fun testFunctionInClass() {
         val methodClass = methodInfos.find { it.name() == "funInClass1"  }
         assertNotNull(methodClass)
-        assertEquals( "Class1", methodClass.className())
+        assertEquals( "Class1", methodClass.enclosingElementName())
     }
 
     @Test
     fun testFunctionInNestedClass() {
         val methodClass = methodInfos.find { it.name() == "funInClass2"  }
         assertNotNull(methodClass)
-        assertEquals( "Class2", methodClass.className())
+        assertEquals( "Class2", methodClass.enclosingElementName())
     }
 
     @Test
