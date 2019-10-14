@@ -1,0 +1,61 @@
+package cli
+
+import astminer.common.model.MethodInfo
+import astminer.common.model.Node
+import astminer.common.model.ParseResult
+import astminer.common.setNormalizedToken
+import astminer.parse.antlr.SimpleNode
+import astminer.parse.antlr.java.JavaMethodSplitter
+import astminer.parse.antlr.python.PythonMethodSplitter
+import astminer.parse.cpp.FuzzyMethodSplitter
+import astminer.parse.cpp.FuzzyNode
+
+
+abstract class Granularity {
+
+    abstract fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>>
+}
+
+
+class FileGranularity: Granularity() {
+
+    override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> =
+        parseResults
+
+}
+
+
+class MethodGranularity: Granularity() {
+
+    override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> {
+        return processMethods(when (fileExtension) {
+            "c", "cpp" -> {
+                val methodSplitter = FuzzyMethodSplitter()
+                parseResults.map { it.root as FuzzyNode }.flatMap { methodSplitter.splitIntoMethods(it) }
+            }
+            "java" -> {
+                val methodSplitter = JavaMethodSplitter()
+                parseResults.map { it.root as SimpleNode }.flatMap { methodSplitter.splitIntoMethods(it) }
+            }
+            "py" -> {
+                val methodSplitter = PythonMethodSplitter()
+                parseResults.map { it.root as SimpleNode }.flatMap { methodSplitter.splitIntoMethods(it) }
+            }
+            else -> throw UnsupportedOperationException("Unsupported extension $fileExtension")
+        })
+
+    }
+
+    private fun processMethods(methods: List<MethodInfo<out Node>>): List<ParseResult<out Node>> {
+        val processedMethods = mutableListOf<ParseResult<Node>>()
+        methods.forEach {
+            val methodNameNode = it.method.nameNode ?: return@forEach
+            val methodRoot = it.method.root
+            val label = methodNameNode.getToken()
+            methodNameNode.setNormalizedToken("METHOD_NODE")
+            processedMethods.add(ParseResult(methodRoot, label))
+        }
+        return processedMethods
+    }
+
+}
