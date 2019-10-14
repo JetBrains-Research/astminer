@@ -123,6 +123,7 @@ class Code2VecExtractor : CliktCommand() {
             val outputDirForLanguage = outputDir.resolve(extension)
             outputDirForLanguage.mkdir()
             // Save stored data on disk
+            // TODO: implement batches for path context extraction
             storage.save(maxPaths, maxTokens)
         }
     }
