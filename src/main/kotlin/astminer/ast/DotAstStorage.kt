@@ -11,14 +11,16 @@ import java.io.File
 
 /**
  * Stores multiple ASTs in dot format (https://en.wikipedia.org/wiki/DOT_(graph_description_language))
- * Output consist separate .dot files for each AST and one full description in .csv format
+ * Output consist of separate .dot files for each AST and one full description in .csv format
  */
 class DotAstStorage : AstStorage {
 
-    private val rootsPerEntity: MutableList<Pair<String, Node>> = mutableListOf()
+    private data class Ast(val label: String, val root: Node)
+
+    private val rootsPerEntity: MutableList<Ast> = mutableListOf()
 
     override fun store(root: Node, label: String) {
-        rootsPerEntity.add(Pair(label, root))
+        rootsPerEntity.add(Ast(label, root))
     }
 
     override fun save(directoryPath: String) {
@@ -26,11 +28,12 @@ class DotAstStorage : AstStorage {
         val astDirectoryPath = File(directoryPath, "asts")
         astDirectoryPath.mkdirs()
 
-        val descriptionLines = mutableListOf("dot_file,project_path,node_id,token,type")
+        val descriptionLines = mutableListOf("dot_file,label,node_id,token,type")
         val astFilenameFormat = "ast_%d.dot"
 
         rootsPerEntity.forEachIndexed { index, (label, root) ->
-            val nodesMap = dumpAst(root, File(astDirectoryPath, astFilenameFormat.format(index)), File(label).name)
+            val normalizedLabel = label.split("""[\\|/]""".toRegex()).joinToString("_")
+            val nodesMap = dumpAst(root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
             val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$label,%d,%s,%s"
             for (node in root.preOrder()) {
                 descriptionLines.add(
