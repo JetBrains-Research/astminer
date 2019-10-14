@@ -39,7 +39,7 @@ class JavaScriptMethodSplitter : TreeMethodSplitter<SimpleNode> {
  */
 abstract class JavaScriptElement(private val element: SimpleNode) {
     companion object {
-        private val ENCLOSING_ELEMENT_NODES = listOf("functionDeclaration", "variableDeclaration", "classDeclaration", "methodDefinition", "statement")
+        private val ENCLOSING_ELEMENT_NODES = listOf("functionDeclaration", "variableDeclaration", "classDeclaration", "methodDefinition")
         private const val ENCLOSING_ELEMENT_NAME_NODE = "Identifier"
 
         private const val SINGLE_PARAMETER_NODE = "formalParameterArg"
@@ -77,7 +77,10 @@ abstract class JavaScriptElement(private val element: SimpleNode) {
      * @return name node of enclosing element
      */
     open fun getEnclosingElementName(enclosingRoot: SimpleNode?) : SimpleNode? {
-        return enclosingRoot?.getChildOfType(ENCLOSING_ELEMENT_NAME_NODE) as? SimpleNode
+        return enclosingRoot?.getChildren()?.firstOrNull {
+            decompressTypeLabel(it.getTypeLabel()).last() == ENCLOSING_ELEMENT_NAME_NODE
+        } as? SimpleNode
+        //getChildOfType(ENCLOSING_ELEMENT_NAME_NODE) as? SimpleNode
     }
 
     /**
