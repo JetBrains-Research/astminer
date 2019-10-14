@@ -8,14 +8,14 @@ fun main(args: Array<String>) {
 }
 
 fun runExamples() {
-//    code2vecJavaMethods()
-//    allJavaFilesGumTree()
-//    allJavaFiles()
-//    allJavaMethods()
-//    allPythonFiles()
-//    allCppFiles()
-//
-//    AllJavaFiles.runExample()
+    code2vecJavaMethods()
+    allJavaFilesGumTree()
+    allJavaFiles()
+    allJavaMethods()
+    allPythonFiles()
+    allCppFiles()
+
+    AllJavaFiles.runExample()
 
     allJavaAsts()
 }
