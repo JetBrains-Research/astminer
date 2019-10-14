@@ -1,6 +1,7 @@
 package astminer.examples
 
 import astminer.ast.CsvAstStorage
+import astminer.ast.DotAstStorage
 import astminer.parse.antlr.java.JavaParser
 import java.io.File
 
@@ -8,7 +9,8 @@ import java.io.File
 fun allJavaAsts() {
     val folder = "./testData/examples/"
 
-    val storage = CsvAstStorage()
+//    val storage = CsvAstStorage()
+    val storage = DotAstStorage()
 
     File(folder).forFilesWithSuffix(".java") { file ->
         val node = JavaParser().parse(file.inputStream()) ?: return@forFilesWithSuffix
