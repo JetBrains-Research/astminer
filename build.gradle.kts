@@ -1,7 +1,7 @@
 import tanvd.kosogor.proxy.publishJar
 
 group = "io.github.vovak.astminer"
-version = "0.5.0"
+version = "0.5.1"
 
 plugins {
     id("java")
