@@ -37,6 +37,8 @@ class FileGranularity: Granularity {
 
 class MethodGranularity: Granularity {
 
+    override var isMethodNameHide: Boolean = false
+
     override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> {
         val filteredParseResults = parseResults.filter{it.root != null}
         return processMethods(when (fileExtension) {
