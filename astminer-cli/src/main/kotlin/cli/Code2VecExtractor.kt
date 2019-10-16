@@ -99,7 +99,7 @@ class Code2VecExtractor : CliktCommand() {
         val outputDir = File(outputDirName)
         for (extension in extensions) {
             val miner = PathMiner(PathRetrievalSettings(maxPathHeight, maxPathWidth))
-            val storage = Code2VecPathStorage()
+            val storage = Code2VecPathStorage(outputDirName)
 
             when (extension) {
                 "c", "cpp" -> {
@@ -123,7 +123,8 @@ class Code2VecExtractor : CliktCommand() {
             val outputDirForLanguage = outputDir.resolve(extension)
             outputDirForLanguage.mkdir()
             // Save stored data on disk
-            storage.save(outputDirForLanguage.path, maxPaths, maxTokens)
+            // TODO: implement batches for path context extraction
+            storage.save(maxPaths, maxTokens)
         }
     }
 
