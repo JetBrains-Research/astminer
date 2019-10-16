@@ -33,18 +33,19 @@ class FileGranularity: Granularity() {
 class MethodGranularity: Granularity() {
 
     override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> {
+        val filteredParseResults = parseResults.filter{it.root != null}
         return processMethods(when (fileExtension) {
             "c", "cpp" -> {
                 val methodSplitter = FuzzyMethodSplitter()
-                parseResults.map { it.root as FuzzyNode }.flatMap { methodSplitter.splitIntoMethods(it) }
+                filteredParseResults.map { it.root as FuzzyNode }.flatMap { methodSplitter.splitIntoMethods(it) }
             }
             "java" -> {
                 val methodSplitter = JavaMethodSplitter()
-                parseResults.map { it.root as SimpleNode }.flatMap { methodSplitter.splitIntoMethods(it) }
+                filteredParseResults.map { it.root as SimpleNode }.flatMap { methodSplitter.splitIntoMethods(it) }
             }
             "py" -> {
                 val methodSplitter = PythonMethodSplitter()
-                parseResults.map { it.root as SimpleNode }.flatMap { methodSplitter.splitIntoMethods(it) }
+                filteredParseResults.map { it.root as SimpleNode }.flatMap { methodSplitter.splitIntoMethods(it) }
             }
             else -> throw UnsupportedOperationException("Unsupported extension $fileExtension")
         })
