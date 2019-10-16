@@ -12,17 +12,22 @@ import astminer.parse.cpp.FuzzyMethodSplitter
 import astminer.parse.cpp.FuzzyNode
 
 
-abstract class Granularity {
+interface Granularity {
 
-    abstract fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>>
+    var isMethodNameHide: Boolean
+        get() = false
+        set(value) {}
+
+    fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>>
+
 }
 
 
-class FileGranularity: Granularity() {
+class FileGranularity: Granularity {
 
     override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> {
-        parseResults.filter{ it.root != null }.forEach {
-            it.root!!.preOrder().forEach { node -> node.setNormalizedToken() }
+        parseResults.forEach {
+            it.root?.preOrder()?.forEach { node -> node.setNormalizedToken() }
         }
         return parseResults
     }
@@ -30,7 +35,7 @@ class FileGranularity: Granularity() {
 }
 
 
-class MethodGranularity: Granularity() {
+class MethodGranularity: Granularity {
 
     override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> {
         val filteredParseResults = parseResults.filter{it.root != null}
@@ -59,7 +64,9 @@ class MethodGranularity: Granularity() {
             val methodRoot = it.method.root
             val label = methodNameNode.getToken()
             methodRoot.preOrder().forEach { node -> node.setNormalizedToken() }
-            methodNameNode.setNormalizedToken("METHOD_NODE")
+            if (isMethodNameHide) {
+                methodNameNode.setNormalizedToken("METHOD_NAME")
+            }
             processedMethods.add(ParseResult(methodRoot, label))
         }
         return processedMethods

@@ -13,6 +13,7 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.options.split
+import com.github.ajalt.clikt.parameters.options.flag
 import java.io.File
 
 
@@ -81,6 +82,11 @@ class ProjectParser : CliktCommand() {
         help = "Choose level of granularity (file, method)"
     ).default(supportedGranularityLevel[0].level)
 
+    val isMethodNameHide: Boolean by option(
+        "--hide-method-name",
+        help = "if passed with method level granularity, the names of all methods are hidden"
+    ).flag(default = false)
+
     private fun getParser(extension: String): Parser<out Node> {
         for (language in supportedLanguages) {
             if (extension == language.extension) {
@@ -117,8 +123,10 @@ class ProjectParser : CliktCommand() {
             val parser = getParser(extension)
             // Choose granularity level
             val granularity = getGranularity(granularityLevel)
+            granularity.isMethodNameHide = isMethodNameHide
             val roots = granularity.splitByGranularityLevel(
-                parser.parseWithExtension(File(projectRoot), extension), extension
+                parser.parseWithExtension(File(projectRoot), extension),
+                extension
             )
             roots.forEach { parseResult ->
                 val root = parseResult.root
