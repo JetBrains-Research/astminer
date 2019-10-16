@@ -6,8 +6,8 @@ import astminer.parse.antlr.SimpleNode
 import astminer.parse.antlr.decompressTypeLabel
 
 /**
- * Gets all methods (for JavaScript there are divided into functions, arrow functions and methods) and information
- * about their names, enclosing elements and lists of parameters.
+ * Get all methods (in JavaScript there are divided into functions, arrow functions and methods) and information
+ * about their names, enclosing elements and parameters.
  */
 class JavaScriptMethodSplitter : TreeMethodSplitter<SimpleNode> {
     companion object {
@@ -80,7 +80,6 @@ abstract class JavaScriptElement(private val element: SimpleNode) {
         return enclosingRoot?.getChildren()?.firstOrNull {
             decompressTypeLabel(it.getTypeLabel()).last() == ENCLOSING_ELEMENT_NAME_NODE
         } as? SimpleNode
-        //getChildOfType(ENCLOSING_ELEMENT_NAME_NODE) as? SimpleNode
     }
 
     /**

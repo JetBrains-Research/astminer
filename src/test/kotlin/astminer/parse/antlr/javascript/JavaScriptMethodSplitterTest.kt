@@ -35,13 +35,12 @@ class JavaScriptMethodSplitterTest {
 
     @Test
     fun testValidMethodInfo() {
-        fun MethodInfo<SimpleNode>.getEnclosingElementType(): String {
+        fun String.getEnclosingElementType(): String {
             return when {
-                enclosingElement.root == null -> "null"
-                enclosingElement.root!!.getTypeLabel().contains("functionDeclaration") -> "fun"
-                enclosingElement.root!!.getTypeLabel().contains("classDeclaration") -> "class"
-                enclosingElement.root!!.getTypeLabel().contains("methodDefinition") -> "method"
-                enclosingElement.root!!.getTypeLabel().contains("variableDeclaration") -> "var"
+                "functionDeclaration" in this -> "fun"
+                "classDeclaration" in this -> "class"
+                "methodDefinition" in this -> "method"
+                "variableDeclaration" in this -> "var"
                 else -> ""
             }
         }
@@ -50,7 +49,7 @@ class JavaScriptMethodSplitterTest {
             return "info : {" +
                     "name : ${name()}, " +
                     "args : ${methodParameters.map { it.name() }.joinToString(", ")}, " +
-                    "enclosing element : ${getEnclosingElementType()}, " +
+                    "enclosing element : ${enclosingElement.root?.getTypeLabel()?.getEnclosingElementType()}, " +
                     "enclosing element name : ${enclosingElementName()}" +
                     "}"
         }
