@@ -13,7 +13,9 @@ fun runExamples() {
     allJavaFiles()
     allJavaMethods()
     allPythonFiles()
+    allJavaScriptFiles()
     allCppFiles()
+
 
     AllJavaFiles.runExample()
 
