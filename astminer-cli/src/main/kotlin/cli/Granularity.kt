@@ -14,10 +14,6 @@ import astminer.parse.cpp.FuzzyNode
 
 interface Granularity {
 
-    var isMethodNameHide: Boolean
-        get() = false
-        set(value) {}
-
     fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>>
 
 }
@@ -35,9 +31,8 @@ class FileGranularity: Granularity {
 }
 
 
-class MethodGranularity: Granularity {
+class MethodGranularity(private val isMethodNameHide: Boolean = false): Granularity {
 
-    override var isMethodNameHide: Boolean = false
 
     override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> {
         val filteredParseResults = parseResults.filter{it.root != null}

@@ -52,11 +52,6 @@ class ProjectParser : CliktCommand() {
         SupportedAstStorage(DotAstStorage(), "dot")
     )
 
-    private val supportedGranularityLevel = listOf(
-        SupportedGranularityLevel(FileGranularity(), "file"),
-        SupportedGranularityLevel(MethodGranularity(), "method")
-    )
-
     val extensions: List<String> by option(
         "--lang",
         help = "File extensions that will be parsed"
@@ -80,7 +75,7 @@ class ProjectParser : CliktCommand() {
     val granularityLevel: String by option(
         "--granularity",
         help = "Choose level of granularity (file, method)"
-    ).default(supportedGranularityLevel[0].level)
+    ).default("file")
 
     val isMethodNameHide: Boolean by option(
         "--hide-method-name",
@@ -106,10 +101,9 @@ class ProjectParser : CliktCommand() {
     }
 
     private fun getGranularity(granularityLevel: String): Granularity {
-        for (granularity in supportedGranularityLevel) {
-            if (granularityLevel == granularity.level) {
-                return granularity.granularity
-            }
+        when (granularityLevel) {
+            "file" -> return FileGranularity()
+            "method" -> return MethodGranularity(isMethodNameHide)
         }
         throw UnsupportedOperationException("Unsupported granularity level $granularityLevel")
     }
@@ -123,7 +117,6 @@ class ProjectParser : CliktCommand() {
             val parser = getParser(extension)
             // Choose granularity level
             val granularity = getGranularity(granularityLevel)
-            granularity.isMethodNameHide = isMethodNameHide
             val roots = granularity.splitByGranularityLevel(
                 parser.parseWithExtension(File(projectRoot), extension),
                 extension
