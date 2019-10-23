@@ -13,6 +13,7 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.options.split
+import com.github.ajalt.clikt.parameters.options.flag
 import java.io.File
 
 
@@ -29,6 +30,12 @@ class ProjectParser : CliktCommand() {
      * @param type name of storage
      */
     private data class SupportedAstStorage(val astStorage: AstStorage, val type: String)
+
+    /**
+     * @param granularity class that implements granularity parsing
+     * @param level level of granularity
+     */
+    private data class SupportedGranularityLevel(val granularity: Granularity, val level: String)
 
     /**
      * List of supported language extensions and corresponding parsers.
@@ -65,6 +72,16 @@ class ProjectParser : CliktCommand() {
         help = "AST storage type (dot-files or csv)"
     ).default(supportedAstStorages[0].type)
 
+    val granularityLevel: String by option(
+        "--granularity",
+        help = "Choose level of granularity (file, method)"
+    ).default("file")
+
+    val isMethodNameHide: Boolean by option(
+        "--hide-method-name",
+        help = "if passed with method level granularity, the names of all methods are hidden"
+    ).flag(default = false)
+
     private fun getParser(extension: String): Parser<out Node> {
         for (language in supportedLanguages) {
             if (extension == language.extension) {
@@ -80,17 +97,30 @@ class ProjectParser : CliktCommand() {
                 return storage.astStorage
             }
         }
-        throw java.lang.UnsupportedOperationException("Unsupported AST storage $storageType")
+        throw UnsupportedOperationException("Unsupported AST storage $storageType")
     }
 
+    private fun getGranularity(granularityLevel: String): Granularity {
+        when (granularityLevel) {
+            "file" -> return FileGranularity()
+            "method" -> return MethodGranularity(isMethodNameHide)
+        }
+        throw UnsupportedOperationException("Unsupported granularity level $granularityLevel")
+    }
 
     private fun parsing() {
         val outputDir = File(outputDirName)
         for (extension in extensions) {
             // Choose type of storage
             val storage = getStorage(astStorageType)
+            // Choose type of parser
             val parser = getParser(extension)
-            val roots = parser.parseWithExtension(File(projectRoot), extension)
+            // Choose granularity level
+            val granularity = getGranularity(granularityLevel)
+            val roots = granularity.splitByGranularityLevel(
+                parser.parseWithExtension(File(projectRoot), extension),
+                extension
+            )
             roots.forEach { parseResult ->
                 val root = parseResult.root
                 val filePath = parseResult.filePath
