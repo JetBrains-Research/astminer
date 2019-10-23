@@ -32,7 +32,7 @@ class DotAstStorage : AstStorage {
         val astFilenameFormat = "ast_%d.dot"
 
         rootsPerEntity.forEachIndexed { index, (label, root) ->
-            val normalizedLabel = label.split("""[\\|/]""".toRegex()).joinToString("_")
+            val normalizedLabel = normalizeAstLabel(label)
             val nodesMap = dumpAst(root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
             val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$label,%d,%s,%s"
             for (node in root.preOrder()) {
@@ -59,5 +59,9 @@ class DotAstStorage : AstStorage {
         writeLinesToFile(astLines, file)
         return nodesMap
     }
+
+    // label should contain only latin letters and underscores, other symbols replace with an underscore
+    internal fun normalizeAstLabel(label: String): String =
+            label.replace("[^A-z,^_]".toRegex(), "_")
 
 }

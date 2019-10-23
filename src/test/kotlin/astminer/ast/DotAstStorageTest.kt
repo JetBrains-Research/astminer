@@ -30,4 +30,22 @@ class DotAstStorageTest {
         assertEquals(trueLines, storageLines)
     }
 
+    @Test
+    fun testPathNormalization() {
+        val label = "some/kind/of/random/path"
+        val storage = DotAstStorage()
+        val normalizedLabel = storage.normalizeAstLabel(label)
+
+        assertEquals("some_kind_of_random_path", normalizedLabel)
+    }
+
+    @Test
+    fun testBindingNormalization() {
+        val label = "\$supposeToBeListener"
+        val storage = DotAstStorage()
+        val normalizedLabel = storage.normalizeAstLabel(label)
+
+        assertEquals("_supposeToBeListener", normalizedLabel)
+    }
+
 }
