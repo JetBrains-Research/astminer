@@ -5,6 +5,7 @@ import astminer.common.model.Node
 import astminer.common.model.ParseResult
 import astminer.common.preOrder
 import astminer.common.setNormalizedToken
+import astminer.common.splitToSubtokens
 import astminer.parse.antlr.SimpleNode
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.python.PythonMethodSplitter
@@ -14,16 +15,24 @@ import astminer.parse.cpp.FuzzyNode
 
 interface Granularity {
 
+    val isTokenSplitted: Boolean
+
     fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>>
 
 }
 
 
-class FileGranularity: Granularity {
+class FileGranularity(override val isTokenSplitted: Boolean): Granularity {
 
     override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> {
         parseResults.forEach {
-            it.root?.preOrder()?.forEach { node -> node.setNormalizedToken() }
+            it.root?.preOrder()?.forEach { node ->
+                if (isTokenSplitted) {
+                    node.setNormalizedToken(splitToSubtokens(node.getToken()).joinToString("|"))
+                } else {
+                    node.setNormalizedToken()
+                }
+            }
         }
         return parseResults
     }
@@ -31,7 +40,8 @@ class FileGranularity: Granularity {
 }
 
 
-class MethodGranularity(private val isMethodNameHide: Boolean = false): Granularity {
+class MethodGranularity(override val isTokenSplitted: Boolean,
+                        private val isMethodNameHide: Boolean = false): Granularity {
 
 
     override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> {
@@ -60,7 +70,13 @@ class MethodGranularity(private val isMethodNameHide: Boolean = false): Granular
             val methodNameNode = it.method.nameNode ?: return@forEach
             val methodRoot = it.method.root
             val label = methodNameNode.getToken()
-            methodRoot.preOrder().forEach { node -> node.setNormalizedToken() }
+            methodRoot.preOrder().forEach { node ->
+                if (isTokenSplitted) {
+                    node.setNormalizedToken(splitToSubtokens(node.getToken()).joinToString("|"))
+                } else {
+                    node.setNormalizedToken()
+                }
+            }
             if (isMethodNameHide) {
                 methodNameNode.setNormalizedToken("METHOD_NAME")
             }
