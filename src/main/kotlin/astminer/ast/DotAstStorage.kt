@@ -46,12 +46,13 @@ class DotAstStorage : AstStorage {
 
     private fun dumpAst(root: Node, file: File, astName: String) : RankedIncrementalIdStorage<Node> {
         val nodesMap = RankedIncrementalIdStorage<Node>()
-        val astLines = mutableListOf("graph $astName {")
+        val astLines = mutableListOf("digraph $astName {")
 
         for (node in root.preOrder()) {
+            val rootId = nodesMap.record(node) - 1
             val childrenIds = node.getChildren().map { nodesMap.record(it) - 1 }
             astLines.add(
-                    "${nodesMap.record(node) - 1} -- {${childrenIds.joinToString(" ") { it.toString() }}};"
+                    "$rootId -- {${childrenIds.joinToString(" ") { it.toString() }}};"
             )
         }
 

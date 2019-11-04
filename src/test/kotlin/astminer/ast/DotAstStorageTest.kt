@@ -16,10 +16,10 @@ class DotAstStorageTest {
         storage.save("test_examples")
 
         val trueLines = listOf(
-                "graph entityId {",
-                "2 -- {0 1};",
-                "0 -- {};",
-                "1 -- {3};",
+                "digraph entityId {",
+                "0 -- {1 2};",
+                "1 -- {};",
+                "2 -- {3};",
                 "3 -- {};",
                 "}"
         )
