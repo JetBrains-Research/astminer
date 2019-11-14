@@ -82,6 +82,11 @@ class ProjectParser : CliktCommand() {
         help = "if passed with method level granularity, the names of all methods are hidden"
     ).flag(default = false)
 
+    val isTokenSplitted: Boolean by option(
+        "--split-tokens",
+        help = "if passed, then split tokens into sequence of tokens"
+    ).flag(default = false)
+
     private fun getParser(extension: String): Parser<out Node> {
         for (language in supportedLanguages) {
             if (extension == language.extension) {
@@ -102,8 +107,8 @@ class ProjectParser : CliktCommand() {
 
     private fun getGranularity(granularityLevel: String): Granularity {
         when (granularityLevel) {
-            "file" -> return FileGranularity()
-            "method" -> return MethodGranularity(isMethodNameHide)
+            "file" -> return FileGranularity(isTokenSplitted)
+            "method" -> return MethodGranularity(isTokenSplitted, isMethodNameHide)
         }
         throw UnsupportedOperationException("Unsupported granularity level $granularityLevel")
     }

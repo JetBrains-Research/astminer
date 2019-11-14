@@ -5,6 +5,7 @@ import astminer.common.model.Node
 import astminer.common.model.ParseResult
 import astminer.common.preOrder
 import astminer.common.setNormalizedToken
+import astminer.common.splitToSubtokens
 import astminer.parse.antlr.SimpleNode
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.python.PythonMethodSplitter
@@ -13,29 +14,31 @@ import astminer.parse.cpp.FuzzyNode
 
 
 interface Granularity {
-
+    val splitTokens: Boolean
     fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>>
-
 }
 
 
-class FileGranularity: Granularity {
-
+class FileGranularity(override val splitTokens: Boolean) : Granularity {
     override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> {
         parseResults.forEach {
-            it.root?.preOrder()?.forEach { node -> node.setNormalizedToken() }
+            it.root?.preOrder()?.forEach { node ->
+                if (splitTokens) {
+                    node.setNormalizedToken(separateToken(node.getToken()))
+                } else {
+                    node.setNormalizedToken()
+                }
+            }
         }
         return parseResults
     }
-
 }
 
 
-class MethodGranularity(private val isMethodNameHide: Boolean = false): Granularity {
-
-
+class MethodGranularity(override val splitTokens: Boolean,
+                        private val hideMethodNames: Boolean = false) : Granularity {
     override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> {
-        val filteredParseResults = parseResults.filter{it.root != null}
+        val filteredParseResults = parseResults.filter { it.root != null }
         return processMethods(when (fileExtension) {
             "c", "cpp" -> {
                 val methodSplitter = FuzzyMethodSplitter()
@@ -51,7 +54,6 @@ class MethodGranularity(private val isMethodNameHide: Boolean = false): Granular
             }
             else -> throw UnsupportedOperationException("Unsupported extension $fileExtension")
         })
-
     }
 
     private fun processMethods(methods: List<MethodInfo<out Node>>): List<ParseResult<out Node>> {
@@ -60,13 +62,22 @@ class MethodGranularity(private val isMethodNameHide: Boolean = false): Granular
             val methodNameNode = it.method.nameNode ?: return@forEach
             val methodRoot = it.method.root
             val label = methodNameNode.getToken()
-            methodRoot.preOrder().forEach { node -> node.setNormalizedToken() }
-            if (isMethodNameHide) {
+            methodRoot.preOrder().forEach { node ->
+                if (splitTokens) {
+                    node.setNormalizedToken(separateToken(node.getToken()))
+                } else {
+                    node.setNormalizedToken()
+                }
+            }
+            if (hideMethodNames) {
                 methodNameNode.setNormalizedToken("METHOD_NAME")
             }
             processedMethods.add(ParseResult(methodRoot, label))
         }
         return processedMethods
     }
+}
 
+fun separateToken(token: String, separator: CharSequence = "|"): String {
+    return splitToSubtokens(token).joinToString(separator)
 }
