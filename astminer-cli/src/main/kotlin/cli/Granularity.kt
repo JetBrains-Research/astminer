@@ -14,21 +14,17 @@ import astminer.parse.cpp.FuzzyNode
 
 
 interface Granularity {
-
     val splitTokens: Boolean
-
     fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>>
-
 }
 
 
 class FileGranularity(override val splitTokens: Boolean) : Granularity {
-
     override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> {
         parseResults.forEach {
             it.root?.preOrder()?.forEach { node ->
                 if (splitTokens) {
-                    node.setNormalizedToken(splitToSubtokens(node.getToken()).joinToString("|"))
+                    node.setNormalizedToken(separateToken(node.getToken()))
                 } else {
                     node.setNormalizedToken()
                 }
@@ -36,14 +32,11 @@ class FileGranularity(override val splitTokens: Boolean) : Granularity {
         }
         return parseResults
     }
-
 }
 
 
 class MethodGranularity(override val splitTokens: Boolean,
                         private val hideMethodNames: Boolean = false) : Granularity {
-
-
     override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> {
         val filteredParseResults = parseResults.filter { it.root != null }
         return processMethods(when (fileExtension) {
@@ -61,7 +54,6 @@ class MethodGranularity(override val splitTokens: Boolean,
             }
             else -> throw UnsupportedOperationException("Unsupported extension $fileExtension")
         })
-
     }
 
     private fun processMethods(methods: List<MethodInfo<out Node>>): List<ParseResult<out Node>> {
@@ -72,7 +64,7 @@ class MethodGranularity(override val splitTokens: Boolean,
             val label = methodNameNode.getToken()
             methodRoot.preOrder().forEach { node ->
                 if (splitTokens) {
-                    node.setNormalizedToken(splitToSubtokens(node.getToken()).joinToString("|"))
+                    node.setNormalizedToken(separateToken(node.getToken()))
                 } else {
                     node.setNormalizedToken()
                 }
@@ -84,5 +76,8 @@ class MethodGranularity(override val splitTokens: Boolean,
         }
         return processedMethods
     }
+}
 
+fun separateToken(token: String, separator: CharSequence = "|"): String {
+    return splitToSubtokens(token).joinToString(separator)
 }
