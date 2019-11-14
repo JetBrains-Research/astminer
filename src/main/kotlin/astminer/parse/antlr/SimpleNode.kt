@@ -2,7 +2,6 @@ package astminer.parse.antlr
 
 import astminer.common.model.Node
 
-// TODO make immutable
 class SimpleNode(private val typeLabel: String, private var parent: Node?, private var token: String?) : Node {
     private val metadata: MutableMap<String, Any> = HashMap()
 
