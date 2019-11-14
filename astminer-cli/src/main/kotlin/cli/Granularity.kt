@@ -22,7 +22,7 @@ interface Granularity {
 }
 
 
-class FileGranularity(override val isTokenSplitted: Boolean): Granularity {
+class FileGranularity(override val isTokenSplitted: Boolean) : Granularity {
 
     override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> {
         parseResults.forEach {
@@ -41,11 +41,11 @@ class FileGranularity(override val isTokenSplitted: Boolean): Granularity {
 
 
 class MethodGranularity(override val isTokenSplitted: Boolean,
-                        private val isMethodNameHide: Boolean = false): Granularity {
+                        private val isMethodNameHide: Boolean = false) : Granularity {
 
 
     override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> {
-        val filteredParseResults = parseResults.filter{it.root != null}
+        val filteredParseResults = parseResults.filter { it.root != null }
         return processMethods(when (fileExtension) {
             "c", "cpp" -> {
                 val methodSplitter = FuzzyMethodSplitter()
