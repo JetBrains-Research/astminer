@@ -15,19 +15,19 @@ import astminer.parse.cpp.FuzzyNode
 
 interface Granularity {
 
-    val isTokenSplitted: Boolean
+    val splitTokens: Boolean
 
     fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>>
 
 }
 
 
-class FileGranularity(override val isTokenSplitted: Boolean) : Granularity {
+class FileGranularity(override val splitTokens: Boolean) : Granularity {
 
     override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> {
         parseResults.forEach {
             it.root?.preOrder()?.forEach { node ->
-                if (isTokenSplitted) {
+                if (splitTokens) {
                     node.setNormalizedToken(splitToSubtokens(node.getToken()).joinToString("|"))
                 } else {
                     node.setNormalizedToken()
@@ -40,8 +40,8 @@ class FileGranularity(override val isTokenSplitted: Boolean) : Granularity {
 }
 
 
-class MethodGranularity(override val isTokenSplitted: Boolean,
-                        private val isMethodNameHide: Boolean = false) : Granularity {
+class MethodGranularity(override val splitTokens: Boolean,
+                        private val hideMethodNames: Boolean = false) : Granularity {
 
 
     override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> {
@@ -71,13 +71,13 @@ class MethodGranularity(override val isTokenSplitted: Boolean,
             val methodRoot = it.method.root
             val label = methodNameNode.getToken()
             methodRoot.preOrder().forEach { node ->
-                if (isTokenSplitted) {
+                if (splitTokens) {
                     node.setNormalizedToken(splitToSubtokens(node.getToken()).joinToString("|"))
                 } else {
                     node.setNormalizedToken()
                 }
             }
-            if (isMethodNameHide) {
+            if (hideMethodNames) {
                 methodNameNode.setNormalizedToken("METHOD_NAME")
             }
             processedMethods.add(ParseResult(methodRoot, label))
