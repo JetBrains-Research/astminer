@@ -1,11 +1,9 @@
 package cli
 
+import astminer.common.*
 import astminer.common.model.MethodInfo
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
-import astminer.common.preOrder
-import astminer.common.setNormalizedToken
-import astminer.common.splitToSubtokens
 import astminer.parse.antlr.SimpleNode
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.python.PythonMethodSplitter
@@ -22,13 +20,7 @@ interface Granularity {
 class FileGranularity(override val splitTokens: Boolean) : Granularity {
     override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> {
         parseResults.forEach {
-            it.root?.preOrder()?.forEach { node ->
-                if (splitTokens) {
-                    node.setNormalizedToken(separateToken(node.getToken()))
-                } else {
-                    node.setNormalizedToken()
-                }
-            }
+            it.root?.preOrder()?.forEach { node -> processNodeToken(node, splitTokens) }
         }
         return parseResults
     }
@@ -62,13 +54,7 @@ class MethodGranularity(override val splitTokens: Boolean,
             val methodNameNode = it.method.nameNode ?: return@forEach
             val methodRoot = it.method.root
             val label = methodNameNode.getToken()
-            methodRoot.preOrder().forEach { node ->
-                if (splitTokens) {
-                    node.setNormalizedToken(separateToken(node.getToken()))
-                } else {
-                    node.setNormalizedToken()
-                }
-            }
+            methodRoot.preOrder().forEach { node -> processNodeToken(node, splitTokens) }
             if (hideMethodNames) {
                 methodNameNode.setNormalizedToken("METHOD_NAME")
             }
@@ -81,3 +67,12 @@ class MethodGranularity(override val splitTokens: Boolean,
 fun separateToken(token: String, separator: CharSequence = "|"): String {
     return splitToSubtokens(token).joinToString(separator)
 }
+
+fun processNodeToken(node: Node, splitToken: Boolean) {
+    if (splitToken) {
+        node.setNormalizedToken(separateToken(node.getToken()))
+    } else {
+        node.setNormalizedToken()
+    }
+}
+
