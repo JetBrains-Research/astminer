@@ -1,12 +1,9 @@
 package cli
 
-import astminer.common.getNormalizedToken
+import astminer.common.*
 import astminer.common.model.MethodInfo
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
-import astminer.common.preOrder
-import astminer.common.setNormalizedToken
-import astminer.common.splitToSubtokens
 import astminer.parse.antlr.SimpleNode
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.python.PythonMethodSplitter
@@ -72,9 +69,9 @@ fun separateToken(token: String, separator: CharSequence = "|"): String {
 }
 
 fun processNodeToken(node: Node, splitToken: Boolean) {
-    var token = node.getNormalizedToken()
     if (splitToken) {
-        token = separateToken(token)
+        node.setNormalizedToken(separateToken(node.getToken()))
+    } else {
+        node.setNormalizedToken()
     }
-    node.setNormalizedToken(token)
 }
