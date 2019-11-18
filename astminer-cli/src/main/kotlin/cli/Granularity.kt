@@ -75,3 +75,4 @@ fun processNodeToken(node: Node, splitToken: Boolean) {
         node.setNormalizedToken()
     }
 }
+
