@@ -5,7 +5,7 @@ version = "0.5.3"
 
 plugins {
     id("java")
-    kotlin("jvm") version "1.3.41" apply true
+    kotlin("jvm") version "1.3.60" apply true
     id("antlr")
     id("idea")
     id("application")

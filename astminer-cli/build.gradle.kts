@@ -5,7 +5,7 @@ import tanvd.kosogor.proxy.shadowJar
 
 plugins {
     id("java")
-    kotlin("jvm") version "1.3.41"
+    kotlin("jvm") version "1.3.60"
     id("application")
     id("tanvd.kosogor") version "1.0.6"
 }
