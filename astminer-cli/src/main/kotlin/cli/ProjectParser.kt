@@ -55,7 +55,7 @@ class ProjectParser : CliktCommand() {
     val extensions: List<String> by option(
         "--lang",
         help = "Comma-separated list of file extensions that will be parsed.\n" +
-                "Supports 'c', 'cpp', 'java', 'py', defaults to all the extensions."
+                "Supports 'c', 'cpp', 'java', 'py', defaults to all these extensions."
     ).split(",").default(supportedLanguages.map { it.extension })
 
     val projectRoot: String by option(
