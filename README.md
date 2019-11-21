@@ -9,9 +9,15 @@ Supported languages of the input:
 - [x] Java
 - [x] Python
 - [x] C/C++
-- [ ] Javascript (see [issue](https://github.com/vovak/astminer/issues/22))
+- [x] Javascript (beta) (see [issue](https://github.com/vovak/astminer/issues/22))
 
 ### Version history
+
+#### 0.5
+
+* Beta-support of Javascript
+* Storing ASTs in [DOT format](https://www.graphviz.org/doc/info/lang.html)
+* Cleaning and fixing minor bugs
 
 #### 0.4
 
