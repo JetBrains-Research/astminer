@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/vovak/astminer.svg?style=svg)](https://circleci.com/gh/vovak/astminer) [ ![Download](https://api.bintray.com/packages/egor-bogomolov/astminer/astminer-cli/images/download.svg?version=0.2) ](https://bintray.com/egor-bogomolov/astminer/astminer-cli/0.2/link)
+[![CircleCI](https://circleci.com/gh/vovak/astminer.svg?style=svg)](https://circleci.com/gh/vovak/astminer) [ ![Download](https://api.bintray.com/packages/egor-bogomolov/astminer/astminer-cli/images/download.svg?version=0.3) ](https://bintray.com/egor-bogomolov/astminer/astminer-cli/0.3/link)
 
 # Astminer usage example / CLI
 
@@ -10,6 +10,34 @@ For now the CLI provides four options:
 * Parse a project in one of supported languages and save the extracted ASTs;
 * Extract path contexts from the project files and save them in code2vec format;
 * Preprocess code in C/C++ to unfold `#define` directives to enable further processing.
+
+### Version history
+
+#### Coming up in 0.4
+
+* Extraction of path-based representations at method level
+* Support of Javascript
+
+#### 0.3
+
+* Extraction of path-based representations
+    * For now it works only at file level
+* Compatibility with [code2vec](https://github.com/tech-srl/code2vec) model (see [code2vec section](#code2vec))
+* New features in AST parsing:
+    * Saving in [DOT format](https://www.graphviz.org/doc/info/lang.html)
+    * Selection of granularity level (`file` or `method`)
+    * You can pass `--split-token` flag to split tokens into pipe-separated sub-tokens
+    * You can pass `--hide-method-name` to replace names of methods with dummy `METHOD_NAME` token
+
+#### 0.2
+
+* Parsing ASTs for Java, Python, C/C++
+* Preprocessing for C/C++
+
+#### 0.1
+
+* Weird alpha-release
+
 
 ## Supported languages
 
@@ -28,7 +56,7 @@ To do so, we provide a `preprocess` option for the CLI.
 
 The CLI is available as runnable jar.
 
-1. Download the jar from [bintray](https://dl.bintray.com/egor-bogomolov/astminer/io/github/vovak/astminer/astminer-cli/0.2/astminer-cli-0.2-all.jar)
+1. Download the jar from [bintray](https://dl.bintray.com/egor-bogomolov/astminer/io/github/vovak/astminer/astminer-cli/0.3/astminer-cli-0.3-all.jar)
 2. Rename it to a shorter name like `cli.jar` 
 3. Run it with `java -jar cli.jar optionName parameters`, where `optionName` is one of the following options:
 
@@ -43,7 +71,7 @@ java -jar cli.jar preprocess --project path/to/project --output path/to/preproce
 
 Extract ASTs from all the files in supported languages.
 ```shell script
-java -jar cli.jar parse --lang py,java,c,cpp --project path/to/project --output path/to/result
+java -jar cli.jar parse --lang py,java,c,cpp --project path/to/project --output path/to/result --storage dot
 ```
 
 #### PathContexts
