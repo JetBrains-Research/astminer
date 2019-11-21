@@ -54,7 +54,8 @@ class ProjectParser : CliktCommand() {
 
     val extensions: List<String> by option(
         "--lang",
-        help = "File extensions that will be parsed"
+        help = "Comma-separated list of file extensions that will be parsed.\n" +
+                "Supports 'c', 'cpp', 'java', 'py', defaults to all the extensions."
     ).split(",").default(supportedLanguages.map { it.extension })
 
     val projectRoot: String by option(
@@ -69,22 +70,22 @@ class ProjectParser : CliktCommand() {
 
     val astStorageType: String by option(
         "--storage",
-        help = "AST storage type (dot-files or csv)"
+        help = "AST storage type ('dot' or 'csv', defaults to 'csv')"
     ).default(supportedAstStorages[0].type)
 
     val granularityLevel: String by option(
         "--granularity",
-        help = "Choose level of granularity (file, method)"
+        help = "Choose level of granularity ('file' or 'method', defaults to 'file')"
     ).default("file")
 
     val isMethodNameHide: Boolean by option(
         "--hide-method-name",
-        help = "if passed with method level granularity, the names of all methods are hidden"
+        help = "if passed with method level granularity, the names of all methods are replaced with METHOD_NAME token"
     ).flag(default = false)
 
     val isTokenSplitted: Boolean by option(
         "--split-tokens",
-        help = "if passed, then split tokens into sequence of tokens"
+        help = "if passed, split tokens into sequence of tokens"
     ).flag(default = false)
 
     private fun getParser(extension: String): Parser<out Node> {
