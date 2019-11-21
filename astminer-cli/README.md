@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/vovak/astminer.svg?style=svg)](https://circleci.com/gh/vovak/astminer) [ ![Download](https://api.bintray.com/packages/egor-bogomolov/astminer/astminer-cli/images/download.svg?version=0.2) ](https://bintray.com/egor-bogomolov/astminer/astminer-cli/0.2/link)
+[![CircleCI](https://circleci.com/gh/vovak/astminer.svg?style=svg)](https://circleci.com/gh/vovak/astminer) [ ![Download](https://api.bintray.com/packages/egor-bogomolov/astminer/astminer-cli/images/download.svg?version=0.3) ](https://bintray.com/egor-bogomolov/astminer/astminer-cli/0.3/link)
 
 # Astminer usage example / CLI
 
@@ -56,7 +56,7 @@ To do so, we provide a `preprocess` option for the CLI.
 
 The CLI is available as runnable jar.
 
-1. Download the jar from [bintray](https://dl.bintray.com/egor-bogomolov/astminer/io/github/vovak/astminer/astminer-cli/0.2/astminer-cli-0.2-all.jar)
+1. Download the jar from [bintray](https://dl.bintray.com/egor-bogomolov/astminer/io/github/vovak/astminer/astminer-cli/0.3/astminer-cli-0.3-all.jar)
 2. Rename it to a shorter name like `cli.jar` 
 3. Run it with `java -jar cli.jar optionName parameters`, where `optionName` is one of the following options:
 
