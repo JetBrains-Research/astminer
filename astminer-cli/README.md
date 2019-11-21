@@ -11,6 +11,24 @@ For now the CLI provides four options:
 * Extract path contexts from the project files and save them in code2vec format;
 * Preprocess code in C/C++ to unfold `#define` directives to enable further processing.
 
+### Version history
+
+#### 0.3
+
+* Extraction of path-based representations
+* Compatibility with [code2vec](https://github.com/tech-srl/code2vec) model
+* AST saving in [DOT format](https://www.graphviz.org/doc/info/lang.html)
+
+#### 0.2
+
+* Parsing ASTs for Java, Python, C/C++
+* Preprocessing for C/C++
+
+#### 0.1
+
+* Weird alpha-release
+
+
 ## Supported languages
 
 * Python &ndash; supported via parser generated from [ANTLR grammar](https://github.com/antlr/grammars-v4/tree/master/python3).
@@ -43,7 +61,7 @@ java -jar cli.jar preprocess --project path/to/project --output path/to/preproce
 
 Extract ASTs from all the files in supported languages.
 ```shell script
-java -jar cli.jar parse --lang py,java,c,cpp --project path/to/project --output path/to/result
+java -jar cli.jar parse --lang py,java,c,cpp --project path/to/project --output path/to/result --storage dot
 ```
 
 #### PathContexts
