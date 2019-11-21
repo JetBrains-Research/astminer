@@ -15,9 +15,9 @@ Supported languages of the input:
 
 #### 0.5
 
-* Beta-support of Javascript
-* Storing ASTs in [DOT format](https://www.graphviz.org/doc/info/lang.html)
-* Cleaning and fixing minor bugs
+* Beta of Javascript support
+* Storage of ASTs in [DOT format](https://www.graphviz.org/doc/info/lang.html)
+* Minor fixes
 
 #### 0.4
 
