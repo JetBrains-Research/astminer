@@ -53,10 +53,13 @@ class MethodGranularity(override val splitTokens: Boolean,
         methods.forEach {
             val methodNameNode = it.method.nameNode ?: return@forEach
             val methodRoot = it.method.root
-            val label = methodNameNode.getToken()
+            var label = methodNameNode.getToken()
             methodRoot.preOrder().forEach { node -> processNodeToken(node, splitTokens) }
             if (hideMethodNames) {
                 methodNameNode.setNormalizedToken("METHOD_NAME")
+            }
+            if (splitTokens) {
+                label = separateToken(label)
             }
             processedMethods.add(ParseResult(methodRoot, label))
         }
