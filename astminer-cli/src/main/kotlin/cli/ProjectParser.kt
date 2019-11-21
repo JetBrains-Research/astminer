@@ -80,7 +80,7 @@ class ProjectParser : CliktCommand() {
 
     val isMethodNameHide: Boolean by option(
         "--hide-method-name",
-        help = "if passed with method level granularity, the names of all methods are replaced with METHOD_NAME token"
+        help = "if passed with method level granularity, the names of all methods are replaced with placeholder token"
     ).flag(default = false)
 
     val isTokenSplitted: Boolean by option(
