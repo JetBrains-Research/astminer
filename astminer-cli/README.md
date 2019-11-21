@@ -13,11 +13,21 @@ For now the CLI provides four options:
 
 ### Version history
 
+#### Coming up in 0.4
+
+* Extraction of path-based representations at method level
+* Support of Javascript
+
 #### 0.3
 
 * Extraction of path-based representations
-* Compatibility with [code2vec](https://github.com/tech-srl/code2vec) model
-* AST saving in [DOT format](https://www.graphviz.org/doc/info/lang.html)
+    * For now it works only at file level
+* Compatibility with [code2vec](https://github.com/tech-srl/code2vec) model (see [code2vec section](#code2vec))
+* New features in AST parsing:
+    * Saving in [DOT format](https://www.graphviz.org/doc/info/lang.html)
+    * Selection of granularity level (`file` or `method`)
+    * You can pass `--split-token` flag to split tokens into pipe-separated sub-tokens
+    * You can pass `--hide-method-name` to replace names of methods with dummy `METHOD_NAME` token
 
 #### 0.2
 
