@@ -43,7 +43,7 @@ internal class Code2VecExtractorTest {
     @Test
     fun testDefaultExtraction() {
         val extractedDataDir = createTempDir("extractedData")
-        val languages = listOf("java,py")
+        val languages = listOf("java", "py")
         val cliArgs = CliArgs.Builder(testDataDir, extractedDataDir)
             .extensions(languagesToString(languages))
             .build()
