@@ -27,16 +27,30 @@ internal class Code2VecExtractorTest {
         }
     }
 
-    private fun checkLanguageDir(languageDir: File) {
-        languageDir.listFiles()?.forEach {
-            println(it.name)
+    private fun validPathContextsFile(name: String, batching: Boolean): Boolean {
+        return if (batching) {
+            name.startsWith("path_contexts_") && name.endsWith(".csv")
+        } else {
+            name == "path_contexts.csv"
         }
     }
 
-    private fun verifyParsingResult(extractedDataDir: File, languages: List<String>) {
+    private fun checkLanguageDir(languageDir: File, batching: Boolean) {
+        val expectedFiles = listOf("tokens.csv", "paths.csv", "node_types.csv")
+        languageDir.listFiles()?.forEach { file ->
+            with(file) {
+                assertTrue(
+                    expectedFiles.contains(name) || validPathContextsFile(name, batching),
+                    "Unexpected file $name in ${languageDir.name}"
+                )
+            }
+        }
+    }
+
+    private fun verifyParsingResult(extractedDataDir: File, languages: List<String>, batching: Boolean) {
         checkExtractedDir(extractedDataDir, languages)
         languages.forEach { language ->
-            checkLanguageDir(extractedDataDir.resolve(language))
+            checkLanguageDir(extractedDataDir.resolve(language), batching)
         }
     }
 
@@ -49,7 +63,7 @@ internal class Code2VecExtractorTest {
             .build()
 
         code2VecExtractor.main(cliArgs.args)
-        verifyParsingResult(extractedDataDir, languages)
+        verifyParsingResult(extractedDataDir, languages, true)
     }
 }
 
