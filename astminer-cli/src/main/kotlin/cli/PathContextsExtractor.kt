@@ -92,9 +92,12 @@ class PathContextsExtractor : CliktCommand() {
         val outputDir = File(outputDirName)
         for (extension in extensions) {
             val miner = PathMiner(PathRetrievalSettings(maxPathHeight, maxPathWidth))
-            val storage = Code2VecPathStorage(outputDirName)
             val parser = getParser(extension)
             val parsedFiles = parser.parseWithExtension(File(projectRoot), extension)
+
+            val outputDirForLanguage = outputDir.resolve(extension)
+            outputDirForLanguage.mkdir()
+            val storage = Code2VecPathStorage(outputDirForLanguage.path)
 
             parsedFiles.forEach { parseResult ->
                 val root = parseResult.root ?: return@forEach
@@ -110,8 +113,6 @@ class PathContextsExtractor : CliktCommand() {
                 }))
             }
 
-            val outputDirForLanguage = outputDir.resolve(extension)
-            outputDirForLanguage.mkdir()
             // Save stored data on disk
             // TODO: implement batches for path context extraction
             storage.save(maxPaths, maxTokens)

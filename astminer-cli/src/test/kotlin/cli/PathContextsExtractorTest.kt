@@ -6,9 +6,9 @@ import cli.util.verifyPathContextExtraction
 import org.junit.Test
 import java.io.File
 
-internal class Code2VecExtractorTest {
+internal class PathContextsExtractorTest {
     private val testDataDir = File("src/test/resources")
-    private val code2VecExtractor = Code2VecExtractor()
+    private val pathContextsExtractor = PathContextsExtractor()
 
     @Test
     fun testDefaultExtraction() {
@@ -18,9 +18,7 @@ internal class Code2VecExtractorTest {
             .extensions(languagesToString(languages))
             .build()
 
-        code2VecExtractor.main(cliArgs.args)
+        pathContextsExtractor.main(cliArgs.args)
         verifyPathContextExtraction(extractedDataDir, languages, true)
     }
 }
-
-
