@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/vovak/astminer/tree/master.svg?style=svg)](https://circleci.com/gh/vovak/astminer/tree/master)
+[![CircleCI](https://circleci.com/gh/JetBrains-Research/astminer.svg?style=svg)](https://circleci.com/gh/JetBrains-Research/astminer)
 [ ![Download](https://api.bintray.com/packages/egor-bogomolov/astminer/astminer/images/download.svg) ](https://bintray.com/egor-bogomolov/astminer/astminer/_latestVersion)
 
 # astminer
