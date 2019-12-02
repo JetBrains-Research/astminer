@@ -5,12 +5,12 @@ import astminer.common.model.*
 import astminer.common.preOrder
 import astminer.common.setNormalizedToken
 import astminer.common.splitToSubtokens
-import astminer.parse.antlr.java.JavaMethodSplitter
-import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.python.PythonMethodSplitter
 import astminer.parse.antlr.python.PythonParser
 import astminer.parse.cpp.FuzzyCppParser
 import astminer.parse.cpp.FuzzyMethodSplitter
+import astminer.parse.java.GumTreeJavaParser
+import astminer.parse.java.GumTreeMethodSplitter
 import astminer.paths.Code2VecPathStorage
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
@@ -111,9 +111,9 @@ class Code2VecExtractor : CliktCommand() {
                     extractFromMethods(roots, FuzzyMethodSplitter(), miner, storage)
                 }
                 "java" -> {
-                    val parser = JavaParser()
+                    val parser = GumTreeJavaParser()
                     val roots = parser.parseWithExtension(File(projectRoot), extension)
-                    extractFromMethods(roots, JavaMethodSplitter(), miner, storage)
+                    extractFromMethods(roots, GumTreeMethodSplitter(), miner, storage)
                 }
                 "py" -> {
                     val parser = PythonParser()

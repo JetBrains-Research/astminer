@@ -5,10 +5,11 @@ import astminer.common.model.MethodInfo
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
 import astminer.parse.antlr.SimpleNode
-import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.python.PythonMethodSplitter
 import astminer.parse.cpp.FuzzyMethodSplitter
 import astminer.parse.cpp.FuzzyNode
+import astminer.parse.java.GumTreeJavaNode
+import astminer.parse.java.GumTreeMethodSplitter
 
 
 interface Granularity {
@@ -37,8 +38,8 @@ class MethodGranularity(override val splitTokens: Boolean,
                 filteredParseResults.map { it.root as FuzzyNode }.flatMap { methodSplitter.splitIntoMethods(it) }
             }
             "java" -> {
-                val methodSplitter = JavaMethodSplitter()
-                filteredParseResults.map { it.root as SimpleNode }.flatMap { methodSplitter.splitIntoMethods(it) }
+                val methodSplitter = GumTreeMethodSplitter()
+                filteredParseResults.map { it.root as GumTreeJavaNode }.flatMap { methodSplitter.splitIntoMethods(it) }
             }
             "py" -> {
                 val methodSplitter = PythonMethodSplitter()
