@@ -13,9 +13,9 @@ import java.io.File
 
 
 private fun getCsvFriendlyMethodId(methodInfo: MethodInfo<GumTreeJavaNode>): String {
-    val className = methodInfo.enclosingElement.name() ?: ""
-    val methodName = methodInfo.method.name() ?: "unknown_method"
-    val parameterTypes = methodInfo.methodParameters.map { it.name() ?: "_" }.joinToString("|")
+    val className = methodInfo.enclosingElementName() ?: ""
+    val methodName = methodInfo.name() ?: "unknown_method"
+    val parameterTypes = methodInfo.methodParameters.joinToString("|") { it.name() ?: "_" }
     return "$className.$methodName($parameterTypes)"
 }
 
