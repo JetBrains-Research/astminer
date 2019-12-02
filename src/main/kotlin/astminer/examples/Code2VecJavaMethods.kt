@@ -4,15 +4,8 @@ import astminer.common.*
 import astminer.common.model.LabeledPathContexts
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.java.JavaParser
-import astminer.parse.java.MethodInfo
 import astminer.paths.*
 import java.io.File
-
-
-private fun getCsvFriendlyMethodId(methodInfo: MethodInfo?): String {
-    if (methodInfo == null) return "unknown_method"
-    return "${methodInfo.enclosingClassName}.${methodInfo.methodName}(${methodInfo.parameterTypes.joinToString("|")})"
-}
 
 
 //Retrieve paths from all Java files, using a GumTree parser.
