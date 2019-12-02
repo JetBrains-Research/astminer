@@ -1,7 +1,7 @@
 import tanvd.kosogor.proxy.publishJar
 
 group = "io.github.vovak.astminer"
-version = "0.5"
+version = "0.5.4"
 
 plugins {
     id("java")
@@ -97,7 +97,7 @@ idea {
 
 publishJar {
     publication {
-        artifactId = "astminer"
+        artifactId = "astminer-dev"
     }
 
     bintray {
