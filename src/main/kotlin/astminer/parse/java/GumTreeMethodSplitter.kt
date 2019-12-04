@@ -1,25 +1,11 @@
 package astminer.parse.java
 
-import com.github.gumtreediff.tree.ITree
-import com.github.gumtreediff.tree.TreeContext
-import astminer.common.model.TreeSplitter
+import astminer.common.model.*
 import astminer.common.preOrder
 
+private fun GumTreeJavaNode.isTypeNode() = getTypeLabel().endsWith("Type")
 
-data class MethodInfo(val enclosingClassName: String, val methodName: String, val parameterTypes: List<String>)
-
-const val METHOD_INFO_KEY = "method_info"
-
-fun GumTreeJavaNode.setMethodInfo(methodInfo: MethodInfo) {
-    this.setMetadata(METHOD_INFO_KEY, methodInfo)
-}
-
-fun GumTreeJavaNode.getMethodInfo(): MethodInfo? {
-    return this.getMetadata(METHOD_INFO_KEY) as? MethodInfo
-}
-
-
-class GumTreeMethodSplitter : TreeSplitter<GumTreeJavaNode> {
+class GumTreeMethodSplitter : TreeMethodSplitter<GumTreeJavaNode> {
 
     companion object {
         private object TypeLabels {
@@ -30,61 +16,58 @@ class GumTreeMethodSplitter : TreeSplitter<GumTreeJavaNode> {
         }
     }
 
-    private fun getMethodNodes(treeContext: TreeContext): List<ITree> {
-        return treeContext.root.descendants
-                .filter { treeContext.getTypeLabel(it.type) == TypeLabels.methodDeclaration }
+    override fun splitIntoMethods(root: GumTreeJavaNode): Collection<MethodInfo<GumTreeJavaNode>> {
+        val methodRoots = root.preOrder().filter { it.getTypeLabel() == TypeLabels.methodDeclaration }
+        return methodRoots.map { collectMethodInfo(it as GumTreeJavaNode) }
     }
 
-    private fun getMethodName(methodNode: ITree, context: TreeContext): String {
-        val nameNode = methodNode.children.firstOrNull { context.getTypeLabel(it.type) == TypeLabels.simpleName }
-        return nameNode?.label ?: ""
+    private fun collectMethodInfo(methodNode: GumTreeJavaNode): MethodInfo<GumTreeJavaNode> {
+        val methodReturnType = getElementType(methodNode)
+        val methodName = getElementName(methodNode)
+
+        val classRoot = getEnclosingClass(methodNode)
+        val className = classRoot?.let { getElementName(it) }
+
+        val parameters = getParameters(methodNode)
+
+        return MethodInfo(
+                MethodNode(methodNode, methodReturnType, methodName),
+                ElementNode(classRoot, className),
+                parameters
+        )
     }
 
-    private fun getEnclosingClassName(methodNode: ITree, context: TreeContext): String {
-        val classDeclarationNode = methodNode.parents.firstOrNull {
-            context.getTypeLabel(it.type) == TypeLabels.typeDeclaration
-        } ?: return ""
-        val nameNode = classDeclarationNode.children.firstOrNull {
-            context.getTypeLabel(it.type) == TypeLabels.simpleName
+    private fun getElementName(node: GumTreeJavaNode) = node.getChildren().map {
+        it as GumTreeJavaNode
+    }.firstOrNull {
+        it.getTypeLabel() == TypeLabels.simpleName
+    }
+
+    private fun getElementType(node: GumTreeJavaNode) = node.getChildren().map {
+        it as GumTreeJavaNode
+    }.firstOrNull {
+        it.isTypeNode()
+    }
+
+    private fun getEnclosingClass(node: GumTreeJavaNode): GumTreeJavaNode? {
+        if (node.getTypeLabel() == TypeLabels.typeDeclaration) {
+            return node
         }
-        return nameNode?.label ?: ""
+        val parentNode = node.getParent() as? GumTreeJavaNode
+        return parentNode?.let { getEnclosingClass(it) }
     }
 
-    private fun getParameterTypes(methodNode: ITree, context: TreeContext): List<String> {
-        val result: MutableList<String> = ArrayList()
-        methodNode.children
-                .filter { context.getTypeLabel(it.type) == TypeLabels.singleVariableDeclaration }
-                .forEach { node ->
-                    node.children.firstOrNull { c ->
-                        context.getTypeLabel(c.type).endsWith("Type")
-                    }?.let { typeNode ->
-                        result.add(typeNode.label)
-                    }
-                }
-        return result
-    }
-
-    private fun getMethodInfo(methodNode: ITree, context: TreeContext): MethodInfo {
-        return MethodInfo(getEnclosingClassName(methodNode, context),
-                getMethodName(methodNode, context),
-                getParameterTypes(methodNode, context))
-    }
-
-    override fun split(root: GumTreeJavaNode): Collection<GumTreeJavaNode> {
-        val rawMethodNodes = getMethodNodes(root.context).toSet()
-
-        val splitNodes: MutableList<GumTreeJavaNode> = ArrayList()
-
-        root.preOrder().forEach {
-            val gtNode = (it as GumTreeJavaNode).wrappedNode
-            if (gtNode in rawMethodNodes) {
-                val methodInfo = getMethodInfo(gtNode, root.context)
-                it.setMethodInfo(methodInfo)
-                splitNodes.add(it)
-            }
+    private fun getParameters(methodNode: GumTreeJavaNode): List<ParameterNode<GumTreeJavaNode>> {
+        val params = methodNode.getChildren().filter {
+            it.getTypeLabel() == TypeLabels.singleVariableDeclaration
         }
-
-        return splitNodes
+        return params.map {
+            val node = it as GumTreeJavaNode
+            ParameterNode<GumTreeJavaNode>(
+                    node,
+                    getElementType(node),
+                    getElementName(node)
+            )
+        }.toList()
     }
-
 }

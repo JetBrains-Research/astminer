@@ -5,9 +5,9 @@ import astminer.ast.DotAstStorage
 import astminer.common.model.AstStorage
 import astminer.common.model.Node
 import astminer.common.model.Parser
-import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.python.PythonParser
 import astminer.parse.cpp.FuzzyCppParser
+import astminer.parse.java.GumTreeJavaParser
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
@@ -41,7 +41,7 @@ class ProjectParser : CliktCommand() {
      * List of supported language extensions and corresponding parsers.
      */
     private val supportedLanguages = listOf(
-        SupportedLanguage(JavaParser(), "java"),
+        SupportedLanguage(GumTreeJavaParser(), "java"),
         SupportedLanguage(FuzzyCppParser(), "c"),
         SupportedLanguage(FuzzyCppParser(), "cpp"),
         SupportedLanguage(PythonParser(), "py")

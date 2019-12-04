@@ -1,10 +1,5 @@
 package astminer.common.model
 
-
-interface TreeSplitter<T : Node> {
-    fun split(root: T): Collection<T>
-}
-
 interface TreeMethodSplitter<T : Node> {
     fun splitIntoMethods(root: T): Collection<MethodInfo<T>>
 }
