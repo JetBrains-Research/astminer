@@ -4,9 +4,9 @@ import astminer.common.getNormalizedToken
 import astminer.common.model.*
 import astminer.common.preOrder
 import astminer.common.setNormalizedToken
-import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.python.PythonParser
 import astminer.parse.cpp.FuzzyCppParser
+import astminer.parse.java.GumTreeJavaParser
 import astminer.paths.Code2VecPathStorage
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
@@ -32,7 +32,7 @@ class PathContextsExtractor : CliktCommand() {
      * List of supported language extensions and corresponding parsers.
      */
     private val supportedLanguages = listOf(
-        SupportedLanguage(JavaParser(), "java"),
+        SupportedLanguage(GumTreeJavaParser(), "java"),
         SupportedLanguage(FuzzyCppParser(), "c"),
         SupportedLanguage(FuzzyCppParser(), "cpp"),
         SupportedLanguage(PythonParser(), "py")
