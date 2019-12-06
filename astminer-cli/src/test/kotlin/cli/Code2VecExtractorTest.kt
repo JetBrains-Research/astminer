@@ -19,7 +19,7 @@ internal class Code2VecExtractorTest {
             .build()
 
         code2VecExtractor.main(cliArgs.args)
-        verifyPathContextExtraction(extractedDataDir, languages, true)
+        verifyPathContextExtraction(extractedDataDir, languages, false)
     }
 }
 
