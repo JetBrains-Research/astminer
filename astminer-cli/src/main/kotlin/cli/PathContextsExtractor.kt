@@ -12,10 +12,7 @@ import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
 import astminer.paths.toPathContext
 import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.parameters.options.default
-import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.options.required
-import com.github.ajalt.clikt.parameters.options.split
+import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.long
 import java.io.File
@@ -79,6 +76,17 @@ class PathContextsExtractor : CliktCommand() {
         help = "Keep only contexts with maxTokens most popular paths."
     ).long().default(Long.MAX_VALUE)
 
+    val batchMode: Boolean by option(
+        "--batchMode",
+        help = "Store path contexts in batches of `batchSize` to reduce memory usage. " +
+                "If passed, limits on tokens and paths will be ignored!"
+    ).flag(default = false)
+
+    val batchSize: Long by option(
+        "--batchSize",
+        help = "Number of path contexts stored in each batch. Should only be used with `batchMode` flag."
+    ).long().default(100)
+
     private fun getParser(extension: String): Parser<out Node> {
         for (language in supportedLanguages) {
             if (extension == language.extension) {
@@ -97,7 +105,7 @@ class PathContextsExtractor : CliktCommand() {
 
             val outputDirForLanguage = outputDir.resolve(extension)
             outputDirForLanguage.mkdir()
-            val storage = Code2VecPathStorage(outputDirForLanguage.path)
+            val storage = Code2VecPathStorage(outputDirForLanguage.path, batchMode, batchSize)
 
             parsedFiles.forEach { parseResult ->
                 val root = parseResult.root ?: return@forEach
@@ -114,7 +122,6 @@ class PathContextsExtractor : CliktCommand() {
             }
 
             // Save stored data on disk
-            // TODO: implement batches for path context extraction
             storage.save(maxPaths, maxTokens)
         }
     }
