@@ -1,4 +1,6 @@
-[![CircleCI](https://circleci.com/gh/vovak/astminer.svg?style=svg)](https://circleci.com/gh/vovak/astminer) [ ![Download](https://api.bintray.com/packages/egor-bogomolov/astminer/astminer-cli/images/download.svg?version=0.3) ](https://bintray.com/egor-bogomolov/astminer/astminer-cli/0.3/link)
+[![JetBrains Research](https://jb.gg/badges/research.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
+[![CircleCI](https://circleci.com/gh/JetBrains-Research/astminer.svg?style=svg)](https://circleci.com/gh/JetBrains-Research/astminer)
+[ ![Download](https://api.bintray.com/packages/egor-bogomolov/astminer/astminer-cli/images/download.svg?version=0.3) ](https://bintray.com/egor-bogomolov/astminer/astminer-cli/0.3/link)
 
 # Astminer usage example / CLI
 
