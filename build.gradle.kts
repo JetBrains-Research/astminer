@@ -1,4 +1,5 @@
 import tanvd.kosogor.proxy.publishJar
+import tanvd.kosogor.proxy.shadowJar
 
 group = "io.github.vovak.astminer"
 version = "0.5.5"
@@ -45,6 +46,15 @@ dependencies {
 
     testImplementation("junit:junit:4.11")
     testImplementation(kotlin("test-junit"))
+}
+
+val shadowJar = shadowJar {
+    jar {
+        archiveName = "lib-$version.jar"
+        mainClass = "astminer.MainKt"
+    }
+}.apply {
+    task.archiveClassifier.set("")
 }
 
 task<JavaExec>("performanceTest") {
