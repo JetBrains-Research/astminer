@@ -19,6 +19,6 @@ internal class PathContextsExtractorTest {
             .build()
 
         pathContextsExtractor.main(cliArgs.args)
-        verifyPathContextExtraction(extractedDataDir, languages, true)
+        verifyPathContextExtraction(extractedDataDir, languages, false)
     }
 }

@@ -18,7 +18,7 @@ public class AllJavaFiles {
 
     public static void runExample() {
         final PathMiner miner = new PathMiner(new PathRetrievalSettings(5,5));
-        final CountingPathStorage<String> pathStorage = new CsvPathStorage(OUTPUT_FOLDER);
+        final CountingPathStorage<String> pathStorage = new CsvPathStorage(OUTPUT_FOLDER, false, 0);
 
         final Path inputFolder = Paths.get(INPUT_FOLDER);
 
