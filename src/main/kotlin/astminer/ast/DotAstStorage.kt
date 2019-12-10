@@ -33,7 +33,7 @@ class DotAstStorage : AstStorage {
 
         rootsPerEntity.forEachIndexed { index, (label, root) ->
             val labelAsFile = File(label)
-            val sourceFile = labelAsFile.parentFile.path
+            val sourceFile = labelAsFile.parentFile?.path ?: ""
             val normalizedLabel = normalizeAstLabel(labelAsFile.name)
             val nodesMap = dumpAst(root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
             val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$sourceFile,$label,%d,%s,%s"
