@@ -28,13 +28,15 @@ class DotAstStorage : AstStorage {
         val astDirectoryPath = File(directoryPath, "asts")
         astDirectoryPath.mkdirs()
 
-        val descriptionLines = mutableListOf("dot_file,label,node_id,token,type")
+        val descriptionLines = mutableListOf("dot_file,source_file,label,node_id,token,type")
         val astFilenameFormat = "ast_%d.dot"
 
         rootsPerEntity.forEachIndexed { index, (label, root) ->
-            val normalizedLabel = normalizeAstLabel(label)
+            val labelAsFile = File(label)
+            val sourceFile = labelAsFile.parentFile.path
+            val normalizedLabel = normalizeAstLabel(labelAsFile.name)
             val nodesMap = dumpAst(root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
-            val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$label,%d,%s,%s"
+            val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$sourceFile,$label,%d,%s,%s"
             for (node in root.preOrder()) {
                 descriptionLines.add(
                         nodeDescriptionFormat.format(nodesMap.getId(node) - 1, node.getNormalizedToken(), node.getTypeLabel())
