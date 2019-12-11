@@ -10,6 +10,7 @@ import astminer.parse.cpp.FuzzyMethodSplitter
 import astminer.parse.cpp.FuzzyNode
 import astminer.parse.java.GumTreeJavaNode
 import astminer.parse.java.GumTreeMethodSplitter
+import java.io.File
 
 
 interface Granularity {
@@ -32,24 +33,30 @@ class MethodGranularity(override val splitTokens: Boolean,
                         private val hideMethodNames: Boolean = false) : Granularity {
     override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> {
         val filteredParseResults = parseResults.filter { it.root != null }
-        return processMethods(when (fileExtension) {
+        return when (fileExtension) {
             "c", "cpp" -> {
                 val methodSplitter = FuzzyMethodSplitter()
-                filteredParseResults.map { it.root as FuzzyNode }.flatMap { methodSplitter.splitIntoMethods(it) }
+                filteredParseResults.map { Pair(it.root as FuzzyNode, it.filePath) }
+                                    .map { Pair(methodSplitter.splitIntoMethods(it.first), it.second) }
+                                    .flatMap { processMethods(it.first, it.second) }
             }
             "java" -> {
                 val methodSplitter = GumTreeMethodSplitter()
-                filteredParseResults.map { it.root as GumTreeJavaNode }.flatMap { methodSplitter.splitIntoMethods(it) }
+                filteredParseResults.map { Pair(it.root as GumTreeJavaNode, it.filePath) }
+                                    .map { Pair(methodSplitter.splitIntoMethods(it.first), it.second) }
+                                    .flatMap { processMethods(it.first, it.second) }
             }
             "py" -> {
                 val methodSplitter = PythonMethodSplitter()
-                filteredParseResults.map { it.root as SimpleNode }.flatMap { methodSplitter.splitIntoMethods(it) }
+                filteredParseResults.map { Pair(it.root as SimpleNode, it.filePath) }
+                                    .map { Pair(methodSplitter.splitIntoMethods(it.first), it.second) }
+                                    .flatMap { processMethods(it.first, it.second) }
             }
             else -> throw UnsupportedOperationException("Unsupported extension $fileExtension")
-        })
+        }
     }
 
-    private fun processMethods(methods: List<MethodInfo<out Node>>): List<ParseResult<out Node>> {
+    private fun processMethods(methods: Collection<MethodInfo<out Node>>, filePath: String): List<ParseResult<out Node>> {
         val processedMethods = mutableListOf<ParseResult<Node>>()
         methods.forEach {
             val methodNameNode = it.method.nameNode ?: return@forEach
@@ -62,7 +69,8 @@ class MethodGranularity(override val splitTokens: Boolean,
             if (splitTokens) {
                 label = separateToken(label)
             }
-            processedMethods.add(ParseResult(methodRoot, label))
+            val methodFilePath = File(filePath).resolve(label).path
+            processedMethods.add(ParseResult(methodRoot, methodFilePath))
         }
         return processedMethods
     }
