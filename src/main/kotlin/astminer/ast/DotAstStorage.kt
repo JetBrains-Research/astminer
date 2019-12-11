@@ -35,7 +35,7 @@ class DotAstStorage : AstStorage {
             val (sourceFile, label) = splitFullPath(fullPath)
             val normalizedLabel = normalizeAstLabel(label)
             val nodesMap = dumpAst(root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
-            val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$sourceFile,$fullPath,%d,%s,%s"
+            val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$sourceFile,$normalizedLabel,%d,%s,%s"
             for (node in root.preOrder()) {
                 descriptionLines.add(
                         nodeDescriptionFormat.format(nodesMap.getId(node) - 1, node.getNormalizedToken(), node.getTypeLabel())
