@@ -88,6 +88,18 @@ class ProjectParser : CliktCommand() {
         help = "if passed, split tokens into sequence of tokens"
     ).flag(default = false)
 
+    val excludeModifiers: List<String> by option(
+        "--filter-modifiers",
+        help = "Comma-separated list of function's modifiers, which should be filtered." +
+                "Works only for method-level granulation."
+    ).split(",").default(emptyList())
+
+    val excludeAnnotations: List<String> by option(
+        "--filter-annotations",
+        help = "Comma-separated list of function's annotations, which should be filtered." +
+                "Works only for method-level granulation."
+    ).split(",").default(emptyList())
+
     private fun getParser(extension: String): Parser<out Node> {
         for (language in supportedLanguages) {
             if (extension == language.extension) {
@@ -123,10 +135,15 @@ class ProjectParser : CliktCommand() {
             val parser = getParser(extension)
             // Choose granularity level
             val granularity = getGranularity(granularityLevel)
-            val roots = granularity.splitByGranularityLevel(
+            var roots = granularity.splitByGranularityLevel(
                 parser.parseWithExtension(File(projectRoot), extension),
                 extension
             )
+            if (granularityLevel == "method") {
+                roots = roots
+                    .filter { modifiersPredicate(it.root, excludeModifiers) }
+                    .filter { annotationsPredicate(it.root, excludeAnnotations) }
+            }
             roots.forEach { parseResult ->
                 val root = parseResult.root
                 val filePath = parseResult.filePath
