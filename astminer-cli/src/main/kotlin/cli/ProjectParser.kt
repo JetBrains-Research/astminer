@@ -100,6 +100,11 @@ class ProjectParser : CliktCommand() {
                 "Works only for method-level granulation."
     ).split(",").default(emptyList())
 
+    val filterConstructors: Boolean by option(
+        "--remove-constructors",
+        help = "Remove constructor methods, works for method-level granulation"
+    ).flag(default = false)
+
     private fun getParser(extension: String): Parser<out Node> {
         for (language in supportedLanguages) {
             if (extension == language.extension) {
@@ -135,11 +140,22 @@ class ProjectParser : CliktCommand() {
             val parser = getParser(extension)
             // Choose granularity level
             val granularity = getGranularity(granularityLevel)
-            var roots = granularity.splitByGranularityLevel(
-                parser.parseWithExtension(File(projectRoot), extension),
-                extension
-            )
+            // Parse project
+            val parsedProject = parser.parseWithExtension(File(projectRoot), extension)
+            // Remember class names
+            val classNames = parsedProject.flatMap {
+                it.root?.getChildrenOfType("TypeDeclaration")?.map { classNode ->
+                    classNode.getChildOfType("SimpleName")?.getToken()
+                }
+                    ?: emptyList<String>()
+            }.filterNotNull()
+            // Split project to required granularity level
+            var roots = granularity.splitByGranularityLevel(parsedProject, extension)
+            // Granularity levels specific work
             if (granularityLevel == "method") {
+                if (filterConstructors) {
+                    roots = roots.filter { constructorPredicate(it.root, classNames) }
+                }
                 roots = roots
                     .filter { modifiersPredicate(it.root, excludeModifiers) }
                     .filter { annotationsPredicate(it.root, excludeAnnotations) }
