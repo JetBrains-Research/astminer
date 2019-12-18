@@ -24,11 +24,13 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    compile("io.github.vovak.astminer", "astminer-dev", "0.5.5")
+    compile("io.github.vovak.astminer", "astminer-dev", "0.5.6")
     compile("com.github.ajalt", "clikt", "2.1.0")
 
     testImplementation("junit:junit:4.11")
     testImplementation(kotlin("test-junit"))
+
+    implementation(files("/home/spirin/Documents/astminer-vovak/build/shadow/lib-0.5.5.jar"))
 }
 
 val shadowJar = shadowJar {
