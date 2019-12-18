@@ -32,6 +32,7 @@ class DotAstStorage : AstStorage {
 
         rootsPerEntity.forEachIndexed { index, (fullPath, root) ->
             // use filename as a label for ast
+            // TODO: save full signature for method
             val (sourceFile, label) = splitFullPath(fullPath)
             val normalizedLabel = normalizeAstLabel(label)
             val nodesMap = dumpAst(root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
