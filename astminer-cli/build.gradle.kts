@@ -29,8 +29,6 @@ dependencies {
 
     testImplementation("junit:junit:4.11")
     testImplementation(kotlin("test-junit"))
-
-    implementation(files("/home/spirin/Documents/astminer-vovak/build/shadow/lib-0.5.5.jar"))
 }
 
 val shadowJar = shadowJar {
