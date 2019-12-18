@@ -6,7 +6,7 @@ version = "0.5.5"
 
 plugins {
     id("java")
-    kotlin("jvm") version "1.3.60" apply true
+    kotlin("jvm") version "1.3.61" apply true
     id("antlr")
     id("idea")
     id("application")
@@ -55,6 +55,9 @@ val shadowJar = shadowJar {
     }
 }.apply {
     task.archiveClassifier.set("")
+    task.dependencies {
+        exclude(dependency("org.jetbrains.kotlin:.*"))
+    }
 }
 
 task<JavaExec>("performanceTest") {
