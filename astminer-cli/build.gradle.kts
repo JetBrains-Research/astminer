@@ -24,8 +24,11 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    compile("io.github.vovak.astminer", "astminer-dev", "0.5.5")
-    compile("com.github.ajalt", "clikt", "2.1.0")
+
+    // Local build of Astminer
+    implementation(files("../build/shadow/lib-0.5.jar"))
+
+    implementation("com.github.ajalt", "clikt", "2.1.0")
 
     testImplementation("junit:junit:4.11")
     testImplementation(kotlin("test-junit"))
@@ -55,8 +58,8 @@ publishJar {
         repository = "astminer"
 
         info {
-            githubRepo = "vovak/astminer"
-            vcsUrl = "https://github.com/vovak/astminer/astminer-cli"
+            githubRepo = "JetBrains-Research/astminer"
+            vcsUrl = "https://github.com/JetBrains-Research/astminer/astminer-cli"
             labels.addAll(listOf("mining", "ast", "ml4se", "code2vec", "path-based representations"))
             license = "MIT"
             description = "CLI for AstMiner library"
