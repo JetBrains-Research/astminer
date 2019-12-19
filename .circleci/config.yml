@@ -2,6 +2,9 @@ version: 2
 jobs:
   # build with machine executor
   build:
+    branches:
+      ignore:
+        - master
     machine:
       enabled: true
     working_directory: ~/astminer
@@ -12,6 +15,9 @@ jobs:
 
   # release
   release:
+    branches:
+      only:
+        - master
     machine:
       enabled: true
     working_directory: ~/astminer
@@ -21,15 +27,21 @@ jobs:
       - run: ./gradlew bintrayUpload
 
   build-cli:
+    branches:
+      ignore:
+        - master
     machine:
       enabled: true
     working_directory: ~/astminer-cli
     steps:
       - checkout:
           path: ~/astminer-cli
-      - run: cd astminer-cli && ./gradlew shadowJar
+      - run: ./gradlew shadowJar && cd astminer-cli && ./gradlew shadowJar
 
   release-cli:
+    branches:
+      only:
+        - master
     machine:
       enabled: true
     working_directory: ~/astminer-cli
