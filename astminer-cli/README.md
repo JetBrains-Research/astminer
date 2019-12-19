@@ -4,7 +4,7 @@
 
 # Astminer usage example / CLI
 
-The project implements a CLI for [Astminer](github.com/vovak/astminer) and serves as a usage example of the library.  
+The project implements a CLI for [astminer](github.com/vovak/astminer) and serves as a usage example for the library.  
 
 For now the CLI provides four options:
 
@@ -94,9 +94,9 @@ java -jar cli.jar code2vec --lang py,java,c,cpp --project path/to/project --outp
 ## Extending the CLI
 
 1. Clone the repository
-2. If you want to update the library:
-    1. Make changes in the library
-    2. Build it in the root folder with `./gradlew shadowJar`
+2. If you want to update the astminer library:
+    1. Make changes to astminer (located in the root of this repository)
+    2. Build astminer in the root folder with `./gradlew shadowJar`
 3. Move to `astminer-cli`
 4. If you want to update the CLI:
     1. To add another task for the jar, create an extension of `CliktCommand()` class 
