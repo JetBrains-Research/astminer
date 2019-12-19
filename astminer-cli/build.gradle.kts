@@ -58,8 +58,8 @@ publishJar {
         repository = "astminer"
 
         info {
-            githubRepo = "vovak/astminer"
-            vcsUrl = "https://github.com/vovak/astminer/astminer-cli"
+            githubRepo = "JetBrains-Research/astminer"
+            vcsUrl = "https://github.com/JetBrains-Research/astminer/astminer-cli"
             labels.addAll(listOf("mining", "ast", "ml4se", "code2vec", "path-based representations"))
             license = "MIT"
             description = "CLI for AstMiner library"
