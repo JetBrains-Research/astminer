@@ -88,11 +88,7 @@ workflows:
             branches:
               only: master
 
-  build-cli:
-    jobs:
-      - build-cli
-
-  release-cli:
+  deploy-cli:
     jobs:
       - build-cli
       - approve-release-cli:
