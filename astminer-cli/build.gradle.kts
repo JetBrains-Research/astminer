@@ -26,7 +26,7 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
     // Local build of Astminer
-    implementation(files("../build/shadow/lib-0.5.5.jar"))
+    implementation(files("../build/shadow/lib-0.5.jar"))
 
     implementation("com.github.ajalt", "clikt", "2.1.0")
 
