@@ -24,7 +24,10 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    compile("io.github.vovak.astminer", "astminer-dev", "0.5.5")
+
+    // Local build of Astminer
+    implementation(files("../build/shadow/lib-0.5.5.jar"))
+
     compile("com.github.ajalt", "clikt", "2.1.0")
 
     testImplementation("junit:junit:4.11")
