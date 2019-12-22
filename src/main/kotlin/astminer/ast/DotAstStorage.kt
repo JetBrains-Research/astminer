@@ -4,7 +4,6 @@ import astminer.common.getNormalizedToken
 import astminer.common.model.AstStorage
 import astminer.common.model.Node
 import astminer.common.preOrder
-import astminer.common.setNormalizedToken
 import astminer.common.storage.RankedIncrementalIdStorage
 import astminer.common.storage.writeLinesToFile
 import java.io.File
@@ -16,6 +15,7 @@ import java.io.File
 class DotAstStorage : AstStorage {
 
     private data class Ast(val label: String, val root: Node)
+    internal data class FilePath(val parentPath: String, val fileName: String)
 
     private val rootsPerEntity: MutableList<Ast> = mutableListOf()
 
@@ -28,13 +28,16 @@ class DotAstStorage : AstStorage {
         val astDirectoryPath = File(directoryPath, "asts")
         astDirectoryPath.mkdirs()
 
-        val descriptionLines = mutableListOf("dot_file,label,node_id,token,type")
+        val descriptionLines = mutableListOf("dot_file,source_file,label,node_id,token,type")
         val astFilenameFormat = "ast_%d.dot"
 
-        rootsPerEntity.forEachIndexed { index, (label, root) ->
+        rootsPerEntity.forEachIndexed { index, (fullPath, root) ->
+            // Use filename as a label for ast
+            // TODO: save full signature for method
+            val (sourceFile, label) = splitFullPath(fullPath)
             val normalizedLabel = normalizeAstLabel(label)
             val nodesMap = dumpAst(root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
-            val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$label,%d,%s,%s"
+            val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$sourceFile,$label,%d,%s,%s"
             for (node in root.preOrder()) {
                 descriptionLines.add(
                         nodeDescriptionFormat.format(nodesMap.getId(node) - 1, node.getNormalizedToken(), node.getTypeLabel())
@@ -61,8 +64,18 @@ class DotAstStorage : AstStorage {
         return nodesMap
     }
 
-    // label should contain only latin letters and underscores, other symbols replace with an underscore
+    // Label should contain only latin letters and underscores, other symbols replace with an underscore
     internal fun normalizeAstLabel(label: String): String =
             label.replace("[^A-z,^_]".toRegex(), "_")
+
+    /**
+     * Split the full path to specified file into the parent's path, and the file name
+     * In case of single file name returns an empty string for the parent path
+     * Example: "/foo/boo/gav" -> FilePath("/foo/boo", "gav"), "gav" -> FilePath("", "gav")
+     */
+    internal fun splitFullPath(fullPath: String): FilePath {
+        val fileObject = File(fullPath)
+        return FilePath(fileObject.parentFile?.path ?: "", fileObject.name)
+    }
 
 }

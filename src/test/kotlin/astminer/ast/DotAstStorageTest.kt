@@ -31,7 +31,7 @@ class DotAstStorageTest {
     }
 
     @Test
-    fun testPathNormalization() {
+    fun testLabelNormalization() {
         val label = "some/kind/of/random/path"
         val storage = DotAstStorage()
         val normalizedLabel = storage.normalizeAstLabel(label)
@@ -48,4 +48,23 @@ class DotAstStorageTest {
         assertEquals("_supposeToBeListener", normalizedLabel)
     }
 
+    @Test
+    fun testSplittingFullPath() {
+        val fullPath = "/path1/path2/path_3/path.4/file.name"
+        val storage = DotAstStorage()
+        val (path, fileName) = storage.splitFullPath(fullPath)
+
+        assertEquals("/path1/path2/path_3/path.4", path)
+        assertEquals("file.name", fileName)
+    }
+
+    @Test
+    fun testSplittingFileName() {
+        val fullPath = "file.name"
+        val storage = DotAstStorage()
+        val (path, fileName) = storage.splitFullPath(fullPath)
+
+        assertEquals("", path)
+        assertEquals("file.name", fileName)
+    }
 }
