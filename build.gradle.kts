@@ -2,11 +2,11 @@ import tanvd.kosogor.proxy.publishJar
 import tanvd.kosogor.proxy.shadowJar
 
 group = "io.github.vovak.astminer"
-version = "0.5.6"
+version = "0.5"
 
 plugins {
     id("java")
-    kotlin("jvm") version "1.3.60" apply true
+    kotlin("jvm") version "1.3.61" apply true
     id("antlr")
     id("idea")
     id("application")
@@ -55,6 +55,9 @@ val shadowJar = shadowJar {
     }
 }.apply {
     task.archiveClassifier.set("")
+    task.dependencies {
+        exclude(dependency("org.jetbrains.kotlin:.*"))
+    }
 }
 
 task<JavaExec>("performanceTest") {
@@ -107,7 +110,7 @@ idea {
 
 publishJar {
     publication {
-        artifactId = "astminer-dev"
+        artifactId = "astminer"
     }
 
     bintray {
@@ -116,8 +119,8 @@ publishJar {
         repository = "astminer"
 
         info {
-            githubRepo = "vovak/astminer"
-            vcsUrl = "https://github.com/vovak/astminer"
+            githubRepo = "JetBrains-Research/astminer"
+            vcsUrl = "https://github.com/JetBrains-Research/astminer"
             labels.addAll(listOf("mining", "ast", "ml4se", "code2vec", "path-based representations"))
             license = "MIT"
             description = "Extract AST, AST-related metrics, and path-based representations from source code"
