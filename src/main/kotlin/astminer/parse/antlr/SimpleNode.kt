@@ -7,8 +7,8 @@ class SimpleNode(private val typeLabel: String, private var parent: Node?, priva
 
     private var children: MutableList<Node> = mutableListOf()
 
-    fun setChildren(newChildren: MutableList<Node>) {
-        children = newChildren
+    fun setChildren(newChildren: List<Node>) {
+        children = newChildren.toMutableList()
         children.forEach { (it as SimpleNode).setParent(this) }
     }
 
