@@ -30,7 +30,8 @@ class FileGranularity(override val splitTokens: Boolean) : Granularity {
 
 
 class MethodGranularity(override val splitTokens: Boolean,
-                        private val hideMethodNames: Boolean = false) : Granularity {
+                        private val hideMethodNames: Boolean = false,
+                        private val filterConstructors: Boolean = false) : Granularity {
     override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> {
         val filteredParseResults = parseResults.filter { it.root != null }
         return when (fileExtension) {
@@ -61,15 +62,20 @@ class MethodGranularity(override val splitTokens: Boolean,
         methods.forEach {
             val methodNameNode = it.method.nameNode ?: return@forEach
             val methodRoot = it.method.root
-            var label = methodNameNode.getToken()
+            var methodName = methodNameNode.getToken()
+
+            if (filterConstructors && methodName == it.enclosingElementName()) {
+                return@forEach
+            }
+
             methodRoot.preOrder().forEach { node -> processNodeToken(node, splitTokens) }
             if (hideMethodNames) {
                 methodNameNode.setNormalizedToken("METHOD_NAME")
             }
             if (splitTokens) {
-                label = separateToken(label)
+                methodName = separateToken(methodName)
             }
-            val methodFilePath = File(filePath).resolve(label).path
+            val methodFilePath = File(filePath).resolve(methodName).path
             processedMethods.add(ParseResult(methodRoot, methodFilePath))
         }
         return processedMethods
