@@ -40,6 +40,10 @@ class PrettyNode(private val type: String, private val token: String) : Node {
 
     override fun getTypeLabel(): String = type
 
+    override fun removeChildrenOfType(typeLabel: String) {
+        children.removeIf { it.getTypeLabel() == typeLabel }
+    }
+
 }
 
 fun restoreFromPrettyPrint(prettyPrintedTree: String, indentSymbol: String = "--") : PrettyNode? {
