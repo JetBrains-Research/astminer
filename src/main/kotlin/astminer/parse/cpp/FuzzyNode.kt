@@ -58,4 +58,8 @@ class FuzzyNode(private val typeLabel: String, private val token: String?, order
     private fun setParent(node: Node) {
         parent = node
     }
+
+    override fun removeChildrenOfType(typeLabel: String) {
+        children.removeIf { it.getTypeLabel() == typeLabel }
+    }
 }
