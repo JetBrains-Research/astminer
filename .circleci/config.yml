@@ -27,7 +27,7 @@ jobs:
     steps:
       - checkout:
           path: ~/astminer-cli
-      - run: cd astminer-cli && ./gradlew shadowJar
+      - run: ./gradlew shadowJar && cd astminer-cli && ./gradlew shadowJar
 
   release-cli:
     machine:
@@ -69,36 +69,41 @@ jobs:
 
 workflows:
   version: 2
-  build:
-    jobs:
-      - build
 
   # release with manual approval in CircleCI app
-  release:
+  deploy-library:
     jobs:
       - build
       - approve-release:
           type: approval
           requires:
             - build
+          filters:
+            branches:
+              only: master
       - release:
           requires:
             - approve-release
+          filters:
+            branches:
+              only: master
 
-  build-cli:
-    jobs:
-      - build-cli
-
-  release-cli:
+  deploy-cli:
     jobs:
       - build-cli
       - approve-release-cli:
           type: approval
           requires:
             - build-cli
+          filters:
+            branches:
+              only: master
       - release-cli:
           requires:
             - approve-release-cli
+          filters:
+            branches:
+              only: master
 
 #  py_example:
 #    jobs:
