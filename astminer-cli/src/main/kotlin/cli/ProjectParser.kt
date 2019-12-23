@@ -5,6 +5,7 @@ import astminer.ast.DotAstStorage
 import astminer.common.model.AstStorage
 import astminer.common.model.Node
 import astminer.common.model.Parser
+import astminer.common.preOrder
 import astminer.parse.antlr.python.PythonParser
 import astminer.parse.cpp.FuzzyCppParser
 import astminer.parse.java.GumTreeJavaParser
@@ -105,6 +106,11 @@ class ProjectParser : CliktCommand() {
         help = "Remove constructor methods, works for method-level granulation"
     ).flag(default = false)
 
+    val excludeNodes: List<String> by option(
+        "--remove-nodes",
+        help = "Comma-separated list of node types, which must be removed from asts."
+    ).split(",").default(emptyList())
+
     private fun getParser(extension: String): Parser<out Node> {
         for (language in supportedLanguages) {
             if (extension == language.extension) {
@@ -153,6 +159,9 @@ class ProjectParser : CliktCommand() {
             roots.forEach { parseResult ->
                 val root = parseResult.root
                 val filePath = parseResult.filePath
+                root?.preOrder()?.forEach { node ->
+                    excludeNodes.forEach { node.removeChildrenOfType(it) }
+                }
                 root?.apply {
                     // Save AST as it is or process it to extract features / path-based representations
                     storage.store(root, label = filePath)
