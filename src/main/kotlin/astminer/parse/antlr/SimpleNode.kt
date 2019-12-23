@@ -5,9 +5,9 @@ import astminer.common.model.Node
 class SimpleNode(private val typeLabel: String, private var parent: Node?, private var token: String?) : Node {
     private val metadata: MutableMap<String, Any> = HashMap()
 
-    private var children: List<Node> = emptyList()
+    private var children: MutableList<Node> = mutableListOf()
 
-    fun setChildren(newChildren: List<Node>) {
+    fun setChildren(newChildren: MutableList<Node>) {
         children = newChildren
         children.forEach { (it as SimpleNode).setParent(this) }
     }
@@ -20,7 +20,7 @@ class SimpleNode(private val typeLabel: String, private var parent: Node?, priva
         return typeLabel
     }
 
-    override fun getChildren(): List<Node> {
+    override fun getChildren(): MutableList<Node> {
         return children
     }
 
@@ -51,4 +51,9 @@ class SimpleNode(private val typeLabel: String, private var parent: Node?, priva
     override fun getChildrenOfType(typeLabel: String) = getChildren().filter {
         decompressTypeLabel(it.getTypeLabel()).firstOrNull() == typeLabel
     }
+
+    override fun removeChildrenOfType(typeLabel: String) {
+       children.removeIf { it.getTypeLabel() == typeLabel }
+    }
+
 }

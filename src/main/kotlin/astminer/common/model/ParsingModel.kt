@@ -27,6 +27,8 @@ interface Node {
 
     fun getChildrenOfType(typeLabel: String) = getChildren().filter { it.getTypeLabel() == typeLabel }
     fun getChildOfType(typeLabel: String) = getChildrenOfType(typeLabel).firstOrNull()
+
+    fun removeChildrenOfType(typeLabel: String)
 }
 
 interface Parser<T : Node> {
