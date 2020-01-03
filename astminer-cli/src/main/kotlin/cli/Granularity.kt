@@ -4,7 +4,9 @@ import astminer.common.*
 import astminer.common.model.MethodInfo
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
+import astminer.common.model.TreeMethodSplitter
 import astminer.parse.antlr.SimpleNode
+import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.python.PythonMethodSplitter
 import astminer.parse.cpp.FuzzyMethodSplitter
 import astminer.parse.cpp.FuzzyNode
@@ -31,7 +33,8 @@ class FileGranularity(override val splitTokens: Boolean) : Granularity {
 
 class MethodGranularity(override val splitTokens: Boolean,
                         private val hideMethodNames: Boolean = false,
-                        private val filterConstructors: Boolean = false) : Granularity {
+                        private val filterConstructors: Boolean = false,
+                        private val javaParser: String = "gumtree") : Granularity {
 
     private data class FileMethods(val methods: Collection<MethodInfo<out Node>>, val sourceFile: String)
 
@@ -45,9 +48,19 @@ class MethodGranularity(override val splitTokens: Boolean,
                 }
             }
             "java" -> {
-                val methodSplitter = GumTreeMethodSplitter()
-                filteredParseResults.map {
-                    FileMethods(methodSplitter.splitIntoMethods(it.root as GumTreeJavaNode), it.filePath)
+                when (javaParser) {
+                    "gumtree" -> {
+                        val methodSplitter = GumTreeMethodSplitter()
+                        filteredParseResults.map {
+                            FileMethods(methodSplitter.splitIntoMethods(it.root as GumTreeJavaNode), it.filePath)
+                        }
+                    }
+                    else -> {
+                        val methodSplitter = JavaMethodSplitter()
+                        filteredParseResults.map {
+                            FileMethods(methodSplitter.splitIntoMethods(it.root as SimpleNode), it.filePath)
+                        }
+                    }
                 }
             }
             "py" -> {
@@ -96,4 +109,3 @@ fun processNodeToken(node: Node, splitToken: Boolean) {
         node.setNormalizedToken()
     }
 }
-
