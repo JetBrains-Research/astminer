@@ -28,12 +28,12 @@ abstract class ParseArgs(
         help = "Choose level of granularity ('file' or 'method', defaults to 'file')"
     ).default("file")
 
-    val isMethodNameHide: Boolean by option(
+    val hideMethodName: Boolean by option(
         "--hide-method-name",
         help = "if passed with method level granularity, the names of all methods are replaced with placeholder token"
     ).flag(default = false)
 
-    val isTokenSplitted: Boolean by option(
+    val splitTokens: Boolean by option(
         "--split-tokens",
         help = "if passed, split tokens into sequence of tokens"
     ).flag(default = false)
