@@ -1,30 +1,18 @@
 package cli
 
 import astminer.parse.cpp.FuzzyCppParser
-import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.options.required
+import cli.arguments.PreprocessorArgs
 import java.io.File
 
 /**
- * Preprocess C/C++ project located in [projectRoot] and save the preprocessed files in [preprocessDir], replicating
+ * Preprocess C/C++ project located in [projectRoot] and save the preprocessed files in [outputRoot], replicating
  * structure of the original project.
  */
-class ProjectPreprocessor : CliktCommand() {
-
-    val projectRoot: String by option(
-        "--project",
-        help = "Path to the project that will be parsed"
-    ).required()
-
-    val preprocessDir: String by option(
-        "--output",
-        help = "Path to directory where the preprocessed data will be stored"
-    ).required()
+class ProjectPreprocessor : PreprocessorArgs() {
 
     private fun preprocessing() {
         val parser = FuzzyCppParser()
-        parser.preprocessProject(File(projectRoot), File(preprocessDir))
+        parser.preprocessProject(File(projectRoot), File(outputRoot))
     }
 
     override fun run() {

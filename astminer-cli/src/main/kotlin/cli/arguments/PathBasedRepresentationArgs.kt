@@ -7,12 +7,16 @@ import com.github.ajalt.clikt.parameters.types.long
 /**
  * Arguments for 'pathContexts' and 'code2vec' commands.
  */
-abstract class PathBasedRepresentationArgs : BaseArgs() {
-    val extensions: List<String> by option(
-        "--lang",
-        help = "File extensions that will be parsed"
-    ).split(",").required()
+abstract class PathBasedRepresentationArgs : ParseArgs() {
+    val pbrStorageType: String by option(
+        "--storage",
+        help = "Type of storage for path-based representations ('code2vec' or 'csv', defaults to 'code2vec')"
+    ).default("code2vec")
 
+    val storeFilename: Boolean by option(
+        "--storeFilename",
+        help = "Store filename with label. By default, true when granularity label is 'file'."
+    ).flag(default = granularityLevel == "file")
 
     val maxPathHeight: Int by option(
         "--maxH",

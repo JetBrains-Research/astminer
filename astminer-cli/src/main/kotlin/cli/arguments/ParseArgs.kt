@@ -1,27 +1,18 @@
 package cli.arguments
 
-import cli.util.SupportedAstStorage
-import cli.util.SupportedLanguage
+import cli.util.supportedLanguages
 import com.github.ajalt.clikt.parameters.options.*
 
 /**
- * Arguments for 'parse' command.
+ * Common arguments for commands requiring project parsing.
  */
-abstract class ParseArgs(
-    supportedLanguages: List<SupportedLanguage>,
-    defaultAstStorage: SupportedAstStorage
-) : BaseArgs() {
+abstract class ParseArgs() : BaseArgs() {
 
     val extensions: List<String> by option(
         "--lang",
         help = "Comma-separated list of file extensions that will be parsed.\n" +
                 "Supports 'c', 'cpp', 'java', 'py', defaults to all these extensions."
     ).split(",").default(supportedLanguages.map { it.extension })
-
-    val astStorageType: String by option(
-        "--storage",
-        help = "AST storage type ('dot' or 'csv', defaults to 'csv')"
-    ).default(defaultAstStorage.type)
 
     val granularityLevel: String by option(
         "--granularity",
