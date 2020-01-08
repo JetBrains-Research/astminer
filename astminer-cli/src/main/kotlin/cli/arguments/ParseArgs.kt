@@ -6,7 +6,7 @@ import com.github.ajalt.clikt.parameters.options.*
 /**
  * Common arguments for commands requiring project parsing.
  */
-abstract class ParseArgs() : BaseArgs() {
+abstract class ParseArgs : BaseArgs() {
 
     val extensions: List<String> by option(
         "--lang",
