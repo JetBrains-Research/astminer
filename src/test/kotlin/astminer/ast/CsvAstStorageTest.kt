@@ -12,7 +12,7 @@ class CsvAstStorageTest {
         val storage = CsvAstStorage()
         storage.store(root, "entityId")
 
-        Assert.assertEquals(storage.astString(root), "1 1{2 2{}3 3{4 4{}}}")
+        Assert.assertEquals("1 1{2 2{}3 3{4 4{}}}", storage.astString(root))
     }
 
 }

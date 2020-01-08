@@ -1,8 +1,10 @@
 package astminer.ast
 
+import astminer.common.DEFAULT_TOKEN
 import astminer.common.getNormalizedToken
 import astminer.common.model.AstStorage
 import astminer.common.model.Node
+import astminer.common.normalizeToken
 import astminer.common.preOrder
 import astminer.common.storage.*
 import java.io.File
@@ -20,7 +22,7 @@ class CsvAstStorage : AstStorage {
 
     override fun store(root: Node, label: String) {
         for (node in root.preOrder()) {
-            tokensMap.record(node.getNormalizedToken())
+            tokensMap.record(normalizeToken(node.getToken(), DEFAULT_TOKEN))
             nodeTypesMap.record(node.getTypeLabel())
         }
         rootsPerEntity[label] = root
