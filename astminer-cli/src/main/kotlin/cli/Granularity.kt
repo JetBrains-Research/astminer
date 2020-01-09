@@ -31,9 +31,9 @@ class FileGranularity(override val splitTokens: Boolean) : Granularity {
 
 class MethodGranularity(override val splitTokens: Boolean,
                         private val hideMethodNames: Boolean = false,
-                        private val filterConstructors: Boolean = false) : Granularity {
+                        private val filterPredicates: Collection<MethodFilterPredicate> = emptyList()) : Granularity {
 
-    private data class FileMethods(val methods: Collection<MethodInfo<out Node>>, val sourceFile: String)
+    private data class FileMethods(var methods: Collection<MethodInfo<out Node>>, val sourceFile: String)
 
     override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> {
         val filteredParseResults = parseResults.filter { it.root != null }
@@ -57,7 +57,12 @@ class MethodGranularity(override val splitTokens: Boolean,
                 }
             }
             else -> throw UnsupportedOperationException("Unsupported extension $fileExtension")
-        }.flatMap{ processMethods(it) }
+        }.flatMap { fileMethods ->
+            filterPredicates.forEach { predicate ->
+                fileMethods.methods = fileMethods.methods.filter { predicate.isFiltered(it) }
+            }
+            processMethods(fileMethods)
+        }
     }
 
     private fun processMethods(fileMethods: FileMethods): List<ParseResult<out Node>> {
@@ -66,10 +71,6 @@ class MethodGranularity(override val splitTokens: Boolean,
             val methodNameNode = it.method.nameNode ?: return@forEach
             val methodRoot = it.method.root
             var methodName = methodNameNode.getToken()
-
-            if (filterConstructors && methodName == it.enclosingElementName()) {
-                return@forEach
-            }
 
             methodRoot.preOrder().forEach { node -> processNodeToken(node, splitTokens) }
             if (hideMethodNames) {
