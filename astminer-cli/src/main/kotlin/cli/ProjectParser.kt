@@ -6,6 +6,7 @@ import astminer.common.model.AstStorage
 import astminer.common.model.Node
 import astminer.common.model.Parser
 import astminer.common.preOrder
+import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.python.PythonParser
 import astminer.parse.cpp.FuzzyCppParser
 import astminer.parse.java.GumTreeJavaParser
@@ -31,12 +32,6 @@ class ProjectParser : CliktCommand() {
      * @param type name of storage
      */
     private data class SupportedAstStorage(val astStorage: AstStorage, val type: String)
-
-    /**
-     * @param granularity class that implements granularity parsing
-     * @param level level of granularity
-     */
-    private data class SupportedGranularityLevel(val granularity: Granularity, val level: String)
 
     /**
      * List of supported language extensions and corresponding parsers.
@@ -111,13 +106,26 @@ class ProjectParser : CliktCommand() {
         help = "Comma-separated list of node types, which must be removed from asts."
     ).split(",").default(emptyList())
 
+    val javaParser: String by option(
+        "--java-parser",
+        help = "Choose a parser for .java files." +
+                "'gumtree' for GumTree parser, 'antlr' for antlr parser."
+    ).default("gumtree")
+
     private fun getParser(extension: String): Parser<out Node> {
-        for (language in supportedLanguages) {
-            if (extension == language.extension) {
-                return language.parser
+        return when (extension) {
+            "java" -> {
+                when (javaParser) {
+                    "gumtree" -> GumTreeJavaParser()
+                    "antlr" -> JavaParser()
+                }
+                throw UnsupportedOperationException("Unsupported parser for java extension $javaParser")
+            }
+            else -> {
+                supportedLanguages.find { it.extension == extension }?.parser
+                    ?: throw UnsupportedOperationException("Unsupported extension $extension")
             }
         }
-        throw UnsupportedOperationException("Unsupported extension $extension")
     }
 
     private fun getStorage(storageType: String): AstStorage {
@@ -139,7 +147,7 @@ class ProjectParser : CliktCommand() {
                 if (filterConstructors) {
                     filterPredicates.add(ConstructorFilterPredicate())
                 }
-                return MethodGranularity(isTokenSplitted, isMethodNameHide, filterPredicates)
+                return MethodGranularity(isTokenSplitted, isMethodNameHide, filterPredicates, javaParser)
             }
         }
         throw UnsupportedOperationException("Unsupported granularity level $granularityLevel")
