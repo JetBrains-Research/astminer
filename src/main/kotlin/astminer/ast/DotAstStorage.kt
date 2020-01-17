@@ -67,7 +67,7 @@ class DotAstStorage : AstStorage {
 
     // Label should contain only latin letters and underscores, other symbols replace with an underscore
     internal fun normalizeAstLabel(label: String): String =
-            label.replace("[^A-z,^_]".toRegex(), "_")
+            label.replace("[^A-z^_]".toRegex(), "_")
 
     /**
      * Filepath should contain only latin letters, underscores, hyphens, backslashes and dots
