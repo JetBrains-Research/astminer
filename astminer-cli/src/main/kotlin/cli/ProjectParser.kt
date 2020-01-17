@@ -140,7 +140,15 @@ class ProjectParser : CliktCommand() {
     private fun getGranularity(granularityLevel: String): Granularity {
         when (granularityLevel) {
             "file" -> return FileGranularity(isTokenSplitted)
-            "method" -> return MethodGranularity(isTokenSplitted, isMethodNameHide, filterConstructors, javaParser)
+            "method" -> {
+                val filterPredicates = mutableListOf(
+                    ModifierFilterPredicate(excludeModifiers), AnnotationFilterPredicate(excludeAnnotations)
+                )
+                if (filterConstructors) {
+                    filterPredicates.add(ConstructorFilterPredicate())
+                }
+                return MethodGranularity(isTokenSplitted, isMethodNameHide, filterPredicates, javaParser)
+            }
         }
         throw UnsupportedOperationException("Unsupported granularity level $granularityLevel")
     }
@@ -157,13 +165,7 @@ class ProjectParser : CliktCommand() {
             // Parse project
             val parsedProject = parser.parseWithExtension(File(projectRoot), extension)
             // Split project to required granularity level
-            var roots = granularity.splitByGranularityLevel(parsedProject, extension)
-            // Granularity levels specific work
-            if (granularityLevel == "method") {
-                roots = roots
-                    .filter { modifiersPredicate(it.root, excludeModifiers) }
-                    .filter { annotationsPredicate(it.root, excludeAnnotations) }
-            }
+            val roots = granularity.splitByGranularityLevel(parsedProject, extension)
             roots.forEach { parseResult ->
                 val root = parseResult.root
                 val filePath = parseResult.filePath
