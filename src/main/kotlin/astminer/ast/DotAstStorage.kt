@@ -36,8 +36,9 @@ class DotAstStorage : AstStorage {
             // TODO: save full signature for method
             val (sourceFile, label) = splitFullPath(fullPath)
             val normalizedLabel = normalizeAstLabel(label)
+            val normalizedFilepath = normalizeFilepath(sourceFile)
             val nodesMap = dumpAst(root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
-            val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$sourceFile,$label,%d,%s,%s"
+            val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$normalizedFilepath,$label,%d,%s,%s"
             for (node in root.preOrder()) {
                 descriptionLines.add(
                         nodeDescriptionFormat.format(nodesMap.getId(node) - 1, node.getNormalizedToken(), node.getTypeLabel())
@@ -67,6 +68,13 @@ class DotAstStorage : AstStorage {
     // Label should contain only latin letters and underscores, other symbols replace with an underscore
     internal fun normalizeAstLabel(label: String): String =
             label.replace("[^A-z,^_]".toRegex(), "_")
+
+    /**
+     * Filepath should contain only latin letters, underscores, hyphens, backslashes and dots
+     * Underscore replace other symbols
+     */
+    internal fun normalizeFilepath(filepath: String): String =
+            filepath.replace("[^A-z^_^\\-^.^/]".toRegex(), "_")
 
     /**
      * Split the full path to specified file into the parent's path, and the file name

@@ -67,4 +67,14 @@ class DotAstStorageTest {
         assertEquals("", path)
         assertEquals("file.name", fileName)
     }
+
+    @Test
+    fun testFilepathNormalization() {
+        // real life example
+        val badFilepath = "interviews/Leet-Code/binary-search/pow(x,n).java"
+        val storage = DotAstStorage()
+        val normalizedFilepath = storage.normalizeFilepath(badFilepath)
+
+        assertEquals("interviews/Leet-Code/binary-search/pow_x_n_.java", normalizedFilepath)
+    }
 }
