@@ -4,7 +4,9 @@ import astminer.common.*
 import astminer.common.model.MethodInfo
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
+import astminer.common.model.TreeMethodSplitter
 import astminer.parse.antlr.SimpleNode
+import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.python.PythonMethodSplitter
 import astminer.parse.cpp.FuzzyMethodSplitter
 import astminer.parse.cpp.FuzzyNode
@@ -30,9 +32,11 @@ class FileGranularity(override val splitTokens: Boolean) : Granularity {
 
 
 class MethodGranularity(override val splitTokens: Boolean,
-                        private val hideMethodNames: Boolean = false) : Granularity {
+                        private val hideMethodNames: Boolean = false,
+                        private val filterPredicates: Collection<MethodFilterPredicate> = emptyList(),
+                        private val javaParser: String = "gumtree") : Granularity {
 
-    private data class FileMethods(val methods: Collection<MethodInfo<out Node>>, val sourceFile: String)
+    private data class FileMethods(var methods: Collection<MethodInfo<out Node>>, val sourceFile: String)
 
     override fun splitByGranularityLevel(parseResults: List<ParseResult<out Node>>, fileExtension: String): List<ParseResult<out Node>> {
         val filteredParseResults = parseResults.filter { it.root != null }
@@ -44,10 +48,21 @@ class MethodGranularity(override val splitTokens: Boolean,
                 }
             }
             "java" -> {
-                val methodSplitter = GumTreeMethodSplitter()
-                filteredParseResults.map {
-                    FileMethods(methodSplitter.splitIntoMethods(it.root as GumTreeJavaNode), it.filePath)
+                when (javaParser) {
+                    "gumtree" -> {
+                        val methodSplitter = GumTreeMethodSplitter()
+                        filteredParseResults.map {
+                            FileMethods(methodSplitter.splitIntoMethods(it.root as GumTreeJavaNode), it.filePath)
+                        }
+                    }
+                    "antlr" -> {
+                        val methodSplitter = JavaMethodSplitter()
+                        filteredParseResults.map {
+                            FileMethods(methodSplitter.splitIntoMethods(it.root as SimpleNode), it.filePath)
+                        }
+                    }
                 }
+                throw UnsupportedOperationException("Unsupported parser $javaParser")
             }
             "py" -> {
                 val methodSplitter = PythonMethodSplitter()
@@ -56,7 +71,12 @@ class MethodGranularity(override val splitTokens: Boolean,
                 }
             }
             else -> throw UnsupportedOperationException("Unsupported extension $fileExtension")
-        }.flatMap{ processMethods(it) }
+        }.flatMap { fileMethods ->
+            filterPredicates.forEach { predicate ->
+                fileMethods.methods = fileMethods.methods.filter { predicate.isFiltered(it) }
+            }
+            processMethods(fileMethods)
+        }
     }
 
     private fun processMethods(fileMethods: FileMethods): List<ParseResult<out Node>> {
@@ -64,15 +84,16 @@ class MethodGranularity(override val splitTokens: Boolean,
         fileMethods.methods.forEach {
             val methodNameNode = it.method.nameNode ?: return@forEach
             val methodRoot = it.method.root
-            var label = methodNameNode.getToken()
+            var methodName = methodNameNode.getToken()
+
             methodRoot.preOrder().forEach { node -> processNodeToken(node, splitTokens) }
             if (hideMethodNames) {
                 methodNameNode.setNormalizedToken("METHOD_NAME")
             }
             if (splitTokens) {
-                label = separateToken(label)
+                methodName = separateToken(methodName)
             }
-            val methodFilePath = File(fileMethods.sourceFile).resolve(label).path
+            val methodFilePath = File(fileMethods.sourceFile).resolve(methodName).path
             processedMethods.add(ParseResult(methodRoot, methodFilePath))
         }
         return processedMethods
@@ -90,4 +111,3 @@ fun processNodeToken(node: Node, splitToken: Boolean) {
         node.setNormalizedToken()
     }
 }
-
