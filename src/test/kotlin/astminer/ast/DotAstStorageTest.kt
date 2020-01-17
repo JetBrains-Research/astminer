@@ -49,6 +49,15 @@ class DotAstStorageTest {
     }
 
     @Test
+    fun testLabelWithCommaNormalization() {
+        val labelWithComma = "some,bad,label"
+        val storage = DotAstStorage()
+        val normalizedLabel = storage.normalizeAstLabel(labelWithComma)
+
+        assertEquals("some_bad_label", normalizedLabel)
+    }
+
+    @Test
     fun testSplittingFullPath() {
         val fullPath = "/path1/path2/path_3/path.4/file.name"
         val storage = DotAstStorage()
@@ -66,5 +75,15 @@ class DotAstStorageTest {
 
         assertEquals("", path)
         assertEquals("file.name", fileName)
+    }
+
+    @Test
+    fun testFilepathNormalization() {
+        // real life example
+        val badFilepath = "interviews/Leet-Code/binary-search/pow(x,n).java"
+        val storage = DotAstStorage()
+        val normalizedFilepath = storage.normalizeFilepath(badFilepath)
+
+        assertEquals("interviews/Leet-Code/binary-search/pow_x_n_.java", normalizedFilepath)
     }
 }
