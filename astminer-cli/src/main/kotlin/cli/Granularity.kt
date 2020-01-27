@@ -61,8 +61,10 @@ class MethodGranularity(override val splitTokens: Boolean,
                             FileMethods(methodSplitter.splitIntoMethods(it.root as SimpleNode), it.filePath)
                         }
                     }
+                    else -> {
+                        throw UnsupportedOperationException("Unsupported parser $javaParser")
+                    }
                 }
-                throw UnsupportedOperationException("Unsupported parser $javaParser")
             }
             "py" -> {
                 val methodSplitter = PythonMethodSplitter()
