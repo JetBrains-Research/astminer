@@ -51,7 +51,7 @@ class DotAstStorage : AstStorage {
     private fun dumpAst(root: Node, file: File, astName: String) : RankedIncrementalIdStorage<Node> {
         val nodesMap = RankedIncrementalIdStorage<Node>()
         // dot parsers (e.g. pydot) can't parse graph/digraph if its name is "graph"
-        val fixedAstName = if (astName == "graph") "_$astName" else astName
+        val fixedAstName = if (astName == "graph" || astName == "digraph") "_$astName" else astName
         val astLines = mutableListOf("digraph $fixedAstName {")
 
         for (node in root.preOrder()) {
