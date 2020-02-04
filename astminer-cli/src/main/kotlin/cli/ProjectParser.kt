@@ -118,8 +118,10 @@ class ProjectParser : CliktCommand() {
                 when (javaParser) {
                     "gumtree" -> GumTreeJavaParser()
                     "antlr" -> JavaParser()
+                    else -> {
+                        throw UnsupportedOperationException("Unsupported parser for java extension $javaParser")
+                    }
                 }
-                throw UnsupportedOperationException("Unsupported parser for java extension $javaParser")
             }
             else -> {
                 supportedLanguages.find { it.extension == extension }?.parser
