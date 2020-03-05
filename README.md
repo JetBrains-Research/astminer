@@ -41,7 +41,7 @@ Supported languages of the input:
 
 
 ## About
-Astminer is an offspring of an internal utility from our ongoing research project.
+Astminer was first implemented as a part of pipeline in the [the code style extraction project](https://arxiv.org/abs/2002.03997) and later converted into a reusable tool.
 
 Currently it supports extraction of:
 * Path-based representations of files
