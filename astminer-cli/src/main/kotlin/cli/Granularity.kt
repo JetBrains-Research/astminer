@@ -90,11 +90,6 @@ class MethodGranularity(override val splitTokens: Boolean,
 
             methodRoot.preOrder().forEach { node -> processNodeToken(node, splitTokens) }
             if (hideMethodNames) {
-                methodRoot.preOrder().forEach { node ->
-                    if (node.getToken() == methodName) {
-                        node.setNormalizedToken("<SELF>")
-                    }
-                }
                 methodNameNode.setNormalizedToken("METHOD_NAME")
             }
             if (splitTokens) {
