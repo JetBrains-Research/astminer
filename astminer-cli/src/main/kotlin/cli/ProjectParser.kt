@@ -11,11 +11,8 @@ import astminer.parse.antlr.python.PythonParser
 import astminer.parse.cpp.FuzzyCppParser
 import astminer.parse.java.GumTreeJavaParser
 import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.parameters.options.default
-import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.options.required
-import com.github.ajalt.clikt.parameters.options.split
-import com.github.ajalt.clikt.parameters.options.flag
+import com.github.ajalt.clikt.parameters.options.*
+import com.github.ajalt.clikt.parameters.types.int
 import java.io.File
 
 
@@ -112,6 +109,21 @@ class ProjectParser : CliktCommand() {
                 "'gumtree' for GumTree parser, 'antlr' for antlr parser."
     ).default("gumtree")
 
+    val maxMethodNameLength: Int by option(
+        "--max-method-name-length",
+        help = "Filtering methods with a large sequence of subtokens in their names"
+    ).int().default(-1)
+
+    val maxTokenLength: Int by option(
+        "--max-token-length",
+        help = "Filter methods containing a long sequence of subtokens in the ast node"
+    ).int().default(-1)
+
+    val maxTreeSize: Int by option(
+        "--max-tree-size",
+        help = "Filter methods by their ast size"
+    ).int().default(-1)
+
     private fun getParser(extension: String): Parser<out Node> {
         return when (extension) {
             "java" -> {
@@ -144,7 +156,9 @@ class ProjectParser : CliktCommand() {
             "file" -> return FileGranularity(isTokenSplitted)
             "method" -> {
                 val filterPredicates = mutableListOf(
-                    ModifierFilterPredicate(excludeModifiers), AnnotationFilterPredicate(excludeAnnotations)
+                    ModifierFilterPredicate(excludeModifiers), AnnotationFilterPredicate(excludeAnnotations),
+                    MethodNameLengthFilterPredicate(maxMethodNameLength), TokenLengthFilterPredicate(maxTokenLength),
+                    TreeSizeFilterPredicate(maxTreeSize)
                 )
                 if (filterConstructors) {
                     filterPredicates.add(ConstructorFilterPredicate())
