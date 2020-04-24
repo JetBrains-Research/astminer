@@ -8,6 +8,7 @@ plugins {
     kotlin("jvm") version "1.3.61"
     id("application")
     id("tanvd.kosogor") version "1.0.6"
+    id("me.champeau.gradle.jmh") version "0.5.0"
 }
 
 application {
@@ -20,6 +21,7 @@ version = "0.3"
 repositories {
     mavenCentral()
     maven(url = "https://dl.bintray.com/egor-bogomolov/astminer/")
+    mavenLocal()
 }
 
 dependencies {
@@ -76,4 +78,9 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType(BintrayUploadTask::class) {
     dependsOn("shadowJar")
+}
+
+jmh {
+    duplicateClassesStrategy = DuplicatesStrategy.WARN
+    profilers = listOf("gc", "stack")
 }
