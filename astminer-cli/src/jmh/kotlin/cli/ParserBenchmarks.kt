@@ -39,7 +39,7 @@ open class ParserBenchmarks {
             processBuilder.command("git", "clone", "https://github.com/JetBrains/intellij-community")
                     .directory(File(astminerPath)).start()
         }
-        bigProjectPath = "$astminerPath/intellij-idea"
+        bigProjectPath = "$astminerPath/intellij-community"
         sourcePath = "$astminerPath/results"
     }
 
