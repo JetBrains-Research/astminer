@@ -34,7 +34,10 @@ open class ParserBenchmarks {
             //downloading project...
         }
         if (isDirectoryEmpty(bigProjectPath)) {
-            //downloading project...
+            println("Intellij IDEA Community is downloading for benchmark...")
+            val processBuilder = ProcessBuilder()
+            processBuilder.command("git", "clone", "https://github.com/JetBrains/intellij-community")
+                    .directory(File(astminerPath)).start()
         }
         bigProjectPath = "$astminerPath/intellij-idea"
         sourcePath = "$astminerPath/results"
@@ -55,7 +58,7 @@ open class ParserBenchmarks {
         val args = listOf("--project", simpleFilePath, "--output", sourcePath)
         ProjectParser().main(args)
     }
-
+    
     @Benchmark
     fun longFileProject() {
         val args = listOf("--project", longFilePath, "--output", sourcePath)
