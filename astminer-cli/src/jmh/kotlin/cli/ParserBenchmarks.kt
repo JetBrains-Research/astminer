@@ -21,7 +21,9 @@ open class ParserBenchmarks {
     private var simpleFilePath: String = ""
     private var longFilePath: String = ""
     private var bigProjectPath: String = ""
-    private var sourcePath: String = ""
+    private var simpleFileSourcePath: String = ""
+    private var longFileSourcePath: String = ""
+    private var bigProjectSourcePath: String = ""
 
     @Setup
     fun pathsSetup() {
@@ -43,7 +45,10 @@ open class ParserBenchmarks {
         }
         longFilePath = "$astminerPath/LongFileJavaProject"
         bigProjectPath = "$astminerPath/intellij-community"
-        sourcePath = "$astminerPath/results"
+        simpleFileSourcePath = "$astminerPath/benchmarkProduction/simpleProjectParse"
+        longFileSourcePath = "$astminerPath/benchmarkProduction/longFileParse"
+        bigProjectSourcePath = "$astminerPath/benchmarkProduction/bigProjectParse"
+
     }
 
     private fun isDirectoryEmpty(path :String) : Boolean {
@@ -58,19 +63,19 @@ open class ParserBenchmarks {
 
     @Benchmark
     fun simpleProject() {
-        val args = listOf("--project", simpleFilePath, "--output", sourcePath)
+        val args = listOf("--project", simpleFilePath, "--output", simpleFileSourcePath)
         ProjectParser().main(args)
     }
     
     @Benchmark
     fun longFileProject() {
-        val args = listOf("--project", longFilePath, "--output", sourcePath)
+        val args = listOf("--project", longFilePath, "--output", longFileSourcePath)
         ProjectParser().main(args)
     }
 
     @Benchmark
     fun bigProject() {
-        val args = listOf("--project", bigProjectPath, "--output", sourcePath)
+        val args = listOf("--project", bigProjectPath, "--output", bigProjectSourcePath)
         ProjectParser().main(args)
     }
 }
