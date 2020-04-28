@@ -29,7 +29,6 @@ open class ParserBenchmarks {
         val classpathEntries: Array<String> = classpath.split(File.pathSeparator).toTypedArray()
         val astminerPath = classpathEntries[7].split("/build")[0]
         simpleFilePath = "$astminerPath/src/test/resources/testData/examples/1.java"
-        longFilePath = "$astminerPath/LongFileProject"
         if (isDirectoryEmpty(longFilePath)) {
             println("Long java file is downloading for benchmark...")
             val processBuilder = ProcessBuilder()
@@ -42,6 +41,7 @@ open class ParserBenchmarks {
             processBuilder.command("git", "clone", "https://github.com/JetBrains/intellij-community")
                     .directory(File(astminerPath)).start()
         }
+        longFilePath = "$astminerPath/LongFileJavaProject"
         bigProjectPath = "$astminerPath/intellij-community"
         sourcePath = "$astminerPath/results"
     }
