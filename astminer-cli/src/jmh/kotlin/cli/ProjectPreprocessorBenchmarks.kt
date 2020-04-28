@@ -20,20 +20,20 @@ class ProjectPreprocessorBenchmarks {
     fun simpleProject() {
         val args = listOf("--project", BenchmarksSetup().simpleFilePath,
                 "--output", BenchmarksSetup().simpleFileSourcePath)
-        PathContextsExtractor().main(args)
+        ProjectPreprocessor().main(args)
     }
 
     @Benchmark
     fun longFileProject() {
         val args = listOf("--project", BenchmarksSetup().longFilePath,
                 "--output", BenchmarksSetup().longFileSourcePath)
-        PathContextsExtractor().main(args)
+        ProjectPreprocessor().main(args)
     }
 
     @Benchmark
     fun bigProject() {
         val args = listOf("--project", BenchmarksSetup().bigProjectPath,
                 "--output", BenchmarksSetup().bigProjectSourcePath)
-        PathContextsExtractor().main(args)
+        ProjectPreprocessor().main(args)
     }
 }
