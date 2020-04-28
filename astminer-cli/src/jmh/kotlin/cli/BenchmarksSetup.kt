@@ -1,32 +1,26 @@
 package cli
 
-import org.openjdk.jmh.annotations.*
 import java.io.File
-import java.util.concurrent.TimeUnit
-
 
 // How to start benchmark:
 // 1. gradle daemons should be stopped before, so execute ./gradlew --stop
 // 2. jmh plugin is unable to compile code incrementally, so execute ./gradlew clean
 // 3. to run benchmarks execute ./gradlew jmh
 
-@State(Scope.Benchmark)
-@Warmup(iterations=4)
-@Measurement(iterations=8)
-@BenchmarkMode(Mode.AverageTime)
-@OutputTimeUnit(TimeUnit.SECONDS)
-@Fork(2)
-open class ParserBenchmarks {
+internal class BenchmarksSetup {
 
-    private var simpleFilePath: String = ""
-    private var longFilePath: String = ""
-    private var bigProjectPath: String = ""
-    private var simpleFileSourcePath: String = ""
-    private var longFileSourcePath: String = ""
-    private var bigProjectSourcePath: String = ""
+    var simpleFilePath: String = ""
+    var longFilePath: String = ""
+    var bigProjectPath: String = ""
+    var simpleFileSourcePath: String = ""
+    var longFileSourcePath: String = ""
+    var bigProjectSourcePath: String = ""
+    var lazyFlag = false
 
-    @Setup
-    fun pathsSetup() {
+    fun setup() {
+        if (lazyFlag) {
+            return
+        }
         val classpath = System.getProperty("java.class.path")
         val classpathEntries: Array<String> = classpath.split(File.pathSeparator).toTypedArray()
         val astminerPath = classpathEntries[7].split("/build")[0]
@@ -48,7 +42,7 @@ open class ParserBenchmarks {
         simpleFileSourcePath = "$astminerPath/benchmarkProduction/simpleProjectParse"
         longFileSourcePath = "$astminerPath/benchmarkProduction/longFileParse"
         bigProjectSourcePath = "$astminerPath/benchmarkProduction/bigProjectParse"
-
+        lazyFlag = true
     }
 
     private fun isDirectoryEmpty(path :String) : Boolean {
@@ -59,23 +53,5 @@ open class ParserBenchmarks {
                 return false
         }
         return true
-    }
-
-    @Benchmark
-    fun simpleProject() {
-        val args = listOf("--project", simpleFilePath, "--output", simpleFileSourcePath)
-        ProjectParser().main(args)
-    }
-    
-    @Benchmark
-    fun longFileProject() {
-        val args = listOf("--project", longFilePath, "--output", longFileSourcePath)
-        ProjectParser().main(args)
-    }
-
-    @Benchmark
-    fun bigProject() {
-        val args = listOf("--project", bigProjectPath, "--output", bigProjectSourcePath)
-        ProjectParser().main(args)
     }
 }
