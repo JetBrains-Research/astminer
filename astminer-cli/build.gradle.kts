@@ -82,5 +82,6 @@ tasks.withType(BintrayUploadTask::class) {
 
 jmh {
     duplicateClassesStrategy = DuplicatesStrategy.WARN
-    profilers = listOf("gc", "stack")
+    profilers = listOf("gc")
+    resultFormat = "CSV"
 }

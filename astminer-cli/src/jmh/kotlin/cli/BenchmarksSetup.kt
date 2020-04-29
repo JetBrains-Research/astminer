@@ -7,14 +7,16 @@ import java.io.File
 // 2. jmh plugin is unable to compile code incrementally, so execute ./gradlew clean
 // 3. to run benchmarks execute ./gradlew jmh
 
+const val warmUpIterations = 1
+const val measurementIterations = 1
+const val forkValue = 0
+
 internal class BenchmarksSetup {
 
-    var simpleFilePath: String = ""
-    var longFilePath: String = ""
+    var simpleProjectPath: String = ""
+    var longFileProjectPath: String = ""
     var bigProjectPath: String = ""
-    var simpleFileSourcePath: String = ""
-    var longFileSourcePath: String = ""
-    var bigProjectSourcePath: String = ""
+    var sourcePath: String = ""
     var lazyFlag = false
 
     fun setup() {
@@ -24,24 +26,10 @@ internal class BenchmarksSetup {
         val classpath = System.getProperty("java.class.path")
         val classpathEntries: Array<String> = classpath.split(File.pathSeparator).toTypedArray()
         val astminerPath = classpathEntries[7].split("/build")[0]
-        simpleFilePath = "$astminerPath/src/test/resources/testData/examples/1.java"
-        if (isDirectoryEmpty(longFilePath)) {
-            println("Long java file is downloading for benchmark...")
-            val processBuilder = ProcessBuilder()
-            processBuilder.command("git", "clone", "https://github.com/foiki/LongFileJavaProject")
-                    .directory(File(astminerPath)).start()
-        }
-        if (isDirectoryEmpty(bigProjectPath)) {
-            println("Intellij IDEA Community is downloading for benchmark...")
-            val processBuilder = ProcessBuilder()
-            processBuilder.command("git", "clone", "https://github.com/JetBrains/intellij-community")
-                    .directory(File(astminerPath)).start()
-        }
-        longFilePath = "$astminerPath/LongFileJavaProject"
-        bigProjectPath = "$astminerPath/intellij-community"
-        simpleFileSourcePath = "$astminerPath/benchmarkProduction/simpleProjectParse"
-        longFileSourcePath = "$astminerPath/benchmarkProduction/longFileParse"
-        bigProjectSourcePath = "$astminerPath/benchmarkProduction/bigProjectParse"
+        simpleProjectPath = "$astminerPath/src/jmh/resources/gradle"
+        longFileProjectPath = "$astminerPath/src/jmh/resources/LongFileJavaProject"
+        bigProjectPath = "$astminerPath/src/jmh/resources/intellij-community"
+        sourcePath = "$astminerPath/build"
         lazyFlag = true
     }
 

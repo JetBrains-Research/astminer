@@ -4,12 +4,12 @@ import org.openjdk.jmh.annotations.*
 import java.util.concurrent.TimeUnit
 
 @State(Scope.Benchmark)
-@Warmup(iterations=4)
-@Measurement(iterations=8)
+@Warmup(iterations = warmUpIterations)
+@Measurement(iterations= measurementIterations)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.SECONDS)
-@Fork(2)
-class Code2VecExtractorBenchmarks {
+@Fork(forkValue)
+open class Code2VecExtractorBenchmarks {
 
     @Setup
     fun pathsSetup() {
@@ -19,7 +19,7 @@ class Code2VecExtractorBenchmarks {
     @Benchmark
     fun simpleProject() {
         val args = listOf("--project", BenchmarksSetup().simpleFilePath,
-                "--output", BenchmarksSetup().simpleFileSourcePath,
+                "--output", BenchmarksSetup().sourcePath,
                 "--lang", "java")
         Code2VecExtractor().main(args)
     }
@@ -27,7 +27,7 @@ class Code2VecExtractorBenchmarks {
     @Benchmark
     fun longFileProject() {
         val args = listOf("--project", BenchmarksSetup().longFilePath,
-                "--output", BenchmarksSetup().longFileSourcePath,
+                "--output", BenchmarksSetup().sourcePath,
                 "--lang", "java")
         Code2VecExtractor().main(args)
     }
@@ -35,7 +35,7 @@ class Code2VecExtractorBenchmarks {
     @Benchmark
     fun bigProject() {
         val args = listOf("--project", BenchmarksSetup().bigProjectPath,
-                "--output", BenchmarksSetup().bigProjectSourcePath,
+                "--output", BenchmarksSetup().sourcePath,
                 "--lang", "java")
         Code2VecExtractor().main(args)
     }
