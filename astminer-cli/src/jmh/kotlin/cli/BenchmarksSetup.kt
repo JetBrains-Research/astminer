@@ -28,6 +28,7 @@ open class BenchmarksSetup() {
         }
         val resourcesPath = "$cliPath/src/jmh/resources"
         if (isDirectoryEmpty(simpleProjectPath)) {
+            println("Gradle project is downloading for benchmark...")
             val processBuilder = ProcessBuilder()
             processBuilder.command("git", "clone", "-d", "v6.3.0", "https://github.com/gradle/gradle")
                     .directory(File(resourcesPath))
@@ -36,6 +37,7 @@ open class BenchmarksSetup() {
             assert(exitCode == 0)
         }
         if (isDirectoryEmpty(bigProjectPath)) {
+            println("Intellij IDEA project is downloading for benchmark...")
             val processBuilder = ProcessBuilder()
             processBuilder.command("git", "clone", "-b", "idea/193.7288.8", "https://github.com/JetBrains/intellij-community")
                     .directory(File(resourcesPath))
