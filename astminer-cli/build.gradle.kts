@@ -34,6 +34,7 @@ dependencies {
 
     testImplementation("junit:junit:4.11")
     testImplementation(kotlin("test-junit"))
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.61")
 }
 
 val shadowJar = shadowJar {
@@ -83,5 +84,7 @@ tasks.withType(BintrayUploadTask::class) {
 jmh {
     duplicateClassesStrategy = DuplicatesStrategy.WARN
     profilers = listOf("gc")
-    resultFormat = "CSV"
+    //resultFormat = "CSV"
+    isZip64 = true
+    humanOutputFile = project.file("${project.buildDir}/reports/jmh/human.txt")
 }

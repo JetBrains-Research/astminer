@@ -7,29 +7,42 @@ import java.io.File
 // 2. jmh plugin is unable to compile code incrementally, so execute ./gradlew clean
 // 3. to run benchmarks execute ./gradlew jmh
 
-const val warmUpIterations = 1
-const val measurementIterations = 1
-const val forkValue = 0
+const val warmUpIterations = 4
+const val measurementIterations = 8
+const val forkValue = 2
 
-internal class BenchmarksSetup {
+open class BenchmarksSetup() {
 
-    var simpleProjectPath: String = ""
-    var longFileProjectPath: String = ""
-    var bigProjectPath: String = ""
-    var sourcePath: String = ""
-    var lazyFlag = false
+    private val cliPath = BenchmarksSetup::class.java.protectionDomain.codeSource.location.path.split("/build")[0]
+    val simpleProjectPath: String = "$cliPath/src/jmh/resources/gradle"
+    val simpleProjectResultsPath: String = "$cliPath/build/results/simpleProject"
+    val longFilePath: String = "$cliPath/src/jmh/resources/LongJavaFile.java"
+    val longFileResultsPath: String = "$cliPath/build/results/LongJavaFile"
+    val bigProjectPath: String = "$cliPath/src/jmh/resources/intellij-community"
+    val bigProjectResultsPath: String = "$cliPath/build/results/bigProject"
+    private var lazyFlag = false
 
     fun setup() {
         if (lazyFlag) {
             return
         }
-        val classpath = System.getProperty("java.class.path")
-        val classpathEntries: Array<String> = classpath.split(File.pathSeparator).toTypedArray()
-        val astminerPath = classpathEntries[7].split("/build")[0]
-        simpleProjectPath = "$astminerPath/src/jmh/resources/gradle"
-        longFileProjectPath = "$astminerPath/src/jmh/resources/LongFileJavaProject"
-        bigProjectPath = "$astminerPath/src/jmh/resources/intellij-community"
-        sourcePath = "$astminerPath/build"
+        val resourcesPath = "$cliPath/src/jmh/resources"
+        if (isDirectoryEmpty(simpleProjectPath)) {
+            val processBuilder = ProcessBuilder()
+            processBuilder.command("git", "clone", "-d", "v6.3.0", "https://github.com/gradle/gradle")
+                    .directory(File(resourcesPath))
+            val process = processBuilder.start()
+            val exitCode = process.waitFor()
+            assert(exitCode == 0)
+        }
+        if (isDirectoryEmpty(bigProjectPath)) {
+            val processBuilder = ProcessBuilder()
+            processBuilder.command("git", "clone", "-b", "idea/193.7288.8", "https://github.com/JetBrains/intellij-community")
+                    .directory(File(resourcesPath))
+            val process = processBuilder.start()
+            val exitCode = process.waitFor()
+            assert(exitCode == 0)
+        }
         lazyFlag = true
     }
 

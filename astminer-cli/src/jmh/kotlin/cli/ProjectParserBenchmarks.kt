@@ -18,22 +18,23 @@ open class ProjectParserBenchmarks {
 
     @Benchmark
     fun simpleProject() {
-        val args = listOf("--project", BenchmarksSetup().simpleFilePath,
-                "--output", BenchmarksSetup().sourcePath)
+        val args = listOf("--project", BenchmarksSetup().simpleProjectPath,
+                "--output", BenchmarksSetup().simpleProjectResultsPath)
         ProjectParser().main(args)
     }
     
     @Benchmark
     fun longFileProject() {
         val args = listOf("--project", BenchmarksSetup().longFilePath,
-                "--output", BenchmarksSetup().sourcePath)
+                "--output", BenchmarksSetup().longFileResultsPath)
         ProjectParser().main(args)
     }
+
 
     @Benchmark
     fun bigProject() {
         val args = listOf("--project", BenchmarksSetup().bigProjectPath,
-                "--output", BenchmarksSetup().sourcePath)
+                "--output", BenchmarksSetup().bigProjectResultsPath)
         ProjectParser().main(args)
     }
 }
