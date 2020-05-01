@@ -84,7 +84,6 @@ tasks.withType(BintrayUploadTask::class) {
 jmh {
     duplicateClassesStrategy = DuplicatesStrategy.WARN
     profilers = listOf("gc")
-    //resultFormat = "CSV"
+    resultFormat = "CSV"
     isZip64 = true
-    humanOutputFile = project.file("${project.buildDir}/reports/jmh/human.txt")
 }
