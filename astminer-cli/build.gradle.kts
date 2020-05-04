@@ -21,7 +21,6 @@ version = "0.3"
 repositories {
     mavenCentral()
     maven(url = "https://dl.bintray.com/egor-bogomolov/astminer/")
-    mavenLocal()
 }
 
 dependencies {
@@ -86,4 +85,5 @@ jmh {
     profilers = listOf("gc")
     resultFormat = "CSV"
     isZip64 = true
+    failOnError = true
 }
