@@ -1,23 +1,14 @@
 package astminer
 
-import astminer.examples.*
+import astminer.cli.*
 
-// TODO: remove main as we have CLI and example there
 fun main(args: Array<String>) {
-    runExamples()
-}
-
-fun runExamples() {
-    code2vecJavaMethods()
-    allJavaFilesGumTree()
-    allJavaFiles()
-    allJavaMethods()
-    allPythonFiles()
-    allJavaScriptFiles()
-    allCppFiles()
-
-
-    AllJavaFiles.runExample()
-
-    allJavaAsts()
+    if (args.isEmpty()) {
+        println("""
+             You should specify the task as the first argument ("preprocess", "parse", "pathContexts", or "code2vec").
+             For more information run `./cli.sh taskName --help`
+        """.trimIndent())
+    } else {
+        CliRunner().parseArgs(args)
+    }
 }

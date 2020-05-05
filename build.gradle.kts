@@ -1,5 +1,6 @@
 import tanvd.kosogor.proxy.publishJar
 import tanvd.kosogor.proxy.shadowJar
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 group = "io.github.vovak.astminer"
 version = "0.5"
@@ -46,6 +47,8 @@ dependencies {
 
     testImplementation("junit:junit:4.11")
     testImplementation(kotlin("test-junit"))
+
+    implementation("com.github.ajalt", "clikt", "2.1.0")
 }
 
 val shadowJar = shadowJar {
@@ -97,6 +100,13 @@ tasks.compileKotlin {
 }
 tasks.compileJava {
     dependsOn(tasks.generateGrammarSource)
+}
+
+configure<JavaPluginConvention> {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+}
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "1.8"
 }
 
 sourceSets["main"].java.srcDir(file(generatedSourcesPath))

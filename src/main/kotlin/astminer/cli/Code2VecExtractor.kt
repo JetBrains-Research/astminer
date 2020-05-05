@@ -1,12 +1,16 @@
-package cli
+package astminer.cli
 
 import astminer.common.getNormalizedToken
 import astminer.common.model.*
 import astminer.common.preOrder
 import astminer.common.setNormalizedToken
+import astminer.common.splitToSubtokens
+import astminer.parse.antlr.python.PythonMethodSplitter
 import astminer.parse.antlr.python.PythonParser
 import astminer.parse.cpp.FuzzyCppParser
+import astminer.parse.cpp.FuzzyMethodSplitter
 import astminer.parse.java.GumTreeJavaParser
+import astminer.parse.java.GumTreeMethodSplitter
 import astminer.paths.Code2VecPathStorage
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
@@ -17,38 +21,16 @@ import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.long
 import java.io.File
 
-class PathContextsExtractor : CliktCommand() {
+class Code2VecExtractor : CliktCommand() {
 
-    /**
-     * @param parser class that implements parsing
-     * @param extension file extension to choose files for parsing
-     */
-    private data class SupportedLanguage(val parser: Parser<out Node>, val extension: String)
-
-    /**
-     * List of supported language extensions and corresponding parsers.
-     */
-    private val supportedLanguages = listOf(
-        SupportedLanguage(GumTreeJavaParser(), "java"),
-        SupportedLanguage(FuzzyCppParser(), "c"),
-        SupportedLanguage(FuzzyCppParser(), "cpp"),
-        SupportedLanguage(PythonParser(), "py")
-    )
-
-    val extensions: List<String> by option(
+    private val extensions: List<String> by option(
         "--lang",
         help = "File extensions that will be parsed"
-    ).split(",").default(supportedLanguages.map { it.extension })
+    ).split(",").required()
 
-    val projectRoot: String by option(
-        "--project",
-        help = "Path to the project that will be parsed"
-    ).required()
+    private val projectRoot = CliRunner().projectRoot
 
-    val outputDirName: String by option(
-        "--output",
-        help = "Path to directory where the output will be stored"
-    ).required()
+    private val outputDirName = CliRunner().outputDir
 
     val maxPathHeight: Int by option(
         "--maxH",
@@ -87,38 +69,60 @@ class PathContextsExtractor : CliktCommand() {
         help = "Number of path contexts stored in each batch. Should only be used with `batchMode` flag."
     ).long().default(100)
 
-    private fun getParser(extension: String): Parser<out Node> {
-        for (language in supportedLanguages) {
-            if (extension == language.extension) {
-                return language.parser
-            }
+    private fun <T : Node> extractFromMethods(
+        roots: List<ParseResult<T>>,
+        methodSplitter: TreeMethodSplitter<T>,
+        miner: PathMiner,
+        storage: Code2VecPathStorage
+    ) {
+        val methods = roots.mapNotNull {
+            it.root
+        }.flatMap {
+            methodSplitter.splitIntoMethods(it)
         }
-        throw UnsupportedOperationException("Unsupported extension $extension")
+        methods.forEach { methodInfo ->
+            val methodNameNode = methodInfo.method.nameNode ?: return@forEach
+            val methodRoot = methodInfo.method.root
+            val label = splitToSubtokens(methodNameNode.getToken()).joinToString("|")
+            methodRoot.preOrder().forEach { it.setNormalizedToken() }
+            methodNameNode.setNormalizedToken("METHOD_NAME")
+
+            // Retrieve paths from every node individually
+            val paths = miner.retrievePaths(methodRoot).take(maxPathContexts)
+            storage.store(LabeledPathContexts(label, paths.map {
+                toPathContext(it) { node ->
+                    node.getNormalizedToken()
+                }
+            }))
+        }
     }
 
-    private fun extractPathContexts() {
+    private fun extract() {
         val outputDir = File(outputDirName)
         for (extension in extensions) {
             val miner = PathMiner(PathRetrievalSettings(maxPathHeight, maxPathWidth))
-            val parser = getParser(extension)
-            val parsedFiles = parser.parseWithExtension(File(projectRoot), extension)
 
             val outputDirForLanguage = outputDir.resolve(extension)
             outputDirForLanguage.mkdir()
             val storage = Code2VecPathStorage(outputDirForLanguage.path, batchMode, batchSize)
 
-            parsedFiles.forEach { parseResult ->
-                val root = parseResult.root ?: return@forEach
-                val filePath = parseResult.filePath
-
-                root.preOrder().forEach { node -> node.setNormalizedToken() }
-
-                val paths = miner.retrievePaths(root).take(maxPathContexts)
-                storage.store(LabeledPathContexts(filePath, paths.map { astPath ->
-                    toPathContext(astPath) { node ->
-                        node.getNormalizedToken()
-                    }
-                }))
+            when (extension) {
+                "c", "cpp" -> {
+                    val parser = FuzzyCppParser()
+                    val roots = parser.parseWithExtension(File(projectRoot), extension)
+                    extractFromMethods(roots, FuzzyMethodSplitter(), miner, storage)
+                }
+                "java" -> {
+                    val parser = GumTreeJavaParser()
+                    val roots = parser.parseWithExtension(File(projectRoot), extension)
+                    extractFromMethods(roots, GumTreeMethodSplitter(), miner, storage)
+                }
+                "py" -> {
+                    val parser = PythonParser()
+                    val roots = parser.parseWithExtension(File(projectRoot), extension)
+                    extractFromMethods(roots, PythonMethodSplitter(), miner, storage)
+                }
+                else -> throw UnsupportedOperationException("Unsupported extension $extension")
             }
 
             // Save stored data on disk
@@ -127,6 +131,6 @@ class PathContextsExtractor : CliktCommand() {
     }
 
     override fun run() {
-        extractPathContexts()
+        extract()
     }
 }

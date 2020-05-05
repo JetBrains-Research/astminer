@@ -1,10 +1,9 @@
-package cli
+package astminer.cli
 
 import astminer.common.*
 import astminer.common.model.MethodInfo
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
-import astminer.common.model.TreeMethodSplitter
 import astminer.parse.antlr.SimpleNode
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.python.PythonMethodSplitter

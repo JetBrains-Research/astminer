@@ -1,6 +1,5 @@
-package cli
+package astminer.cli
 
-import astminer.common.getNormalizedToken
 import astminer.common.model.MethodInfo
 import astminer.common.model.Node
 import astminer.common.preOrder
