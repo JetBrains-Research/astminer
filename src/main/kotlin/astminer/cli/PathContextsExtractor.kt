@@ -8,10 +8,9 @@ import astminer.paths.Code2VecPathStorage
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
 import astminer.paths.toPathContext
-import com.github.ajalt.clikt.core.CliktCommand
 import java.io.File
 
-class PathContextsExtractor : CliktCommand() {
+class PathContextsExtractor {
 
     private fun getParser(extension: String): Parser<out Node> {
         for (language in CliRunner().supportedLanguages) {
@@ -50,9 +49,5 @@ class PathContextsExtractor : CliktCommand() {
             // Save stored data on disk
             storage.save(CliRunner().maxPaths, CliRunner().maxTokens)
         }
-    }
-
-    override fun run() {
-        extractPathContexts()
     }
 }
