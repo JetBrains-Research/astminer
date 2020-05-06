@@ -177,7 +177,7 @@ class CliRunner: CliktCommand() {
             "preprocess" -> ProjectPreprocessor().preprocessing()
             "parse" -> ProjectParser().parsing()
             "pathContexts" -> PathContextsExtractor().extractPathContexts()
-            "code2vec" -> return //TODO
+            "code2vec" -> Code2VecExtractor().extract()
         }
     }
 }
