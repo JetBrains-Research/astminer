@@ -1,4 +1,4 @@
-package cli
+package astminer.cli
 
 import cli.util.CliArgs
 import cli.util.languagesToString
@@ -14,7 +14,7 @@ internal class Code2VecExtractorTest {
     fun testDefaultExtraction() {
         val extractedDataDir = createTempDir("extractedData")
         val languages = listOf("java", "py")
-        val cliArgs = CliArgs.Builder(testDataDir, extractedDataDir)
+        val cliArgs = CliArgs.Builder("code2vec", testDataDir, extractedDataDir)
             .extensions(languagesToString(languages))
             .build()
 

@@ -1,4 +1,4 @@
-package cli
+package astminer.cli
 
 import cli.util.CliArgs
 import cli.util.languagesToString
@@ -6,7 +6,7 @@ import cli.util.verifyPathContextExtraction
 import org.junit.Test
 import java.io.File
 
-internal class PathContextsExtractorTest {
+class PathContextsExtractorTest {
     private val testDataDir = File("src/test/resources")
     private val pathContextsExtractor = PathContextsExtractor()
 
@@ -14,7 +14,7 @@ internal class PathContextsExtractorTest {
     fun testDefaultExtraction() {
         val extractedDataDir = createTempDir("extractedData")
         val languages = listOf("java", "py")
-        val cliArgs = CliArgs.Builder(testDataDir, extractedDataDir)
+        val cliArgs = CliArgs.Builder("pathContexts", testDataDir, extractedDataDir)
             .extensions(languagesToString(languages))
             .build()
 

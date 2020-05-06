@@ -11,7 +11,7 @@ class AntrlUtilTest {
     @Test
     fun compressTreeTest() {
         val parser = JavaParser()
-        val file = File("testData/methodSplitting/testMethodSplitting.java")
+        val file = File("src/test/resources/testData/methodSplitting/testMethodSplitting.java")
 
         val node = parser.parse(FileInputStream(file))
         var adoptedNodesSize = 0

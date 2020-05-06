@@ -8,14 +8,14 @@ class FileParsingUtilTest {
 
     @Test
     fun testNumberOfLines() {
-        val file = File("testData/common/ParsableFile.java")
+        val file = File("src/test/resources/testData/common/ParsableFile.java")
         val nol = numberOfLines(file)
         Assert.assertEquals("All non-empty lines including comments should be counted", nol, 8)
     }
 
     @Test
     fun testChangeExtensionTo() {
-        var file = File("testData/common/FileToChangeExtension.csv")
+        var file = File("src/test/resources/testData/common/FileToChangeExtension.csv")
         val newExtension = "txt"
         val text = "Lorem ipsum dolor sit amet"
 
@@ -29,7 +29,7 @@ class FileParsingUtilTest {
 
     @Test
     fun testAddClassWrapper() {
-        val file = File("testData/common/FileToAddClassWrapper.java")
+        val file = File("src/test/resources/testData/common/FileToAddClassWrapper.java")
         val text = "public static void foo() { }"
 
         file.writeText(text)
@@ -42,13 +42,13 @@ class FileParsingUtilTest {
 
     @Test
     fun testHasNoSyntaxErrors() {
-        val file = File("testData/common/ParsableFile.java")
+        val file = File("src/test/resources/testData/common/ParsableFile.java")
         Assert.assertFalse("This file doesn't have any syntax errors", hasSyntaxErrors(file))
     }
 
     @Test
     fun testHasSyntaxErrors() {
-        val file = File("testData/common/NonParsableFile.java")
+        val file = File("src/test/resources/testData/common/NonParsableFile.java")
         Assert.assertTrue("This file has syntax errors", hasSyntaxErrors(file))
     }
 
