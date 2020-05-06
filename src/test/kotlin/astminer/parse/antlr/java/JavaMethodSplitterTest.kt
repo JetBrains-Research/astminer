@@ -19,7 +19,7 @@ class JavaMethodSplitterTest {
 
     @BeforeTest
     fun parseTree() {
-        val testTree =  parser.parse(File("src/test/resources/testData/methodSplitting/testMethodSplitting.java").inputStream())
+        val testTree =  parser.parse(File("src/test/resources/methodSplitting/testMethodSplitting.java").inputStream())
         assertNotNull(testTree)
         methodInfos = methodSplitter.splitIntoMethods(testTree)
     }
