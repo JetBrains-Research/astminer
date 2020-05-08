@@ -81,7 +81,7 @@ tasks.withType(BintrayUploadTask::class) {
 }
 
 jmh {
-    jvmArgs = listOf("-Xmx32G")
+    jvmArgsAppend = listOf("-Xmx<32G>")
     duplicateClassesStrategy = DuplicatesStrategy.WARN
     profilers = listOf("gc")
     resultFormat = "CSV"
