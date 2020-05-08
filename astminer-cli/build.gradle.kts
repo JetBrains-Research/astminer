@@ -1,5 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
+import org.jetbrains.kotlin.daemon.common.DaemonJVMOptions
+import org.jetbrains.kotlin.daemon.common.configureDaemonJVMOptions
 import tanvd.kosogor.proxy.publishJar
 import tanvd.kosogor.proxy.shadowJar
 
@@ -81,7 +83,8 @@ tasks.withType(BintrayUploadTask::class) {
 }
 
 jmh {
-    jvmArgsAppend = listOf("-Xmx<32G>")
+    DaemonJVMOptions(maxMemory = "32768m")
+    jvmArgsAppend = listOf("-Xmx32768m")
     duplicateClassesStrategy = DuplicatesStrategy.WARN
     profilers = listOf("gc")
     resultFormat = "CSV"
