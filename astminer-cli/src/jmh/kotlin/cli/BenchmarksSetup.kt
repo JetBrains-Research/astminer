@@ -8,9 +8,9 @@ import java.io.OutputStream
 // 2. jmh plugin is unable to compile code incrementally, so execute ./gradlew clean
 // 3. to run benchmarks execute ./gradlew jmh
 
-const val warmUpIterations = 1
-const val measurementIterations = 1
-const val forkValue = 0
+const val warmUpIterations = 4
+const val measurementIterations = 8
+const val forkValue = 2
 
 open class BenchmarksSetup() {
 

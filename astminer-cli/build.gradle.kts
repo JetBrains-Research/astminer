@@ -1,7 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import org.jetbrains.kotlin.daemon.common.DaemonJVMOptions
-import org.jetbrains.kotlin.daemon.common.configureDaemonJVMOptions
 import tanvd.kosogor.proxy.publishJar
 import tanvd.kosogor.proxy.shadowJar
 
