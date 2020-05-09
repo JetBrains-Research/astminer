@@ -83,7 +83,6 @@ tasks.withType(BintrayUploadTask::class) {
 
 jmh {
     DaemonJVMOptions(maxMemory = "32768m")
-    jvmArgsAppend = listOf("-Xmx32768m")
     duplicateClassesStrategy = DuplicatesStrategy.WARN
     profilers = listOf("gc")
     resultFormat = "CSV"
