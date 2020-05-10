@@ -30,7 +30,6 @@ open class ProjectParserBenchmarks {
         ProjectParser().main(args)
     }
 
-
     @Benchmark
     fun bigProject() {
         val args = listOf("--project", BenchmarksSetup().bigProjectPath,
