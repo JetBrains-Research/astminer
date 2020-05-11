@@ -1,14 +1,7 @@
 package cli
 
 import org.openjdk.jmh.annotations.*
-import java.util.concurrent.TimeUnit
 
-@State(Scope.Benchmark)
-@Warmup(iterations = warmUpIterations)
-@Measurement(iterations = measurementIterations)
-@BenchmarkMode(Mode.AverageTime)
-@OutputTimeUnit(TimeUnit.SECONDS)
-@Fork(forkValue)
 open class ProjectParserBenchmarks {
 
     @Setup

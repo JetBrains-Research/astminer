@@ -88,5 +88,11 @@ jmh {
     resultFormat = "CSV"
     isZip64 = true
     failOnError = true
+    forceGC = true
+    warmupIterations = 2
+    iterations = 5
+    fork = 2
+    batchSize = 1
+    benchmarkMode = listOf("All")
     resultsFile = file("build/reports/benchmarks.csv")
 }

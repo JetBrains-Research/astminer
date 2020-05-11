@@ -1,15 +1,13 @@
 package cli
 
+import org.h2.store.fs.FileUtils.deleteRecursive
 import java.io.File
+
 
 // How to start benchmark:
 // 1. gradle daemons should be stopped before, so execute ./gradlew --stop
 // 2. jmh plugin is unable to compile code incrementally, so execute ./gradlew clean
 // 3. to run benchmarks execute ./gradlew jmh
-
-const val warmUpIterations = 2
-const val measurementIterations = 5
-const val forkValue = 1
 
 open class BenchmarksSetup() {
 
