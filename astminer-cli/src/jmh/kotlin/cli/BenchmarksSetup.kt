@@ -1,7 +1,6 @@
 package cli
 
 import java.io.File
-import java.io.OutputStream
 
 // How to start benchmark:
 // 1. gradle daemons should be stopped before, so execute ./gradlew --stop
@@ -31,13 +30,13 @@ open class BenchmarksSetup() {
                 throw DownloadException("Error with downloading Gradle project!")
             }
         }
-        if (isDirectoryEmpty(bigProjectPath)) {
+        /**if (isDirectoryEmpty(bigProjectPath)) {
             println("Intellij IDEA project is downloading for benchmark...")
             val exitCode = cloneGitProject("idea/193.7288.8", "https://github.com/JetBrains/intellij-community", resourcesPath)
             if (exitCode != 0) {
                 throw DownloadException("Error with downloading Intellij IDEA project!")
             }
-        }
+        }*/
     }
 
     private fun cloneGitProject(tag: String, projectLink: String, directory: String) : Int {

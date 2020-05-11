@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit
 @Measurement(iterations = measurementIterations)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.SECONDS)
-@Fork(forkValue)
+@Fork(forkValue, jvmArgs = ["-Xmx32G"])
 open class ProjectParserBenchmarks {
 
     @Setup
@@ -30,7 +30,7 @@ open class ProjectParserBenchmarks {
         ProjectParser().main(args)
     }
 
-    @Benchmark
+    //@Benchmark
     fun bigProject() {
         val args = listOf("--project", BenchmarksSetup().bigProjectPath,
                 "--output", BenchmarksSetup().bigProjectResultsPath)

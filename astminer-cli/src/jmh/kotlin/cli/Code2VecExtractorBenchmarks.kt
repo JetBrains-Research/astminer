@@ -8,9 +8,9 @@ import java.util.concurrent.TimeUnit
 @Measurement(iterations= measurementIterations)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.SECONDS)
-@Fork(forkValue)
+@Fork(forkValue, jvmArgs = ["-Xmx32G"])
 open class Code2VecExtractorBenchmarks {
-
+/**
     @Setup
     fun pathsSetup() {
         BenchmarksSetup().setup()
@@ -38,5 +38,5 @@ open class Code2VecExtractorBenchmarks {
                 "--output", BenchmarksSetup().bigProjectResultsPath,
                 "--lang", "java")
         Code2VecExtractor().main(args)
-    }
+    }*/
 }

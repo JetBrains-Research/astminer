@@ -1,6 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
-import org.jetbrains.kotlin.daemon.common.DaemonJVMOptions
 import tanvd.kosogor.proxy.publishJar
 import tanvd.kosogor.proxy.shadowJar
 
@@ -35,6 +34,8 @@ dependencies {
     testImplementation("junit:junit:4.11")
     testImplementation(kotlin("test-junit"))
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.61")
+    jmhImplementation("org.openjdk.jmh:jmh-core:1.21")
+    jmhImplementation("org.openjdk.jmh:jmh-generator-annprocess:1.21")
 }
 
 val shadowJar = shadowJar {
@@ -82,10 +83,10 @@ tasks.withType(BintrayUploadTask::class) {
 }
 
 jmh {
-    DaemonJVMOptions(maxMemory = "32768m")
     duplicateClassesStrategy = DuplicatesStrategy.WARN
     profilers = listOf("gc")
     resultFormat = "CSV"
     isZip64 = true
     failOnError = true
+    resultsFile = file("build/reports/benchmarks.csv")
 }

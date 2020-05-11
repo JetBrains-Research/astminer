@@ -8,9 +8,9 @@ import java.util.concurrent.TimeUnit
 @Measurement(iterations = measurementIterations)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.SECONDS)
-@Fork(forkValue)
+@Fork(forkValue, jvmArgs = ["-Xmx32G"])
 open class PathContextsExtractorBenchmarks {
-
+/**
     @Setup
     fun pathsSetup() {
         BenchmarksSetup().setup()
@@ -35,5 +35,5 @@ open class PathContextsExtractorBenchmarks {
         val args = listOf("--project", BenchmarksSetup().bigProjectPath,
                 "--output", BenchmarksSetup().bigProjectResultsPath)
         PathContextsExtractor().main(args)
-    }
+    }*/
 }
