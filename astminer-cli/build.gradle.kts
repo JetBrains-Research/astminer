@@ -92,7 +92,6 @@ jmh {
     warmupIterations = 2
     iterations = 5
     fork = 2
-    batchSize = 1
-    benchmarkMode = listOf("All")
+    benchmarkMode = listOf("AverageTime")
     resultsFile = file("build/reports/benchmarks.csv")
 }
