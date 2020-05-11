@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 @OutputTimeUnit(TimeUnit.SECONDS)
 @Fork(forkValue, jvmArgs = ["-Xmx32G"])
 open class PathContextsExtractorBenchmarks {
-/**
+
     @Setup
     fun pathsSetup() {
         BenchmarksSetup().setup()
@@ -35,5 +35,5 @@ open class PathContextsExtractorBenchmarks {
         val args = listOf("--project", BenchmarksSetup().bigProjectPath,
                 "--output", BenchmarksSetup().bigProjectResultsPath)
         PathContextsExtractor().main(args)
-    }*/
+    }
 }

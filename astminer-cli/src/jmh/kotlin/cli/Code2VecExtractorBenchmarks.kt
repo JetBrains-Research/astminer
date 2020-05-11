@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 @OutputTimeUnit(TimeUnit.SECONDS)
 @Fork(forkValue, jvmArgs = ["-Xmx32G"])
 open class Code2VecExtractorBenchmarks {
-/**
+
     @Setup
     fun pathsSetup() {
         BenchmarksSetup().setup()
@@ -38,5 +38,5 @@ open class Code2VecExtractorBenchmarks {
                 "--output", BenchmarksSetup().bigProjectResultsPath,
                 "--lang", "java")
         Code2VecExtractor().main(args)
-    }*/
+    }
 }
