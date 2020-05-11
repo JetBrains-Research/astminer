@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit
 @Measurement(iterations = measurementIterations)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.SECONDS)
-@Fork(forkValue, jvmArgs = ["-Xmx32G"])
+@Fork(forkValue)
 open class ProjectParserBenchmarks {
 
     @Setup
