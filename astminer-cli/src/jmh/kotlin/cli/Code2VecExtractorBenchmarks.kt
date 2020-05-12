@@ -4,7 +4,7 @@ import org.openjdk.jmh.annotations.*
 
 @State(Scope.Benchmark)
 open class Code2VecExtractorBenchmarks {
-/**
+
     @Setup
     fun pathsSetup() {
         BenchmarksSetup().setup()
@@ -32,5 +32,5 @@ open class Code2VecExtractorBenchmarks {
                 "--output", BenchmarksSetup().bigProjectResultsPath,
                 "--lang", "java")
         Code2VecExtractor().main(args)
-    }*/
+    }
 }

@@ -4,7 +4,7 @@ import org.openjdk.jmh.annotations.*
 
 @State(Scope.Benchmark)
 open class PathContextsExtractorBenchmarks {
-/**
+
     @Setup
     fun pathsSetup() {
         BenchmarksSetup().setup()
@@ -29,5 +29,5 @@ open class PathContextsExtractorBenchmarks {
         val args = listOf("--project", BenchmarksSetup().bigProjectPath,
                 "--output", BenchmarksSetup().bigProjectResultsPath)
         PathContextsExtractor().main(args)
-    }*/
+    }
 }
