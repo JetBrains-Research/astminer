@@ -13,6 +13,7 @@ plugins {
     id("application")
     id("tanvd.kosogor") version "1.0.6"
     id("org.jetbrains.dokka") version "0.9.18"
+    id("me.champeau.gradle.jmh") version "0.5.0"
 }
 
 
@@ -49,6 +50,10 @@ dependencies {
     testImplementation(kotlin("test-junit"))
 
     implementation("com.github.ajalt", "clikt", "2.1.0")
+
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.61")
+    jmhImplementation("org.openjdk.jmh:jmh-core:1.21")
+    jmhImplementation("org.openjdk.jmh:jmh-generator-annprocess:1.21")
 }
 
 val shadowJar = shadowJar {
@@ -141,4 +146,18 @@ publishJar {
 tasks.dokka {
     outputFormat = "html"
     outputDirectory = "$buildDir/javadoc"
+}
+
+jmh {
+    duplicateClassesStrategy = DuplicatesStrategy.WARN
+    profilers = listOf("gc")
+    resultFormat = "CSV"
+    isZip64 = true
+    failOnError = true
+    forceGC = true
+    warmupIterations = 1
+    iterations = 1
+    fork = 1
+    benchmarkMode = listOf("AverageTime")
+    resultsFile = file("build/reports/benchmarks.csv")
 }
