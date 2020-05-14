@@ -8,6 +8,7 @@ plugins {
     kotlin("jvm") version "1.3.61"
     id("application")
     id("tanvd.kosogor") version "1.0.6"
+    id("me.champeau.gradle.jmh") version "0.5.0"
 }
 
 application {
@@ -32,6 +33,9 @@ dependencies {
 
     testImplementation("junit:junit:4.11")
     testImplementation(kotlin("test-junit"))
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.61")
+    jmhImplementation("org.openjdk.jmh:jmh-core:1.21")
+    jmhImplementation("org.openjdk.jmh:jmh-generator-annprocess:1.21")
 }
 
 val shadowJar = shadowJar {
@@ -76,4 +80,18 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType(BintrayUploadTask::class) {
     dependsOn("shadowJar")
+}
+
+jmh {
+    duplicateClassesStrategy = DuplicatesStrategy.WARN
+    profilers = listOf("gc")
+    resultFormat = "CSV"
+    isZip64 = true
+    failOnError = true
+    forceGC = true
+    warmupIterations = 2
+    iterations = 5
+    fork = 2
+    benchmarkMode = listOf("AverageTime")
+    resultsFile = file("build/reports/benchmarks.csv")
 }
