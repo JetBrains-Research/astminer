@@ -51,7 +51,7 @@ dependencies {
 
     implementation("com.github.ajalt", "clikt", "2.1.0")
 
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.61")
+    jmhImplementation("org.jetbrains.kotlin:kotlin-reflect:1.3.61")
     jmhImplementation("org.openjdk.jmh:jmh-core:1.21")
     jmhImplementation("org.openjdk.jmh:jmh-generator-annprocess:1.21")
 }
@@ -63,9 +63,6 @@ val shadowJar = shadowJar {
     }
 }.apply {
     task.archiveClassifier.set("")
-    task.dependencies {
-        exclude(dependency("org.jetbrains.kotlin:.*"))
-    }
 }
 
 task<JavaExec>("performanceTest") {
@@ -146,6 +143,13 @@ publishJar {
 tasks.dokka {
     outputFormat = "html"
     outputDirectory = "$buildDir/javadoc"
+}
+
+configure<JavaPluginConvention> {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+}
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "1.8"
 }
 
 jmh {
