@@ -1,5 +1,6 @@
 class SingleFunction {
-    void fun(int args, int param) {
+    int fun(int args, SingleFunction param) {
         System.out.println("Hello again world!");
+        return 0;
     }
 }
