@@ -65,11 +65,6 @@ val shadowJar = shadowJar {
     task.archiveClassifier.set("")
 }
 
-task<JavaExec>("performanceTest") {
-    main = "astminer.performance.PerformanceTest"
-    classpath = sourceSets["main"].runtimeClasspath
-}
-
 task<JavaExec>("processPyExample") {
     main = "astminer.examples.pyExample.PyExample"
     classpath = sourceSets["main"].runtimeClasspath
