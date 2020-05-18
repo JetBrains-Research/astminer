@@ -1,4 +1,4 @@
-package cli.util
+package astminer.cli.util
 
 import java.io.File
 
