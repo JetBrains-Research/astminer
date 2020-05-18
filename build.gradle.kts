@@ -159,9 +159,9 @@ jmh {
     isZip64 = true
     failOnError = true
     forceGC = true
-    warmupIterations = 1
-    iterations = 1
-    fork = 1
+    warmupIterations = 2
+    iterations = 5
+    fork = 2
     benchmarkMode = listOf("AverageTime")
     resultsFile = file("build/reports/benchmarks.csv")
 }

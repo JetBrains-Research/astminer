@@ -1,7 +1,5 @@
 package cli
 
-import org.h2.store.fs.FileUtils.deleteRecursive
-import org.openjdk.jmh.annotations.Scope
 import java.io.File
 
 

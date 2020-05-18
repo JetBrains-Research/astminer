@@ -33,5 +33,5 @@ open class Code2VecExtractorBenchmarks {
                 "--output", BenchmarksSetup().bigProjectResultsPath,
                 "--lang", "java")
         Code2VecExtractor().main(args)
-    }*/
+    }
 }
