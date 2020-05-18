@@ -4,7 +4,7 @@ import java.io.File
 
 class CliArgs private constructor(val args: List<String>) {
 
-    data class Builder(val task: String, val testDataDir: File, val extractedDataDir: File) {
+    data class Builder(val testDataDir: File, val extractedDataDir: File) {
         val args = mutableListOf(
             "--project", testDataDir.path,
             "--output", extractedDataDir.path

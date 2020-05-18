@@ -13,13 +13,13 @@ import java.io.File
 class ProjectPreprocessor : CliktCommand() {
 
     val projectRoot: String by option(
-            "--project",
-            help = "Path to the project that will be parsed"
+        "--project",
+        help = "Path to the project that will be parsed"
     ).required()
 
     val preprocessDir: String by option(
-            "--output",
-            help = "Path to directory where the preprocessed data will be stored"
+        "--output",
+        help = "Path to directory where the preprocessed data will be stored"
     ).required()
 
     private fun preprocessing() {

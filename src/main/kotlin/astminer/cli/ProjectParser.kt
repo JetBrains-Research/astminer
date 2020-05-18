@@ -34,94 +34,94 @@ class ProjectParser : CliktCommand() {
      * List of supported language extensions and corresponding parsers.
      */
     private val supportedLanguages = listOf(
-            SupportedLanguage(GumTreeJavaParser(), "java"),
-            SupportedLanguage(FuzzyCppParser(), "c"),
-            SupportedLanguage(FuzzyCppParser(), "cpp"),
-            SupportedLanguage(PythonParser(), "py")
+        SupportedLanguage(GumTreeJavaParser(), "java"),
+        SupportedLanguage(FuzzyCppParser(), "c"),
+        SupportedLanguage(FuzzyCppParser(), "cpp"),
+        SupportedLanguage(PythonParser(), "py")
     )
 
     private val supportedAstStorages = listOf(
-            SupportedAstStorage(CsvAstStorage(), "csv"),
-            SupportedAstStorage(DotAstStorage(), "dot")
+        SupportedAstStorage(CsvAstStorage(), "csv"),
+        SupportedAstStorage(DotAstStorage(), "dot")
     )
 
     val extensions: List<String> by option(
-            "--lang",
-            help = "Comma-separated list of file extensions that will be parsed.\n" +
-                    "Supports 'c', 'cpp', 'java', 'py', defaults to all these extensions."
+        "--lang",
+        help = "Comma-separated list of file extensions that will be parsed.\n" +
+                "Supports 'c', 'cpp', 'java', 'py', defaults to all these extensions."
     ).split(",").default(supportedLanguages.map { it.extension })
 
     val projectRoot: String by option(
-            "--project",
-            help = "Path to the project that will be parsed"
+        "--project",
+        help = "Path to the project that will be parsed"
     ).required()
 
     val outputDirName: String by option(
-            "--output",
-            help = "Path to directory where the output will be stored"
+        "--output",
+        help = "Path to directory where the output will be stored"
     ).required()
 
     val astStorageType: String by option(
-            "--storage",
-            help = "AST storage type ('dot' or 'csv', defaults to 'csv')"
+        "--storage",
+        help = "AST storage type ('dot' or 'csv', defaults to 'csv')"
     ).default(supportedAstStorages[0].type)
 
     val granularityLevel: String by option(
-            "--granularity",
-            help = "Choose level of granularity ('file' or 'method', defaults to 'file')"
+        "--granularity",
+        help = "Choose level of granularity ('file' or 'method', defaults to 'file')"
     ).default("file")
 
     val isMethodNameHide: Boolean by option(
-            "--hide-method-name",
-            help = "if passed with method level granularity, the names of all methods are replaced with placeholder token"
+        "--hide-method-name",
+        help = "if passed with method level granularity, the names of all methods are replaced with placeholder token"
     ).flag(default = false)
 
     val isTokenSplitted: Boolean by option(
-            "--split-tokens",
-            help = "if passed, split tokens into sequence of tokens"
+        "--split-tokens",
+        help = "if passed, split tokens into sequence of tokens"
     ).flag(default = false)
 
     val excludeModifiers: List<String> by option(
-            "--filter-modifiers",
-            help = "Comma-separated list of function's modifiers, which should be filtered." +
-                    "Works only for method-level granulation."
+        "--filter-modifiers",
+        help = "Comma-separated list of function's modifiers, which should be filtered." +
+                "Works only for method-level granulation."
     ).split(",").default(emptyList())
 
     val excludeAnnotations: List<String> by option(
-            "--filter-annotations",
-            help = "Comma-separated list of function's annotations, which should be filtered." +
-                    "Works only for method-level granulation."
+        "--filter-annotations",
+        help = "Comma-separated list of function's annotations, which should be filtered." +
+                "Works only for method-level granulation."
     ).split(",").default(emptyList())
 
     val filterConstructors: Boolean by option(
-            "--remove-constructors",
-            help = "Remove constructor methods, works for method-level granulation"
+        "--remove-constructors",
+        help = "Remove constructor methods, works for method-level granulation"
     ).flag(default = false)
 
     val excludeNodes: List<String> by option(
-            "--remove-nodes",
-            help = "Comma-separated list of node types, which must be removed from asts."
+        "--remove-nodes",
+        help = "Comma-separated list of node types, which must be removed from asts."
     ).split(",").default(emptyList())
 
     val javaParser: String by option(
-            "--java-parser",
-            help = "Choose a parser for .java files." +
-                    "'gumtree' for GumTree parser, 'antlr' for antlr parser."
+        "--java-parser",
+        help = "Choose a parser for .java files." +
+                "'gumtree' for GumTree parser, 'antlr' for antlr parser."
     ).default("gumtree")
 
     val maxMethodNameLength: Int by option(
-            "--max-method-name-length",
-            help = "Filtering methods with a large sequence of subtokens in their names"
+        "--max-method-name-length",
+        help = "Filtering methods with a large sequence of subtokens in their names"
     ).int().default(-1)
 
     val maxTokenLength: Int by option(
-            "--max-token-length",
-            help = "Filter methods containing a long sequence of subtokens in the ast node"
+        "--max-token-length",
+        help = "Filter methods containing a long sequence of subtokens in the ast node"
     ).int().default(-1)
 
     val maxTreeSize: Int by option(
-            "--max-tree-size",
-            help = "Filter methods by their ast size"
+        "--max-tree-size",
+        help = "Filter methods by their ast size"
     ).int().default(-1)
 
     private fun getParser(extension: String): Parser<out Node> {
@@ -137,7 +137,7 @@ class ProjectParser : CliktCommand() {
             }
             else -> {
                 supportedLanguages.find { it.extension == extension }?.parser
-                        ?: throw UnsupportedOperationException("Unsupported extension $extension")
+                    ?: throw UnsupportedOperationException("Unsupported extension $extension")
             }
         }
     }
@@ -156,9 +156,9 @@ class ProjectParser : CliktCommand() {
             "file" -> return FileGranularity(isTokenSplitted)
             "method" -> {
                 val filterPredicates = mutableListOf(
-                        ModifierFilterPredicate(excludeModifiers), AnnotationFilterPredicate(excludeAnnotations),
-                        MethodNameLengthFilterPredicate(maxMethodNameLength), TokenLengthFilterPredicate(maxTokenLength),
-                        TreeSizeFilterPredicate(maxTreeSize)
+                    ModifierFilterPredicate(excludeModifiers), AnnotationFilterPredicate(excludeAnnotations),
+                    MethodNameLengthFilterPredicate(maxMethodNameLength), TokenLengthFilterPredicate(maxTokenLength),
+                    TreeSizeFilterPredicate(maxTreeSize)
                 )
                 if (filterConstructors) {
                     filterPredicates.add(ConstructorFilterPredicate())
