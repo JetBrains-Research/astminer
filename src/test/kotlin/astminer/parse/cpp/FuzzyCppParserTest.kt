@@ -10,7 +10,7 @@ class FuzzyCppParserTest {
     @Test
     fun testNodeIsNotNull() {
         val parser = FuzzyCppParser()
-        val file = File("testData/fuzzy/test.cpp")
+        val file = File("src/test/resources/fuzzy/test.cpp")
 
         val nodes = parser.parse(listOf(file))
         Assert.assertTrue("Parse tree for a valid file should not be null",
@@ -19,7 +19,7 @@ class FuzzyCppParserTest {
 
     @Test
     fun testInputStreamParsing() {
-        val folder = File("testData/fuzzy/")
+        val folder = File("src/test/resources/fuzzy/")
         val nodes = ArrayList<FuzzyNode>()
         var n = 0
         val parser = FuzzyCppParser()
@@ -32,7 +32,7 @@ class FuzzyCppParserTest {
 
     @Test
     fun testProjectParsing() {
-        val folder = File("testData/fuzzy/")
+        val folder = File("src/test/resources/fuzzy/")
         val parser = FuzzyCppParser()
         val nodes = parser.parseProject(folder) { file -> file.extension == "cpp" }
         Assert.assertEquals(
@@ -44,7 +44,7 @@ class FuzzyCppParserTest {
 
     @Test
     fun testPreprocessingDefine() {
-        val folder = File("testData/fuzzy")
+        val folder = File("src/test/resources/fuzzy")
         val preprocessedFolder = folder.resolve("preprocessed")
         preprocessedFolder.mkdir()
         val defineFileName = "preprocDefineTest.cpp"
@@ -62,7 +62,7 @@ class FuzzyCppParserTest {
 
     @Test
     fun testPreprocessingInclude() {
-        val folder = File("testData/fuzzy")
+        val folder = File("src/test/resources/fuzzy")
         val preprocessedFolder = folder.resolve("preprocessed")
         preprocessedFolder.mkdir()
         val includeFileName = "preprocIncludeTest.cpp"
@@ -80,8 +80,8 @@ class FuzzyCppParserTest {
 
     @Test
     fun testPreprocessingProject() {
-        val projectRoot = File("testData/examples/cpp")
-        val preprocessedRoot = File("testData/examples/preprocessed")
+        val projectRoot = File("src/test/resources/examples/cpp")
+        val preprocessedRoot = File("src/test/resources/examples/preprocessed")
         preprocessedRoot.mkdir()
         val parser = FuzzyCppParser()
 

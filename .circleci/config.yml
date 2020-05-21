@@ -20,24 +20,6 @@ jobs:
           path: ~/astminer
       - run: ./gradlew bintrayUpload
 
-  build-cli:
-    machine:
-      enabled: true
-    working_directory: ~/astminer-cli
-    steps:
-      - checkout:
-          path: ~/astminer-cli
-      - run: ./gradlew shadowJar && cd astminer-cli && ./gradlew shadowJar
-
-  release-cli:
-    machine:
-      enabled: true
-    working_directory: ~/astminer-cli
-    steps:
-      - checkout:
-          path: ~/astminer-cli
-      - run: cd astminer-cli && ./gradlew bintrayUpload
-
   # run the Python example
   py_example:
     docker:
@@ -84,23 +66,6 @@ workflows:
       - release:
           requires:
             - approve-release
-          filters:
-            branches:
-              only: master
-
-  deploy-cli:
-    jobs:
-      - build-cli
-      - approve-release-cli:
-          type: approval
-          requires:
-            - build-cli
-          filters:
-            branches:
-              only: master
-      - release-cli:
-          requires:
-            - approve-release-cli
           filters:
             branches:
               only: master

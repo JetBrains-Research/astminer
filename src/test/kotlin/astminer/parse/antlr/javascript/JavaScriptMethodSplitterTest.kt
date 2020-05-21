@@ -14,7 +14,7 @@ import kotlin.test.assertTrue
 class JavaScriptMethodSplitterTest {
     companion object {
         const val N_METHODS = 47
-        const val testFilePath = "testData/methodSplitting/testMethodSplitting.js"
+        const val testFilePath = "src/test/resources/methodSplitting/testMethodSplitting.js"
         val methodSplitter = JavaScriptMethodSplitter()
         val parser = JavaScriptParser()
     }
