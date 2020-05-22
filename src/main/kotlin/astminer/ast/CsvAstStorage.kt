@@ -5,6 +5,7 @@ import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.common.storage.*
 import java.io.File
+import java.io.OutputStreamWriter
 
 /**
  * Stores multiple ASTs by their roots and saves them in .csv format.
@@ -15,22 +16,28 @@ class CsvAstStorage : AstStorage {
     private val tokensMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
     private val nodeTypesMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
 
-    private val rootsPerEntity: MutableMap<String, Node> = HashMap()
+    private lateinit var directoryPath: String
+    private lateinit var astsFileWriter: OutputStreamWriter
+
+    fun init(directoryPath: String) {
+        this.directoryPath = directoryPath
+        astsFileWriter = File("$directoryPath/asts.csv").writer()
+        astsFileWriter.write("id,ast\n")
+    }
 
     override fun store(root: Node, label: String) {
         for (node in root.preOrder()) {
             tokensMap.record(node.getToken())
             nodeTypesMap.record(node.getTypeLabel())
         }
-        rootsPerEntity[label] = root
+        dumpAsts(label, root)
     }
 
     override fun save(directoryPath: String) {
         File(directoryPath).mkdirs()
         dumpTokenStorage(File("$directoryPath/tokens.csv"))
         dumpNodeTypesStorage(File("$directoryPath/node_types.csv"))
-
-        dumpAsts(File("$directoryPath/asts.csv"))
+        astsFileWriter.close()
     }
 
     private fun dumpTokenStorage(file: File) {
@@ -41,13 +48,8 @@ class CsvAstStorage : AstStorage {
         dumpIdStorageToCsv(nodeTypesMap, "node_type", nodeTypeToCsvString, file)
     }
 
-    private fun dumpAsts(file: File) {
-        val lines = mutableListOf("id,ast")
-        rootsPerEntity.forEach { id, root ->
-            lines.add("$id,${astString(root)}")
-        }
-
-        writeLinesToFile(lines, file)
+    private fun dumpAsts(id: String, root: Node) {
+        astsFileWriter.write("$id,${astString(root)}\n")
     }
 
     internal fun astString(node: Node): String {
