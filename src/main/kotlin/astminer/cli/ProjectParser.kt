@@ -174,6 +174,9 @@ class ProjectParser : CliktCommand() {
         for (extension in extensions) {
             // Choose type of storage
             val storage = getStorage(astStorageType)
+            val outputDirForLanguage = outputDir.resolve(extension)
+            outputDirForLanguage.mkdir()
+            storage.init(outputDirForLanguage.path)
             // Choose type of parser
             val parser = getParser(extension)
             // Choose granularity level
@@ -193,10 +196,8 @@ class ProjectParser : CliktCommand() {
                     storage.store(root, label = filePath)
                 }
             }
-            val outputDirForLanguage = outputDir.resolve(extension)
-            outputDirForLanguage.mkdir()
             // Save stored data on disk
-            storage.save(outputDirForLanguage.path)
+            storage.save()
         }
 
     }

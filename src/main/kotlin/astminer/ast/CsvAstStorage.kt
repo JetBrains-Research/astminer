@@ -4,8 +4,9 @@ import astminer.common.model.AstStorage
 import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.common.storage.*
+import java.io.BufferedWriter
 import java.io.File
-import java.io.OutputStreamWriter
+import java.io.FileWriter
 
 /**
  * Stores multiple ASTs by their roots and saves them in .csv format.
@@ -17,12 +18,15 @@ class CsvAstStorage : AstStorage {
     private val nodeTypesMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
 
     private lateinit var directoryPath: String
-    private lateinit var astsFileWriter: OutputStreamWriter
+    private lateinit var astsOutputStream: BufferedWriter
 
-    fun init(directoryPath: String) {
+    override fun init(directoryPath: String) {
         this.directoryPath = directoryPath
-        astsFileWriter = File("$directoryPath/asts.csv").writer()
-        astsFileWriter.write("id,ast\n")
+        File(directoryPath).mkdirs()
+        val astsFile = File("$directoryPath/asts.csv")
+        astsFile.createNewFile()
+        astsOutputStream = BufferedWriter(FileWriter(astsFile))
+        astsOutputStream.write("id,ast\n")
     }
 
     override fun store(root: Node, label: String) {
@@ -30,14 +34,14 @@ class CsvAstStorage : AstStorage {
             tokensMap.record(node.getToken())
             nodeTypesMap.record(node.getTypeLabel())
         }
-        dumpAsts(label, root)
+        dumpAsts(root, label)
     }
 
-    override fun save(directoryPath: String) {
-        File(directoryPath).mkdirs()
+    override fun save() {
         dumpTokenStorage(File("$directoryPath/tokens.csv"))
         dumpNodeTypesStorage(File("$directoryPath/node_types.csv"))
-        astsFileWriter.close()
+
+        astsOutputStream.close()
     }
 
     private fun dumpTokenStorage(file: File) {
@@ -48,8 +52,8 @@ class CsvAstStorage : AstStorage {
         dumpIdStorageToCsv(nodeTypesMap, "node_type", nodeTypeToCsvString, file)
     }
 
-    private fun dumpAsts(id: String, root: Node) {
-        astsFileWriter.write("$id,${astString(root)}\n")
+    private fun dumpAsts(root: Node, id: String) {
+        astsOutputStream.write("$id,${astString(root)}\n")
     }
 
     internal fun astString(node: Node): String {
