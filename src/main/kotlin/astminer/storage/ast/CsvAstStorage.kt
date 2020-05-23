@@ -1,9 +1,8 @@
-package astminer.ast
+package astminer.storage.ast
 
-import astminer.common.model.AstStorage
 import astminer.common.model.Node
 import astminer.common.preOrder
-import astminer.common.storage.*
+import astminer.storage.*
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter

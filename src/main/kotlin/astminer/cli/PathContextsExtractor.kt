@@ -7,7 +7,7 @@ import astminer.common.setNormalizedToken
 import astminer.parse.antlr.python.PythonParser
 import astminer.parse.cpp.FuzzyCppParser
 import astminer.parse.java.GumTreeJavaParser
-import astminer.paths.Code2VecPathStorage
+import astminer.storage.path.Code2VecPathStorage
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
 import astminer.paths.toPathContext

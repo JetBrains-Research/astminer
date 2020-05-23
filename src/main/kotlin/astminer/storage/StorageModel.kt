@@ -1,4 +1,7 @@
-package astminer.common.model
+package astminer.storage
+
+import astminer.common.model.LabeledPathContexts
+import astminer.common.model.Node
 
 
 /**

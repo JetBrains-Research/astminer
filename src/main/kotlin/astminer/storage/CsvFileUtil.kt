@@ -1,4 +1,4 @@
-package astminer.common.storage
+package astminer.storage
 
 import astminer.common.model.OrientedNodeType
 import java.io.File

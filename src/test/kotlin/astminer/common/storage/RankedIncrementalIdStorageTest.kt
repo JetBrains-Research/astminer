@@ -1,5 +1,6 @@
 package astminer.common.storage
 
+import astminer.storage.RankedIncrementalIdStorage
 import org.junit.Test
 import kotlin.test.BeforeTest
 import kotlin.test.assertEquals

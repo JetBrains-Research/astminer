@@ -1,6 +1,6 @@
-package astminer.paths
+package astminer.storage.path
 
-import astminer.common.storage.writeLinesToFile
+import astminer.storage.writeLinesToFile
 import java.io.File
 
 class CsvPathStorage(

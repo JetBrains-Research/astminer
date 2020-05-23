@@ -5,7 +5,7 @@ import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.java.JavaParser
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
-import astminer.paths.CsvPathStorage
+import astminer.storage.path.CsvPathStorage
 import astminer.paths.toPathContext
 import java.io.File
 

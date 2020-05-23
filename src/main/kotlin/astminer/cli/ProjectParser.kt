@@ -1,8 +1,7 @@
 package astminer.cli
 
-import astminer.ast.CsvAstStorage
-import astminer.ast.DotAstStorage
-import astminer.common.model.AstStorage
+import astminer.storage.ast.DotAstStorage
+import astminer.storage.AstStorage
 import astminer.common.model.Node
 import astminer.common.model.Parser
 import astminer.common.preOrder
@@ -10,6 +9,7 @@ import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.python.PythonParser
 import astminer.parse.cpp.FuzzyCppParser
 import astminer.parse.java.GumTreeJavaParser
+import astminer.storage.ast.CsvAstStorage
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.int

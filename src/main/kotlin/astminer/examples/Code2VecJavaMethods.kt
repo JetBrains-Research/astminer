@@ -5,6 +5,7 @@ import astminer.common.model.LabeledPathContexts
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.java.JavaParser
 import astminer.paths.*
+import astminer.storage.path.Code2VecPathStorage
 import java.io.File
 
 

@@ -6,7 +6,7 @@ import astminer.common.model.LabeledPathContexts
 import astminer.parse.cpp.FuzzyCppParser
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
-import astminer.paths.CsvPathStorage
+import astminer.storage.path.CsvPathStorage
 import astminer.paths.toPathContext
 import java.io.File
 

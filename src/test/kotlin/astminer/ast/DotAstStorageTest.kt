@@ -1,6 +1,7 @@
 package astminer.ast
 
 import astminer.common.createSmallTree
+import astminer.storage.ast.DotAstStorage
 import org.junit.Test
 import java.io.File
 import kotlin.test.assertEquals
@@ -11,9 +12,10 @@ class DotAstStorageTest {
     fun testDotStorageOnSmallTree() {
         val root = createSmallTree()
         val storage = DotAstStorage()
+        storage.init("test_examples")
         storage.store(root, "entityId")
 
-        storage.save("test_examples")
+        storage.save()
 
         val trueLines = listOf(
                 "digraph entityId {",

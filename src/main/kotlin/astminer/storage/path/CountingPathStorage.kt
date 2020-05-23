@@ -1,7 +1,7 @@
-package astminer.paths
+package astminer.storage.path
 
 import astminer.common.model.*
-import astminer.common.storage.*
+import astminer.storage.*
 import java.io.File
 
 const val DEFAULT_FRAGMENTS_PER_BATCH = 100L

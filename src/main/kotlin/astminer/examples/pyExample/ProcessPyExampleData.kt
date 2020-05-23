@@ -7,7 +7,7 @@ import astminer.paths.toPathContext
 import astminer.parse.antlr.java.JavaParser
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
-import astminer.paths.CsvPathStorage
+import astminer.storage.path.CsvPathStorage
 import java.io.File
 
 // Retrieve paths from two Java projects for further usage in python example.

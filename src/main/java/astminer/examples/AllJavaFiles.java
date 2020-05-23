@@ -3,6 +3,8 @@ package astminer.examples;
 import astminer.common.model.*;
 import astminer.parse.java.GumTreeJavaParser;
 import astminer.paths.*;
+import astminer.storage.path.CountingPathStorage;
+import astminer.storage.path.CsvPathStorage;
 
 import java.io.FileInputStream;
 import java.io.IOException;

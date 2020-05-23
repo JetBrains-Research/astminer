@@ -7,7 +7,7 @@ import astminer.parse.java.GumTreeJavaParser
 import astminer.parse.java.GumTreeMethodSplitter
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
-import astminer.paths.CsvPathStorage
+import astminer.storage.path.CsvPathStorage
 import astminer.paths.toPathContext
 import java.io.File
 

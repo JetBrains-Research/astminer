@@ -1,4 +1,4 @@
-package astminer.common.storage
+package astminer.storage
 
 class RankedIncrementalIdStorage<T> {
     private var keyCounter = 0L

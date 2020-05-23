@@ -1,11 +1,11 @@
-package astminer.ast
+package astminer.storage.ast
 
 import astminer.common.getNormalizedToken
-import astminer.common.model.AstStorage
 import astminer.common.model.Node
 import astminer.common.preOrder
-import astminer.common.storage.RankedIncrementalIdStorage
-import astminer.common.storage.writeLinesToFile
+import astminer.storage.AstStorage
+import astminer.storage.RankedIncrementalIdStorage
+import astminer.storage.writeLinesToFile
 import java.io.File
 
 /**
@@ -19,12 +19,18 @@ class DotAstStorage : AstStorage {
 
     private val rootsPerEntity: MutableList<Ast> = mutableListOf()
 
+    private lateinit var directoryPath: String
+
+    override fun init(directoryPath: String) {
+        this.directoryPath = directoryPath
+        File(directoryPath).mkdirs()
+    }
+
     override fun store(root: Node, label: String) {
         rootsPerEntity.add(Ast(label, root))
     }
 
-    override fun save(directoryPath: String) {
-        File(directoryPath).mkdirs()
+    override fun save() {
         val astDirectoryPath = File(directoryPath, "asts")
         astDirectoryPath.mkdirs()
 
@@ -85,7 +91,8 @@ class DotAstStorage : AstStorage {
      */
     internal fun splitFullPath(fullPath: String): FilePath {
         val fileObject = File(fullPath)
-        return FilePath(fileObject.parentFile?.path ?: "", fileObject.name)
+        return FilePath(fileObject.parentFile?.path
+                ?: "", fileObject.name)
     }
 
 }
