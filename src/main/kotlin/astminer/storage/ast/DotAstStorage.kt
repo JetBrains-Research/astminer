@@ -34,24 +34,22 @@ class DotAstStorage : AstStorage {
         val astDirectoryPath = File(directoryPath, "asts")
         astDirectoryPath.mkdirs()
 
-        val descriptionLines = mutableListOf("dot_file,source_file,label,node_id,token,type")
         val astFilenameFormat = "ast_%d.dot"
-
-        rootsPerEntity.forEachIndexed { index, (fullPath, root) ->
-            // Use filename as a label for ast
-            // TODO: save full signature for method
-            val (sourceFile, label) = splitFullPath(fullPath)
-            val normalizedLabel = normalizeAstLabel(label)
-            val normalizedFilepath = normalizeFilepath(sourceFile)
-            val nodesMap = dumpAst(root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
-            val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$normalizedFilepath,$label,%d,%s,%s"
-            for (node in root.preOrder()) {
-                descriptionLines.add(
-                        nodeDescriptionFormat.format(nodesMap.getId(node) - 1, node.getNormalizedToken(), node.getTypeLabel())
-                )
+        File(directoryPath, "description.csv").printWriter().use { out ->
+            out.println("dot_file,source_file,label,node_id,token,type")
+            rootsPerEntity.forEachIndexed { index, (fullPath, root) ->
+                // Use filename as a label for ast
+                // TODO: save full signature for method
+                val (sourceFile, label) = splitFullPath(fullPath)
+                val normalizedLabel = normalizeAstLabel(label)
+                val normalizedFilepath = normalizeFilepath(sourceFile)
+                val nodesMap = dumpAst(root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
+                val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$normalizedFilepath,$label,%d,%s,%s"
+                for (node in root.preOrder()) {
+                    out.println(nodeDescriptionFormat.format(nodesMap.getId(node) - 1, node.getNormalizedToken(), node.getTypeLabel()))
+                }
             }
         }
-        writeLinesToFile(descriptionLines, File(directoryPath, "description.csv"))
     }
 
     private fun dumpAst(root: Node, file: File, astName: String) : RankedIncrementalIdStorage<Node> {
