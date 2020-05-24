@@ -5,7 +5,6 @@ import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.storage.AstStorage
 import astminer.storage.RankedIncrementalIdStorage
-import astminer.storage.writeLinesToFile
 import java.io.File
 
 /**
@@ -20,10 +19,13 @@ class DotAstStorage : AstStorage {
     private val rootsPerEntity: MutableList<Ast> = mutableListOf()
 
     private lateinit var directoryPath: String
+    private lateinit var astDirectoryPath: File
 
     override fun init(directoryPath: String) {
         this.directoryPath = directoryPath
         File(directoryPath).mkdirs()
+        astDirectoryPath = File(directoryPath, "asts")
+        astDirectoryPath.mkdirs()
     }
 
     override fun store(root: Node, label: String) {
@@ -31,9 +33,6 @@ class DotAstStorage : AstStorage {
     }
 
     override fun save() {
-        val astDirectoryPath = File(directoryPath, "asts")
-        astDirectoryPath.mkdirs()
-
         val astFilenameFormat = "ast_%d.dot"
         File(directoryPath, "description.csv").printWriter().use { out ->
             out.println("dot_file,source_file,label,node_id,token,type")
@@ -56,18 +55,19 @@ class DotAstStorage : AstStorage {
         val nodesMap = RankedIncrementalIdStorage<Node>()
         // dot parsers (e.g. pydot) can't parse graph/digraph if its name is "graph"
         val fixedAstName = if (astName == "graph" || astName == "digraph") "_$astName" else astName
-        val astLines = mutableListOf("digraph $fixedAstName {")
+        file.printWriter().use { out ->
+            out.println("digraph $fixedAstName {")
 
-        for (node in root.preOrder()) {
-            val rootId = nodesMap.record(node) - 1
-            val childrenIds = node.getChildren().map { nodesMap.record(it) - 1 }
-            astLines.add(
-                    "$rootId -- {${childrenIds.joinToString(" ") { it.toString() }}};"
-            )
+            for (node in root.preOrder()) {
+                val rootId = nodesMap.record(node) - 1
+                val childrenIds = node.getChildren().map { nodesMap.record(it) - 1 }
+                out.println(
+                        "$rootId -- {${childrenIds.joinToString(" ") { it.toString() }}};"
+                )
+            }
+
+            out.println("}")
         }
-
-        astLines.add("}")
-        writeLinesToFile(astLines, file)
         return nodesMap
     }
 

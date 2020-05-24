@@ -1,4 +1,4 @@
-package astminer.ast
+package astminer.storage.ast
 
 import astminer.common.createSmallTree
 import astminer.storage.ast.CsvAstStorage
