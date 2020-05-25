@@ -1,6 +1,7 @@
-package astminer.featureextraction
+package astminer.storage.featureextraction
 
 import astminer.common.model.Node
+import astminer.featureextraction.TreeFeature
 import astminer.storage.writeLinesToFile
 import java.io.File
 
@@ -75,18 +76,16 @@ class TreeFeatureValueStorage(private val separator: String) {
     fun save(directoryPath: String) {
         File(directoryPath).mkdirs()
         val file = File("$directoryPath/$fileName")
-
-        val lines = ArrayList<String>()
-
         val csvHeaders = fields.joinToString(separator = separator) { it.header }
-        lines.add(features.map { it.className() }.fold(csvHeaders) { c, f -> "$c$separator$f" } )
 
-        parsedTrees.forEach { t ->
-            val csvFields = fields.joinToString(separator = separator) { it.value(t) }
-            lines.add(features.map { toCsvString(it.compute(t.tree)) }.fold(csvFields) { c, f -> "$c$separator$f" } )
+        file.printWriter().use { out ->
+            out.println(features.map { it.className() }.fold(csvHeaders) { c, f -> "$c$separator$f" })
+
+            parsedTrees.forEach { t ->
+                val csvFields = fields.joinToString(separator = separator) { it.value(t) }
+                out.println(features.map { toCsvString(it.compute(t.tree)) }.fold(csvFields) { c, f -> "$c$separator$f" })
+            }
         }
-
-        writeLinesToFile(lines, file)
     }
 
     private fun toCsvString(a : Any?) : String {

@@ -3,6 +3,9 @@ package astminer.examples
 import astminer.common.numberOfLines
 import astminer.featureextraction.*
 import astminer.parse.java.GumTreeJavaParser
+import astminer.storage.featureextraction.ParsedTree
+import astminer.storage.featureextraction.TreeFeatureValueStorage
+import astminer.storage.featureextraction.className
 import java.io.File
 
 
@@ -20,7 +23,8 @@ fun parseAndCollectFeatures() {
         val fileName = fileInput.name
         val nol = numberOfLines(fileInput)
 
-        val tree = ParsedTree(parser.className(), parser.parse(fileInput.inputStream()) ?: return@forFilesWithSuffix, fileName, nol)
+        val tree = ParsedTree(parser.className(), parser.parse(fileInput.inputStream())
+                ?: return@forFilesWithSuffix, fileName, nol)
         storage.storeParsedTree(tree)
     }
 
