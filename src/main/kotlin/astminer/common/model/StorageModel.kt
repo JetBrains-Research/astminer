@@ -15,5 +15,5 @@ interface PathStorage<LabelType> {
  */
 interface AstStorage {
     fun store(root: Node, label: String)
-    fun save(directoryPath: String)
+    fun save()
 }
