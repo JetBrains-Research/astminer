@@ -1,6 +1,5 @@
 package astminer.paths
 
-import astminer.common.storage.*
 import java.io.File
 
 class Code2VecPathStorage(
@@ -10,19 +9,18 @@ class Code2VecPathStorage(
 ) : CountingPathStorage<String>(outputFolderPath, batchMode, fragmentsPerBatch) {
 
     override fun dumpPathContexts(file: File, tokensLimit: Long, pathsLimit: Long) {
-        val lines = mutableListOf<String>()
-        labeledPathContextIdsList.forEach { labeledPathContextIds ->
-            val pathContextIdsString = labeledPathContextIds.pathContexts.filter {
-                tokensMap.getIdRank(it.startTokenId) <= tokensLimit &&
-                        tokensMap.getIdRank(it.endTokenId) <= tokensLimit &&
-                        pathsMap.getIdRank(it.pathId) <= pathsLimit
-            }.joinToString(separator = " ") { pathContextId ->
-                "${pathContextId.startTokenId},${pathContextId.pathId},${pathContextId.endTokenId}"
+        file.printWriter().use { out ->
+            labeledPathContextIdsList.forEach { labeledPathContextIds ->
+                val pathContextIdsString = labeledPathContextIds.pathContexts.filter {
+                    tokensMap.getIdRank(it.startTokenId) <= tokensLimit &&
+                            tokensMap.getIdRank(it.endTokenId) <= tokensLimit &&
+                            pathsMap.getIdRank(it.pathId) <= pathsLimit
+                }.joinToString(separator = " ") { pathContextId ->
+                    "${pathContextId.startTokenId},${pathContextId.pathId},${pathContextId.endTokenId}"
+                }
+                out.println("${labeledPathContextIds.label} $pathContextIdsString")
             }
-            lines.add("${labeledPathContextIds.label} $pathContextIdsString")
         }
-
-        writeLinesToFile(lines, file)
     }
 
 }
