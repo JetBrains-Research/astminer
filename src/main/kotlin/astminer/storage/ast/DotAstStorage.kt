@@ -11,18 +11,16 @@ import java.io.File
  * Stores multiple ASTs in dot format (https://en.wikipedia.org/wiki/DOT_(graph_description_language))
  * Output consist of separate .dot files for each AST and one full description in .csv format
  */
-class DotAstStorage : AstStorage {
+class DotAstStorage(private val directoryPath: String) : AstStorage {
 
     private data class Ast(val label: String, val root: Node)
     internal data class FilePath(val parentPath: String, val fileName: String)
 
     private val rootsPerEntity: MutableList<Ast> = mutableListOf()
 
-    private lateinit var directoryPath: String
-    private lateinit var astDirectoryPath: File
+    private val astDirectoryPath: File
 
-    override fun init(directoryPath: String) {
-        this.directoryPath = directoryPath
+    init {
         File(directoryPath).mkdirs()
         astDirectoryPath = File(directoryPath, "asts")
         astDirectoryPath.mkdirs()

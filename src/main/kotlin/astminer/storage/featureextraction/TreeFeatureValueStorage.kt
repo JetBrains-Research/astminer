@@ -2,7 +2,6 @@ package astminer.storage.featureextraction
 
 import astminer.common.model.Node
 import astminer.featureextraction.TreeFeature
-import astminer.storage.writeLinesToFile
 import java.io.File
 
 /**

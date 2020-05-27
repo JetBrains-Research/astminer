@@ -20,12 +20,6 @@ fun <T> dumpIdStorageToCsv(storage: RankedIncrementalIdStorage<T>,
     }
 }
 
-fun writeLinesToFile(lines: Collection<String>, file: File) {
-    file.printWriter().use { out ->
-        lines.forEach { out.println(it) }
-    }
-}
-
 val tokenToCsvString: (String) -> String = { token -> token }
 
 val nodeTypeToCsvString: (String) -> String = { nodeType -> nodeType }

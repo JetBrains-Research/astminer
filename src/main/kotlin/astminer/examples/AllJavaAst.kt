@@ -8,8 +8,7 @@ import java.io.File
 fun allJavaAsts() {
     val folder = "src/test/resources/examples/"
 
-    val storage = CsvAstStorage()
-    storage.init("out_examples/allJavaAstsAntlr")
+    val storage = CsvAstStorage("out_examples/allJavaAstsAntlr")
     File(folder).forFilesWithSuffix(".java") { file ->
         val node = JavaParser().parse(file.inputStream()) ?: return@forFilesWithSuffix
         storage.store(node, label = file.path)
