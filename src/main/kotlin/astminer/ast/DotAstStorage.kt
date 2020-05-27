@@ -5,7 +5,6 @@ import astminer.common.model.AstStorage
 import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.common.storage.RankedIncrementalIdStorage
-import astminer.common.storage.writeLinesToFile
 import java.io.File
 
 /**
