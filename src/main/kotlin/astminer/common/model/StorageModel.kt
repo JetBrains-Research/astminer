@@ -14,6 +14,7 @@ interface PathStorage<LabelType> {
  * Stores ASTs in form of their root and saves them to directory.
  */
 interface AstStorage {
+    val directoryPath: String
     fun store(root: Node, label: String)
     fun save()
 }

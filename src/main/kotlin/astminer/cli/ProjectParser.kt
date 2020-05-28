@@ -25,12 +25,6 @@ class ProjectParser : CliktCommand() {
     private data class SupportedLanguage(val parser: Parser<out Node>, val extension: String)
 
     /**
-     * @param astStorage class that implements ast's storage
-     * @param type name of storage
-     */
-    private data class SupportedAstStorage(val astStorage: AstStorage, val type: String)
-
-    /**
      * List of supported language extensions and corresponding parsers.
      */
     private val supportedLanguages = listOf(
@@ -59,7 +53,7 @@ class ProjectParser : CliktCommand() {
     val astStorageType: String by option(
         "--storage",
         help = "AST storage type ('dot' or 'csv', defaults to 'csv')"
-    ).default("csv")
+    ).default("dot")
 
     val granularityLevel: String by option(
         "--granularity",

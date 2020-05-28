@@ -12,7 +12,7 @@ import java.io.FileWriter
  * Stores multiple ASTs by their roots and saves them in .csv format.
  * Output consists of 3 .csv files: with node types, with tokens and with ASTs.
  */
-class CsvAstStorage(private val directoryPath: String) : AstStorage {
+class CsvAstStorage(override val directoryPath: String) : AstStorage {
 
     private val tokensMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
     private val nodeTypesMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()

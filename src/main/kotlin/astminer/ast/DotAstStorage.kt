@@ -5,13 +5,15 @@ import astminer.common.model.AstStorage
 import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.common.storage.RankedIncrementalIdStorage
+import java.io.BufferedWriter
 import java.io.File
+import java.io.FileWriter
 
 /**
  * Stores multiple ASTs in dot format (https://en.wikipedia.org/wiki/DOT_(graph_description_language))
  * Output consist of separate .dot files for each AST and one full description in .csv format
  */
-class DotAstStorage(private val directoryPath: String) : AstStorage {
+class DotAstStorage(override val directoryPath: String) : AstStorage {
 
     private data class Ast(val label: String, val root: Node)
     internal data class FilePath(val parentPath: String, val fileName: String)
@@ -19,34 +21,36 @@ class DotAstStorage(private val directoryPath: String) : AstStorage {
     private val rootsPerEntity: MutableList<Ast> = mutableListOf()
 
     private val astDirectoryPath: File
+    private val astFilenameFormat = "ast_%d.dot"
+    private val descriptionFileStream: BufferedWriter
+    private var index: Long = 0
 
     init {
         File(directoryPath).mkdirs()
         astDirectoryPath = File(directoryPath, "asts")
         astDirectoryPath.mkdirs()
+        val descriptionFile = File(directoryPath, "description.csv")
+        descriptionFile.createNewFile()
+        descriptionFileStream = BufferedWriter(FileWriter(descriptionFile))
+        descriptionFileStream.write("dot_file,source_file,label,node_id,token,type\n")
     }
 
-    override fun store(root: Node, label: String) {
-        rootsPerEntity.add(Ast(label, root))
+    override fun store(root: Node, fullPath: String) {
+        // Use filename as a label for ast
+        // TODO: save full signature for method
+        val (sourceFile, label) = splitFullPath(fullPath)
+        val normalizedLabel = normalizeAstLabel(label)
+        val normalizedFilepath = normalizeFilepath(sourceFile)
+        val nodesMap = dumpAst(root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
+        val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$normalizedFilepath,$label,%d,%s,%s"
+        for (node in root.preOrder()) {
+            descriptionFileStream.write(nodeDescriptionFormat.format(nodesMap.getId(node) - 1, node.getNormalizedToken(), node.getTypeLabel()) + "\n")
+        }
+        ++index
     }
 
     override fun save() {
-        val astFilenameFormat = "ast_%d.dot"
-        File(directoryPath, "description.csv").printWriter().use { out ->
-            out.println("dot_file,source_file,label,node_id,token,type")
-            rootsPerEntity.forEachIndexed { index, (fullPath, root) ->
-                // Use filename as a label for ast
-                // TODO: save full signature for method
-                val (sourceFile, label) = splitFullPath(fullPath)
-                val normalizedLabel = normalizeAstLabel(label)
-                val normalizedFilepath = normalizeFilepath(sourceFile)
-                val nodesMap = dumpAst(root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
-                val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$normalizedFilepath,$label,%d,%s,%s"
-                for (node in root.preOrder()) {
-                    out.println(nodeDescriptionFormat.format(nodesMap.getId(node) - 1, node.getNormalizedToken(), node.getTypeLabel()))
-                }
-            }
-        }
+        descriptionFileStream.close()
     }
 
     private fun dumpAst(root: Node, file: File, astName: String) : RankedIncrementalIdStorage<Node> {

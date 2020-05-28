@@ -6,7 +6,7 @@ import java.io.File
 
 // Retrieve ASTs from Java files, using a generated parser.
 fun allJavaAsts() {
-    val folder = "./testData/examples/"
+    val folder = "out_examples/allJavaAstsAntlr"
 
     val storage = CsvAstStorage(folder)
 
