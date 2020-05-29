@@ -3,22 +3,24 @@ package astminer.paths
 import astminer.common.model.*
 import astminer.common.storage.*
 import java.io.File
-
-const val DEFAULT_FRAGMENTS_PER_BATCH = 100L
+import java.io.PrintWriter
 
 abstract class CountingPathStorage<LabelType>(
-        private val outputFolderPath: String,
-        val batchMode: Boolean = true,
-        val fragmentsPerBatch: Long = DEFAULT_FRAGMENTS_PER_BATCH) : PathStorage<LabelType> {
+        private val outputFolderPath: String) : PathStorage<LabelType> {
 
     private var contextsFileIndex = 0
-    private var currentFragmentsCount = 0
 
     protected val tokensMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
-    protected val orientedNodeTypesMap: RankedIncrementalIdStorage<OrientedNodeType> = RankedIncrementalIdStorage()
+    private val orientedNodeTypesMap: RankedIncrementalIdStorage<OrientedNodeType> = RankedIncrementalIdStorage()
     protected val pathsMap: RankedIncrementalIdStorage<List<Long>> = RankedIncrementalIdStorage()
 
-    protected val labeledPathContextIdsList: MutableList<LabeledPathContextIds<LabelType>> = mutableListOf()
+    private val pathsFile = File("$outputFolderPath/path_contexts.csv")
+    protected val labeledPathContextIdsWriter: PrintWriter = PrintWriter(pathsFile)
+
+    init {
+        File(outputFolderPath).mkdirs()
+        pathsFile.createNewFile()
+    }
 
     private fun dumpTokenStorage(file: File, tokensLimit: Long) {
         dumpIdStorageToCsv(tokensMap, "token", tokenToCsvString, file, tokensLimit)
@@ -32,7 +34,7 @@ abstract class CountingPathStorage<LabelType>(
         dumpIdStorageToCsv(pathsMap, "path", pathToCsvString, file, pathsLimit)
     }
 
-    abstract fun dumpPathContexts(file: File, tokensLimit: Long, pathsLimit: Long)
+    abstract fun dumpPathContexts(labeledPathContextIds: LabeledPathContextIds<LabelType>, tokensLimit: Long, pathsLimit: Long)
 
     private fun doStore(pathContext: PathContext): PathContextId {
         val startTokenId = tokensMap.record(pathContext.startToken)
@@ -42,27 +44,12 @@ abstract class CountingPathStorage<LabelType>(
         return PathContextId(startTokenId, pathId, endTokenId)
     }
 
-    private fun dumpPathContextsIfNeeded() {
-        if (!batchMode || currentFragmentsCount < fragmentsPerBatch) {
-            return
-        }
-        File(outputFolderPath).mkdirs()
-        dumpPathContexts(File("$outputFolderPath/path_contexts_${contextsFileIndex++}.csv"),
-                Long.MAX_VALUE, Long.MAX_VALUE)
-        labeledPathContextIdsList.clear()
-        currentFragmentsCount = 0
-    }
-
     override fun store(labeledPathContexts: LabeledPathContexts<LabelType>) {
         val labeledPathContextIds = LabeledPathContextIds(
                 labeledPathContexts.label,
                 labeledPathContexts.pathContexts.map { doStore(it) }
         )
-        labeledPathContextIdsList.add(labeledPathContextIds)
-        currentFragmentsCount++
-
-
-        dumpPathContextsIfNeeded()
+        dumpPathContexts(labeledPathContextIds, Long.MAX_VALUE, Long.MAX_VALUE)
     }
 
     override fun save() {
@@ -70,19 +57,10 @@ abstract class CountingPathStorage<LabelType>(
     }
 
     override fun save(pathsLimit: Long, tokensLimit: Long) {
-        if (batchMode && (pathsLimit < Long.MAX_VALUE || tokensLimit < Long.MAX_VALUE)) {
-            println("Ignoring path and token limit settings due to batchMode processing")
-        }
-        File(outputFolderPath).mkdirs()
         dumpTokenStorage(File("$outputFolderPath/tokens.csv"), tokensLimit)
         dumpOrientedNodeTypesStorage(File("$outputFolderPath/node_types.csv"))
         dumpPathsStorage(File("$outputFolderPath/paths.csv"), pathsLimit)
 
-        if (!batchMode) {
-            dumpPathContexts(File("$outputFolderPath/path_contexts.csv"), tokensLimit, pathsLimit)
-        } else {
-            dumpPathContexts(File("$outputFolderPath/path_contexts_${contextsFileIndex++}.csv"),
-                    Long.MAX_VALUE, Long.MAX_VALUE)
-        }
+        labeledPathContextIdsWriter.close()
     }
 }

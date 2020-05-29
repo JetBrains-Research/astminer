@@ -13,12 +13,12 @@ import java.util.stream.Collectors;
 
 //Retrieve paths from Java files, using a GumTree parser.
 public class AllJavaFiles {
-    private static final String INPUT_FOLDER = "./testData/gumTreeMethodSplitter";
+    private static final String INPUT_FOLDER = "src/test/resources/gumTreeMethodSplitter";
     private static final String OUTPUT_FOLDER = "out_examples/allJavaFiles_GumTree_java";
 
     public static void runExample() {
         final PathMiner miner = new PathMiner(new PathRetrievalSettings(5,5));
-        final CountingPathStorage<String> pathStorage = new CsvPathStorage(OUTPUT_FOLDER, false, 0);
+        final CountingPathStorage<String> pathStorage = new CsvPathStorage(OUTPUT_FOLDER);
 
         final Path inputFolder = Paths.get(INPUT_FOLDER);
 
