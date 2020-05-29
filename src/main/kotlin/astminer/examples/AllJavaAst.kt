@@ -6,9 +6,9 @@ import java.io.File
 
 // Retrieve ASTs from Java files, using a generated parser.
 fun allJavaAsts() {
-    val folder = "out_examples/allJavaAstsAntlr"
+    val folder = "src/test/resources/examples/"
 
-    val storage = CsvAstStorage(folder)
+    val storage = CsvAstStorage("out_examples/allJavaAstsAntlr")
 
     File(folder).forFilesWithSuffix(".java") { file ->
         val node = JavaParser().parse(file.inputStream()) ?: return@forFilesWithSuffix

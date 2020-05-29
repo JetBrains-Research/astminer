@@ -8,6 +8,7 @@ import astminer.common.storage.RankedIncrementalIdStorage
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
+import java.io.PrintWriter
 
 /**
  * Stores multiple ASTs in dot format (https://en.wikipedia.org/wiki/DOT_(graph_description_language))
@@ -18,11 +19,9 @@ class DotAstStorage(override val directoryPath: String) : AstStorage {
     private data class Ast(val label: String, val root: Node)
     internal data class FilePath(val parentPath: String, val fileName: String)
 
-    private val rootsPerEntity: MutableList<Ast> = mutableListOf()
-
     private val astDirectoryPath: File
     private val astFilenameFormat = "ast_%d.dot"
-    private val descriptionFileStream: BufferedWriter
+    private val descriptionFileStream: PrintWriter
     private var index: Long = 0
 
     init {
@@ -31,18 +30,18 @@ class DotAstStorage(override val directoryPath: String) : AstStorage {
         astDirectoryPath.mkdirs()
         val descriptionFile = File(directoryPath, "description.csv")
         descriptionFile.createNewFile()
-        descriptionFileStream = BufferedWriter(FileWriter(descriptionFile))
+        descriptionFileStream = PrintWriter(descriptionFile)
         descriptionFileStream.write("dot_file,source_file,label,node_id,token,type\n")
     }
 
-    override fun store(root: Node, fullPath: String) {
+    override fun store(root: Node, label: String) {
         // Use filename as a label for ast
         // TODO: save full signature for method
-        val (sourceFile, label) = splitFullPath(fullPath)
-        val normalizedLabel = normalizeAstLabel(label)
-        val normalizedFilepath = normalizeFilepath(sourceFile)
+        val (filePath, fileName) = splitFullPath(label)
+        val normalizedLabel = normalizeAstLabel(fileName)
+        val normalizedFilepath = normalizeFilepath(filePath)
         val nodesMap = dumpAst(root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
-        val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$normalizedFilepath,$label,%d,%s,%s"
+        val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$normalizedFilepath,$fileName,%d,%s,%s"
         for (node in root.preOrder()) {
             descriptionFileStream.write(nodeDescriptionFormat.format(nodesMap.getId(node) - 1, node.getNormalizedToken(), node.getTypeLabel()) + "\n")
         }

@@ -4,9 +4,8 @@ import astminer.common.model.AstStorage
 import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.common.storage.*
-import java.io.BufferedWriter
 import java.io.File
-import java.io.FileWriter
+import java.io.PrintWriter
 
 /**
  * Stores multiple ASTs by their roots and saves them in .csv format.
@@ -17,13 +16,13 @@ class CsvAstStorage(override val directoryPath: String) : AstStorage {
     private val tokensMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
     private val nodeTypesMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
 
-    private val astsOutputStream: BufferedWriter
+    private val astsOutputStream: PrintWriter
 
     init {
         File(directoryPath).mkdirs()
         val astsFile = File("$directoryPath/asts.csv")
         astsFile.createNewFile()
-        astsOutputStream = BufferedWriter(FileWriter(astsFile))
+        astsOutputStream = PrintWriter(astsFile)
         astsOutputStream.write("id,ast\n")
     }
 
@@ -32,7 +31,7 @@ class CsvAstStorage(override val directoryPath: String) : AstStorage {
             tokensMap.record(node.getToken())
             nodeTypesMap.record(node.getTypeLabel())
         }
-        dumpAsts(root, label)
+        dumpAst(root, label)
     }
 
     override fun save() {
@@ -50,7 +49,7 @@ class CsvAstStorage(override val directoryPath: String) : AstStorage {
         dumpIdStorageToCsv(nodeTypesMap, "node_type", nodeTypeToCsvString, file)
     }
 
-    private fun dumpAsts(root: Node, id: String) {
+    private fun dumpAst(root: Node, id: String) {
         astsOutputStream.write("$id,${astString(root)}\n")
     }
 
