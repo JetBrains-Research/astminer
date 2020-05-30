@@ -6,8 +6,8 @@ import java.io.File
 import java.io.PrintWriter
 
 abstract class CountingPathStorage<LabelType>(private val outputFolderPath: String,
-                                              protected val tokensLimit: Long,
-                                              protected val pathsLimit: Long
+                                              private val tokensLimit: Long,
+                                              private val pathsLimit: Long
 ) : PathStorage<LabelType> {
 
     protected val tokensMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
