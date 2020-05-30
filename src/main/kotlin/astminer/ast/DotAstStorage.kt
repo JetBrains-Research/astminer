@@ -5,9 +5,7 @@ import astminer.common.model.AstStorage
 import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.common.storage.RankedIncrementalIdStorage
-import java.io.BufferedWriter
 import java.io.File
-import java.io.FileWriter
 import java.io.PrintWriter
 
 /**
@@ -16,7 +14,6 @@ import java.io.PrintWriter
  */
 class DotAstStorage(override val directoryPath: String) : AstStorage {
 
-    private data class Ast(val label: String, val root: Node)
     internal data class FilePath(val parentPath: String, val fileName: String)
 
     private val astDirectoryPath: File
