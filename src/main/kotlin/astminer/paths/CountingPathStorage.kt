@@ -15,7 +15,7 @@ abstract class CountingPathStorage<LabelType>(private val outputFolderPath: Stri
     protected val pathsMap: RankedIncrementalIdStorage<List<Long>> = RankedIncrementalIdStorage()
 
     private val pathsFile: File
-    protected val labeledPathContextIdsWriter: PrintWriter
+    private val labeledPathContextIdsWriter: PrintWriter
     abstract val separator: String
 
     init {
@@ -23,18 +23,6 @@ abstract class CountingPathStorage<LabelType>(private val outputFolderPath: Stri
         pathsFile = File("$outputFolderPath/path_contexts.csv")
         pathsFile.createNewFile()
         labeledPathContextIdsWriter = PrintWriter(pathsFile)
-    }
-
-    private fun dumpTokenStorage(file: File, tokensLimit: Long) {
-        dumpIdStorageToCsv(tokensMap, "token", tokenToCsvString, file, tokensLimit)
-    }
-
-    private fun dumpOrientedNodeTypesStorage(file: File) {
-        dumpIdStorageToCsv(orientedNodeTypesMap, "node_type", orientedNodeToCsvString, file, Long.MAX_VALUE)
-    }
-
-    private fun dumpPathsStorage(file: File, pathsLimit: Long) {
-        dumpIdStorageToCsv(pathsMap, "path", pathToCsvString, file, pathsLimit)
     }
 
     abstract fun pathContextIdToString(pathContextId: PathContextId): String
@@ -69,9 +57,9 @@ abstract class CountingPathStorage<LabelType>(private val outputFolderPath: Stri
     }
 
     override fun close() {
-        dumpTokenStorage(File("$outputFolderPath/tokens.csv"), tokensLimit)
-        dumpOrientedNodeTypesStorage(File("$outputFolderPath/node_types.csv"))
-        dumpPathsStorage(File("$outputFolderPath/paths.csv"), pathsLimit)
+        dumpIdStorageToCsv(tokensMap, "token", tokenToCsvString, File("$outputFolderPath/tokens.csv"), tokensLimit)
+        dumpIdStorageToCsv(orientedNodeTypesMap, "node_type", orientedNodeToCsvString, File("$outputFolderPath/node_types.csv"), Long.MAX_VALUE)
+        dumpIdStorageToCsv(pathsMap, "path", pathToCsvString, File("$outputFolderPath/paths.csv"), pathsLimit)
 
         labeledPathContextIdsWriter.close()
     }
