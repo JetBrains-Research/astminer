@@ -5,9 +5,9 @@ import astminer.common.storage.*
 import java.io.File
 import java.io.PrintWriter
 
-abstract class CountingPathStorage<LabelType>(private val outputFolderPath: String,
-                                              private val tokensLimit: Long,
-                                              private val pathsLimit: Long
+abstract class CountingPathStorage<LabelType>(override val directoryPath: String,
+                                              override val tokensLimit: Long,
+                                              override val pathsLimit: Long
 ) : PathStorage<LabelType> {
 
     protected val tokensMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
@@ -18,8 +18,8 @@ abstract class CountingPathStorage<LabelType>(private val outputFolderPath: Stri
     private val labeledPathContextIdsWriter: PrintWriter
 
     init {
-        File(outputFolderPath).mkdirs()
-        pathsFile = File("$outputFolderPath/path_contexts.csv")
+        File(directoryPath).mkdirs()
+        pathsFile = File("$directoryPath/path_contexts.csv")
         pathsFile.createNewFile()
         labeledPathContextIdsWriter = PrintWriter(pathsFile)
     }
@@ -52,9 +52,9 @@ abstract class CountingPathStorage<LabelType>(private val outputFolderPath: Stri
     }
 
     override fun close() {
-        dumpIdStorageToCsv(tokensMap, "token", tokenToCsvString, File("$outputFolderPath/tokens.csv"), tokensLimit)
-        dumpIdStorageToCsv(orientedNodeTypesMap, "node_type", orientedNodeToCsvString, File("$outputFolderPath/node_types.csv"), Long.MAX_VALUE)
-        dumpIdStorageToCsv(pathsMap, "path", pathToCsvString, File("$outputFolderPath/paths.csv"), pathsLimit)
+        dumpIdStorageToCsv(tokensMap, "token", tokenToCsvString, File("$directoryPath/tokens.csv"), tokensLimit)
+        dumpIdStorageToCsv(orientedNodeTypesMap, "node_type", orientedNodeToCsvString, File("$directoryPath/node_types.csv"), Long.MAX_VALUE)
+        dumpIdStorageToCsv(pathsMap, "path", pathToCsvString, File("$directoryPath/paths.csv"), pathsLimit)
 
         labeledPathContextIdsWriter.close()
     }
