@@ -15,5 +15,5 @@ fun allJavaAsts() {
         storage.store(node, label = file.path)
     }
 
-    storage.save()
+    storage.close()
 }

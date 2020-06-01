@@ -13,7 +13,7 @@ class DotAstStorageTest {
         val storage = DotAstStorage("test_examples")
         storage.store(root, "entityId")
 
-        storage.save()
+        storage.close()
 
         val trueLines = listOf(
                 "digraph entityId {",

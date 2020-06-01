@@ -34,7 +34,7 @@ class CsvAstStorage(override val directoryPath: String) : AstStorage {
         dumpAst(root, label)
     }
 
-    override fun save() {
+    override fun close() {
         dumpTokenStorage(File("$directoryPath/tokens.csv"))
         dumpNodeTypesStorage(File("$directoryPath/node_types.csv"))
 

@@ -45,7 +45,7 @@ class DotAstStorage(override val directoryPath: String) : AstStorage {
         ++index
     }
 
-    override fun save() {
+    override fun close() {
         descriptionFileStream.close()
     }
 
