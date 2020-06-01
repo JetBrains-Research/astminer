@@ -16,7 +16,6 @@ abstract class CountingPathStorage<LabelType>(private val outputFolderPath: Stri
 
     private val pathsFile: File
     private val labeledPathContextIdsWriter: PrintWriter
-    abstract val separator: String
 
     init {
         File(outputFolderPath).mkdirs()
@@ -25,19 +24,15 @@ abstract class CountingPathStorage<LabelType>(private val outputFolderPath: Stri
         labeledPathContextIdsWriter = PrintWriter(pathsFile)
     }
 
-    abstract fun pathContextIdToString(pathContextId: PathContextId): String
-
-    abstract fun pathContextToString(pathContextIdsString: String, label: LabelType): String
+    abstract fun pathContextIdsToString(pathContextIds: List<PathContextId>, label: LabelType): String
 
     private fun dumpPathContexts(labeledPathContextIds: LabeledPathContextIds<LabelType>) {
         val pathContextIdsString = labeledPathContextIds.pathContexts.filter {
             tokensMap.getIdRank(it.startTokenId) <= tokensLimit &&
                     tokensMap.getIdRank(it.endTokenId) <= tokensLimit &&
                     pathsMap.getIdRank(it.pathId) <= pathsLimit
-        }.joinToString(separator){ pathContextId ->
-            pathContextIdToString(pathContextId)
         }
-        labeledPathContextIdsWriter.println(pathContextToString(pathContextIdsString, labeledPathContextIds.label))
+        labeledPathContextIdsWriter.println(pathContextIdsToString(pathContextIdsString, labeledPathContextIds.label))
     }
 
     private fun storePathContext(pathContext: PathContext): PathContextId {

@@ -7,13 +7,10 @@ class Code2VecPathStorage(outputFolderPath: String,
                           tokensLimit: Long = Long.MAX_VALUE
 ) : CountingPathStorage<String>(outputFolderPath, pathsLimit, tokensLimit) {
 
-    override val separator: String = " "
-
-    override fun pathContextIdToString(pathContextId: PathContextId): String {
-        return "${pathContextId.startTokenId},${pathContextId.pathId},${pathContextId.endTokenId}"
-    }
-
-    override fun pathContextToString(pathContextIdsString: String, label: String): String {
-        return "$label $pathContextIdsString"
+    override fun pathContextIdsToString(pathContextIds: List<PathContextId>, label: String): String {
+        pathContextIds.joinToString(" ") { pathContextId ->
+            "${pathContextId.startTokenId},${pathContextId.pathId},${pathContextId.endTokenId}"
+        }
+        return "$label $pathContextIds"
     }
 }
