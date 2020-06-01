@@ -9,7 +9,7 @@ import astminer.paths.toPathContext
 import java.io.File
 
 fun allJavaScriptFiles() {
-    val folder = "./testData/examples"
+    val folder = "src/test/resources/examples"
     val outputDir = "out_examples/allJavaScriptFilesAntlr"
 
     val miner = PathMiner(PathRetrievalSettings(5, 5))
@@ -22,5 +22,5 @@ fun allJavaScriptFiles() {
         storage.store(LabeledPathContexts(file.path, paths.map { toPathContext(it) }))
     }
 
-    storage.save()
+    storage.close()
 }

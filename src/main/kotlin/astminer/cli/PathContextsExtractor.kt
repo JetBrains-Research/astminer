@@ -111,7 +111,7 @@ class PathContextsExtractor : CliktCommand() {
             }
 
             // Save stored data on disk
-            storage.save()
+            storage.close()
         }
     }
 

@@ -121,7 +121,7 @@ class Code2VecExtractor : CliktCommand() {
             }
 
             // Save stored data on disk
-            storage.save()
+            storage.close()
         }
     }
 

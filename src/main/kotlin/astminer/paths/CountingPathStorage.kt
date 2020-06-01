@@ -68,7 +68,7 @@ abstract class CountingPathStorage<LabelType>(private val outputFolderPath: Stri
         dumpPathContexts(labeledPathContextIds)
     }
 
-    override fun save() {
+    override fun close() {
         dumpTokenStorage(File("$outputFolderPath/tokens.csv"), tokensLimit)
         dumpOrientedNodeTypesStorage(File("$outputFolderPath/node_types.csv"))
         dumpPathsStorage(File("$outputFolderPath/paths.csv"), pathsLimit)

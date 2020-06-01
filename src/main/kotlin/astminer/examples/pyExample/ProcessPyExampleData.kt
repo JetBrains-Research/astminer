@@ -25,7 +25,7 @@ fun processPyExampleData() {
         storage.store(LabeledPathContexts(file.path, paths.map { toPathContext(it) }))
     }
 
-    storage.save()
+    storage.close()
 }
 
 fun main(args: Array<String>) {
