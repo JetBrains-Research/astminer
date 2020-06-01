@@ -44,7 +44,7 @@ public class AllJavaFiles {
 
         try {
             Files.walkFileTree(inputFolder, fileVisitor);
-            pathStorage.save();
+            pathStorage.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
