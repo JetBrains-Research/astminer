@@ -4,7 +4,7 @@ import org.openjdk.jmh.annotations.*
 import astminer.cli.*
 
 @State(Scope.Benchmark)
-open class ProjectParserBenchmarks {
+open class ProjectParserCsvBenchmarks {
 
     @Setup
     fun pathsSetup() {
