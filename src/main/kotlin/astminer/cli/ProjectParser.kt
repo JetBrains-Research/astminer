@@ -25,12 +25,6 @@ class ProjectParser : CliktCommand() {
     private data class SupportedLanguage(val parser: Parser<out Node>, val extension: String)
 
     /**
-     * @param astStorage class that implements ast's storage
-     * @param type name of storage
-     */
-    private data class SupportedAstStorage(val astStorage: AstStorage, val type: String)
-
-    /**
      * List of supported language extensions and corresponding parsers.
      */
     private val supportedLanguages = listOf(
@@ -38,11 +32,6 @@ class ProjectParser : CliktCommand() {
         SupportedLanguage(FuzzyCppParser(), "c"),
         SupportedLanguage(FuzzyCppParser(), "cpp"),
         SupportedLanguage(PythonParser(), "py")
-    )
-
-    private val supportedAstStorages = listOf(
-        SupportedAstStorage(CsvAstStorage(), "csv"),
-        SupportedAstStorage(DotAstStorage(), "dot")
     )
 
     val extensions: List<String> by option(
@@ -64,7 +53,7 @@ class ProjectParser : CliktCommand() {
     val astStorageType: String by option(
         "--storage",
         help = "AST storage type ('dot' or 'csv', defaults to 'csv')"
-    ).default(supportedAstStorages[0].type)
+    ).default("dot")
 
     val granularityLevel: String by option(
         "--granularity",
@@ -142,13 +131,14 @@ class ProjectParser : CliktCommand() {
         }
     }
 
-    private fun getStorage(storageType: String): AstStorage {
-        for (storage in supportedAstStorages) {
-            if (storageType == storage.type) {
-                return storage.astStorage
+    private fun getStorage(storageType: String, directoryPath: String): AstStorage {
+        return when (storageType) {
+            "csv" -> CsvAstStorage(directoryPath)
+            "dot" -> DotAstStorage(directoryPath)
+            else -> {
+                throw UnsupportedOperationException("Unsupported AST storage $storageType")
             }
         }
-        throw UnsupportedOperationException("Unsupported AST storage $storageType")
     }
 
     private fun getGranularity(granularityLevel: String): Granularity {
@@ -172,8 +162,10 @@ class ProjectParser : CliktCommand() {
     private fun parsing() {
         val outputDir = File(outputDirName)
         for (extension in extensions) {
+            // Create directory for current extension
+            val outputDirForLanguage = outputDir.resolve(extension)
             // Choose type of storage
-            val storage = getStorage(astStorageType)
+            val storage = getStorage(astStorageType, outputDirForLanguage.path)
             // Choose type of parser
             val parser = getParser(extension)
             // Choose granularity level
@@ -193,10 +185,8 @@ class ProjectParser : CliktCommand() {
                     storage.store(root, label = filePath)
                 }
             }
-            val outputDirForLanguage = outputDir.resolve(extension)
-            outputDirForLanguage.mkdir()
             // Save stored data on disk
-            storage.save(outputDirForLanguage.path)
+            storage.close()
         }
 
     }
