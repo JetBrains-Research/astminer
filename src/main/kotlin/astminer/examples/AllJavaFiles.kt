@@ -11,7 +11,7 @@ import java.io.File
 
 //Retrieve paths from Java files, using a generated parser.
 fun allJavaFiles() {
-    val inputDir = "./testData/examples/"
+    val inputDir = "src/test/resources/examples/"
 
     val miner = PathMiner(PathRetrievalSettings(5, 5))
     val outputDir = "out_examples/allJavaFilesAntlr"
@@ -32,5 +32,5 @@ fun allJavaFiles() {
         storage.store(LabeledPathContexts(file.path, paths.map { toPathContext(it) }))
     }
 
-    storage.save()
+    storage.close()
 }
