@@ -53,7 +53,7 @@ class ProjectParser : CliktCommand() {
     val astStorageType: String by option(
         "--storage",
         help = "AST storage type ('dot' or 'csv', defaults to 'csv')"
-    ).default("dot")
+    ).default("csv")
 
     val granularityLevel: String by option(
         "--granularity",

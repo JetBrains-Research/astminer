@@ -15,7 +15,7 @@ abstract class CountingPathStorage<LabelType>(override val directoryPath: String
     protected val pathsMap: RankedIncrementalIdStorage<List<Long>> = RankedIncrementalIdStorage()
 
     private val pathsFile: File
-    private val labeledPathContextIdsWriter: PrintWriter
+    protected val labeledPathContextIdsWriter: PrintWriter
 
     init {
         File(directoryPath).mkdirs()
@@ -24,16 +24,7 @@ abstract class CountingPathStorage<LabelType>(override val directoryPath: String
         labeledPathContextIdsWriter = PrintWriter(pathsFile)
     }
 
-    abstract fun pathContextIdsToString(pathContextIds: List<PathContextId>, label: LabelType): String
-
-    private fun dumpPathContexts(labeledPathContextIds: LabeledPathContextIds<LabelType>) {
-        val pathContextIdsString = labeledPathContextIds.pathContexts.filter {
-            tokensMap.getIdRank(it.startTokenId) <= tokensLimit &&
-                    tokensMap.getIdRank(it.endTokenId) <= tokensLimit &&
-                    pathsMap.getIdRank(it.pathId) <= pathsLimit
-        }
-        labeledPathContextIdsWriter.println(pathContextIdsToString(pathContextIdsString, labeledPathContextIds.label))
-    }
+    abstract fun dumpPathContexts(labeledPathContextIds: LabeledPathContextIds<LabelType>)
 
     private fun storePathContext(pathContext: PathContext): PathContextId {
         val startTokenId = tokensMap.record(pathContext.startToken)
