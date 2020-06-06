@@ -11,6 +11,6 @@ class CsvPathStorage(outputFolderPath: String,
         val joinedPathContexts = pathContextIds.joinToString(";") { pathContextId ->
             "${pathContextId.startTokenId} ${pathContextId.pathId} ${pathContextId.endTokenId}"
         }
-        return "$label $joinedPathContexts"
+        return "$label,$joinedPathContexts"
     }
 }
