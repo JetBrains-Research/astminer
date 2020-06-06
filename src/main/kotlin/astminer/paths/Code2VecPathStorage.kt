@@ -1,20 +1,16 @@
 package astminer.paths
 
-import astminer.common.model.LabeledPathContextIds
+import astminer.common.model.PathContextId
 
 class Code2VecPathStorage(outputFolderPath: String,
                           pathsLimit: Long = Long.MAX_VALUE,
                           tokensLimit: Long = Long.MAX_VALUE
 ) : CountingPathStorage<String>(outputFolderPath, pathsLimit, tokensLimit) {
 
-    override fun dumpPathContexts(labeledPathContextIds: LabeledPathContextIds<String>) {
-        val pathContextIdsString = labeledPathContextIds.pathContexts.filter {
-            tokensMap.getIdRank(it.startTokenId) <= tokensLimit &&
-                    tokensMap.getIdRank(it.endTokenId) <= tokensLimit &&
-                    pathsMap.getIdRank(it.pathId) <= pathsLimit
-        }.joinToString(" ") { pathContextId ->
+    override fun pathContextIdsToString(pathContextIds: List<PathContextId>, label: String): String {
+        val joinedPathContexts = pathContextIds.joinToString(" ") { pathContextId ->
             "${pathContextId.startTokenId},${pathContextId.pathId},${pathContextId.endTokenId}"
         }
-        labeledPathContextIdsWriter.println("${labeledPathContextIds.label} $pathContextIdsString")
+        return "$label $joinedPathContexts"
     }
 }
