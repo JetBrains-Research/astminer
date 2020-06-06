@@ -8,8 +8,8 @@ class CsvPathStorage(outputFolderPath: String,
 ) : CountingPathStorage<String>(outputFolderPath, pathsLimit, tokensLimit) {
 
     override fun pathContextIdsToString(pathContextIds: List<PathContextId>, label: String): String {
-        val joinedPathContexts = pathContextIds.joinToString(" ") { pathContextId ->
-            "${pathContextId.startTokenId},${pathContextId.pathId},${pathContextId.endTokenId}"
+        val joinedPathContexts = pathContextIds.joinToString(";") { pathContextId ->
+            "${pathContextId.startTokenId} ${pathContextId.pathId} ${pathContextId.endTokenId}"
         }
         return "$label $joinedPathContexts"
     }
