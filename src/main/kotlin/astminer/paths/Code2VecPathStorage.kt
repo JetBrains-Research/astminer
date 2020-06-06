@@ -8,9 +8,9 @@ class Code2VecPathStorage(outputFolderPath: String,
 ) : CountingPathStorage<String>(outputFolderPath, pathsLimit, tokensLimit) {
 
     override fun pathContextIdsToString(pathContextIds: List<PathContextId>, label: String): String {
-        pathContextIds.joinToString(" ") { pathContextId ->
+        val joinedPathContexts = pathContextIds.joinToString(" ") { pathContextId ->
             "${pathContextId.startTokenId},${pathContextId.pathId},${pathContextId.endTokenId}"
         }
-        return "$label $pathContextIds"
+        return "$label $joinedPathContexts"
     }
 }
