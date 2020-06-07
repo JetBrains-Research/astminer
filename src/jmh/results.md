@@ -7,7 +7,7 @@
 | PathContexts (total allocated memory)          | 404.9 mb ± 0.48 mb   | 17.5 gb ± 0.13 gb         | 278.2 gb ± 0.17 gb           |
 |                                                                         |                                    |                                       |                                          |
 | ProjectParserCSV (time)                                 | 0.41 sec ± 0.02 sec    | 14.01 sec ± 1.7 sec      | 391.7 sec ± 9.5 sec          |
-| ProjectParserCSV (total allocated memory)   | 643,2 mb ± 0.008 mb | 15.4 gb ± 0.05 gb         | 412.5 gb ± 178.6 gb         |
+| ProjectParserCSV (total allocated memory)   | 643,2 mb ± 0.008 mb | 15.4 gb ± 0.05 gb         | 397.06 gb ± 250.4 gb       |
 |                                                                         |                                    |                                       |                                          |
-| ProjectParserDOT (time)                                 | 0.48 sec ± 0.01 sec    | 23.61 sec ± 0.94 sec    | 492 sec ± 10.3 sec           |
-| ProjectParserDOT (total allocated memory)   | 713.2 mb ± 0.009 mb | 25,31 gb ± 0.001 gb     | 463.7 gb ± 1.4 gb             |
+| ProjectParserDOT (time)                                 | 0.48 sec ± 0.01 sec    | 23.61 sec ± 0.94 sec    | 497 sec ± 1.02 sec           |
+| ProjectParserDOT (total allocated memory)   | 713.2 mb ± 0.009 mb | 25,31 gb ± 0.001 gb     | 463.7 gb ± 237.5 gb         |
