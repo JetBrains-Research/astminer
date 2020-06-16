@@ -1,13 +1,13 @@
 |                                                                         | Long File                    | Simple Project (Gradle) | Big Project (InteliJ IDEA) |
 |----------------------------------------------------|--------------------------|----------------------------|------------------------------|
-| Code2Vec (time)                                              | 0.34 sec ± 0.08 sec    | 16.4 sec ± 0.24 sec      | 171 sec ± 0.9 sec            |
-| Code2Vec (total allocated memory)                | 454.4 mb ± 0.007 mb | 16.34 gb ± 0.04 gb       | 148 gb ± 0.4 gb               |   
+| Code2Vec (time)                                              | 0.31 sec ± 0.01 sec    | 16.4 sec ± 0.52 sec      | 168 sec ± 0.7 sec            |
+| Code2Vec (total allocated memory)                | 417.4 mb ± 0.755 mb | 16.14 gb ± 0.04 gb       | 147 gb ± 0.01 gb             |   
 |                                                                         |                                    |                                       |                                          |
-| PathContexts (time)                                        | 5.15 sec ± 0.06 sec    | 33.5 sec ± 4.7 sec        | 1583 sec ± 34.7 sec         |
-| PathContexts (total allocated memory)          | 440.6 mb ± 0.02 mb   | 17.7 gb ± 0.25 gb         | 278.8 gb ± 0.3 gb             |
+| PathContexts (time)                                        | 4.97 sec ± 0.12 sec    | 31.4 sec ± 2.1 sec        | 1438 sec ± 69.5 sec         |
+| PathContexts (total allocated memory)          | 404.9 mb ± 0.48 mb   | 17.5 gb ± 0.13 gb         | 278.2 gb ± 0.17 gb           |
 |                                                                         |                                    |                                       |                                          |
-| ProjectParserCSV (time)                                 | 0.48 sec ± 0.006 sec  | 17.8 sec ± 0.32 sec      | 438.7 sec ± 4.6 sec          |
-| ProjectParserCSV (total allocated memory)   | 790,5 mb ± 1.24 mb   | 21.03 gb ± 0.007 gb     | 412.5 gb ± 178.6 gb         |
+| ProjectParserCSV (time)                                 | 0.41 sec ± 0.02 sec    | 14.01 sec ± 1.7 sec      | 391.7 sec ± 9.5 sec          |
+| ProjectParserCSV (total allocated memory)   | 643,2 mb ± 0.008 mb | 15.4 gb ± 0.05 gb         | 397.06 gb ± 250.4 gb       |
 |                                                                         |                                    |                                       |                                          |
-| ProjectParserDOT (time)                                 | 0.74 sec ± 0.01 sec    | 55.01 sec ± 0.46 sec    | 863 sec ± 10.3 sec           |
-| ProjectParserDOT (total allocated memory)   | 918.6 mb ± 0.005 mb | 47.46 gb ± 0.006 gb     | 553.2 gb ± 1.4 gb             |
+| ProjectParserDOT (time)                                 | 0.48 sec ± 0.01 sec    | 23.61 sec ± 0.94 sec    | 497 sec ± 1.02 sec           |
+| ProjectParserDOT (total allocated memory)   | 713.2 mb ± 0.009 mb | 25,31 gb ± 0.001 gb     | 463.7 gb ± 237.5 gb         |
