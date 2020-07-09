@@ -3,42 +3,21 @@ package astminer.cli
 import astminer.ast.CsvAstStorage
 import astminer.ast.DotAstStorage
 import astminer.common.model.AstStorage
-import astminer.common.model.Node
-import astminer.common.model.Parser
 import astminer.common.preOrder
-import astminer.parse.antlr.java.JavaParser
-import astminer.parse.antlr.python.PythonParser
-import astminer.parse.cpp.FuzzyCppParser
-import astminer.parse.java.GumTreeJavaParser
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.int
 import java.io.File
 
-
 class ProjectParser : CliktCommand() {
 
-    /**
-     * @param parser class that implements parsing
-     * @param extension file extension to choose files for parsing
-     */
-    private data class SupportedLanguage(val parser: Parser<out Node>, val extension: String)
-
-    /**
-     * List of supported language extensions and corresponding parsers.
-     */
-    private val supportedLanguages = listOf(
-        SupportedLanguage(GumTreeJavaParser(), "java"),
-        SupportedLanguage(FuzzyCppParser(), "c"),
-        SupportedLanguage(FuzzyCppParser(), "cpp"),
-        SupportedLanguage(PythonParser(), "py")
-    )
+    private val supportedLanguages = listOf("java", "c", "cpp", "py")
 
     val extensions: List<String> by option(
         "--lang",
         help = "Comma-separated list of file extensions that will be parsed.\n" +
                 "Supports 'c', 'cpp', 'java', 'py', defaults to all these extensions."
-    ).split(",").default(supportedLanguages.map { it.extension })
+    ).split(",").default(supportedLanguages)
 
     val projectRoot: String by option(
         "--project",
@@ -113,23 +92,7 @@ class ProjectParser : CliktCommand() {
         help = "Filter methods by their ast size"
     ).int().default(-1)
 
-    private fun getParser(extension: String): Parser<out Node> {
-        return when (extension) {
-            "java" -> {
-                when (javaParser) {
-                    "gumtree" -> GumTreeJavaParser()
-                    "antlr" -> JavaParser()
-                    else -> {
-                        throw UnsupportedOperationException("Unsupported parser for java extension $javaParser")
-                    }
-                }
-            }
-            else -> {
-                supportedLanguages.find { it.extension == extension }?.parser
-                    ?: throw UnsupportedOperationException("Unsupported extension $extension")
-            }
-        }
-    }
+
 
     private fun getStorage(storageType: String, directoryPath: String): AstStorage {
         return when (storageType) {
@@ -141,24 +104,6 @@ class ProjectParser : CliktCommand() {
         }
     }
 
-    private fun getGranularity(granularityLevel: String): Granularity {
-        when (granularityLevel) {
-            "file" -> return FileGranularity(isTokenSplitted)
-            "method" -> {
-                val filterPredicates = mutableListOf(
-                    ModifierFilterPredicate(excludeModifiers), AnnotationFilterPredicate(excludeAnnotations),
-                    MethodNameLengthFilterPredicate(maxMethodNameLength), TokenLengthFilterPredicate(maxTokenLength),
-                    TreeSizeFilterPredicate(maxTreeSize)
-                )
-                if (filterConstructors) {
-                    filterPredicates.add(ConstructorFilterPredicate())
-                }
-                return MethodGranularity(isTokenSplitted, isMethodNameHide, filterPredicates, javaParser)
-            }
-        }
-        throw UnsupportedOperationException("Unsupported granularity level $granularityLevel")
-    }
-
     private fun parsing() {
         val outputDir = File(outputDirName)
         for (extension in extensions) {
@@ -167,9 +112,23 @@ class ProjectParser : CliktCommand() {
             // Choose type of storage
             val storage = getStorage(astStorageType, outputDirForLanguage.path)
             // Choose type of parser
-            val parser = getParser(extension)
+            val parser = getParser(
+                    extension,
+                    javaParser
+            )
             // Choose granularity level
-            val granularity = getGranularity(granularityLevel)
+            val granularity = getGranularity(
+                    granularityLevel,
+                    javaParser,
+                    isTokenSplitted,
+                    isMethodNameHide,
+                    excludeModifiers,
+                    excludeAnnotations,
+                    filterConstructors,
+                    maxMethodNameLength,
+                    maxTokenLength,
+                    maxTreeSize
+            )
             // Parse project
             val parsedProject = parser.parseWithExtension(File(projectRoot), extension)
             // Split project to required granularity level
