@@ -1,4 +1,4 @@
-import astminer.cli.*
+package astminer.cli
 
 import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.python.PythonParser

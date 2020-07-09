@@ -6,7 +6,6 @@ import astminer.common.model.Node
 import astminer.common.model.ParseResult
 import astminer.common.preOrder
 import astminer.common.setNormalizedToken
-import astminer.common.splitToSubtokens
 import astminer.paths.Code2VecPathStorage
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
@@ -15,8 +14,6 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.long
-import getGranularity
-import getParser
 import java.io.File
 
 class Code2VecExtractor : CliktCommand() {
@@ -132,7 +129,7 @@ class Code2VecExtractor : CliktCommand() {
             val root = parseResult.root  ?: return@forEach
             val fullPath = File(parseResult.filePath)
             val (parentName, fileName) = arrayOf(fullPath.parentFile.name, fullPath.name)
-            var label = if (granularityLevel == "file" && folderLabel) parentName else fileName
+            val label = if (granularityLevel == "file" && folderLabel) parentName else fileName
 
             root.preOrder().forEach { it.setNormalizedToken() }
             // Retrieve paths from every node individually

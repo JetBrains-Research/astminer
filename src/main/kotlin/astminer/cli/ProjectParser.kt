@@ -3,8 +3,6 @@ package astminer.cli
 import astminer.ast.CsvAstStorage
 import astminer.ast.DotAstStorage
 import astminer.common.model.AstStorage
-import getGranularity
-import getParser
 import astminer.common.preOrder
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.*
