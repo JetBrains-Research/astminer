@@ -1,16 +1,11 @@
 package astminer.cli
 
-import astminer.ast.CsvAstStorage
-import astminer.ast.DotAstStorage
 import astminer.common.getNormalizedToken
-import astminer.common.model.*
+import astminer.common.model.LabeledPathContexts
+import astminer.common.model.Node
+import astminer.common.model.ParseResult
 import astminer.common.preOrder
 import astminer.common.setNormalizedToken
-import astminer.common.splitToSubtokens
-import astminer.parse.antlr.java.JavaParser
-import astminer.parse.antlr.python.PythonParser
-import astminer.parse.cpp.FuzzyCppParser
-import astminer.parse.java.GumTreeJavaParser
 import astminer.paths.Code2VecPathStorage
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
@@ -19,30 +14,19 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.long
+import getGranularity
+import getParser
 import java.io.File
 
 class Code2VecExtractor : CliktCommand() {
 
-    /**
-     * @param parser class that implements parsing
-     * @param extension file extension to choose files for parsing
-     */
-    private data class SupportedLanguage(val parser: Parser<out Node>, val extension: String)
-
-    /**
-     * List of supported language extensions and corresponding parsers.
-     */
-    private val supportedLanguages = listOf(
-            SupportedLanguage(GumTreeJavaParser(), "java"),
-            SupportedLanguage(FuzzyCppParser(), "c"),
-            SupportedLanguage(FuzzyCppParser(), "cpp"),
-            SupportedLanguage(PythonParser(), "py")
-    )
+    private val supportedLanguages = listOf("java", "c", "cpp", "py")
 
     val extensions: List<String> by option(
-        "--lang",
-        help = "File extensions that will be parsed"
-    ).split(",").required()
+            "--lang",
+            help = "Comma-separated list of file extensions that will be parsed.\n" +
+                    "Supports 'c', 'cpp', 'java', 'py', defaults to all these extensions."
+    ).split(",").default(supportedLanguages)
 
     val projectRoot: String by option(
         "--project",
@@ -87,7 +71,7 @@ class Code2VecExtractor : CliktCommand() {
 
     val folderLabel: Boolean by option(
             "--folder-label",
-            help = "if passed with file level granularitythan, label paths with folder names"
+            help = "if passed with file-level granularity, the folder name is used to label paths"
     ).flag(default = false)
 
     val isMethodNameHide: Boolean by option(
@@ -138,75 +122,19 @@ class Code2VecExtractor : CliktCommand() {
             help = "Filter methods by their ast size"
     ).int().default(-1)
 
-    private fun getParser(extension: String): Parser<out Node> {
-        return when (extension) {
-            "java" -> {
-                when (javaParser) {
-                    "gumtree" -> GumTreeJavaParser()
-                    "antlr" -> JavaParser()
-                    else -> {
-                        throw UnsupportedOperationException("Unsupported parser for java extension $javaParser")
-                    }
-                }
-            }
-            else -> {
-                supportedLanguages.find { it.extension == extension }?.parser
-                        ?: throw UnsupportedOperationException("Unsupported extension $extension")
-            }
-        }
-    }
-
-    private fun getStorage(storageType: String, directoryPath: String): AstStorage {
-        return when (storageType) {
-            "csv" -> CsvAstStorage(directoryPath)
-            "dot" -> DotAstStorage(directoryPath)
-            else -> {
-                throw UnsupportedOperationException("Unsupported AST storage $storageType")
-            }
-        }
-    }
-
-    private fun getGranularity(granularityLevel: String): Granularity {
-        when (granularityLevel) {
-            "file" -> return FileGranularity(isTokenSplitted)
-            "method" -> {
-                val filterPredicates = mutableListOf(
-                        ModifierFilterPredicate(excludeModifiers), AnnotationFilterPredicate(excludeAnnotations),
-                        MethodNameLengthFilterPredicate(maxMethodNameLength), TokenLengthFilterPredicate(maxTokenLength),
-                        TreeSizeFilterPredicate(maxTreeSize)
-                )
-                if (filterConstructors) {
-                    filterPredicates.add(ConstructorFilterPredicate())
-                }
-                return MethodGranularity(isTokenSplitted, isMethodNameHide, filterPredicates, javaParser)
-            }
-        }
-        throw UnsupportedOperationException("Unsupported granularity level $granularityLevel")
-    }
-
     private fun <T: Node> extractFromTrees(
-            roots: List<ParseResult<T>>,
+            roots: List<ParseResult<out T>>,
             miner: PathMiner,
             storage: Code2VecPathStorage
     ) {
         roots.forEach { parseResult ->
             val root = parseResult.root  ?: return@forEach
-            val fullPath = parseResult.filePath.split("/")
-            var label = ""
-            when (granularityLevel) {
-                "method" -> {
-                    label = splitToSubtokens(fullPath.last()).joinToString("|")
-                }
-                "file" -> {
-                    val fileName = fullPath.last()
-                    val folderName = fullPath.elementAt(fullPath.size - 2)
-                    label = if (folderLabel) folderName else fileName
-                }
-            }
-
+            val fullPath = File(parseResult.filePath)
+            val parentName = fullPath.parentFile.name
+            var fileName = fullPath.name
+            val label = if (granularityLevel == "file" && folderLabel) parentName else fileName
+            println(label)
             root.preOrder().forEach { it.setNormalizedToken() }
-            if (isMethodNameHide)
-                root.setNormalizedToken("METHOD_NAME")
 
             // Retrieve paths from every node individually
             val paths = miner.retrievePaths(root).take(maxPathContexts)
@@ -228,13 +156,27 @@ class Code2VecExtractor : CliktCommand() {
             // Choose type of storage
             val storage = Code2VecPathStorage(outputDirForLanguage.path, maxPaths, maxTokens)
             // Choose type of parser
-            val parser = getParser(extension)
+            val parser = getParser(
+                    extension,
+                    javaParser
+            )
             // Choose granularity level
-            val granularity = getGranularity(granularityLevel)
+            val granularity = getGranularity(
+                    granularityLevel,
+                    javaParser,
+                    isTokenSplitted,
+                    isMethodNameHide,
+                    excludeModifiers,
+                    excludeAnnotations,
+                    filterConstructors,
+                    maxMethodNameLength,
+                    maxTokenLength,
+                    maxTreeSize
+            )
             // Parse project
             val parsedProject = parser.parseWithExtension(File(projectRoot), extension)
             // Split project to required granularity level
-            val roots = granularity.splitByGranularityLevel(parsedProject, extension) as List<ParseResult<Node>>
+            val roots = granularity.splitByGranularityLevel(parsedProject, extension)
             extractFromTrees(roots, miner, storage)
             // Save stored data on disk
             storage.close()
