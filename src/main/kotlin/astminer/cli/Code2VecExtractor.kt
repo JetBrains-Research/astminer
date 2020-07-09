@@ -6,6 +6,7 @@ import astminer.common.model.Node
 import astminer.common.model.ParseResult
 import astminer.common.preOrder
 import astminer.common.setNormalizedToken
+import astminer.common.splitToSubtokens
 import astminer.paths.Code2VecPathStorage
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
@@ -130,12 +131,10 @@ class Code2VecExtractor : CliktCommand() {
         roots.forEach { parseResult ->
             val root = parseResult.root  ?: return@forEach
             val fullPath = File(parseResult.filePath)
-            val parentName = fullPath.parentFile.name
-            var fileName = fullPath.name
-            val label = if (granularityLevel == "file" && folderLabel) parentName else fileName
-            println(label)
-            root.preOrder().forEach { it.setNormalizedToken() }
+            val (parentName, fileName) = arrayOf(fullPath.parentFile.name, fullPath.name)
+            var label = if (granularityLevel == "file" && folderLabel) parentName else fileName
 
+            root.preOrder().forEach { it.setNormalizedToken() }
             // Retrieve paths from every node individually
             val paths = miner.retrievePaths(root).take(maxPathContexts)
             storage.store(LabeledPathContexts(label, paths.map {
