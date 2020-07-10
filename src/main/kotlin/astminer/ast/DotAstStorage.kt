@@ -40,7 +40,7 @@ class DotAstStorage(override val directoryPath: String) : AstStorage {
         val nodesMap = dumpAst(root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
         val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$normalizedFilepath,$fileName,%d,%s,%s"
         for (node in root.preOrder()) {
-            descriptionFileStream.write(nodeDescriptionFormat.format(nodesMap.getId(node) - 1, node.getToken(), node.getTypeLabel()) + "\n")
+            descriptionFileStream.write(nodeDescriptionFormat.format(nodesMap.getId(node) - 1, node.getNormalizedToken(), node.getTypeLabel()) + "\n")
         }
         ++index
     }
