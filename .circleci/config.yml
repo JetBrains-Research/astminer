@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 jobs:
   # build with machine executor
   build:
@@ -75,7 +75,6 @@ workflows:
             branches:
               only:
                 - master
-                - master-dev
       - release:
           requires:
             - approve-release
@@ -84,6 +83,8 @@ workflows:
               only:
                 - master
       - release-dev:
+          requires:
+            - build
           filters:
             branches:
               only:
