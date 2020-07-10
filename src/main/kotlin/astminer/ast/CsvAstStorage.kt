@@ -1,5 +1,6 @@
 package astminer.ast
 
+import astminer.common.getNormalizedToken
 import astminer.common.model.AstStorage
 import astminer.common.model.Node
 import astminer.common.preOrder
@@ -28,7 +29,7 @@ class CsvAstStorage(override val directoryPath: String) : AstStorage {
 
     override fun store(root: Node, label: String) {
         for (node in root.preOrder()) {
-            tokensMap.record(node.getToken())
+            tokensMap.record(node.getNormalizedToken())
             nodeTypesMap.record(node.getTypeLabel())
         }
         dumpAst(root, label)

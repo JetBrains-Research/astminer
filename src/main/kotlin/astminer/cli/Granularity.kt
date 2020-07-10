@@ -114,6 +114,6 @@ fun processNodeToken(node: Node, splitToken: Boolean) {
     if (splitToken) {
         node.setNormalizedToken(separateToken(node.getToken()))
     } else {
-        node.setNormalizedToken()
+        node.setNormalizedToken(node.getToken())
     }
 }
