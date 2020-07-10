@@ -141,7 +141,7 @@ class ProjectParser : CliktCommand() {
                 }
                 root?.apply {
                     // Save AST as it is or process it to extract features / path-based representations
-                    storage.store(root, label = filePath, normalize = true)
+                    storage.store(root, label = filePath)
                 }
             }
             // Save stored data on disk

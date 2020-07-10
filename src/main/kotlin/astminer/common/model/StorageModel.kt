@@ -18,5 +18,5 @@ interface PathStorage<LabelType> {
 interface AstStorage {
     val directoryPath: String
     fun close()
-    fun store(root: Node, label: String, normalize: Boolean = false)
+    fun store(root: Node, label: String)
 }

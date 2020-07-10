@@ -27,10 +27,9 @@ class CsvAstStorage(override val directoryPath: String) : AstStorage {
         astsOutputStream.write("id,ast\n")
     }
 
-    override fun store(root: Node, label: String, normalize: Boolean) {
+    override fun store(root: Node, label: String) {
         for (node in root.preOrder()) {
-            val token = if (normalize) node.getNormalizedToken() else node.getToken()
-            tokensMap.record(token)
+            tokensMap.record(node.getToken())
             nodeTypesMap.record(node.getTypeLabel())
         }
         dumpAst(root, label)
