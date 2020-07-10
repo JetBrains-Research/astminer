@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 group = "io.github.vovak.astminer"
 
+val branchName: String by project
 val ciVersion: String by project
 
 version = if (project.hasProperty("ciVersion")) {
@@ -126,7 +127,11 @@ idea {
 
 publishJar {
     publication {
-        artifactId = "astminer-dev"
+        artifactId = when(branchName) {
+            "master" -> "astminer"
+            "master-dev" -> "astminer-dev"
+            else -> ""
+        }
     }
 
     bintray {

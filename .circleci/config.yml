@@ -15,10 +15,12 @@ jobs:
     machine:
       enabled: true
     working_directory: ~/astminer
+      environment:
+        GIT_BRANCH: << pipeline.git.branch >>
     steps:
       - checkout:
           path: ~/astminer
-      - run: ./gradlew bintrayUpload
+      - run: ./gradlew bintrayUpload "-PbranchName=$GIT_BRANCH"
 
   release-dev:
     machine:
@@ -26,10 +28,11 @@ jobs:
     working_directory: ~/astminer
     environment:
       CI_VERSION: << pipeline.number >>
+      GIT_BRANCH: << pipeline.git.branch >>
     steps:
       - checkout:
           path: ~/astminer
-      - run: ./gradlew bintrayUpload "-PciVersion=1.$CI_VERSION"
+      - run: ./gradlew bintrayUpload "-PciVersion=1.$CI_VERSION" "-PbranchName=$GIT_BRANCH"
 
   # run the Python example
   py_example:
