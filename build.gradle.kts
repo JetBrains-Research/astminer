@@ -3,7 +3,16 @@ import tanvd.kosogor.proxy.shadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 group = "io.github.vovak.astminer"
-version = "0.5"
+
+val ciVersion: String by project
+
+version = if (project.hasProperty("ciVersion")) {
+    ciVersion
+} else {
+    "0.5"
+}
+
+println(version)
 
 plugins {
     id("java")
@@ -117,7 +126,7 @@ idea {
 
 publishJar {
     publication {
-        artifactId = "astminer"
+        artifactId = "astminer-dev"
     }
 
     bintray {

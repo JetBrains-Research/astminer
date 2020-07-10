@@ -20,6 +20,17 @@ jobs:
           path: ~/astminer
       - run: ./gradlew bintrayUpload
 
+  release-dev:
+    machine:
+      enabled: true
+    working_directory: ~/astminer
+    environment:
+      CI_VERSION: << pipeline.number >>
+    steps:
+      - checkout:
+          path: ~/astminer
+      - run: ./gradlew bintrayUpload "-PciVersion=1.$CI_VERSION"
+
   # run the Python example
   py_example:
     docker:
@@ -62,13 +73,21 @@ workflows:
             - build
           filters:
             branches:
-              only: master
+              only:
+                - master
+                - master-dev
       - release:
           requires:
             - approve-release
           filters:
             branches:
-              only: master
+              only:
+                - master
+      - release-dev:
+          filters:
+            branches:
+              only:
+                - master-dev
 
 #  py_example:
 #    jobs:
