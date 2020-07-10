@@ -127,10 +127,14 @@ idea {
 
 publishJar {
     publication {
-        artifactId = when(branchName) {
-            "master" -> "astminer"
-            "master-dev" -> "astminer-dev"
-            else -> ""
+        artifactId = if (project.hasProperty("branchName")) {
+            when(branchName) {
+                "master" -> "astminer"
+                "master-dev" -> "astminer-dev"
+                else -> ""
+            }
+        } else {
+            "astminer"
         }
     }
 
