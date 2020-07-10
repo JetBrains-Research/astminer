@@ -15,8 +15,8 @@ jobs:
     machine:
       enabled: true
     working_directory: ~/astminer
-      environment:
-        GIT_BRANCH: << pipeline.git.branch >>
+    environment:
+      GIT_BRANCH: << pipeline.git.branch >>
     steps:
       - checkout:
           path: ~/astminer
