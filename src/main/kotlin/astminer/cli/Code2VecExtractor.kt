@@ -131,7 +131,6 @@ class Code2VecExtractor : CliktCommand() {
             val (parentName, fileName) = arrayOf(fullPath.parentFile.name, fullPath.name)
             val label = if (granularityLevel == "file" && folderLabel) parentName else fileName
 
-            root.preOrder().forEach { it.setNormalizedToken() }
             // Retrieve paths from every node individually
             val paths = miner.retrievePaths(root).take(maxPathContexts)
             storage.store(LabeledPathContexts(label, paths.map {
