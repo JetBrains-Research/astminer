@@ -16,7 +16,7 @@ import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.long
 import java.io.File
 
-class Code2VecExtractor : CliktCommand() {
+class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null) : CliktCommand() {
 
     private val supportedLanguages = listOf("java", "c", "cpp", "py")
 
@@ -123,13 +123,12 @@ class Code2VecExtractor : CliktCommand() {
     private fun <T: Node> extractFromTrees(
             roots: List<ParseResult<out T>>,
             miner: PathMiner,
-            storage: Code2VecPathStorage
+            storage: Code2VecPathStorage,
+            labelExtractor: LabelExtractor
     ) {
         roots.forEach { parseResult ->
             val root = parseResult.root  ?: return@forEach
-            val fullPath = File(parseResult.filePath)
-            val (parentName, fileName) = arrayOf(fullPath.parentFile.name, fullPath.name)
-            val label = if (granularityLevel == "file" && folderLabel) parentName else fileName
+            val label = labelExtractor.extractLabel(parseResult)
 
             // Retrieve paths from every node individually
             val paths = miner.retrievePaths(root).take(maxPathContexts)
@@ -141,7 +140,7 @@ class Code2VecExtractor : CliktCommand() {
         }
     }
 
-    private fun extract() {
+    private fun extract(labelExtractor: LabelExtractor) {
         val outputDir = File(outputDirName)
         for (extension in extensions) {
             val miner = PathMiner(PathRetrievalSettings(maxPathHeight, maxPathWidth))
@@ -172,13 +171,14 @@ class Code2VecExtractor : CliktCommand() {
             val parsedProject = parser.parseWithExtension(File(projectRoot), extension)
             // Split project to required granularity level
             val roots = granularity.splitByGranularityLevel(parsedProject, extension)
-            extractFromTrees(roots, miner, storage)
+            extractFromTrees(roots, miner, storage, labelExtractor)
             // Save stored data on disk
             storage.close()
         }
     }
 
     override fun run() {
-        extract()
+        val labelExtractor = customLabelExtractor ?: Code2VecLabelExtractor(granularityLevel, folderLabel)
+        extract(labelExtractor)
     }
 }

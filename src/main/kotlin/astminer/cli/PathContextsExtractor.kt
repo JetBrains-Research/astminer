@@ -17,7 +17,7 @@ import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.long
 import java.io.File
 
-class PathContextsExtractor : CliktCommand() {
+class PathContextsExtractor(private val customLabelExtractor: LabelExtractor? = null) : CliktCommand() {
 
     /**
      * @param parser class that implements parsing
@@ -85,7 +85,7 @@ class PathContextsExtractor : CliktCommand() {
         throw UnsupportedOperationException("Unsupported extension $extension")
     }
 
-    private fun extractPathContexts() {
+    private fun extractPathContexts(labelExtractor: LabelExtractor) {
         val outputDir = File(outputDirName)
         for (extension in extensions) {
             val miner = PathMiner(PathRetrievalSettings(maxPathHeight, maxPathWidth))
@@ -98,12 +98,12 @@ class PathContextsExtractor : CliktCommand() {
 
             parsedFiles.forEach { parseResult ->
                 val root = parseResult.root ?: return@forEach
-                val filePath = parseResult.filePath
+                val label = labelExtractor.extractLabel(parseResult)
 
                 root.preOrder().forEach { node -> node.setNormalizedToken() }
 
                 val paths = miner.retrievePaths(root).take(maxPathContexts)
-                storage.store(LabeledPathContexts(filePath, paths.map { astPath ->
+                storage.store(LabeledPathContexts(label, paths.map { astPath ->
                     toPathContext(astPath) { node ->
                         node.getNormalizedToken()
                     }
@@ -116,6 +116,7 @@ class PathContextsExtractor : CliktCommand() {
     }
 
     override fun run() {
-        extractPathContexts()
+        val labelExtractor = customLabelExtractor ?: FilePathExtractor()
+        extractPathContexts(labelExtractor)
     }
 }

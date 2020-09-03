@@ -9,7 +9,7 @@ import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.int
 import java.io.File
 
-class ProjectParser : CliktCommand() {
+class ProjectParser(private val customLabelExtractor: LabelExtractor? = null) : CliktCommand() {
 
     private val supportedLanguages = listOf("java", "c", "cpp", "py")
 
@@ -104,7 +104,7 @@ class ProjectParser : CliktCommand() {
         }
     }
 
-    private fun parsing() {
+    private fun parsing(labelExtractor: LabelExtractor) {
         val outputDir = File(outputDirName)
         for (extension in extensions) {
             // Create directory for current extension
@@ -135,13 +135,14 @@ class ProjectParser : CliktCommand() {
             val roots = granularity.splitByGranularityLevel(parsedProject, extension)
             roots.forEach { parseResult ->
                 val root = parseResult.root
-                val filePath = parseResult.filePath
+                val label = labelExtractor.extractLabel(parseResult)
+
                 root?.preOrder()?.forEach { node ->
                     excludeNodes.forEach { node.removeChildrenOfType(it) }
                 }
                 root?.apply {
                     // Save AST as it is or process it to extract features / path-based representations
-                    storage.store(root, label = filePath)
+                    storage.store(root, label = label)
                 }
             }
             // Save stored data on disk
@@ -151,6 +152,7 @@ class ProjectParser : CliktCommand() {
     }
 
     override fun run() {
-        parsing()
+        val labelExtractor = customLabelExtractor ?: FilePathExtractor()
+        parsing(labelExtractor)
     }
 }
