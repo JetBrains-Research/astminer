@@ -6,6 +6,8 @@ import astminer.parse.cpp.FuzzyCppParser
 import astminer.parse.java.GumTreeJavaParser
 import astminer.common.model.Node
 import astminer.common.model.Parser
+import astminer.common.setNormalizedToken
+import astminer.common.splitToSubtokens
 
 fun getParser(
         extension: String,
@@ -30,20 +32,39 @@ fun getParser(
     }
 }
 
-fun getGranularity(
+fun separateToken(token: String, separator: CharSequence = "|"): String {
+    return splitToSubtokens(token).joinToString(separator)
+}
+
+fun processNodeToken(node: Node, splitToken: Boolean) {
+    if (splitToken) {
+        node.setNormalizedToken(separateToken(node.getToken()))
+    } else {
+        node.setNormalizedToken()
+    }
+}
+
+fun getLabelExtractor(
         granularityLevel: String,
         javaParser: String,
-        isTokenSplitted: Boolean,
-        isMethodNameHide: Boolean,
+        splitTokens: Boolean,
+        hideMethodNames: Boolean,
         excludeModifiers: List<String>,
         excludeAnnotations: List<String>,
         filterConstructors: Boolean,
         maxMethodNameLength: Int,
         maxTokenLength: Int,
-        maxTreeSize: Int
-): Granularity {
+        maxTreeSize: Int,
+        useFolderName: Boolean
+): LabelExtractor {
     when (granularityLevel) {
-        "file" -> return FileGranularity(isTokenSplitted)
+        "file" -> {
+            return if (useFolderName) {
+                FolderExtractor(splitTokens)
+            } else {
+                FilePathExtractor(splitTokens)
+            }
+        }
         "method" -> {
             val filterPredicates = mutableListOf(
                     ModifierFilterPredicate(excludeModifiers), AnnotationFilterPredicate(excludeAnnotations),
@@ -53,7 +74,7 @@ fun getGranularity(
             if (filterConstructors) {
                 filterPredicates.add(ConstructorFilterPredicate())
             }
-            return MethodGranularity(isTokenSplitted, isMethodNameHide, filterPredicates, javaParser)
+            return MethodNameExtractor(splitTokens, hideMethodNames, filterPredicates, javaParser)
         }
     }
     throw UnsupportedOperationException("Unsupported granularity level $granularityLevel")

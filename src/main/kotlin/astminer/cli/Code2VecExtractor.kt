@@ -4,8 +4,6 @@ import astminer.common.getNormalizedToken
 import astminer.common.model.LabeledPathContexts
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
-import astminer.common.preOrder
-import astminer.common.setNormalizedToken
 import astminer.paths.Code2VecPathStorage
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
@@ -124,19 +122,21 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
             roots: List<ParseResult<out T>>,
             miner: PathMiner,
             storage: Code2VecPathStorage,
-            labelExtractor: LabelExtractor
+            labelExtractor: LabelExtractor,
+            fileExtension: String
     ) {
         roots.forEach { parseResult ->
-            val root = parseResult.root  ?: return@forEach
-            val label = labelExtractor.extractLabel(parseResult)
+            val labeledParseResults = labelExtractor.toLabeledData(parseResult, fileExtension)
 
             // Retrieve paths from every node individually
-            val paths = miner.retrievePaths(root).take(maxPathContexts)
-            storage.store(LabeledPathContexts(label, paths.map {
-                toPathContext(it) { node ->
-                    node.getNormalizedToken()
-                }
-            }))
+            labeledParseResults.forEach { (root, label) ->
+                val paths = miner.retrievePaths(root).take(maxPathContexts)
+                storage.store(LabeledPathContexts(label, paths.map {
+                    toPathContext(it) { node ->
+                        node.getNormalizedToken()
+                    }
+                }))
+            }
         }
     }
 
@@ -154,31 +154,29 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
                     extension,
                     javaParser
             )
-            // Choose granularity level
-            val granularity = getGranularity(
-                    granularityLevel,
-                    javaParser,
-                    isTokenSplitted,
-                    isMethodNameHide,
-                    excludeModifiers,
-                    excludeAnnotations,
-                    filterConstructors,
-                    maxMethodNameLength,
-                    maxTokenLength,
-                    maxTreeSize
-            )
             // Parse project
             val parsedProject = parser.parseWithExtension(File(projectRoot), extension)
-            // Split project to required granularity level
-            val roots = granularity.splitByGranularityLevel(parsedProject, extension)
-            extractFromTrees(roots, miner, storage, labelExtractor)
+            // Retrieve labeled data
+            extractFromTrees(parsedProject, miner, storage, labelExtractor, extension)
             // Save stored data on disk
             storage.close()
         }
     }
 
     override fun run() {
-        val labelExtractor = customLabelExtractor ?: Code2VecLabelExtractor(granularityLevel, folderLabel)
+        val labelExtractor = customLabelExtractor ?: getLabelExtractor(
+                granularityLevel,
+                javaParser,
+                isTokenSplitted,
+                isMethodNameHide,
+                excludeModifiers,
+                excludeAnnotations,
+                filterConstructors,
+                maxMethodNameLength,
+                maxTokenLength,
+                maxTreeSize,
+                folderLabel
+        )
         extract(labelExtractor)
     }
 }

@@ -92,6 +92,10 @@ class ProjectParser(private val customLabelExtractor: LabelExtractor? = null) : 
         help = "Filter methods by their ast size"
     ).int().default(-1)
 
+    val folderLabel: Boolean by option(
+            "--folder-label",
+            help = "if passed with file-level granularity, the folder name is used to label paths"
+    ).flag(default = false)
 
 
     private fun getStorage(storageType: String, directoryPath: String): AstStorage {
@@ -116,33 +120,19 @@ class ProjectParser(private val customLabelExtractor: LabelExtractor? = null) : 
                     extension,
                     javaParser
             )
-            // Choose granularity level
-            val granularity = getGranularity(
-                    granularityLevel,
-                    javaParser,
-                    isTokenSplitted,
-                    isMethodNameHide,
-                    excludeModifiers,
-                    excludeAnnotations,
-                    filterConstructors,
-                    maxMethodNameLength,
-                    maxTokenLength,
-                    maxTreeSize
-            )
             // Parse project
             val parsedProject = parser.parseWithExtension(File(projectRoot), extension)
             // Split project to required granularity level
-            val roots = granularity.splitByGranularityLevel(parsedProject, extension)
-            roots.forEach { parseResult ->
-                val root = parseResult.root
-                val label = labelExtractor.extractLabel(parseResult)
-
-                root?.preOrder()?.forEach { node ->
-                    excludeNodes.forEach { node.removeChildrenOfType(it) }
-                }
-                root?.apply {
-                    // Save AST as it is or process it to extract features / path-based representations
-                    storage.store(root, label = label)
+            parsedProject.forEach { parseResult ->
+                val labeledParseResults = labelExtractor.toLabeledData(parseResult, extension)
+                labeledParseResults.forEach { (root, label) ->
+                    root.preOrder().forEach { node ->
+                        excludeNodes.forEach { node.removeChildrenOfType(it) }
+                    }
+                    root.apply {
+                        // Save AST as it is or process it to extract features / path-based representations
+                        storage.store(root, label = label)
+                    }
                 }
             }
             // Save stored data on disk
@@ -152,7 +142,19 @@ class ProjectParser(private val customLabelExtractor: LabelExtractor? = null) : 
     }
 
     override fun run() {
-        val labelExtractor = customLabelExtractor ?: FilePathExtractor()
+        val labelExtractor = customLabelExtractor ?: getLabelExtractor(
+                granularityLevel,
+                javaParser,
+                isTokenSplitted,
+                isMethodNameHide,
+                excludeModifiers,
+                excludeAnnotations,
+                filterConstructors,
+                maxMethodNameLength,
+                maxTokenLength,
+                maxTreeSize,
+                folderLabel
+        )
         parsing(labelExtractor)
     }
 }
