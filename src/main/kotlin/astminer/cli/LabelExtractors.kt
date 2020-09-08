@@ -19,25 +19,25 @@ data class LabeledParseResult<T : Node>(val root: T, val label: String)
 
 
 interface LabelExtractor {
-    fun toLabeledData(parseResult: ParseResult<out Node>, fileExtension: String): List<LabeledParseResult<out Node>>
+    fun toLabeledData(parseResult: ParseResult<out Node>): List<LabeledParseResult<out Node>>
 }
 
 abstract class FileLabelExtractor(open val splitTokens: Boolean) : LabelExtractor {
 
     override fun toLabeledData(
-            parseResult: ParseResult<out Node>, fileExtension: String
+            parseResult: ParseResult<out Node>
     ): List<LabeledParseResult<out Node>> {
         val (root, filePath) = parseResult
         return if (root == null) {
             emptyList()
         } else {
             root.preOrder().forEach { node -> processNodeToken(node, splitTokens) }
-            val label = extractLabel(root, filePath, fileExtension) ?: return emptyList()
+            val label = extractLabel(root, filePath) ?: return emptyList()
             listOf(LabeledParseResult(root, label))
         }
     }
 
-    abstract fun extractLabel(root: Node, filePath: String, fileExtension: String): String?
+    abstract fun extractLabel(root: Node, filePath: String): String?
 }
 
 abstract class MethodLabelExtractor(
@@ -47,12 +47,13 @@ abstract class MethodLabelExtractor(
 ) : LabelExtractor {
 
     override fun toLabeledData(
-            parseResult: ParseResult<out Node>, fileExtension: String
+            parseResult: ParseResult<out Node>
     ): List<LabeledParseResult<out Node>> {
         val (root, filePath) = parseResult
         if (root == null) {
             return emptyList()
         }
+        val fileExtension = File(filePath).extension
         val methodInfos = when (fileExtension) {
             "c", "cpp" -> {
                 val methodSplitter = FuzzyMethodSplitter()
@@ -87,22 +88,22 @@ abstract class MethodLabelExtractor(
             methodInfo.method.root.preOrder().forEach { node -> processNodeToken(node, splitTokens) }
         }
         return methodInfos.mapNotNull {
-            val label = extractLabel(it, filePath, fileExtension) ?: return@mapNotNull null
+            val label = extractLabel(it, filePath) ?: return@mapNotNull null
             LabeledParseResult(it.method.root, label)
         }
     }
 
-    abstract fun <T : Node> extractLabel(methodInfo: MethodInfo<T>, filePath: String, fileExtension: String): String?
+    abstract fun <T : Node> extractLabel(methodInfo: MethodInfo<T>, filePath: String): String?
 }
 
 class FilePathExtractor(override val splitTokens: Boolean) : FileLabelExtractor(splitTokens) {
-    override fun extractLabel(root: Node, filePath: String, fileExtension: String): String? {
+    override fun extractLabel(root: Node, filePath: String): String? {
         return filePath
     }
 }
 
 class FolderExtractor(override val splitTokens: Boolean) : FileLabelExtractor(splitTokens) {
-    override fun extractLabel(root: Node, filePath: String, fileExtension: String): String? {
+    override fun extractLabel(root: Node, filePath: String): String? {
         return File(filePath).parentFile.name
     }
 }
@@ -114,7 +115,7 @@ class MethodNameExtractor(
         override val javaParser: String = "gumtree"
 ) : MethodLabelExtractor(splitTokens, filterPredicates, javaParser) {
 
-    override fun <T : Node> extractLabel(methodInfo: MethodInfo<T>, filePath: String, fileExtension: String): String? {
+    override fun <T : Node> extractLabel(methodInfo: MethodInfo<T>, filePath: String): String? {
         val methodNameNode = methodInfo.method.nameNode ?: return null
         val methodRoot = methodInfo.method.root
         val methodName = methodInfo.name() ?: return null

@@ -124,7 +124,7 @@ class ProjectParser(private val customLabelExtractor: LabelExtractor? = null) : 
             val parsedProject = parser.parseWithExtension(File(projectRoot), extension)
             // Split project to required granularity level
             parsedProject.forEach { parseResult ->
-                val labeledParseResults = labelExtractor.toLabeledData(parseResult, extension)
+                val labeledParseResults = labelExtractor.toLabeledData(parseResult)
                 labeledParseResults.forEach { (root, label) ->
                     root.preOrder().forEach { node ->
                         excludeNodes.forEach { node.removeChildrenOfType(it) }

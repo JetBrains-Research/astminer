@@ -95,7 +95,7 @@ class PathContextsExtractor(private val customLabelExtractor: LabelExtractor? = 
             val storage = Code2VecPathStorage(outputDirForLanguage.path, maxPaths, maxTokens)
 
             parsedFiles.forEach { parseResult ->
-                val labeledParseResults = labelExtractor.toLabeledData(parseResult, extension)
+                val labeledParseResults = labelExtractor.toLabeledData(parseResult)
                 labeledParseResults.forEach { (root, label) ->
                     val paths = miner.retrievePaths(root).take(maxPathContexts)
                     storage.store(LabeledPathContexts(label, paths.map { astPath ->

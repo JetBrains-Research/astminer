@@ -126,7 +126,7 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
             fileExtension: String
     ) {
         roots.forEach { parseResult ->
-            val labeledParseResults = labelExtractor.toLabeledData(parseResult, fileExtension)
+            val labeledParseResults = labelExtractor.toLabeledData(parseResult)
 
             // Retrieve paths from every node individually
             labeledParseResults.forEach { (root, label) ->
