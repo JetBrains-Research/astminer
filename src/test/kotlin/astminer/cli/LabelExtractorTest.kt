@@ -24,7 +24,7 @@ internal class LabelExtractorTest {
     fun testEmptyFilePathExtractor() {
         val labelExtractor = FilePathExtractor(false)
         val emptyParseResult = ParseResult(null, PATH_STRING)
-        val labeledParseResults = labelExtractor.toLabeledData(emptyParseResult, "")
+        val labeledParseResults = labelExtractor.toLabeledData(emptyParseResult)
         assertTrue { labeledParseResults.isEmpty() }
     }
 
@@ -32,7 +32,7 @@ internal class LabelExtractorTest {
     fun testNonEmptyFilePathExtractor() {
         val labelExtractor = FilePathExtractor(false)
         val nonEmptyParseResult = ParseResult(DUMMY_ROOT, PATH_STRING)
-        val labeledParseResults = labelExtractor.toLabeledData(nonEmptyParseResult, "")
+        val labeledParseResults = labelExtractor.toLabeledData(nonEmptyParseResult)
         assertEquals(1, labeledParseResults.size)
         val (root, label) = labeledParseResults[0]
         assertEquals(DUMMY_ROOT, root)
@@ -43,7 +43,7 @@ internal class LabelExtractorTest {
     fun testEmptyFolderExtractor() {
         val labelExtractor = FolderExtractor(false)
         val emptyParseResult = ParseResult(null, PATH_STRING)
-        val labeledParseResults = labelExtractor.toLabeledData(emptyParseResult, "")
+        val labeledParseResults = labelExtractor.toLabeledData(emptyParseResult)
         assertTrue { labeledParseResults.isEmpty() }
     }
 
@@ -51,7 +51,7 @@ internal class LabelExtractorTest {
     fun testNonEmptyFolderExtractor() {
         val labelExtractor = FolderExtractor(false)
         val nonEmptyParseResult = ParseResult(DUMMY_ROOT, PATH_STRING)
-        val labeledParseResults = labelExtractor.toLabeledData(nonEmptyParseResult, "")
+        val labeledParseResults = labelExtractor.toLabeledData(nonEmptyParseResult)
         assertEquals(1, labeledParseResults.size)
         val (root, label) = labeledParseResults[0]
         assertEquals(DUMMY_ROOT, root)
@@ -68,7 +68,7 @@ internal class LabelExtractorTest {
         )
         processNodeToken(nameNode, false)
         val methodNameExtractor = MethodNameExtractor(false, hideMethodNames = false)
-        val label = methodNameExtractor.extractLabel(methodInfo, PATH_STRING, "")
+        val label = methodNameExtractor.extractLabel(methodInfo, PATH_STRING)
         assertEquals(METHOD_NAME, label)
         assertEquals(METHOD_NAME, nameNode.getNormalizedToken())
     }
@@ -83,7 +83,7 @@ internal class LabelExtractorTest {
         )
         processNodeToken(nameNode, false)
         val methodNameExtractor = MethodNameExtractor(false, hideMethodNames = true)
-        val label = methodNameExtractor.extractLabel(methodInfo, PATH_STRING, "")
+        val label = methodNameExtractor.extractLabel(methodInfo, PATH_STRING)
         assertEquals(METHOD_NAME, label)
         assertEquals("METHOD_NAME", nameNode.getNormalizedToken())
     }
