@@ -5,7 +5,9 @@ import astminer.parse.antlr.python.PythonParser
 import astminer.parse.cpp.FuzzyCppParser
 import astminer.parse.java.GumTreeJavaParser
 import astminer.common.model.Node
+import astminer.common.model.ParseResult
 import astminer.common.model.Parser
+import astminer.common.preOrder
 import astminer.common.setNormalizedToken
 import astminer.common.splitToSubtokens
 
@@ -44,10 +46,13 @@ fun processNodeToken(node: Node, splitToken: Boolean) {
     }
 }
 
+fun <T : Node> normalizeParseResult(parseResult: ParseResult<T>, splitTokens: Boolean) {
+    parseResult.root?.preOrder()?.forEach { node -> processNodeToken(node, splitTokens) }
+}
+
 fun getLabelExtractor(
         granularityLevel: String,
         javaParser: String,
-        splitTokens: Boolean,
         hideMethodNames: Boolean,
         excludeModifiers: List<String>,
         excludeAnnotations: List<String>,
@@ -60,9 +65,9 @@ fun getLabelExtractor(
     when (granularityLevel) {
         "file" -> {
             return if (useFolderName) {
-                FolderExtractor(splitTokens)
+                FolderExtractor()
             } else {
-                FilePathExtractor(splitTokens)
+                FilePathExtractor()
             }
         }
         "method" -> {
@@ -74,7 +79,7 @@ fun getLabelExtractor(
             if (filterConstructors) {
                 filterPredicates.add(ConstructorFilterPredicate())
             }
-            return MethodNameExtractor(splitTokens, hideMethodNames, filterPredicates, javaParser)
+            return MethodNameExtractor(hideMethodNames, filterPredicates, javaParser)
         }
     }
     throw UnsupportedOperationException("Unsupported granularity level $granularityLevel")

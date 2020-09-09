@@ -122,6 +122,7 @@ class ProjectParser(private val customLabelExtractor: LabelExtractor? = null) : 
             )
             // Parse project
             val parsedProject = parser.parseWithExtension(File(projectRoot), extension)
+            parsedProject.forEach { normalizeParseResult(it, isTokenSplitted) }
             // Split project to required granularity level
             parsedProject.forEach { parseResult ->
                 val labeledParseResults = labelExtractor.toLabeledData(parseResult)
@@ -145,7 +146,6 @@ class ProjectParser(private val customLabelExtractor: LabelExtractor? = null) : 
         val labelExtractor = customLabelExtractor ?: getLabelExtractor(
                 granularityLevel,
                 javaParser,
-                isTokenSplitted,
                 isMethodNameHide,
                 excludeModifiers,
                 excludeAnnotations,

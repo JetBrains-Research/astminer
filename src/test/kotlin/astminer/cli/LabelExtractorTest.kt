@@ -22,7 +22,7 @@ internal class LabelExtractorTest {
 
     @Test
     fun testEmptyFilePathExtractor() {
-        val labelExtractor = FilePathExtractor(false)
+        val labelExtractor = FilePathExtractor()
         val emptyParseResult = ParseResult(null, PATH_STRING)
         val labeledParseResults = labelExtractor.toLabeledData(emptyParseResult)
         assertTrue { labeledParseResults.isEmpty() }
@@ -30,7 +30,7 @@ internal class LabelExtractorTest {
 
     @Test
     fun testNonEmptyFilePathExtractor() {
-        val labelExtractor = FilePathExtractor(false)
+        val labelExtractor = FilePathExtractor()
         val nonEmptyParseResult = ParseResult(DUMMY_ROOT, PATH_STRING)
         val labeledParseResults = labelExtractor.toLabeledData(nonEmptyParseResult)
         assertEquals(1, labeledParseResults.size)
@@ -41,7 +41,7 @@ internal class LabelExtractorTest {
 
     @Test
     fun testEmptyFolderExtractor() {
-        val labelExtractor = FolderExtractor(false)
+        val labelExtractor = FolderExtractor()
         val emptyParseResult = ParseResult(null, PATH_STRING)
         val labeledParseResults = labelExtractor.toLabeledData(emptyParseResult)
         assertTrue { labeledParseResults.isEmpty() }
@@ -49,7 +49,7 @@ internal class LabelExtractorTest {
 
     @Test
     fun testNonEmptyFolderExtractor() {
-        val labelExtractor = FolderExtractor(false)
+        val labelExtractor = FolderExtractor()
         val nonEmptyParseResult = ParseResult(DUMMY_ROOT, PATH_STRING)
         val labeledParseResults = labelExtractor.toLabeledData(nonEmptyParseResult)
         assertEquals(1, labeledParseResults.size)
@@ -67,7 +67,7 @@ internal class LabelExtractorTest {
                 emptyList()
         )
         processNodeToken(nameNode, false)
-        val methodNameExtractor = MethodNameExtractor(false, hideMethodNames = false)
+        val methodNameExtractor = MethodNameExtractor(false)
         val label = methodNameExtractor.extractLabel(methodInfo, PATH_STRING)
         assertEquals(METHOD_NAME, label)
         assertEquals(METHOD_NAME, nameNode.getNormalizedToken())
@@ -82,7 +82,7 @@ internal class LabelExtractorTest {
                 emptyList()
         )
         processNodeToken(nameNode, false)
-        val methodNameExtractor = MethodNameExtractor(false, hideMethodNames = true)
+        val methodNameExtractor = MethodNameExtractor(true)
         val label = methodNameExtractor.extractLabel(methodInfo, PATH_STRING)
         assertEquals(METHOD_NAME, label)
         assertEquals("METHOD_NAME", nameNode.getNormalizedToken())
