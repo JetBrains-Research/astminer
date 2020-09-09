@@ -31,14 +31,13 @@ class DotAstStorage(override val directoryPath: String) : AstStorage {
         descriptionFileStream.write("dot_file,source_file,label,node_id,token,type\n")
     }
 
-    override fun store(root: Node, label: String) {
+    override fun store(root: Node, label: String, filePath: String) {
         // Use filename as a label for ast
         // TODO: save full signature for method
-        val (filePath, fileName) = splitFullPath(label)
-        val normalizedLabel = normalizeAstLabel(fileName)
+        val normalizedLabel = normalizeAstLabel(label)
         val normalizedFilepath = normalizeFilepath(filePath)
         val nodesMap = dumpAst(root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
-        val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$normalizedFilepath,$fileName,%d,%s,%s"
+        val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$normalizedFilepath,$normalizedLabel,%d,%s,%s"
         for (node in root.preOrder()) {
             descriptionFileStream.write(nodeDescriptionFormat.format(nodesMap.getId(node) - 1, node.getNormalizedToken(), node.getTypeLabel()) + "\n")
         }

@@ -131,7 +131,7 @@ class ProjectParser(private val customLabelExtractor: LabelExtractor? = null) : 
                     }
                     root.apply {
                         // Save AST as it is or process it to extract features / path-based representations
-                        storage.store(root, label = label)
+                        storage.store(root, label, parseResult.filePath)
                     }
                 }
             }
