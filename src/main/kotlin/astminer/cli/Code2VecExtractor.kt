@@ -122,8 +122,7 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
             roots: List<ParseResult<out T>>,
             miner: PathMiner,
             storage: Code2VecPathStorage,
-            labelExtractor: LabelExtractor,
-            fileExtension: String
+            labelExtractor: LabelExtractor
     ) {
         roots.forEach { parseResult ->
             val labeledParseResults = labelExtractor.toLabeledData(parseResult)
@@ -157,7 +156,7 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
             // Parse project
             val parsedProject = parser.parseWithExtension(File(projectRoot), extension)
             // Retrieve labeled data
-            extractFromTrees(parsedProject, miner, storage, labelExtractor, extension)
+            extractFromTrees(parsedProject, miner, storage, labelExtractor)
             // Save stored data on disk
             storage.close()
         }
