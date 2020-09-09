@@ -4,8 +4,6 @@ import astminer.common.getNormalizedToken
 import astminer.common.model.LabeledPathContexts
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
-import astminer.common.preOrder
-import astminer.common.setNormalizedToken
 import astminer.paths.Code2VecPathStorage
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
@@ -16,7 +14,7 @@ import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.long
 import java.io.File
 
-class Code2VecExtractor : CliktCommand() {
+class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null) : CliktCommand() {
 
     private val supportedLanguages = listOf("java", "c", "cpp", "py")
 
@@ -123,25 +121,25 @@ class Code2VecExtractor : CliktCommand() {
     private fun <T: Node> extractFromTrees(
             roots: List<ParseResult<out T>>,
             miner: PathMiner,
-            storage: Code2VecPathStorage
+            storage: Code2VecPathStorage,
+            labelExtractor: LabelExtractor
     ) {
         roots.forEach { parseResult ->
-            val root = parseResult.root  ?: return@forEach
-            val fullPath = File(parseResult.filePath)
-            val (parentName, fileName) = arrayOf(fullPath.parentFile.name, fullPath.name)
-            val label = if (granularityLevel == "file" && folderLabel) parentName else fileName
+            val labeledParseResults = labelExtractor.toLabeledData(parseResult)
 
             // Retrieve paths from every node individually
-            val paths = miner.retrievePaths(root).take(maxPathContexts)
-            storage.store(LabeledPathContexts(label, paths.map {
-                toPathContext(it) { node ->
-                    node.getNormalizedToken()
-                }
-            }))
+            labeledParseResults.forEach { (root, label) ->
+                val paths = miner.retrievePaths(root).take(maxPathContexts)
+                storage.store(LabeledPathContexts(label, paths.map {
+                    toPathContext(it) { node ->
+                        node.getNormalizedToken()
+                    }
+                }))
+            }
         }
     }
 
-    private fun extract() {
+    private fun extract(labelExtractor: LabelExtractor) {
         val outputDir = File(outputDirName)
         for (extension in extensions) {
             val miner = PathMiner(PathRetrievalSettings(maxPathHeight, maxPathWidth))
@@ -155,30 +153,29 @@ class Code2VecExtractor : CliktCommand() {
                     extension,
                     javaParser
             )
-            // Choose granularity level
-            val granularity = getGranularity(
-                    granularityLevel,
-                    javaParser,
-                    isTokenSplitted,
-                    isMethodNameHide,
-                    excludeModifiers,
-                    excludeAnnotations,
-                    filterConstructors,
-                    maxMethodNameLength,
-                    maxTokenLength,
-                    maxTreeSize
-            )
             // Parse project
             val parsedProject = parser.parseWithExtension(File(projectRoot), extension)
-            // Split project to required granularity level
-            val roots = granularity.splitByGranularityLevel(parsedProject, extension)
-            extractFromTrees(roots, miner, storage)
+            parsedProject.forEach { normalizeParseResult(it, isTokenSplitted) }
+            // Retrieve labeled data
+            extractFromTrees(parsedProject, miner, storage, labelExtractor)
             // Save stored data on disk
             storage.close()
         }
     }
 
     override fun run() {
-        extract()
+        val labelExtractor = customLabelExtractor ?: getLabelExtractor(
+                granularityLevel,
+                javaParser,
+                isMethodNameHide,
+                excludeModifiers,
+                excludeAnnotations,
+                filterConstructors,
+                maxMethodNameLength,
+                maxTokenLength,
+                maxTreeSize,
+                folderLabel
+        )
+        extract(labelExtractor)
     }
 }
