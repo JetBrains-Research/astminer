@@ -2,6 +2,7 @@ package astminer.cli
 
 import astminer.common.getNormalizedToken
 import astminer.common.model.*
+import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.python.PythonParser
 import astminer.parse.cpp.FuzzyCppParser
 import astminer.parse.java.GumTreeJavaParser
@@ -14,6 +15,7 @@ import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.long
 import java.io.File
+import java.lang.IllegalArgumentException
 
 class PathContextsExtractor(private val customLabelExtractor: LabelExtractor? = null) : CliktCommand() {
 
@@ -74,7 +76,20 @@ class PathContextsExtractor(private val customLabelExtractor: LabelExtractor? = 
             help = "Keep only contexts with maxTokens most popular paths."
     ).long().default(Long.MAX_VALUE)
 
+    val javaParser: String by option(
+            "--java-parser",
+            help = "Choose a parser for .java files." +
+                    "'gumtree' for GumTree parser, 'antlr' for antlr parser."
+    ).default("gumtree")
+
     private fun getParser(extension: String): Parser<out Node> {
+        if (extension == "java") {
+            return when(javaParser) {
+                "gumtree" -> GumTreeJavaParser()
+                "antlr" -> JavaParser()
+                else -> throw IllegalArgumentException("javaParser should be `antlr` or `gumtree`, not $javaParser")
+            }
+        }
         for (language in supportedLanguages) {
             if (extension == language.extension) {
                 return language.parser
