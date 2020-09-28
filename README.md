@@ -77,7 +77,7 @@ java -jar cli.jar parse --lang py,java,c,cpp --project path/to/project --output 
 
 Extract path contexts from all the files in supported languages and store in form `fileName triplesOfPathContexts`.
 ```shell script
-java -jar cli.jar pathContexts --lang py,java,c,cpp --project path/to/project --output path/to/results --maxH H --maxW W --maxContexts C --maxTokens T --maxPaths P
+java -jar cli.jar pathContexts --lang py,java,c,cpp --project path/to/project --output path/to/results --maxL L --maxW W --maxContexts C --maxTokens T --maxPaths P
 ```
 
 #### Code2vec
@@ -85,7 +85,7 @@ java -jar cli.jar pathContexts --lang py,java,c,cpp --project path/to/project --
 Extract data suitable as input for [code2vec](https://github.com/tech-srl/code2vec) model.
 Parse all files written in specified language into ASTs, split into methods, and store in form `method|name triplesOfPathContexts`.
 ```shell script
-java -jar cli.jar code2vec --lang py,java,c,cpp --project path/to/project --output path/to/results --maxH H --maxW W --maxContexts C --maxTokens T --maxPaths P
+java -jar cli.jar code2vec --lang py,java,c,cpp --project path/to/project --output path/to/results --maxL L --maxW W --maxContexts C --maxTokens T --maxPaths P
 ```
 
 ### Integrate in your mining pipeline

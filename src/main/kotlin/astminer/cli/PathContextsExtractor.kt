@@ -50,9 +50,9 @@ class PathContextsExtractor(private val customLabelExtractor: LabelExtractor? = 
             help = "Path to directory where the output will be stored"
     ).required()
 
-    val maxPathHeight: Int by option(
-            "--maxH",
-            help = "Maximum height of path for code2vec"
+    val maxPathLength: Int by option(
+            "--maxL",
+            help = "Maximum length of path for code2vec"
     ).int().default(8)
 
     val maxPathWidth: Int by option(
@@ -101,7 +101,7 @@ class PathContextsExtractor(private val customLabelExtractor: LabelExtractor? = 
     private fun extractPathContexts(labelExtractor: LabelExtractor) {
         val outputDir = File(outputDirName)
         for (extension in extensions) {
-            val miner = PathMiner(PathRetrievalSettings(maxPathHeight, maxPathWidth))
+            val miner = PathMiner(PathRetrievalSettings(maxPathLength, maxPathWidth))
             val parser = getParser(extension)
 
             val parsedFiles = parser.parseWithExtension(File(projectRoot), extension)

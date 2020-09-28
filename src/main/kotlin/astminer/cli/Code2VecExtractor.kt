@@ -34,9 +34,9 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
         help = "Path to directory where the output will be stored"
     ).required()
 
-    val maxPathHeight: Int by option(
-        "--maxH",
-        help = "Maximum height of path for code2vec"
+    val maxPathLength: Int by option(
+        "--maxL",
+        help = "Maximum length of path for code2vec"
     ).int().default(8)
 
     val maxPathWidth: Int by option(
@@ -142,7 +142,7 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
     private fun extract(labelExtractor: LabelExtractor) {
         val outputDir = File(outputDirName)
         for (extension in extensions) {
-            val miner = PathMiner(PathRetrievalSettings(maxPathHeight, maxPathWidth))
+            val miner = PathMiner(PathRetrievalSettings(maxPathLength, maxPathWidth))
 
             val outputDirForLanguage = outputDir.resolve(extension)
             outputDirForLanguage.mkdir()
