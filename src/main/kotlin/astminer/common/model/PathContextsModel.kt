@@ -1,9 +1,9 @@
 package astminer.common.model
 
 
-data class ASTPath(val upwardNodes: List<Node>, val downwardNodes: List<Node>)
+data class ASTPath(val upwardNodes: List<Node>, val topNode: Node, val downwardNodes: List<Node>)
 
-enum class Direction { UP, DOWN }
+enum class Direction { UP, DOWN, TOP }
 
 data class OrientedNodeType(val typeLabel: String, val direction: Direction)
 
