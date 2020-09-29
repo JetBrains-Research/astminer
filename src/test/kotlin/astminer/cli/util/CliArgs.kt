@@ -14,9 +14,9 @@ class CliArgs private constructor(val args: List<String>) {
             args.add(extensions)
         }
 
-        fun maxPathLength(h: Int) = apply {
+        fun maxPathLength(l: Int) = apply {
             args.add("--maxL")
-            args.add(h.toString())
+            args.add(l.toString())
         }
 
         fun maxPathWidth(w: Int) = apply {
