@@ -2,8 +2,6 @@ package astminer.paths
 
 import astminer.common.model.*
 
-typealias PathPiece = List<Node>
-
 fun toPathContext(path: ASTPath, getToken: (Node) -> String = { node -> node.getToken() }): PathContext {
     val startToken = getToken(path.upwardNodes.first())
     val endToken = getToken(path.downwardNodes.last())

@@ -14,3 +14,5 @@ data class PathContextId(val startTokenId: Long, val pathId: Long, val endTokenI
 data class LabeledPathContexts<T>(val label: T, val pathContexts: Collection<PathContext>)
 
 data class LabeledPathContextIds<T>(val label: T, val pathContexts: Collection<PathContextId>)
+
+typealias PathPiece = List<Node>
