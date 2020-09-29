@@ -14,66 +14,32 @@ fun simpleNodes(numbers: List<Int>, parent: Node?): List<SimpleNode> {
     return numbers.map { simpleNode(it, parent) }
 }
 
-fun getPathsCountWithNoHeightLimit(leavesCount: Int, maxWidth: Int): Int {
-    if (maxWidth >= leavesCount) return (leavesCount * (leavesCount - 1)) / 2
-    return (leavesCount - maxWidth) * maxWidth + (maxWidth * (maxWidth - 1)) / 2
-}
+fun getParentStack(node: Node): List<Node> = (node.getParent()?.let { getParentStack(it) } ?: emptyList()) + node
 
-fun countPossiblePaths(rootNode: Node, maxHeight: Int, maxWidth: Int): Int {
-    val allLeaves = rootNode.postOrder().filter { it.isLeaf() }
-    val leaveOrders = allLeaves.mapIndexed { index, node -> Pair(node, index) }.toMap()
-
-    fun Node.retrieveParentsUpToMaxHeight(maxHeight: Int): List<Node> {
-        val parents: MutableList<Node> = ArrayList()
-        var currentNode = this.getParent()
-        while (currentNode != null && parents.size < maxHeight) {
-            parents.add(currentNode)
-            currentNode = currentNode.getParent()
-        }
-        return parents
-    }
-
-    fun Node.countPathsInSubtreeStartingFrom(startNode: Node, maxWidth: Int, topNode: Node): Int {
-        val branchIndices: MutableMap<Node, Int> = HashMap()
-        this.getChildren().forEachIndexed { index, node ->
-            val childSubTreeLeaves = node.postOrder().filter { it.isLeaf() }
-            childSubTreeLeaves.forEach { branchIndices[it] = index }
-        }
-
-        val startNodeOrder = leaveOrders[startNode]!!
-        val startNodeBranchIndex = branchIndices[startNode]!!
-
-        fun getDepth(node: Node, relativeTo: Node): Int {
-            var currentNode: Node? = node
-            var depth = 0
-            while (currentNode != null) {
-                if (currentNode === relativeTo) return depth
-                currentNode = currentNode!!.getParent()
-                depth++
+fun getAllPathCharacteristics(root: Node): Collection<Pair<Int, Int>> {
+    val leaves = root.postOrder().filter { it.isLeaf() }
+    val allPathCharacteristics = mutableListOf<Pair<Int, Int>>()
+    leaves.forEachIndexed { indexLeft, leafLeft ->
+        leaves.forEachIndexed { indexRight, leafRight ->
+            if (indexLeft < indexRight) {
+                val leftStack = getParentStack(leafLeft)
+                val rightStack = getParentStack(leafRight)
+                var leftDepth = leftStack.size
+                var rightDepth = rightStack.size
+                leftStack.zip(rightStack).zipWithNext { (left1, right1), (left2, right2) ->
+                    if (left1 == right1 && left2 != right2) {
+                        val leftIndex = left1.getChildren().indexOf(left2)
+                        val rightIndex = left1.getChildren().indexOf(right2)
+                        allPathCharacteristics.add(Pair(rightIndex - leftIndex, leftDepth + rightDepth - 1))
+                        return@zipWithNext
+                    }
+                    leftDepth--
+                    rightDepth--
+                }
             }
-            return -1
-        }
-
-        val possibleEndNodes = this.postOrder().filter {
-            it.isLeaf()
-                    && getDepth(it, topNode) in (1..maxHeight)
-                    && (branchIndices[it]!! > startNodeBranchIndex)
-                    && (leaveOrders[it]!! > startNodeOrder)
-                    && (leaveOrders[it]!! - startNodeOrder) <= maxWidth
-        }
-        return possibleEndNodes.size
-    }
-
-    var totalPaths = 0
-
-    allLeaves.forEach { leaf ->
-        val possibleTopNodes = leaf.retrieveParentsUpToMaxHeight(maxHeight)
-        possibleTopNodes.forEach { topNode ->
-            totalPaths += topNode.countPathsInSubtreeStartingFrom(leaf, maxWidth, topNode)
         }
     }
-
-    return totalPaths
+    return allPathCharacteristics
 }
 
 fun ASTPath.allNodesAreDistinct(): Boolean {
@@ -82,15 +48,17 @@ fun ASTPath.allNodesAreDistinct(): Boolean {
 }
 
 fun ASTPath.isSimple(): Boolean {
-    return this.upwardNodes.toSet().intersect(this.downwardNodes.toSet()).size == 1
+    return this.upwardNodes.toSet().intersect(this.downwardNodes.toSet()).isEmpty()
+            && !this.upwardNodes.contains(this.topNode)
+            && !this.downwardNodes.contains(this.topNode)
 }
 
 fun ASTPath.piecesMatch(): Boolean = this.upwardNodes.last() === this.downwardNodes.first()
 
 fun assertPathIsValid(path: ASTPath) {
     Assert.assertTrue("Nodes in each of the path pieces should be distinct", path.allNodesAreDistinct())
-    Assert.assertTrue("The pieces of the path should match on the top node", path.piecesMatch())
-    Assert.assertTrue("Path should be simple: upward and downward pieces " +
-            "should only have the top node in common",
-            path.isSimple())
+    Assert.assertTrue(
+            "Path should be simple: upward and downward pieces should not intersect or contain top node",
+            path.isSimple()
+    )
 }
