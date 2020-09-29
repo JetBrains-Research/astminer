@@ -3,7 +3,6 @@ package astminer.paths
 import astminer.common.model.ASTPath
 import astminer.common.model.Node
 import astminer.common.postOrderIterator
-import kotlin.math.min
 
 class PathWorker {
 
@@ -14,28 +13,28 @@ class PathWorker {
             this.setMetadata(PATH_PIECES_KEY, pathPieces)
         }
 
-        private fun Node.getPathPieces(): List<PathPiece> = this.getMetadata(PATH_PIECES_KEY) as List<PathPiece>
+        private fun Node.getPathPieces(): List<PathPiece>? = this.getMetadata(PATH_PIECES_KEY) as List<PathPiece>?
     }
 
     fun retrievePaths(tree: Node) = retrievePaths(tree, Int.MAX_VALUE, Int.MAX_VALUE)
 
     fun updatePathPieces(
             currentNode: Node,
-            pathPiecesPerChild: List<List<PathPiece>>,
+            pathPiecesPerChild: List<List<PathPiece>?>,
             maxLength: Int
     ) = pathPiecesPerChild.flatMap { childPieces ->
-        childPieces.mapNotNull { pathPiece ->
+        childPieces?.mapNotNull { pathPiece ->
             if (pathPiece.size <= maxLength) {
                 pathPiece + currentNode
             } else {
                 null
             }
-        }
+        } ?: emptyList()
     }
 
     fun collapsePiecesToPaths(
             currentNode: Node,
-            pathPiecesPerChild: List<List<PathPiece>>,
+            pathPiecesPerChild: List<List<PathPiece>?>,
             maxLength: Int, maxWidth: Int
     ): Collection<ASTPath> {
         val paths: MutableCollection<ASTPath> = ArrayList()
@@ -47,8 +46,8 @@ class PathWorker {
                 index + maxWidth + 1
             }
             pathPiecesPerChild.subList(index + 1, maxIndex).forEach { rightChildPieces ->
-                leftChildPieces.forEach { upPiece ->
-                    rightChildPieces.forEach { downPiece ->
+                leftChildPieces?.forEach { upPiece ->
+                    rightChildPieces?.forEach { downPiece ->
                         if (upPiece.size + 1 + downPiece.size <= maxLength) {
                             paths.add(ASTPath(upPiece, currentNode, downPiece.asReversed()))
                         }
