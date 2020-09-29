@@ -4,6 +4,7 @@ import astminer.common.model.ASTPath
 import astminer.common.model.Node
 import astminer.common.model.PathPiece
 import astminer.common.postOrderIterator
+import kotlin.math.min
 
 class PathWorker {
 
@@ -17,15 +18,15 @@ class PathWorker {
         private fun Node.getPathPieces(): List<PathPiece>? = this.getMetadata(PATH_PIECES_KEY) as List<PathPiece>?
     }
 
-    fun retrievePaths(tree: Node) = retrievePaths(tree, Int.MAX_VALUE, Int.MAX_VALUE)
+    fun retrievePaths(tree: Node) = retrievePaths(tree, null, null)
 
     fun updatePathPieces(
             currentNode: Node,
             pathPiecesPerChild: List<List<PathPiece>?>,
-            maxLength: Int
+            maxLength: Int?
     ) = pathPiecesPerChild.filterNotNull().flatMap { childPieces ->
         childPieces.filter { pathPiece ->
-            pathPiece.size <= maxLength
+            maxLength == null || pathPiece.size <= maxLength
         }.map { pathPiece ->
             pathPiece + currentNode
         }
@@ -34,20 +35,16 @@ class PathWorker {
     fun collapsePiecesToPaths(
             currentNode: Node,
             pathPiecesPerChild: List<List<PathPiece>?>,
-            maxLength: Int, maxWidth: Int
+            maxLength: Int?, maxWidth: Int?
     ): Collection<ASTPath> {
         val paths: MutableCollection<ASTPath> = ArrayList()
         val childrenCount = pathPiecesPerChild.size
         pathPiecesPerChild.forEachIndexed { index, leftChildPieces ->
-            val maxIndex = if (maxWidth == Int.MAX_VALUE || index + maxWidth + 1 >= childrenCount) {
-                childrenCount
-            } else {
-                index + maxWidth + 1
-            }
+            val maxIndex = maxWidth?.let { min(index + maxWidth + 1, childrenCount) } ?: childrenCount
             pathPiecesPerChild.subList(index + 1, maxIndex).forEach { rightChildPieces ->
                 leftChildPieces?.forEach { upPiece ->
                     rightChildPieces?.forEach { downPiece ->
-                        if (upPiece.size + 1 + downPiece.size <= maxLength) {
+                        if (maxLength == null || upPiece.size + 1 + downPiece.size <= maxLength) {
                             paths.add(ASTPath(upPiece, currentNode, downPiece.asReversed()))
                         }
                     }
@@ -57,7 +54,7 @@ class PathWorker {
         return paths
     }
 
-    fun retrievePaths(tree: Node, maxLength: Int, maxWidth: Int): Collection<ASTPath> {
+    fun retrievePaths(tree: Node, maxLength: Int?, maxWidth: Int?): Collection<ASTPath> {
         val iterator = tree.postOrderIterator()
         val paths: MutableList<ASTPath> = ArrayList()
         iterator.forEach { currentNode ->
