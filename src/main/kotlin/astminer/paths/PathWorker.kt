@@ -23,14 +23,12 @@ class PathWorker {
             currentNode: Node,
             pathPiecesPerChild: List<List<PathPiece>?>,
             maxLength: Int
-    ) = pathPiecesPerChild.flatMap { childPieces ->
-        childPieces?.mapNotNull { pathPiece ->
-            if (pathPiece.size <= maxLength) {
-                pathPiece + currentNode
-            } else {
-                null
-            }
-        } ?: emptyList()
+    ) = pathPiecesPerChild.filterNotNull().flatMap { childPieces ->
+        childPieces.filter { pathPiece ->
+            pathPiece.size <= maxLength
+        }.map { pathPiece ->
+            pathPiece + currentNode
+        }
     }
 
     fun collapsePiecesToPaths(
