@@ -63,7 +63,16 @@ interface Parser<T : Node> {
      * @param extension extension of files that should be parsed
      * @return list of AST roots, one for each parsed file
      */
-    fun parseWithExtension(projectRoot: File, extension: String) = parseProject(projectRoot) { it.isFile && it.extension == extension }
+    fun parseWithExtension(projectRoot: File, extension: String) =
+        parseProject(projectRoot) { it.isFile && it.extension == extension }
+
+    fun forEachTreeWithExtension(projectRoot: File, extension: String, handler: (ParseResult<T>) -> Any) {
+        val files = projectRoot.walkTopDown().filter { it.isFile && it.extension == extension }
+        files.forEach { 
+            val parseResult = ParseResult(parse(it.inputStream()), it.path)
+            handler.invoke(parseResult)
+        }
+    }
 }
 
 data class ParseResult<T : Node>(val root: T?, val filePath: String)

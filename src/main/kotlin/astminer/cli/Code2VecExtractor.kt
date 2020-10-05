@@ -19,9 +19,9 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
     private val supportedLanguages = listOf("java", "c", "cpp", "py")
 
     val extensions: List<String> by option(
-            "--lang",
-            help = "Comma-separated list of file extensions that will be parsed.\n" +
-                    "Supports 'c', 'cpp', 'java', 'py', defaults to all these extensions."
+        "--lang",
+        help = "Comma-separated list of file extensions that will be parsed.\n" +
+                "Supports 'c', 'cpp', 'java', 'py', defaults to all these extensions."
     ).split(",").default(supportedLanguages)
 
     val projectRoot: String by option(
@@ -61,83 +61,88 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
     ).long().default(Long.MAX_VALUE)
 
     val granularityLevel: String by option(
-            "--granularity",
-            help = "Choose level of granularity ('file' or 'method', defaults to 'file')"
+        "--granularity",
+        help = "Choose level of granularity ('file' or 'method', defaults to 'file')"
     ).default("file")
 
     val folderLabel: Boolean by option(
-            "--folder-label",
-            help = "if passed with file-level granularity, the folder name is used to label paths"
+        "--folder-label",
+        help = "if passed with file-level granularity, the folder name is used to label paths"
     ).flag(default = false)
 
     val isMethodNameHide: Boolean by option(
-            "--hide-method-name",
-            help = "if passed with method level granularity, the names of all methods are replaced with placeholder token"
+        "--hide-method-name",
+        help = "if passed with method level granularity, the names of all methods are replaced with placeholder token"
     ).flag(default = false)
 
     val isTokenSplitted: Boolean by option(
-            "--split-tokens",
-            help = "if passed, split tokens into sequence of tokens"
+        "--split-tokens",
+        help = "if passed, split tokens into sequence of tokens"
     ).flag(default = false)
 
     val excludeModifiers: List<String> by option(
-            "--filter-modifiers",
-            help = "Comma-separated list of function's modifiers, which should be filtered." +
-                    "Works only for method-level granulation."
+        "--filter-modifiers",
+        help = "Comma-separated list of function's modifiers, which should be filtered." +
+                "Works only for method-level granulation."
     ).split(",").default(emptyList())
 
     val excludeAnnotations: List<String> by option(
-            "--filter-annotations",
-            help = "Comma-separated list of function's annotations, which should be filtered." +
-                    "Works only for method-level granulation."
+        "--filter-annotations",
+        help = "Comma-separated list of function's annotations, which should be filtered." +
+                "Works only for method-level granulation."
     ).split(",").default(emptyList())
 
     val filterConstructors: Boolean by option(
-            "--remove-constructors",
-            help = "Remove constructor methods, works for method-level granulation"
+        "--remove-constructors",
+        help = "Remove constructor methods, works for method-level granulation"
     ).flag(default = false)
 
     val javaParser: String by option(
-            "--java-parser",
-            help = "Choose a parser for .java files." +
-                    "'gumtree' for GumTree parser, 'antlr' for antlr parser."
+        "--java-parser",
+        help = "Choose a parser for .java files." +
+                "'gumtree' for GumTree parser, 'antlr' for antlr parser."
     ).default("gumtree")
 
     val maxMethodNameLength: Int by option(
-            "--max-method-name-length",
-            help = "Filtering methods with a large sequence of subtokens in their names"
+        "--max-method-name-length",
+        help = "Filtering methods with a large sequence of subtokens in their names"
     ).int().default(-1)
 
     val maxTokenLength: Int by option(
-            "--max-token-length",
-            help = "Filter methods containing a long sequence of subtokens in the ast node"
+        "--max-token-length",
+        help = "Filter methods containing a long sequence of subtokens in the ast node"
     ).int().default(-1)
 
     val maxTreeSize: Int by option(
-            "--max-tree-size",
-            help = "Filter methods by their ast size"
+        "--max-tree-size",
+        help = "Filter methods by their ast size"
     ).int().default(-1)
 
-    private fun <T: Node> extractFromTrees(
-            roots: List<ParseResult<out T>>,
-            miner: PathMiner,
-            storage: Code2VecPathStorage,
-            labelExtractor: LabelExtractor
+    private fun <T : Node> extractFromTree(
+        parseResult: ParseResult<out T>,
+        miner: PathMiner,
+        storage: Code2VecPathStorage,
+        labelExtractor: LabelExtractor
     ) {
-        roots.forEach { parseResult ->
-            val labeledParseResults = labelExtractor.toLabeledData(parseResult)
+        val labeledParseResults = labelExtractor.toLabeledData(parseResult)
 
-            // Retrieve paths from every node individually
-            labeledParseResults.forEach { (root, label) ->
-                val paths = miner.retrievePaths(root).take(maxPathContexts)
-                storage.store(LabeledPathContexts(label, paths.map {
-                    toPathContext(it) { node ->
-                        node.getNormalizedToken()
-                    }
-                }))
-            }
+        // Retrieve paths from every node individually
+        labeledParseResults.forEach { (root, label) ->
+            val paths = miner.retrievePaths(root).take(maxPathContexts)
+            storage.store(LabeledPathContexts(label, paths.map {
+                toPathContext(it) { node ->
+                    node.getNormalizedToken()
+                }
+            }))
         }
     }
+
+    private fun <T : Node> extractFromTrees(
+        roots: List<ParseResult<out T>>,
+        miner: PathMiner,
+        storage: Code2VecPathStorage,
+        labelExtractor: LabelExtractor
+    ) = roots.forEach { extractFromTree(it, miner, storage, labelExtractor) }
 
     private fun extract(labelExtractor: LabelExtractor) {
         val outputDir = File(outputDirName)
@@ -150,14 +155,15 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
             val storage = Code2VecPathStorage(outputDirForLanguage.path, maxPaths, maxTokens)
             // Choose type of parser
             val parser = getParser(
-                    extension,
-                    javaParser
+                extension,
+                javaParser
             )
-            // Parse project
-            val parsedProject = parser.parseWithExtension(File(projectRoot), extension)
-            parsedProject.forEach { normalizeParseResult(it, isTokenSplitted) }
-            // Retrieve labeled data
-            extractFromTrees(parsedProject, miner, storage, labelExtractor)
+            // Parse project one file at a time
+            parser.forEachTreeWithExtension(File(projectRoot), extension) {
+                normalizeParseResult(it, isTokenSplitted)
+                // Retrieve labeled data
+                extractFromTree(it, miner, storage, labelExtractor)
+            }
             // Save stored data on disk
             storage.close()
         }
@@ -165,16 +171,16 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
 
     override fun run() {
         val labelExtractor = customLabelExtractor ?: getLabelExtractor(
-                granularityLevel,
-                javaParser,
-                isMethodNameHide,
-                excludeModifiers,
-                excludeAnnotations,
-                filterConstructors,
-                maxMethodNameLength,
-                maxTokenLength,
-                maxTreeSize,
-                folderLabel
+            granularityLevel,
+            javaParser,
+            isMethodNameHide,
+            excludeModifiers,
+            excludeAnnotations,
+            filterConstructors,
+            maxMethodNameLength,
+            maxTokenLength,
+            maxTreeSize,
+            folderLabel
         )
         extract(labelExtractor)
     }
