@@ -11,7 +11,7 @@ import java.io.File
  * @param file file in which the number of lines is counted
  * @return number of lines in a given file
  */
-fun numberOfLines(file: File) : Int {
+fun numberOfLines(file: File): Int {
     return file.readLines().filter { it != "" }.size
 }
 
@@ -21,7 +21,7 @@ fun numberOfLines(file: File) : Int {
  * @param extension new extension of a given file
  * @return file with new extension
  */
-fun changeExtensionTo(file: File, extension: String) : File {
+fun changeExtensionTo(file: File, extension: String): File {
     val name = "${file.parent}/${file.nameWithoutExtension}.$extension"
     file.renameTo(File(name))
     return File(name)
@@ -39,13 +39,21 @@ fun addClassWrapper(file: File, className: String) {
 
 /**
  * Checks if java file has any syntax errors, that can be identified via [Java8Parser][me.vovak.antlr.parser.Java8Parser]
- * @param java file which is checked for correct syntax
+ * @param javaFile file which is checked for correct syntax
  * @return true if there are syntax errors and false otherwise
  */
-fun hasSyntaxErrors(javaFile: File) : Boolean {
+fun hasSyntaxErrors(javaFile: File): Boolean {
     val lexer = Java8Lexer(CharStreams.fromStream(javaFile.inputStream()))
     val tokens = CommonTokenStream(lexer)
     val parser = Java8Parser(tokens)
     parser.compilationUnit()
     return parser.numberOfSyntaxErrors != 0
 }
+
+fun getProjectFiles(projectRoot: File, filter: (File) -> Boolean = { true }) = projectRoot
+    .walkTopDown()
+    .filter(filter)
+    .toList()
+
+fun getProjectFilesWithExtension(projectRoot: File, extension: String): List<File> =
+    getProjectFiles(projectRoot) { it.isFile && it.extension == extension }

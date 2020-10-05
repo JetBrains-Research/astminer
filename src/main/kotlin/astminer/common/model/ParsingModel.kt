@@ -40,38 +40,26 @@ interface Parser<T : Node> {
     fun parse(content: InputStream): T?
 
     /**
+     * Parse input stream into an AST.
+     * @param file file to parse
+     * @return ParseResult instance 
+     */
+    fun parse(file: File) = ParseResult(parse(file.inputStream()), file.path)
+
+    /**
      * Parse list of files.
      * @param files files to parse
-     * @return list of AST roots, one for each parsed file
+     * @return list of ParseResult instances, one for each parsed file
      */
     fun parse(files: List<File>): List<ParseResult<T>> = files.map { ParseResult(parse(it.inputStream()), it.path) }
 
     /**
-     * Parse all files that pass [filter][filter] in [root folder][projectRoot] and its sub-folders.
-     * @param projectRoot root folder containing files to parse
-     * @param filter lambda expression that determines which files should be parsed
-     * @return list of AST roots, one for each parsed file
+     * Parse list of files.
+     * @param files files to parse
+     * @param handleResult handler to invoke on each file parse result
      */
-    fun parseProject(projectRoot: File, filter: (File) -> Boolean): List<ParseResult<T>> {
-        val files = projectRoot.walkTopDown().filter(filter).toList()
-        return parse(files)
-    }
-
-    /**
-     * Parse all files with given extension in [root folder][projectRoot] and its sub-folders.
-     * @param projectRoot root folder containing files to parse
-     * @param extension extension of files that should be parsed
-     * @return list of AST roots, one for each parsed file
-     */
-    fun parseWithExtension(projectRoot: File, extension: String) =
-        parseProject(projectRoot) { it.isFile && it.extension == extension }
-
-    fun forEachTreeWithExtension(projectRoot: File, extension: String, handler: (ParseResult<T>) -> Any) {
-        val files = projectRoot.walkTopDown().filter { it.isFile && it.extension == extension }
-        files.forEach { 
-            val parseResult = ParseResult(parse(it.inputStream()), it.path)
-            handler.invoke(parseResult)
-        }
+    fun parse(files: List<File>, handleResult: (ParseResult<T>) -> Any) {
+        files.forEach { handleResult(parse(it)) }
     }
 }
 
