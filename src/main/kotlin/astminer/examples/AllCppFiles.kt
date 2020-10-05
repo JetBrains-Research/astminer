@@ -2,6 +2,7 @@
 
 package astminer.examples
 
+import astminer.common.getProjectFilesWithExtension
 import astminer.common.model.LabeledPathContexts
 import astminer.parse.cpp.FuzzyCppParser
 import astminer.paths.PathMiner
@@ -22,15 +23,13 @@ fun allCppFiles() {
 
     parser.preprocessProject(inputDir, preprocOutputFolder)
 
-    val parsedFiles = parser.parseWithExtension(preprocOutputFolder, "cpp")
+    val files = getProjectFilesWithExtension(preprocOutputFolder, "cpp")
 
-    parsedFiles.forEach { parseResult ->
-        if (parseResult.root == null) {
-            return@forEach
+    parser.parse(files) { parseResult ->
+        if (parseResult.root != null) {
+            val paths = miner.retrievePaths(parseResult.root)
+            storage.store(LabeledPathContexts(parseResult.filePath, paths.map { toPathContext(it) }))
         }
-        val paths = miner.retrievePaths(parseResult.root)
-
-        storage.store(LabeledPathContexts(parseResult.filePath, paths.map { toPathContext(it) }))
     }
 
     storage.close()

@@ -1,5 +1,6 @@
 package astminer.cli
 
+import astminer.common.getProjectFilesWithExtension
 import astminer.common.getNormalizedToken
 import astminer.common.model.LabeledPathContexts
 import astminer.common.model.Node
@@ -159,7 +160,7 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
                 javaParser
             )
             // Parse project one file at a time
-            parser.forEachTreeWithExtension(File(projectRoot), extension) {
+            parser.parse(getProjectFilesWithExtension(File(projectRoot), extension)) {
                 normalizeParseResult(it, isTokenSplitted)
                 // Retrieve labeled data
                 extractFromTree(it, miner, storage, labelExtractor)
