@@ -17,7 +17,7 @@ fun allJavaFilesGumTree() {
     val storage = CsvPathStorage(outputDir)
 
     File(inputDir).forFilesWithSuffix(".java") { file ->
-        val node = GumTreeJavaParser().parse(file.inputStream()) ?: return@forFilesWithSuffix
+        val node = GumTreeJavaParser().parseInputStream(file.inputStream()) ?: return@forFilesWithSuffix
         val paths = miner.retrievePaths(node)
 
         storage.store(LabeledPathContexts(file.path, paths.map { toPathContext(it) }))

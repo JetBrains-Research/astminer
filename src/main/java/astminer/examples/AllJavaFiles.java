@@ -25,7 +25,7 @@ public class AllJavaFiles {
         FileVisitor<Path> fileVisitor = new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attributes) throws IOException {
-                Node fileTree = new GumTreeJavaParser().parse(new FileInputStream(file.toFile()));
+                Node fileTree = new GumTreeJavaParser().parseInputStream(new FileInputStream(file.toFile()));
                 if (fileTree == null) {
                     return FileVisitResult.CONTINUE;
                 }

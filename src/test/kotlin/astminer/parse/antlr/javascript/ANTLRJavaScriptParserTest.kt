@@ -11,7 +11,7 @@ class ANTLRJavaScriptParserTest {
     fun testNodeIsNotNull() {
         val parser = JavaScriptParser()
         val file = File("src/test/resources/examples/1.js")
-        val node = parser.parse(FileInputStream(file))
+        val node = parser.parseInputStream(FileInputStream(file))
         assertNotNull(node, "Parse tree for a valid file should not be null")
     }
 

@@ -138,13 +138,6 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
         }
     }
 
-    private fun <T : Node> extractFromTrees(
-        roots: List<ParseResult<out T>>,
-        miner: PathMiner,
-        storage: Code2VecPathStorage,
-        labelExtractor: LabelExtractor
-    ) = roots.forEach { extractFromTree(it, miner, storage, labelExtractor) }
-
     private fun extract(labelExtractor: LabelExtractor) {
         val outputDir = File(outputDirName)
         for (extension in extensions) {
@@ -160,7 +153,7 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
                 javaParser
             )
             // Parse project one file at a time
-            parser.parse(getProjectFilesWithExtension(File(projectRoot), extension)) {
+            parser.parseFiles(getProjectFilesWithExtension(File(projectRoot), extension)) {
                 normalizeParseResult(it, isTokenSplitted)
                 // Retrieve labeled data
                 extractFromTree(it, miner, storage, labelExtractor)

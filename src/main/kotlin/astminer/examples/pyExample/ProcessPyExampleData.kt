@@ -19,7 +19,7 @@ fun processPyExampleData() {
     val storage = CsvPathStorage(outputDir)
 
     File(inputDir).walkTopDown().filter { it.path.endsWith(".java") }.forEach { file ->
-        val node = JavaParser().parse(file.inputStream()) ?: return@forEach
+        val node = JavaParser().parseInputStream(file.inputStream()) ?: return@forEach
         val paths = miner.retrievePaths(node)
 
         storage.store(LabeledPathContexts(file.path, paths.map { toPathContext(it) }))

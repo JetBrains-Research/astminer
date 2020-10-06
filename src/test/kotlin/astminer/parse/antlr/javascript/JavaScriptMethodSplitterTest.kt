@@ -2,13 +2,11 @@ package astminer.parse.antlr.javascript
 
 import astminer.common.model.MethodInfo
 import astminer.parse.antlr.SimpleNode
-import astminer.parse.antlr.decompressTypeLabel
 import org.junit.Test
 import java.io.File
 import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 
 class JavaScriptMethodSplitterTest {
@@ -23,7 +21,7 @@ class JavaScriptMethodSplitterTest {
 
     @BeforeTest
     fun parseTree() {
-        val testTree = parser.parse(File(testFilePath).inputStream())
+        val testTree = parser.parseInputStream(File(testFilePath).inputStream())
         assertNotNull(testTree)
         methodInfos = methodSplitter.splitIntoMethods(testTree)
     }

@@ -37,29 +37,29 @@ interface Parser<T : Node> {
      * @param content input stream to parse
      * @return root of the AST
      */
-    fun parse(content: InputStream): T?
+    fun parseInputStream(content: InputStream): T?
 
     /**
-     * Parse input stream into an AST.
+     * Parse file into an AST.
      * @param file file to parse
      * @return ParseResult instance 
      */
-    fun parse(file: File) = ParseResult(parse(file.inputStream()), file.path)
+    fun parseFile(file: File) = ParseResult(parseInputStream(file.inputStream()), file.path)
 
     /**
      * Parse list of files.
      * @param files files to parse
      * @return list of ParseResult instances, one for each parsed file
      */
-    fun parse(files: List<File>): List<ParseResult<T>> = files.map { ParseResult(parse(it.inputStream()), it.path) }
+    fun parseFiles(files: List<File>): List<ParseResult<T>> = files.map { ParseResult(parseInputStream(it.inputStream()), it.path) }
 
     /**
      * Parse list of files.
      * @param files files to parse
      * @param handleResult handler to invoke on each file parse result
      */
-    fun parse(files: List<File>, handleResult: (ParseResult<T>) -> Any) {
-        files.forEach { handleResult(parse(it)) }
+    fun parseFiles(files: List<File>, handleResult: (ParseResult<T>) -> Any) {
+        files.forEach { handleResult(parseFile(it)) }
     }
 }
 

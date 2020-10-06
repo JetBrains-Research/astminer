@@ -20,7 +20,7 @@ fun code2vecJavaMethods() {
 
     File(folder).forFilesWithSuffix(".java") { file ->
         //parse file
-        val fileNode = JavaParser().parse(file.inputStream()) ?: return@forFilesWithSuffix
+        val fileNode = JavaParser().parseInputStream(file.inputStream()) ?: return@forFilesWithSuffix
 
         //extract method nodes
         val methods = JavaMethodSplitter().splitIntoMethods(fileNode)

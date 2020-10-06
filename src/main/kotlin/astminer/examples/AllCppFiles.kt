@@ -25,7 +25,7 @@ fun allCppFiles() {
 
     val files = getProjectFilesWithExtension(preprocOutputFolder, "cpp")
 
-    parser.parse(files) { parseResult ->
+    parser.parseFiles(files) { parseResult ->
         if (parseResult.root != null) {
             val paths = miner.retrievePaths(parseResult.root)
             storage.store(LabeledPathContexts(parseResult.filePath, paths.map { toPathContext(it) }))
