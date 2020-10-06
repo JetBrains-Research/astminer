@@ -37,33 +37,31 @@ interface Parser<T : Node> {
      * @param content input stream to parse
      * @return root of the AST
      */
-    fun parse(content: InputStream): T?
+    fun parseInputStream(content: InputStream): T?
+
+    /**
+     * Parse file into an AST.
+     * @param file file to parse
+     * @return ParseResult instance 
+     */
+    fun parseFile(file: File) = ParseResult(parseInputStream(file.inputStream()), file.path)
 
     /**
      * Parse list of files.
      * @param files files to parse
-     * @return list of AST roots, one for each parsed file
+     * @return list of ParseResult instances, one for each parsed file
      */
-    fun parse(files: List<File>): List<ParseResult<T>> = files.map { ParseResult(parse(it.inputStream()), it.path) }
+    @Deprecated("Please use parseFiles (List<File>, (ParseResult<T>) -> Any) to avoid clogging memory")
+    fun parseFiles(files: List<File>): List<ParseResult<T>> = files.map { ParseResult(parseInputStream(it.inputStream()), it.path) }
 
     /**
-     * Parse all files that pass [filter][filter] in [root folder][projectRoot] and its sub-folders.
-     * @param projectRoot root folder containing files to parse
-     * @param filter lambda expression that determines which files should be parsed
-     * @return list of AST roots, one for each parsed file
+     * Parse list of files.
+     * @param files files to parse
+     * @param handleResult handler to invoke on each file parse result
      */
-    fun parseProject(projectRoot: File, filter: (File) -> Boolean): List<ParseResult<T>> {
-        val files = projectRoot.walkTopDown().filter(filter).toList()
-        return parse(files)
+    fun parseFiles(files: List<File>, handleResult: (ParseResult<T>) -> Any) {
+        files.forEach { handleResult(parseFile(it)) }
     }
-
-    /**
-     * Parse all files with given extension in [root folder][projectRoot] and its sub-folders.
-     * @param projectRoot root folder containing files to parse
-     * @param extension extension of files that should be parsed
-     * @return list of AST roots, one for each parsed file
-     */
-    fun parseWithExtension(projectRoot: File, extension: String) = parseProject(projectRoot) { it.isFile && it.extension == extension }
 }
 
 data class ParseResult<T : Node>(val root: T?, val filePath: String)

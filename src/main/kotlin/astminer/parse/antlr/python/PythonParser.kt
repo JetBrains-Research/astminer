@@ -11,7 +11,7 @@ import java.io.InputStream
 import java.lang.Exception
 
 class PythonParser : Parser<SimpleNode> {
-    override fun parse(content: InputStream): SimpleNode? {
+    override fun parseInputStream(content: InputStream): SimpleNode? {
         return try {
             val lexer = Python3Lexer(CharStreams.fromStream(content))
             lexer.removeErrorListeners()

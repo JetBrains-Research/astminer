@@ -1,6 +1,7 @@
 package astminer.cli
 
 import astminer.common.getNormalizedToken
+import astminer.common.getProjectFilesWithExtension
 import astminer.common.model.*
 import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.python.PythonParser
@@ -103,15 +104,14 @@ class PathContextsExtractor(private val customLabelExtractor: LabelExtractor? = 
         for (extension in extensions) {
             val miner = PathMiner(PathRetrievalSettings(maxPathLength, maxPathWidth))
             val parser = getParser(extension)
-
-            val parsedFiles = parser.parseWithExtension(File(projectRoot), extension)
-            parsedFiles.forEach { normalizeParseResult(it, splitTokens = true) }
-
+            
             val outputDirForLanguage = outputDir.resolve(extension)
             outputDirForLanguage.mkdir()
             val storage = Code2VecPathStorage(outputDirForLanguage.path, maxPaths, maxTokens)
 
-            parsedFiles.forEach { parseResult ->
+            val files = getProjectFilesWithExtension(File(projectRoot), extension)
+            parser.parseFiles(files) { parseResult ->
+                normalizeParseResult(parseResult, splitTokens = true)
                 val labeledParseResults = labelExtractor.toLabeledData(parseResult)
                 labeledParseResults.forEach { (root, label) ->
                     val paths = miner.retrievePaths(root).take(maxPathContexts)

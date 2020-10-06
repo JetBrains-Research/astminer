@@ -18,7 +18,7 @@ fun allJavaFiles() {
     val storage = CsvPathStorage(outputDir)
 
     File(inputDir).forFilesWithSuffix("11.java") { file ->
-        val node = JavaParser().parse(file.inputStream()) ?: return@forFilesWithSuffix
+        val node = JavaParser().parseInputStream(file.inputStream()) ?: return@forFilesWithSuffix
         val paths = miner.retrievePaths(node)
         node.prettyPrint()
         JavaMethodSplitter().splitIntoMethods(node).forEach {

@@ -17,7 +17,7 @@ fun allPythonFiles() {
     val storage = CsvPathStorage(outputDir)
 
     File(inputDir).forFilesWithSuffix(".py") { file ->
-        val node = PythonParser().parse(file.inputStream()) ?: return@forFilesWithSuffix
+        val node = PythonParser().parseInputStream(file.inputStream()) ?: return@forFilesWithSuffix
         val paths = miner.retrievePaths(node)
 
         storage.store(LabeledPathContexts(file.path, paths.map { toPathContext(it) }))

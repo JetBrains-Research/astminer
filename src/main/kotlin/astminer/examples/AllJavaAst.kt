@@ -11,7 +11,7 @@ fun allJavaAsts() {
     val storage = CsvAstStorage("out_examples/allJavaAstsAntlr")
 
     File(folder).forFilesWithSuffix(".java") { file ->
-        val node = JavaParser().parse(file.inputStream()) ?: return@forFilesWithSuffix
+        val node = JavaParser().parseInputStream(file.inputStream()) ?: return@forFilesWithSuffix
         storage.store(node, label = file.path)
     }
 

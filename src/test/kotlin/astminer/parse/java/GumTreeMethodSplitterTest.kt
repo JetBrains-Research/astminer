@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 
 private fun createTree(filename: String): GumTreeJavaNode {
     val parser = GumTreeJavaParser()
-    return parser.parse(File(filename).inputStream()) as GumTreeJavaNode
+    return parser.parseInputStream(File(filename).inputStream()) as GumTreeJavaNode
 }
 
 private fun createAndSplitTree(filename: String): Collection<MethodInfo<GumTreeJavaNode>> {

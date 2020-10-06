@@ -2,6 +2,7 @@ package astminer.cli
 
 import astminer.ast.CsvAstStorage
 import astminer.ast.DotAstStorage
+import astminer.common.getProjectFilesWithExtension
 import astminer.common.model.AstStorage
 import astminer.common.preOrder
 import com.github.ajalt.clikt.core.CliktCommand
@@ -121,10 +122,9 @@ class ProjectParser(private val customLabelExtractor: LabelExtractor? = null) : 
                     javaParser
             )
             // Parse project
-            val parsedProject = parser.parseWithExtension(File(projectRoot), extension)
-            parsedProject.forEach { normalizeParseResult(it, isTokenSplitted) }
-            // Split project to required granularity level
-            parsedProject.forEach { parseResult ->
+            val filesToParse = getProjectFilesWithExtension(File(projectRoot), extension)
+            parser.parseFiles(filesToParse) { parseResult ->
+                normalizeParseResult(parseResult, isTokenSplitted)
                 val labeledParseResults = labelExtractor.toLabeledData(parseResult)
                 labeledParseResults.forEach { (root, label) ->
                     root.preOrder().forEach { node ->
