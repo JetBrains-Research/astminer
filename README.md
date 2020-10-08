@@ -85,7 +85,7 @@ Extract path contexts from all the files in supported languages and store in for
 Extract data suitable as input for [code2vec](https://github.com/tech-srl/code2vec) model.
 Parse all files written in specified language into ASTs, split into methods, and store in form `method|name triplesOfPathContexts`.
 ```shell script
-./cli.sh code2vec --lang py,java,c,cpp --project path/to/project --output path/to/results --maxL L --maxW W --maxContexts C --maxTokens T --maxPaths P --granularity method
+./cli.sh code2vec --lang py,java,c,cpp --project path/to/project --output path/to/results --maxL L --maxW W --maxContexts C --maxTokens T --maxPaths P  --split-tokens --granularity method
 ```
 
 ### Integrate in your mining pipeline
