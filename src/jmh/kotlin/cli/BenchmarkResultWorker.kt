@@ -1,7 +1,6 @@
 package cli
 
 import java.io.File
-import kotlin.math.round
 
 data class BenchmarkResult(val taskName: String, val projectName: String) {
     var totalTime: Float = 0f
@@ -90,7 +89,7 @@ class BenchmarkResultWorker {
             projects.forEach { project ->
                 val totalMemory = "%.2f".format(convertBytes(results[task to project]?.totalAllocatedMemory ?: 0f, memoryMeasure))
                 val memoryStd = "%.2f".format(convertBytes(results[task to project]?.allocatedMemoryStd ?: 0f, memoryMeasure))
-                outputFileWriter.print(" $totalMemory ± $memoryStd ${memoryMeasure.name} |")
+                outputFileWriter.print(" $totalMemory ± $memoryStd ${memoryMeasure.name.toLowerCase()} |")
             }
             outputFileWriter.print("\n")
             if (task != tasks.last())
