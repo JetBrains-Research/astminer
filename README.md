@@ -64,20 +64,20 @@ For the output format, see the section below.
 Run preprocessing on C/C++ project to unfold `#define` directives. 
 In other tasks, if you feed C/C++ file with macroses, they will be dropped as well as their appearances in code. 
 ```shell script
-java -jar cli.jar preprocess --project path/to/project --output path/to/preprocessedProject
+./cli.sh preprocess --project path/to/project --output path/to/preprocessedProject
 ```
 #### Parse
 
 Extract ASTs from all the files in supported languages.
 ```shell script
-java -jar cli.jar parse --lang py,java,c,cpp --project path/to/project --output path/to/result --storage dot
+./cli.sh parse --lang py,java,c,cpp --project path/to/project --output path/to/result --storage dot
 ```
 
 #### PathContexts
 
 Extract path contexts from all the files in supported languages and store in form `fileName triplesOfPathContexts`.
 ```shell script
-java -jar cli.jar pathContexts --lang py,java,c,cpp --project path/to/project --output path/to/results --maxL L --maxW W --maxContexts C --maxTokens T --maxPaths P
+./cli.sh pathContexts --lang py,java,c,cpp --project path/to/project --output path/to/results --maxL L --maxW W --maxContexts C --maxTokens T --maxPaths P
 ```
 
 #### Code2vec
@@ -85,7 +85,7 @@ java -jar cli.jar pathContexts --lang py,java,c,cpp --project path/to/project --
 Extract data suitable as input for [code2vec](https://github.com/tech-srl/code2vec) model.
 Parse all files written in specified language into ASTs, split into methods, and store in form `method|name triplesOfPathContexts`.
 ```shell script
-java -jar cli.jar code2vec --lang py,java,c,cpp --project path/to/project --output path/to/results --maxL L --maxW W --maxContexts C --maxTokens T --maxPaths P
+./cli.sh code2vec --lang py,java,c,cpp --project path/to/project --output path/to/results --maxL L --maxW W --maxContexts C --maxTokens T --maxPaths P  --split-tokens --granularity method
 ```
 
 ### Integrate in your mining pipeline
