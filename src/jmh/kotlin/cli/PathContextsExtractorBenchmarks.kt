@@ -6,7 +6,7 @@ import astminer.cli.*
 @State(Scope.Benchmark)
 open class PathContextsExtractorBenchmarks {
 
-    private val defaultArgs = listOf("--split-tokens", "--granularity", "method", "--lang", "java")
+    private val defaultArgs = listOf("--lang", "java")
 
     @Setup
     fun pathsSetup() {
