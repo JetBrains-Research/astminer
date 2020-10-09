@@ -6,6 +6,8 @@ import astminer.cli.*
 @State(Scope.Benchmark)
 open class ProjectParserCsvBenchmarks {
 
+    private val defaultArgs = listOf("--split-tokens", "--granularity", "method", "--lang", "java", "--storage", "csv")
+
     @Setup
     fun pathsSetup() {
         BenchmarksSetup().setup()
@@ -14,21 +16,21 @@ open class ProjectParserCsvBenchmarks {
     @Benchmark
     fun simpleProject() {
         val args = listOf("--project", BenchmarksSetup().simpleProjectPath,
-                "--output", BenchmarksSetup().simpleProjectResultsPath)
+                "--output", BenchmarksSetup().simpleProjectResultsPath) + defaultArgs
         ProjectParser().main(args)
     }
     
     @Benchmark
     fun longFileProject() {
         val args = listOf("--project", BenchmarksSetup().longFilePath,
-                "--output", BenchmarksSetup().longFileResultsPath)
+                "--output", BenchmarksSetup().longFileResultsPath) + defaultArgs
         ProjectParser().main(args)
     }
 
     @Benchmark
     fun bigProject() {
         val args = listOf("--project", BenchmarksSetup().bigProjectPath,
-                "--output", BenchmarksSetup().bigProjectResultsPath)
+                "--output", BenchmarksSetup().bigProjectResultsPath) + defaultArgs
         ProjectParser().main(args)
     }
 }

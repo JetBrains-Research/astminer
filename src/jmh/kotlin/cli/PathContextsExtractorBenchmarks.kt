@@ -6,6 +6,8 @@ import astminer.cli.*
 @State(Scope.Benchmark)
 open class PathContextsExtractorBenchmarks {
 
+    private val defaultArgs = listOf("--split-tokens", "--granularity", "method", "--lang", "java")
+
     @Setup
     fun pathsSetup() {
         BenchmarksSetup().setup()
@@ -14,21 +16,21 @@ open class PathContextsExtractorBenchmarks {
     @Benchmark
     fun simpleProject() {
         val args = listOf("--project", BenchmarksSetup().simpleProjectPath,
-                "--output", BenchmarksSetup().simpleProjectResultsPath)
+                "--output", BenchmarksSetup().simpleProjectResultsPath) + defaultArgs
         PathContextsExtractor().main(args)
     }
 
     @Benchmark
     fun longFileProject() {
         val args = listOf("--project", BenchmarksSetup().longFilePath,
-                "--output", BenchmarksSetup().longFileResultsPath)
+                "--output", BenchmarksSetup().longFileResultsPath) + defaultArgs
         PathContextsExtractor().main(args)
     }
 
     @Benchmark
     fun bigProject() {
         val args = listOf("--project", BenchmarksSetup().bigProjectPath,
-                "--output", BenchmarksSetup().bigProjectResultsPath)
+                "--output", BenchmarksSetup().bigProjectResultsPath) + defaultArgs
         PathContextsExtractor().main(args)
     }
 }
