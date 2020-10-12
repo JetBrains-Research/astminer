@@ -1,7 +1,9 @@
 ### Version history
 
 #### 0.6
-* Huge improvement in memory efficiency 
+* Greatly improved memory efficiency 
+* Support arbitrary labels for path-contexts
+* Minor improvements
 
 #### 0.5
 
