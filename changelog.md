@@ -1,5 +1,8 @@
 ### Version history
 
+#### 0.6
+* Huge improvement in memory efficiency 
+
 #### 0.5
 
 * Beta of Javascript support

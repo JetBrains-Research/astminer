@@ -34,34 +34,6 @@ jobs:
           path: ~/astminer
       - run: ./gradlew bintrayUpload "-PciVersion=1.$CI_VERSION" "-PbranchName=$GIT_BRANCH"
 
-  # run the Python example
-  py_example:
-    docker:
-      - image: openkbs/jdk-mvn-py3
-    working_directory: ~/astminer/py_example
-    # Unless we restrict JVM memory, Kotlin compilation fails
-    environment:
-      JVM_OPTS: -Xmx2048m
-      GRADLE_OPTS: -Xmx1536m -XX:+HeapDumpOnOutOfMemoryError -Dorg.gradle.parallel=false -Dkotlin.incremental=false
-    steps:
-      - checkout:
-          path: ~/astminer
-      - run:
-          name: Disable gradle daemon
-          command: mkdir -p ~/.gradle && echo "org.gradle.daemon=false" >> ~/.gradle/gradle.properties
-      - run:
-          name: Create environment
-          command: python3 -m virtualenv env
-      - run:
-          name: Activate environment
-          command: source env/bin/activate
-      - run:
-          name: Install requirements
-          command: pip3 install --user -r requirements.txt
-      - run:
-          name: Run processing
-          command: python3 run_example.py
-
 
 workflows:
   version: 2
@@ -92,7 +64,3 @@ workflows:
             branches:
               only:
                 - master-dev
-
-#  py_example:
-#    jobs:
-#      - py_example
