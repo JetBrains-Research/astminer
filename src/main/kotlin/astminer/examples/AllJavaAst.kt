@@ -6,14 +6,14 @@ import java.io.File
 
 // Retrieve ASTs from Java files, using a generated parser.
 fun allJavaAsts() {
-    val folder = "./testData/examples/"
+    val folder = "src/test/resources/examples/"
 
-    val storage = CsvAstStorage()
+    val storage = CsvAstStorage("out_examples/allJavaAstsAntlr")
 
     File(folder).forFilesWithSuffix(".java") { file ->
-        val node = JavaParser().parse(file.inputStream()) ?: return@forFilesWithSuffix
+        val node = JavaParser().parseInputStream(file.inputStream()) ?: return@forFilesWithSuffix
         storage.store(node, label = file.path)
     }
 
-    storage.save("out_examples/allJavaAstsAntlr")
+    storage.close()
 }

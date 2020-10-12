@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 
 private fun createTree(filename: String): GumTreeJavaNode {
     val parser = GumTreeJavaParser()
-    return parser.parse(File(filename).inputStream()) as GumTreeJavaNode
+    return parser.parseInputStream(File(filename).inputStream()) as GumTreeJavaNode
 }
 
 private fun createAndSplitTree(filename: String): Collection<MethodInfo<GumTreeJavaNode>> {
@@ -17,7 +17,7 @@ private fun createAndSplitTree(filename: String): Collection<MethodInfo<GumTreeJ
 class GumTreeMethodSplitterTest {
     @Test
     fun testMethodExtraction1() {
-        val methodInfos = createAndSplitTree("testData/gumTreeMethodSplitter/1.java")
+        val methodInfos = createAndSplitTree("src/test/resources/gumTreeMethodSplitter/1.java")
 
         assertEquals(1, methodInfos.size)
         with(methodInfos.first()) {
@@ -32,7 +32,7 @@ class GumTreeMethodSplitterTest {
 
     @Test
     fun testMethodExtraction2() {
-        val methodInfos = createAndSplitTree("testData/gumTreeMethodSplitter/2.java")
+        val methodInfos = createAndSplitTree("src/test/resources/gumTreeMethodSplitter/2.java")
 
         assertEquals(1, methodInfos.size)
         with(methodInfos.first()) {
@@ -46,7 +46,7 @@ class GumTreeMethodSplitterTest {
 
     @Test
     fun testMethodExtraction3() {
-        val methodInfos = createAndSplitTree("testData/gumTreeMethodSplitter/3.java")
+        val methodInfos = createAndSplitTree("src/test/resources/gumTreeMethodSplitter/3.java")
 
         assertEquals(2, methodInfos.size)
         with(methodInfos.first()) {
@@ -67,7 +67,7 @@ class GumTreeMethodSplitterTest {
 
     @Test
     fun testMethodExtraction4() {
-        val methodInfos = createAndSplitTree("testData/gumTreeMethodSplitter/4.java")
+        val methodInfos = createAndSplitTree("src/test/resources/gumTreeMethodSplitter/4.java")
 
         assertEquals(1, methodInfos.size)
         with(methodInfos.first()) {

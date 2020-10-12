@@ -20,7 +20,7 @@ fun parseAndCollectFeatures() {
         val fileName = fileInput.name
         val nol = numberOfLines(fileInput)
 
-        val tree = ParsedTree(parser.className(), parser.parse(fileInput.inputStream()) ?: return@forFilesWithSuffix, fileName, nol)
+        val tree = ParsedTree(parser.className(), parser.parseInputStream(fileInput.inputStream()) ?: return@forFilesWithSuffix, fileName, nol)
         storage.storeParsedTree(tree)
     }
 

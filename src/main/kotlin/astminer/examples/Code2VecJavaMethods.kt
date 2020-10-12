@@ -11,7 +11,7 @@ import java.io.File
 //Retrieve paths from all Java files, using a GumTree parser.
 //GumTreeMethodSplitter is used to extract individual method nodes from the compilation unit tree.
 fun code2vecJavaMethods() {
-    val folder = "./testData/code2vecPathMining"
+    val folder = "src/test/resources/code2vecPathMining"
     val outputDir = "out_examples/code2vecPathMining"
 
     val miner = PathMiner(PathRetrievalSettings(5, 5))
@@ -20,7 +20,7 @@ fun code2vecJavaMethods() {
 
     File(folder).forFilesWithSuffix(".java") { file ->
         //parse file
-        val fileNode = JavaParser().parse(file.inputStream()) ?: return@forFilesWithSuffix
+        val fileNode = JavaParser().parseInputStream(file.inputStream()) ?: return@forFilesWithSuffix
 
         //extract method nodes
         val methods = JavaMethodSplitter().splitIntoMethods(fileNode)
@@ -38,5 +38,5 @@ fun code2vecJavaMethods() {
         }
     }
 
-    storage.save()
+    storage.close()
 }

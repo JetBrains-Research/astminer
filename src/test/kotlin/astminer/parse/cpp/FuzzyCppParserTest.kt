@@ -1,5 +1,6 @@
 package astminer.parse.cpp
 
+import astminer.common.getProjectFilesWithExtension
 import astminer.examples.forFilesWithSuffix
 import org.junit.Assert
 import org.junit.Test
@@ -10,31 +11,31 @@ class FuzzyCppParserTest {
     @Test
     fun testNodeIsNotNull() {
         val parser = FuzzyCppParser()
-        val file = File("testData/fuzzy/test.cpp")
+        val file = File("src/test/resources/fuzzy/test.cpp")
 
-        val nodes = parser.parse(listOf(file))
+        val nodes = parser.parseFiles(listOf(file))
         Assert.assertTrue("Parse tree for a valid file should not be null",
                 nodes.size == 1 && nodes[0].root != null)
     }
 
     @Test
     fun testInputStreamParsing() {
-        val folder = File("testData/fuzzy/")
+        val folder = File("src/test/resources/fuzzy/")
         val nodes = ArrayList<FuzzyNode>()
         var n = 0
         val parser = FuzzyCppParser()
         folder.forFilesWithSuffix(".cpp") { file ->
             n++
-            parser.parse(file.inputStream())?.let { nodes.add(it) }
+            parser.parseInputStream(file.inputStream())?.let { nodes.add(it) }
         }
         Assert.assertEquals(n, nodes.size)
     }
 
     @Test
     fun testProjectParsing() {
-        val folder = File("testData/fuzzy/")
+        val folder = File("src/test/resources/fuzzy/")
         val parser = FuzzyCppParser()
-        val nodes = parser.parseProject(folder) { file -> file.extension == "cpp" }
+        val nodes = parser.parseFiles(getProjectFilesWithExtension(folder,"cpp")).map { it.root }
         Assert.assertEquals(
                 "There is only 3 file with .cpp extension in 'testData/examples' folder",
                 3,
@@ -44,7 +45,7 @@ class FuzzyCppParserTest {
 
     @Test
     fun testPreprocessingDefine() {
-        val folder = File("testData/fuzzy")
+        val folder = File("src/test/resources/fuzzy")
         val preprocessedFolder = folder.resolve("preprocessed")
         preprocessedFolder.mkdir()
         val defineFileName = "preprocDefineTest.cpp"
@@ -62,7 +63,7 @@ class FuzzyCppParserTest {
 
     @Test
     fun testPreprocessingInclude() {
-        val folder = File("testData/fuzzy")
+        val folder = File("src/test/resources/fuzzy")
         val preprocessedFolder = folder.resolve("preprocessed")
         preprocessedFolder.mkdir()
         val includeFileName = "preprocIncludeTest.cpp"
@@ -80,13 +81,13 @@ class FuzzyCppParserTest {
 
     @Test
     fun testPreprocessingProject() {
-        val projectRoot = File("testData/examples/cpp")
-        val preprocessedRoot = File("testData/examples/preprocessed")
+        val projectRoot = File("src/test/resources/examples/cpp")
+        val preprocessedRoot = File("src/test/resources/examples/preprocessed")
         preprocessedRoot.mkdir()
         val parser = FuzzyCppParser()
 
         parser.preprocessProject(projectRoot, preprocessedRoot)
-        val nodes = parser.parseProject(projectRoot) { file -> file.extension == "cpp" }
+        val nodes = parser.parseFiles(getProjectFilesWithExtension(projectRoot, "cpp")).map { it.root }
 
         Assert.assertEquals(
                 "Parse tree for a valid file should not be null. There are 5 files in example project.",

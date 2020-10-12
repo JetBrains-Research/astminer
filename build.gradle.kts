@@ -1,8 +1,19 @@
 import tanvd.kosogor.proxy.publishJar
 import tanvd.kosogor.proxy.shadowJar
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 group = "io.github.vovak.astminer"
-version = "0.5.5"
+
+val branchName: String by project
+val ciVersion: String by project
+
+version = if (project.hasProperty("ciVersion")) {
+    ciVersion
+} else {
+    "0.6"
+}
+
+println(version)
 
 plugins {
     id("java")
@@ -12,6 +23,7 @@ plugins {
     id("application")
     id("tanvd.kosogor") version "1.0.6"
     id("org.jetbrains.dokka") version "0.9.18"
+    id("me.champeau.gradle.jmh") version "0.5.0"
 }
 
 
@@ -46,6 +58,12 @@ dependencies {
 
     testImplementation("junit:junit:4.11")
     testImplementation(kotlin("test-junit"))
+
+    implementation("com.github.ajalt", "clikt", "2.1.0")
+
+    jmhImplementation("org.jetbrains.kotlin:kotlin-reflect:1.3.61")
+    jmhImplementation("org.openjdk.jmh:jmh-core:1.21")
+    jmhImplementation("org.openjdk.jmh:jmh-generator-annprocess:1.21")
 }
 
 val shadowJar = shadowJar {
@@ -55,20 +73,8 @@ val shadowJar = shadowJar {
     }
 }.apply {
     task.archiveClassifier.set("")
-    task.dependencies {
-        exclude(dependency("org.jetbrains.kotlin:.*"))
-    }
 }
 
-task<JavaExec>("performanceTest") {
-    main = "astminer.performance.PerformanceTest"
-    classpath = sourceSets["main"].runtimeClasspath
-}
-
-task<JavaExec>("processPyExample") {
-    main = "astminer.examples.pyExample.PyExample"
-    classpath = sourceSets["main"].runtimeClasspath
-}
 
 tasks.generateGrammarSource {
     maxHeapSize = "64m"
@@ -99,6 +105,13 @@ tasks.compileJava {
     dependsOn(tasks.generateGrammarSource)
 }
 
+configure<JavaPluginConvention> {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+}
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
 sourceSets["main"].java.srcDir(file(generatedSourcesPath))
 
 
@@ -110,7 +123,15 @@ idea {
 
 publishJar {
     publication {
-        artifactId = "astminer-dev"
+        artifactId = if (project.hasProperty("branchName")) {
+            when(branchName) {
+                "master" -> "astminer"
+                "master-dev" -> "astminer-dev"
+                else -> ""
+            }
+        } else {
+            "astminer"
+        }
     }
 
     bintray {
@@ -119,8 +140,8 @@ publishJar {
         repository = "astminer"
 
         info {
-            githubRepo = "vovak/astminer"
-            vcsUrl = "https://github.com/vovak/astminer"
+            githubRepo = "JetBrains-Research/astminer"
+            vcsUrl = "https://github.com/JetBrains-Research/astminer"
             labels.addAll(listOf("mining", "ast", "ml4se", "code2vec", "path-based representations"))
             license = "MIT"
             description = "Extract AST, AST-related metrics, and path-based representations from source code"
@@ -131,4 +152,25 @@ publishJar {
 tasks.dokka {
     outputFormat = "html"
     outputDirectory = "$buildDir/javadoc"
+}
+
+configure<JavaPluginConvention> {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+}
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+jmh {
+    duplicateClassesStrategy = DuplicatesStrategy.WARN
+    profilers = listOf("gc")
+    resultFormat = "CSV"
+    isZip64 = true
+    failOnError = true
+    forceGC = true
+    warmupIterations = 1
+    iterations = 4
+    fork = 2
+    benchmarkMode = listOf("AverageTime")
+    resultsFile = file("build/reports/benchmarks.csv")
 }

@@ -11,14 +11,14 @@ import java.io.File
 
 //Retrieve paths from Java files, using a generated parser.
 fun allJavaFiles() {
-    val inputDir = "./testData/examples/"
+    val inputDir = "src/test/resources/examples/"
 
     val miner = PathMiner(PathRetrievalSettings(5, 5))
     val outputDir = "out_examples/allJavaFilesAntlr"
     val storage = CsvPathStorage(outputDir)
 
     File(inputDir).forFilesWithSuffix("11.java") { file ->
-        val node = JavaParser().parse(file.inputStream()) ?: return@forFilesWithSuffix
+        val node = JavaParser().parseInputStream(file.inputStream()) ?: return@forFilesWithSuffix
         val paths = miner.retrievePaths(node)
         node.prettyPrint()
         JavaMethodSplitter().splitIntoMethods(node).forEach {
@@ -32,5 +32,5 @@ fun allJavaFiles() {
         storage.store(LabeledPathContexts(file.path, paths.map { toPathContext(it) }))
     }
 
-    storage.save()
+    storage.close()
 }

@@ -15,7 +15,7 @@ private fun convertRuleContext(ruleContext: ParserRuleContext, ruleNames: Array<
     val currentNode = SimpleNode(typeLabel, parent, null)
     val children: MutableList<Node> = ArrayList()
 
-    ruleContext.children.forEach {
+    ruleContext.children?.forEach {
         if (it is TerminalNode) {
             children.add(convertTerminal(it, currentNode, vocabulary))
             return@forEach
@@ -46,7 +46,7 @@ fun simplifyTree(tree: SimpleNode): SimpleNode {
     return if (tree.getChildren().size == 1) {
         simplifyTree(tree.getChildren().first() as SimpleNode)
     } else {
-        tree.setChildren(tree.getChildren().map { simplifyTree(it as SimpleNode) })
+        tree.setChildren(tree.getChildren().map { simplifyTree(it as SimpleNode) }.toMutableList())
         tree
     }
 }
@@ -65,7 +65,7 @@ fun compressTree(root: SimpleNode): SimpleNode {
         compressedNode.setChildren(child.getChildren())
         compressedNode
     } else {
-        root.setChildren(root.getChildren().map { compressTree(it as SimpleNode) })
+        root.setChildren(root.getChildren().map { compressTree(it as SimpleNode) }.toMutableList())
         root
     }
 }

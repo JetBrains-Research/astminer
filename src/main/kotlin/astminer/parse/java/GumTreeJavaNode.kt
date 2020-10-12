@@ -19,8 +19,8 @@ class GumTreeJavaNode(val wrappedNode: ITree, val context: TreeContext, val pare
         return childrenList.isEmpty()
     }
 
-    private val childrenList: List<GumTreeJavaNode> by lazy {
-        wrappedNode.children.map { GumTreeJavaNode(it, context, this) }
+    private val childrenList: MutableList<GumTreeJavaNode> by lazy {
+        wrappedNode.children.map { GumTreeJavaNode(it, context, this) }.toMutableList()
     }
 
     override fun getTypeLabel(): String {
@@ -37,6 +37,10 @@ class GumTreeJavaNode(val wrappedNode: ITree, val context: TreeContext, val pare
 
     override fun getToken(): String {
         return wrappedNode.label
+    }
+
+    override fun removeChildrenOfType(typeLabel: String) {
+        childrenList.removeIf { it.getTypeLabel() == typeLabel }
     }
 
 }

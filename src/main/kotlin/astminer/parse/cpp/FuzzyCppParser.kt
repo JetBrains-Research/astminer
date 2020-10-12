@@ -65,23 +65,23 @@ class FuzzyCppParser : Parser<FuzzyNode> {
 
     /**
      * Parse input stream and create an AST.
-     * If you already have a file with code you need to parse, better use [parseProject] or [parse],
+     * If you already have a file with code you need to parse, better use [parseFiles] or [parseInputStream],
      * otherwise temporary file for input stream will be created because of fuzzyc2cpg API.
      * @param content to parse
      * @return root of AST if content was parsed, null otherwise
      */
-    override fun parse(content: InputStream): FuzzyNode? {
+    override fun parseInputStream(content: InputStream): FuzzyNode? {
         val file = File.createTempFile("fuzzy", ".cpp")
         file.deleteOnExit()
         FileUtils.copyInputStreamToFile(content, file)
-        val nodes = parse(listOf(file))
+        val nodes = parseFiles(listOf(file))
         return nodes[0].root
     }
 
     /**
-     * @see [Parser.parse]
+     * @see [Parser.parseInputStream]
      */
-    override fun parse(files: List<File>): List<ParseResult<FuzzyNode>> {
+    override fun parseFiles(files: List<File>): List<ParseResult<FuzzyNode>> {
         val outputModuleFactory = OutputModuleFactory()
         val paths = files.map { it.path }
         FuzzyC2Cpg(outputModuleFactory).runAndOutput(paths.toTypedArray())

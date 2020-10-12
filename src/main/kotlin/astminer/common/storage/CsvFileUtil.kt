@@ -8,17 +8,16 @@ fun <T> dumpIdStorageToCsv(storage: RankedIncrementalIdStorage<T>,
                            csvSerializer: (T) -> String,
                            file: File,
                            limit: Long = Long.MAX_VALUE) {
-    val lines = mutableListOf("id,$typeHeader")
-
-    storage.idPerItem.forEach {
-        val id = it.value
-        val item = it.key
-        if (storage.getKeyRank(item) <= limit) {
-            lines.add("$id,${csvSerializer.invoke(item)}")
+    file.printWriter().use { out ->
+        out.println("id,$typeHeader")
+        storage.idPerItem.forEach {
+            val id = it.value
+            val item = it.key
+            if (storage.getKeyRank(item) <= limit) {
+                out.println("$id,${csvSerializer.invoke(item)}")
+            }
         }
     }
-
-    writeLinesToFile(lines, file)
 }
 
 fun writeLinesToFile(lines: Collection<String>, file: File) {

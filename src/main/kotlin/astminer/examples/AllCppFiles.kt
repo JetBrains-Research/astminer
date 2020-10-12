@@ -2,6 +2,7 @@
 
 package astminer.examples
 
+import astminer.common.getProjectFilesWithExtension
 import astminer.common.model.LabeledPathContexts
 import astminer.parse.cpp.FuzzyCppParser
 import astminer.paths.PathMiner
@@ -12,7 +13,7 @@ import java.io.File
 
 // Retrieve paths from .cpp preprocessed files, using a fuzzyc2cpg parser.
 fun allCppFiles() {
-    val inputDir = File("testData/examples/cpp")
+    val inputDir = File("src/test/resources/examples/cpp")
 
     val miner = PathMiner(PathRetrievalSettings(5, 5))
     val outputDir = "out_examples/allCppFiles"
@@ -22,16 +23,14 @@ fun allCppFiles() {
 
     parser.preprocessProject(inputDir, preprocOutputFolder)
 
-    val parsedFiles = parser.parseWithExtension(preprocOutputFolder, "cpp")
+    val files = getProjectFilesWithExtension(preprocOutputFolder, "cpp")
 
-    parsedFiles.forEach { parseResult ->
-        if (parseResult.root == null) {
-            return@forEach
+    parser.parseFiles(files) { parseResult ->
+        if (parseResult.root != null) {
+            val paths = miner.retrievePaths(parseResult.root)
+            storage.store(LabeledPathContexts(parseResult.filePath, paths.map { toPathContext(it) }))
         }
-        val paths = miner.retrievePaths(parseResult.root)
-
-        storage.store(LabeledPathContexts(parseResult.filePath, paths.map { toPathContext(it) }))
     }
 
-    storage.save()
+    storage.close()
 }
