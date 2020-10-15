@@ -104,5 +104,5 @@ class BenchmarkResultWorker {
 fun main(args: Array<String>) {
     val benchmarkResultWorker = BenchmarkResultWorker()
     val results = benchmarkResultWorker.parseCsvFile("src/jmh/benchmarks.csv")
-    benchmarkResultWorker.saveToMarkdown(results, "src/jmh/new_results.md")
+    benchmarkResultWorker.saveToMarkdown(results, "src/jmh/results.md")
 }
