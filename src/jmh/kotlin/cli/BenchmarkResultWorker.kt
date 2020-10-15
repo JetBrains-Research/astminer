@@ -5,8 +5,8 @@ import java.io.File
 data class BenchmarkResult(val taskName: String, val projectName: String) {
     var totalTime: Float = 0f
     var timeStd: Float = 0f
-    var totalAllocatedMemory: Float = 0f
-    var allocatedMemoryStd: Float = 0f
+    var allocatedMemoryRate: Float = 0f
+    var allocatedMemoryRateStd: Float = 0f
 }
 
 enum class MemoryMeasure {
@@ -32,12 +32,10 @@ class BenchmarkResultWorker {
     private val tasks = listOf("Code2Vec", "PathContext", "ProjectParseCSV", "ProjectParseDOT")
     private val projects = listOf("Long file", "Small project (Gradle)", "Big project (IntelliJ IDEA)")
 
-    private fun convertBytes(bytes: Float, memoryMeasure: MemoryMeasure): Float {
-        val kilobytes = bytes / 1024
-        return when (memoryMeasure) {
-            MemoryMeasure.MB -> kilobytes / 1024
-            MemoryMeasure.GB -> kilobytes / 1024 / 1024
-        }
+    private fun convertMegabytes(megabytes: Float): Pair<Float, MemoryMeasure> {
+        if (megabytes < 1024)
+            return megabytes to MemoryMeasure.MB
+        return megabytes / 1024 to MemoryMeasure.GB
     }
 
     fun parseCsvFile(pathToCsvFile: String): Map<Pair<String, String>, BenchmarkResult> {
@@ -61,10 +59,10 @@ class BenchmarkResultWorker {
                             it.totalTime = resultValue
                             it.timeStd = resultStd
                         }
-                    } else if (taskName == "$correctCsvField:·gc.alloc.rate.norm") {
+                    } else if (taskName == "$correctCsvField:·gc.alloc.rate") {
                         taskToResult[task.key to project.key]?. let {
-                            it.totalAllocatedMemory = resultValue
-                            it.allocatedMemoryStd = resultStd
+                            it.allocatedMemoryRate = resultValue
+                            it.allocatedMemoryRateStd = resultStd
                         }
                     }
                 }
@@ -73,7 +71,7 @@ class BenchmarkResultWorker {
         return taskToResult
     }
 
-    fun saveToMarkdown(results: Map<Pair<String, String>, BenchmarkResult>, pathToMarkdownFile: String, memoryMeasure: MemoryMeasure) {
+    fun saveToMarkdown(results: Map<Pair<String, String>, BenchmarkResult>, pathToMarkdownFile: String) {
         val outputFileWriter = File(pathToMarkdownFile).printWriter()
         outputFileWriter.println("| | ${projects.joinToString(" | ")} |")
         outputFileWriter.println("| --- |${"--- | ".repeat(projects.size)}")
@@ -85,11 +83,14 @@ class BenchmarkResultWorker {
                 outputFileWriter.print(" $totalTime ± $timeStd sec |")
             }
             outputFileWriter.print("\n")
-            outputFileWriter.print("| $task (total allocated memory) |")
+            outputFileWriter.print("| $task (allocated memory per sec) |")
             projects.forEach { project ->
-                val totalMemory = "%.2f".format(convertBytes(results[task to project]?.totalAllocatedMemory ?: 0f, memoryMeasure))
-                val memoryStd = "%.2f".format(convertBytes(results[task to project]?.allocatedMemoryStd ?: 0f, memoryMeasure))
-                outputFileWriter.print(" $totalMemory ± $memoryStd ${memoryMeasure.name.toLowerCase()} |")
+                val totalMemory = convertMegabytes(results[task to project]?.allocatedMemoryRate ?: 0f)
+                val memoryStd = convertMegabytes(results[task to project]?.allocatedMemoryRateStd ?: 0f)
+                outputFileWriter.print(
+                        " ${"%.2f".format(totalMemory.first)} ${totalMemory.second.name.toLowerCase()} ± " +
+                        "${"%.2f".format(memoryStd.first)} ${memoryStd.second.name.toLowerCase()} |"
+                )
             }
             outputFileWriter.print("\n")
             if (task != tasks.last())
@@ -103,5 +104,5 @@ class BenchmarkResultWorker {
 fun main(args: Array<String>) {
     val benchmarkResultWorker = BenchmarkResultWorker()
     val results = benchmarkResultWorker.parseCsvFile("src/jmh/benchmarks.csv")
-    benchmarkResultWorker.saveToMarkdown(results, "src/jmh/new_results.md", MemoryMeasure.GB)
+    benchmarkResultWorker.saveToMarkdown(results, "src/jmh/new_results.md")
 }
