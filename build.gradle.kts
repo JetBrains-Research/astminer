@@ -171,6 +171,7 @@ jmh {
     warmupIterations = 1
     iterations = 4
     fork = 2
+    jvmArgs = listOf("-Xmx32g")
     benchmarkMode = listOf("AverageTime")
     resultsFile = file("build/reports/benchmarks.csv")
 }

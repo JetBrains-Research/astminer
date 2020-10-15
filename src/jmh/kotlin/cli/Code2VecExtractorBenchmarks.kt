@@ -6,6 +6,8 @@ import astminer.cli.*
 @State(Scope.Benchmark)
 open class Code2VecExtractorBenchmarks {
 
+    private val defaultArgs = listOf("--split-tokens", "--granularity", "method", "--lang", "java")
+
     @Setup
     fun pathsSetup() {
         BenchmarksSetup().setup()
@@ -14,24 +16,21 @@ open class Code2VecExtractorBenchmarks {
     @Benchmark
     fun simpleProject() {
         val args = listOf("--project", BenchmarksSetup().simpleProjectPath,
-                "--output", BenchmarksSetup().simpleProjectResultsPath,
-                "--lang", "java")
+                "--output", BenchmarksSetup().simpleProjectResultsPath) + defaultArgs
         Code2VecExtractor().main(args)
     }
 
     @Benchmark
     fun longFileProject() {
         val args = listOf("--project", BenchmarksSetup().longFilePath,
-                "--output", BenchmarksSetup().longFileResultsPath,
-                "--lang", "java")
+                "--output", BenchmarksSetup().longFileResultsPath) + defaultArgs
         Code2VecExtractor().main(args)
     }
 
     @Benchmark
     fun bigProject() {
         val args = listOf("--project", BenchmarksSetup().bigProjectPath,
-                "--output", BenchmarksSetup().bigProjectResultsPath,
-                "--lang", "java")
+                "--output", BenchmarksSetup().bigProjectResultsPath) + defaultArgs
         Code2VecExtractor().main(args)
     }
 }
