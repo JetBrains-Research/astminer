@@ -10,7 +10,7 @@ val ciVersion: String by project
 version = if (project.hasProperty("ciVersion")) {
     ciVersion
 } else {
-    "0.5"
+    "0.6"
 }
 
 println(version)
@@ -75,10 +75,6 @@ val shadowJar = shadowJar {
     task.archiveClassifier.set("")
 }
 
-task<JavaExec>("processPyExample") {
-    main = "astminer.examples.pyExample.PyExample"
-    classpath = sourceSets["main"].runtimeClasspath
-}
 
 tasks.generateGrammarSource {
     maxHeapSize = "64m"

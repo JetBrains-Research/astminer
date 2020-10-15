@@ -14,31 +14,7 @@ Supported languages of the input:
 
 ### Version history
 
-#### 0.5
-
-* Beta of Javascript support
-* Storage of ASTs in [DOT format](https://www.graphviz.org/doc/info/lang.html)
-* Minor fixes
-
-#### 0.4
-
-* Support of code2vec output format
-* Extraction of ASTs and path-based representations of individual methods
-* Extraction of data for the task of method name prediction ([code2vec paper](https://arxiv.org/abs/1803.09473))
-
-#### 0.3
-
-* Support of C/C++ via [FuzzyC2CPG parser](https://github.com/ShiftLeftSecurity/fuzzyc2cpg)
-
-#### 0.2
-
-* Mining of ASTs
-
-#### 0.1
-* astminer is available via Maven Central
-* Support of Java and Python
-* Mining of [path-based representations of code](https://arxiv.org/pdf/1803.09544.pdf)
-
+See [changelog](changelog.md)
 
 ## About
 Astminer was first implemented as a part of pipeline in the [the code style extraction project](https://arxiv.org/abs/2002.03997) and later converted into a reusable tool.
@@ -64,20 +40,20 @@ For the output format, see the section below.
 Run preprocessing on C/C++ project to unfold `#define` directives. 
 In other tasks, if you feed C/C++ file with macroses, they will be dropped as well as their appearances in code. 
 ```shell script
-java -jar cli.jar preprocess --project path/to/project --output path/to/preprocessedProject
+./cli.sh preprocess --project path/to/project --output path/to/preprocessedProject
 ```
 #### Parse
 
 Extract ASTs from all the files in supported languages.
 ```shell script
-java -jar cli.jar parse --lang py,java,c,cpp --project path/to/project --output path/to/result --storage dot
+./cli.sh parse --lang py,java,c,cpp --project path/to/project --output path/to/result --storage dot
 ```
 
 #### PathContexts
 
 Extract path contexts from all the files in supported languages and store in form `fileName triplesOfPathContexts`.
 ```shell script
-java -jar cli.jar pathContexts --lang py,java,c,cpp --project path/to/project --output path/to/results --maxL L --maxW W --maxContexts C --maxTokens T --maxPaths P
+./cli.sh pathContexts --lang py,java,c,cpp --project path/to/project --output path/to/results --maxL L --maxW W --maxContexts C --maxTokens T --maxPaths P
 ```
 
 #### Code2vec
@@ -85,7 +61,7 @@ java -jar cli.jar pathContexts --lang py,java,c,cpp --project path/to/project --
 Extract data suitable as input for [code2vec](https://github.com/tech-srl/code2vec) model.
 Parse all files written in specified language into ASTs, split into methods, and store in form `method|name triplesOfPathContexts`.
 ```shell script
-java -jar cli.jar code2vec --lang py,java,c,cpp --project path/to/project --output path/to/results --maxL L --maxW W --maxContexts C --maxTokens T --maxPaths P
+./cli.sh code2vec --lang py,java,c,cpp --project path/to/project --output path/to/results --maxL L --maxW W --maxContexts C --maxTokens T --maxPaths P  --split-tokens --granularity method
 ```
 
 ### Integrate in your mining pipeline
@@ -101,7 +77,7 @@ repositories {
 }
 
 dependencies {
-    compile 'io.github.vovak.astminer:astminer:0.5'
+    compile 'io.github.vovak.astminer:astminer:0.6'
 }
 ```
 
@@ -112,7 +88,7 @@ repositories {
 }
 
 dependencies {
-    compile("io.github.vovak.astminer", "astminer", "0.5")
+    compile("io.github.vovak.astminer", "astminer", "0.6")
 }
 ```
 
