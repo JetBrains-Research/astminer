@@ -52,9 +52,9 @@ dependencies {
     api("com.github.gumtreediff", "gen.jdt", "2.1.0")
 
     // https://mvnrepository.com/artifact/io.shiftleft/fuzzyc2cpg
-    api("io.shiftleft", "fuzzyc2cpg_2.12", "0.1.74") {
-        exclude("org.slf4j", "slf4j-simple")
-    }
+    api("io.shiftleft", "fuzzyc2cpg_2.13", "1.2.9")
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+    testImplementation("org.slf4j", "slf4j-simple", "1.7.30")
 
     testImplementation("junit:junit:4.11")
     testImplementation(kotlin("test-junit"))
