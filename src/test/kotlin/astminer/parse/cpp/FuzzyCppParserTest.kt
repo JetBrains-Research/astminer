@@ -14,7 +14,7 @@ class FuzzyCppParserTest {
         val file = File("src/test/resources/fuzzy/test.cpp")
 
         val nodes = parser.parseFile(file)
-        Assert.assertTrue("Parse tree for a valid file should not be null",nodes.root != null)
+        Assert.assertTrue("Parse tree for a valid file should not be null", nodes.root != null)
     }
 
     @Test
@@ -35,7 +35,7 @@ class FuzzyCppParserTest {
         val folder = File("src/test/resources/fuzzy/")
         val parser = FuzzyCppParser()
         val nodes = mutableListOf<FuzzyNode?>()
-        parser.parseFiles(getProjectFilesWithExtension(folder,"cpp")) {
+        parser.parseFiles(getProjectFilesWithExtension(folder, "cpp")) {
             nodes.add(it.root)
         }
         Assert.assertEquals(
