@@ -52,13 +52,13 @@ class FuzzyCppParser : Parser<FuzzyNode> {
         data class ReplaceableNodeKey(val key: String, val condition: (Node) -> Boolean)
 
         private val replaceableNodeKeys = listOf(
-            ReplaceableNodeKey("NAME") { v ->
-                v.propertyKeys().contains("NAME") &&
-                        v.property("NAME").toString().startsWith("<operator>")
-            },
-            ReplaceableNodeKey("PARSER_TYPE_NAME") { v ->
-                v.propertyKeys().contains("PARSER_TYPE_NAME")
-            }
+                ReplaceableNodeKey("NAME") { v ->
+                    v.propertyKeys().contains("NAME") &&
+                            v.property("NAME").toString().startsWith("<operator>")
+                },
+                ReplaceableNodeKey("PARSER_TYPE_NAME") { v ->
+                    v.propertyKeys().contains("PARSER_TYPE_NAME")
+                }
         )
     }
 
