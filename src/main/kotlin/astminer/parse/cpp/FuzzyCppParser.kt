@@ -101,11 +101,6 @@ class FuzzyCppParser : Parser<FuzzyNode> {
     }
 
     /**
-     * @see [Parser.parseInputStream]
-     */
-    override fun parseFiles(files: List<File>): List<ParseResult<FuzzyNode>> = files.map { parseFile(it) }
-
-    /**
      * Convert [cpg][io.shiftleft.codepropertygraph.Cpg] created by fuzzyc2cpg
      * to list of [FuzzyNode][astminer.parse.cpp.FuzzyNode].
      * Cpg may contain graphs for several files, in that case several ASTs will be created.

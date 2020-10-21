@@ -49,14 +49,6 @@ interface Parser<T : Node> {
     /**
      * Parse list of files.
      * @param files files to parse
-     * @return list of ParseResult instances, one for each parsed file
-     */
-    @Deprecated("Please use parseFiles (List<File>, (ParseResult<T>) -> Any) to avoid clogging memory")
-    fun parseFiles(files: List<File>): List<ParseResult<T>> = files.map { ParseResult(parseInputStream(it.inputStream()), it.path) }
-
-    /**
-     * Parse list of files.
-     * @param files files to parse
      * @param handleResult handler to invoke on each file parse result
      */
     fun parseFiles(files: List<File>, handleResult: (ParseResult<T>) -> Any) {
