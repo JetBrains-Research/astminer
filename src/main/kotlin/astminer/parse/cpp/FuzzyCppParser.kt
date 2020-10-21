@@ -110,7 +110,7 @@ class FuzzyCppParser : Parser<FuzzyNode> {
      */
     private fun cpg2Nodes(cpg: Cpg, filePath: String): ParseResult<FuzzyNode> {
         val g = cpg.graph()
-        val vertexToNode = HashMap<Node, FuzzyNode>()
+        val vertexToNode = mutableMapOf<Node, FuzzyNode>()
         g.E().forEach {
             if (it.label() == EdgeTypes.AST) {
                 addNodesFromEdge(it, vertexToNode)
@@ -169,7 +169,7 @@ class FuzzyCppParser : Parser<FuzzyNode> {
         toString()
     }
 
-    private fun addNodesFromEdge(e: Edge, map: HashMap<Node, FuzzyNode>) {
+    private fun addNodesFromEdge(e: Edge, map: MutableMap<Node, FuzzyNode>) {
         val parentNode = map.getOrPut(e.outNode()) { createNodeFromVertex(e.outNode()) }
         val childNode = map.getOrPut(e.inNode()) { createNodeFromVertex(e.inNode()) }
         parentNode.addChild(childNode)
