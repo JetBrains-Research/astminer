@@ -2,17 +2,16 @@ package astminer.parse.cpp
 
 import astminer.common.model.ParseResult
 import astminer.common.model.Parser
-import gremlin.scala.Key
 import io.shiftleft.codepropertygraph.Cpg
 import io.shiftleft.codepropertygraph.generated.EdgeTypes
 import io.shiftleft.codepropertygraph.generated.NodeKeys
 import io.shiftleft.codepropertygraph.generated.NodeTypes
 import io.shiftleft.fuzzyc2cpg.FuzzyC2Cpg
-import io.shiftleft.fuzzyc2cpg.output.inmemory.OutputModuleFactory
-import org.apache.commons.io.FileUtils
-import org.apache.tinkerpop.gremlin.structure.Edge
-import org.apache.tinkerpop.gremlin.structure.Element
-import org.apache.tinkerpop.gremlin.structure.Vertex
+import overflowdb.Edge
+import overflowdb.Node
+import overflowdb.Element
+import scala.Option
+import scala.collection.immutable.Set
 import java.io.File
 import java.io.InputStream
 
@@ -50,22 +49,22 @@ class FuzzyCppParser : Parser<FuzzyNode> {
                 ), 0)
         )
 
-        data class ReplaceableNodeKey(val key: String, val condition: (Vertex) -> Boolean)
+        data class ReplaceableNodeKey(val key: String, val condition: (Node) -> Boolean)
 
         private val replaceableNodeKeys = listOf(
                 ReplaceableNodeKey("NAME") { v ->
-                    v.keys().contains("NAME") &&
-                            v.value<String>("NAME").startsWith("<operator>")
+                    v.propertyKeys().contains("NAME") &&
+                            v.property("NAME").toString().startsWith("<operator>")
                 },
                 ReplaceableNodeKey("PARSER_TYPE_NAME") { v ->
-                    v.keys().contains("PARSER_TYPE_NAME")
+                    v.propertyKeys().contains("PARSER_TYPE_NAME")
                 }
         )
     }
 
     /**
      * Parse input stream and create an AST.
-     * If you already have a file with code you need to parse, better use [parseFiles] or [parseInputStream],
+     * If you already have a file with code you need to parse, better use [parseFile],
      * otherwise temporary file for input stream will be created because of fuzzyc2cpg API.
      * @param content to parse
      * @return root of AST if content was parsed, null otherwise
@@ -73,20 +72,32 @@ class FuzzyCppParser : Parser<FuzzyNode> {
     override fun parseInputStream(content: InputStream): FuzzyNode? {
         val file = File.createTempFile("fuzzy", ".cpp")
         file.deleteOnExit()
-        FileUtils.copyInputStreamToFile(content, file)
-        val nodes = parseFiles(listOf(file))
-        return nodes[0].root
+        file.outputStream().use {
+            content.copyTo(it)
+        }
+        val nodes = parseFile(file)
+        return nodes.root
     }
 
     /**
-     * @see [Parser.parseInputStream]
+     * Parse a single file and create an AST.
+     * @param file to parse
+     * @return [ParseResult] with root of an AST (null if parsing failed) and file path
      */
-    override fun parseFiles(files: List<File>): List<ParseResult<FuzzyNode>> {
-        val outputModuleFactory = OutputModuleFactory()
-        val paths = files.map { it.path }
-        FuzzyC2Cpg(outputModuleFactory).runAndOutput(paths.toTypedArray())
-        val cpg = outputModuleFactory.internalGraph
-        return cpg2Nodes(cpg)
+    override fun parseFile(file: File): ParseResult<FuzzyNode> {
+        // We need some tweaks to create Scala sets from Kotlin code
+        val pathSetScalaBuilder = Set.newBuilder<String>()
+        pathSetScalaBuilder.addOne(file.path)
+        val pathSet = pathSetScalaBuilder.result()
+        val extensionSetScalaBuilder = Set.newBuilder<String>()
+        extensionSetScalaBuilder.addOne(".${file.extension}")
+        val extensionSet = extensionSetScalaBuilder.result()
+
+        // Kotlin cannot use default value Scala:None for the argument, so we create it manually
+        val optionalOutputPath: Option<String> = Option.empty()
+
+        val cpg = FuzzyC2Cpg().runAndOutput(pathSet, extensionSet, optionalOutputPath)
+        return cpg2Nodes(cpg, file.path)
     }
 
     /**
@@ -94,13 +105,27 @@ class FuzzyCppParser : Parser<FuzzyNode> {
      * to list of [FuzzyNode][astminer.parse.cpp.FuzzyNode].
      * Cpg may contain graphs for several files, in that case several ASTs will be created.
      * @param cpg to be converted
+     * @param filePath to the parsed file that will be used if parsing failed
      * @return list of AST roots
      */
-    private fun cpg2Nodes(cpg: Cpg): List<ParseResult<FuzzyNode>> {
-        val g = cpg.graph().traversal()
-        val vertexToNode = HashMap<Vertex, FuzzyNode>()
-        g.E().hasLabel(EdgeTypes.AST).forEach { addNodesFromEdge(it, vertexToNode) }
-        return g.V().hasLabel(NodeTypes.FILE).toList().map { ParseResult(vertexToNode[it], it.value("NAME")) }
+    private fun cpg2Nodes(cpg: Cpg, filePath: String): ParseResult<FuzzyNode> {
+        val g = cpg.graph()
+        val vertexToNode = mutableMapOf<Node, FuzzyNode>()
+        g.E().forEach {
+            if (it.label() == EdgeTypes.AST) {
+                addNodesFromEdge(it, vertexToNode)
+            }
+        }
+        g.V().forEach {
+            if (it.label() == NodeTypes.FILE) {
+                val actualFilePath = it.property("NAME").toString()
+                if (File(actualFilePath).absolutePath != File(filePath).absolutePath) {
+                    println("While parsing $filePath, actually parsed $actualFilePath")
+                }
+                return ParseResult(vertexToNode[it], actualFilePath)
+            }
+        }
+        return ParseResult(null, filePath)
     }
 
     /**
@@ -132,57 +157,39 @@ class FuzzyCppParser : Parser<FuzzyNode> {
         }
     }
 
-    /**
-     * Create string from element with its label and all its properties.
-     * @param e - element for converting to string
-     * @return created string
-     */
-    fun elementToString(e: Element) = with(StringBuilder()) {
-        append("${e.label()}  |  ")
-        e.keys().forEach { k -> append("$k:${e.value<Any>(k)}  ") }
-        appendln()
-        toString()
-    }
-
-    private fun addNodesFromEdge(e: Edge, map: HashMap<Vertex, FuzzyNode>) {
-        val parentNode = map.getOrPut(e.outVertex()) { createNodeFromVertex(e.outVertex()) }
-        val childNode = map.getOrPut(e.inVertex()) { createNodeFromVertex(e.inVertex()) }
+    private fun addNodesFromEdge(e: Edge, map: MutableMap<Node, FuzzyNode>) {
+        val parentNode = map.getOrPut(e.outNode()) { createNodeFromVertex(e.outNode()) }
+        val childNode = map.getOrPut(e.inNode()) { createNodeFromVertex(e.inNode()) }
         parentNode.addChild(childNode)
     }
 
-    private fun createNodeFromVertex(v: Vertex): FuzzyNode {
-        val token: String? = v.getValueOrNull(NodeKeys.CODE)
-        val order: Int? = v.getValueOrNull(NodeKeys.ORDER)
+    private fun createNodeFromVertex(v: Node): FuzzyNode {
+        val token: String? = v.property(NodeKeys.CODE)
+        val order: Int? = v.property(NodeKeys.ORDER)
 
         for (replaceableNodeKey in replaceableNodeKeys) {
             if (replaceableNodeKey.condition(v)) {
-                val node = FuzzyNode(v.value<String>(replaceableNodeKey.key), token, order)
-                v.keys().forEach { k ->
-                    node.setMetadata(k, v.value(k))
+                val node = FuzzyNode(v.property(replaceableNodeKey.key).toString(), token, order)
+                v.propertyKeys().forEach { k ->
+                    val property = v.property(k) ?: return@forEach
+                    node.setMetadata(k, property.toString())
                 }
                 return node
             }
         }
 
         val node = FuzzyNode(v.label(), token, order)
-        v.keys().forEach { k ->
+        v.propertyKeys().forEach { k ->
+            val property = v.property(k)?.toString() ?: return@forEach
             for (expandableNodeKey in expandableNodeKeys) {
                 if (expandableNodeKey.key == k && expandableNodeKey.supportedNodeLabels.contains(v.label())) {
-                    val keyNode = FuzzyNode(k, v.value<Any>(k).toString(), expandableNodeKey.order)
+                    val keyNode = FuzzyNode(k, property, expandableNodeKey.order)
                     node.addChild(keyNode)
                     return@forEach
                 }
             }
-            node.setMetadata(k, v.value(k))
+            node.setMetadata(k, property)
         }
         return node
-    }
-
-    private fun <T> Vertex.getValueOrNull(key: Key<out Any>): T? {
-        return try {
-            this.value<T>(key.name())
-        } catch (e: IllegalStateException) {
-            null
-        }
     }
 }

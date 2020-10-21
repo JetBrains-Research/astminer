@@ -13,9 +13,8 @@ class FuzzyCppParserTest {
         val parser = FuzzyCppParser()
         val file = File("src/test/resources/fuzzy/test.cpp")
 
-        val nodes = parser.parseFiles(listOf(file))
-        Assert.assertTrue("Parse tree for a valid file should not be null",
-                nodes.size == 1 && nodes[0].root != null)
+        val nodes = parser.parseFile(file)
+        Assert.assertTrue("Parse tree for a valid file should not be null", nodes.root != null)
     }
 
     @Test
@@ -35,7 +34,10 @@ class FuzzyCppParserTest {
     fun testProjectParsing() {
         val folder = File("src/test/resources/fuzzy/")
         val parser = FuzzyCppParser()
-        val nodes = parser.parseFiles(getProjectFilesWithExtension(folder,"cpp")).map { it.root }
+        val nodes = mutableListOf<FuzzyNode?>()
+        parser.parseFiles(getProjectFilesWithExtension(folder, "cpp")) {
+            nodes.add(it.root)
+        }
         Assert.assertEquals(
                 "There is only 3 file with .cpp extension in 'testData/examples' folder",
                 3,
@@ -87,7 +89,10 @@ class FuzzyCppParserTest {
         val parser = FuzzyCppParser()
 
         parser.preprocessProject(projectRoot, preprocessedRoot)
-        val nodes = parser.parseFiles(getProjectFilesWithExtension(projectRoot, "cpp")).map { it.root }
+        val nodes = mutableListOf<FuzzyNode?>()
+        parser.parseFiles(getProjectFilesWithExtension(projectRoot, "cpp")) {
+            nodes.add(it.root)
+        }
 
         Assert.assertEquals(
                 "Parse tree for a valid file should not be null. There are 5 files in example project.",
