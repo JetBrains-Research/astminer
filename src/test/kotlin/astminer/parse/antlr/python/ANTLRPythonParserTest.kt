@@ -1,6 +1,7 @@
 package astminer.parse.antlr.python
 
 import astminer.common.getProjectFilesWithExtension
+import astminer.common.model.Node
 import org.junit.Assert
 import org.junit.Test
 import java.io.File
@@ -20,7 +21,8 @@ class ANTLRPythonParserTest {
     fun testProjectParsing() {
         val parser = PythonParser()
         val projectRoot = File("src/test/resources/examples")
-        val trees = parser.parseFiles(getProjectFilesWithExtension(projectRoot, "py")).map { it.root }
+        val trees = mutableListOf<Node?>()
+        parser.parseFiles(getProjectFilesWithExtension(projectRoot, "py")) { trees.add(it.root) }
         Assert.assertEquals("There is only 1 file with .py extension in 'testData/examples' folder",1, trees.size)
         trees.forEach { Assert.assertNotNull("Parse tree for a valid file should not be null", it) }
     }
