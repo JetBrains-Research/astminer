@@ -157,18 +157,6 @@ class FuzzyCppParser : Parser<FuzzyNode> {
         }
     }
 
-    /**
-     * Create string from element with its label and all its properties.
-     * @param e - element for converting to string
-     * @return created string
-     */
-    fun elementToString(e: Element) = with(StringBuilder()) {
-        append("${e.label()}  |  ")
-        e.propertyKeys().forEach { k -> append("$k:${e.property(k)}  ") }
-        appendln()
-        toString()
-    }
-
     private fun addNodesFromEdge(e: Edge, map: MutableMap<Node, FuzzyNode>) {
         val parentNode = map.getOrPut(e.outNode()) { createNodeFromVertex(e.outNode()) }
         val childNode = map.getOrPut(e.inNode()) { createNodeFromVertex(e.inNode()) }
