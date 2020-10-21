@@ -124,7 +124,7 @@ class FuzzyCppParser : Parser<FuzzyNode> {
         g.V().forEach {
             if (it.label() == NodeTypes.FILE) {
                 val actualFilePath = it.property("NAME").toString()
-                if (actualFilePath != filePath) {
+                if (File(actualFilePath).absolutePath != File(filePath).absolutePath) {
                     println("While parsing $filePath, actually parsed $actualFilePath")
                 }
                 return ParseResult(vertexToNode[it], actualFilePath)
