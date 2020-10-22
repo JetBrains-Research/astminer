@@ -1,3 +1,3 @@
 #!/bin/bash
 
-java -jar build/shadow/lib-0.5.jar "$@"
+java -jar build/shadow/lib-*.jar "$@"
