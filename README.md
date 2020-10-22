@@ -139,7 +139,7 @@ Support for other languages and documentation are the key areas of improvement.
 
 ## Citing astminer
 A [paper](https://zenodo.org/record/2595271) dedicated to astminer (more precisely, to its older version [PathMiner](https://github.com/vovak/astminer/tree/pathminer)) was presented at [MSR'19](https://2019.msrconf.org/). 
-If you use astminer in your academic work, please consider citing it.
+If you use astminer in your academic work, please cite it.
 ```
 @inproceedings{kovalenko2019pathminer,
   title={PathMiner: a library for mining of path-based representations of code},
