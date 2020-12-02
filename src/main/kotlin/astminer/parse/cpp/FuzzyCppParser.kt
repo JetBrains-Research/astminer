@@ -151,7 +151,11 @@ class FuzzyCppParser : Parser<FuzzyNode> {
                 .filter { file -> supportedExtensions.contains(file.extension) }
         files.forEach { file ->
             val relativeFilePath = file.relativeTo(projectRoot)
-            val outputPath = outputDir.resolve(relativeFilePath.parent)
+            val outputPath = if (relativeFilePath.parent != null){
+                outputDir.resolve(relativeFilePath.parent)
+            } else {
+                outputDir
+            }
             outputPath.mkdirs()
             preprocessFile(file, outputPath)
         }
