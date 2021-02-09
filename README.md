@@ -17,7 +17,7 @@ Supported languages of the input:
 See [changelog](changelog.md)
 
 ## About
-Astminer was first implemented as a part of pipeline in the [the code style extraction project](https://arxiv.org/abs/2002.03997) and later converted into a reusable tool.
+Astminer was first implemented as a part of pipeline in the [code style extraction project](https://arxiv.org/abs/2002.03997) and later converted into a reusable tool.
 
 Currently it supports extraction of:
 * Path-based representations of files
