@@ -10,7 +10,7 @@ Supported languages of the input:
 - [x] Java
 - [x] Python
 - [x] C/C++
-- [x] Javascript (beta) (see [issue](https://github.com/vovak/astminer/issues/22))
+- [x] Javascript
 
 ### Version history
 
@@ -46,14 +46,14 @@ In other tasks, if you feed C/C++ file with macroses, they will be dropped as we
 
 Extract ASTs from all the files in supported languages.
 ```shell script
-./cli.sh parse --lang py,java,c,cpp --project path/to/project --output path/to/result --storage dot
+./cli.sh parse --lang py,java,c,cpp,js --project path/to/project --output path/to/result --storage dot
 ```
 
 #### PathContexts
 
 Extract path contexts from all the files in supported languages and store in form `fileName triplesOfPathContexts`.
 ```shell script
-./cli.sh pathContexts --lang py,java,c,cpp --project path/to/project --output path/to/results --maxL L --maxW W --maxContexts C --maxTokens T --maxPaths P
+./cli.sh pathContexts --lang py,java,c,cpp,js --project path/to/project --output path/to/results --maxL L --maxW W --maxContexts C --maxTokens T --maxPaths P
 ```
 
 #### Code2vec
@@ -61,7 +61,7 @@ Extract path contexts from all the files in supported languages and store in for
 Extract data suitable as input for [code2vec](https://github.com/tech-srl/code2vec) model.
 Parse all files written in specified language into ASTs, split into methods, and store in form `method|name triplesOfPathContexts`.
 ```shell script
-./cli.sh code2vec --lang py,java,c,cpp --project path/to/project --output path/to/results --maxL L --maxW W --maxContexts C --maxTokens T --maxPaths P  --split-tokens --granularity method
+./cli.sh code2vec --lang py,java,c,cpp,js --project path/to/project --output path/to/results --maxL L --maxW W --maxContexts C --maxTokens T --maxPaths P  --split-tokens --granularity method
 ```
 
 ### Integrate in your mining pipeline
