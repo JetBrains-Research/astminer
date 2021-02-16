@@ -4,6 +4,7 @@ import astminer.common.getNormalizedToken
 import astminer.common.getProjectFilesWithExtension
 import astminer.common.model.*
 import astminer.parse.antlr.java.JavaParser
+import astminer.parse.antlr.javascript.JavaScriptParser
 import astminer.parse.antlr.python.PythonParser
 import astminer.parse.cpp.FuzzyCppParser
 import astminer.parse.java.GumTreeJavaParser
@@ -33,7 +34,8 @@ class PathContextsExtractor(private val customLabelExtractor: LabelExtractor? = 
             SupportedLanguage(GumTreeJavaParser(), "java"),
             SupportedLanguage(FuzzyCppParser(), "c"),
             SupportedLanguage(FuzzyCppParser(), "cpp"),
-            SupportedLanguage(PythonParser(), "py")
+            SupportedLanguage(PythonParser(), "py"),
+            SupportedLanguage(JavaScriptParser(), "js")
     )
 
     val extensions: List<String> by option(

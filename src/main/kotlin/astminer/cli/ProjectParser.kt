@@ -12,12 +12,12 @@ import java.io.File
 
 class ProjectParser(private val customLabelExtractor: LabelExtractor? = null) : CliktCommand() {
 
-    private val supportedLanguages = listOf("java", "c", "cpp", "py")
+    private val supportedLanguages = listOf("java", "c", "cpp", "py", "js")
 
     val extensions: List<String> by option(
         "--lang",
         help = "Comma-separated list of file extensions that will be parsed.\n" +
-                "Supports 'c', 'cpp', 'java', 'py', defaults to all these extensions."
+                "Supports 'c', 'cpp', 'java', 'py', 'js', defaults to all these extensions."
     ).split(",").default(supportedLanguages)
 
     val projectRoot: String by option(
