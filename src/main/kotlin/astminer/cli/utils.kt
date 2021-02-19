@@ -10,6 +10,7 @@ import astminer.common.model.Parser
 import astminer.common.preOrder
 import astminer.common.setNormalizedToken
 import astminer.common.splitToSubtokens
+import astminer.parse.antlr.javascript.JavaScriptParser
 
 fun getParser(
         extension: String,
@@ -28,6 +29,7 @@ fun getParser(
         "c" -> FuzzyCppParser()
         "cpp" -> FuzzyCppParser()
         "py" -> PythonParser()
+        "js" -> JavaScriptParser()
         else -> {
             throw UnsupportedOperationException("Unsupported extension $extension")
         }

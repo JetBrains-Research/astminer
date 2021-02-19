@@ -7,6 +7,7 @@ import astminer.common.preOrder
 import astminer.common.setNormalizedToken
 import astminer.parse.antlr.SimpleNode
 import astminer.parse.antlr.java.JavaMethodSplitter
+import astminer.parse.antlr.javascript.JavaScriptMethodSplitter
 import astminer.parse.antlr.python.PythonMethodSplitter
 import astminer.parse.cpp.FuzzyMethodSplitter
 import astminer.parse.cpp.FuzzyNode
@@ -74,6 +75,10 @@ abstract class MethodLabelExtractor(
             }
             "py" -> {
                 val methodSplitter = PythonMethodSplitter()
+                methodSplitter.splitIntoMethods(root as SimpleNode)
+            }
+            "js" -> {
+                val methodSplitter = JavaScriptMethodSplitter()
                 methodSplitter.splitIntoMethods(root as SimpleNode)
             }
             else -> throw UnsupportedOperationException("Unsupported extension $fileExtension")
