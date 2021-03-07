@@ -12,13 +12,14 @@ class GumTreePythonParser : Parser<GumTreePythonNode> {
         Run.initGenerators()
     }
 
-    override fun parseInputStream(content: InputStream): GumTreePythonNode {
+    override fun parseInputStream(content: InputStream): GumTreePythonNode? = try {
         val context = PythonTreeGenerator().generate(InputStreamReader(content))
-        return wrapGumTreeNode(context)
+        wrapGumTreeNode(context)
+    } catch (e: Exception) {
+        null
     }
 }
 
 fun wrapGumTreeNode(treeContext: TreeContext): GumTreePythonNode {
     return GumTreePythonNode(treeContext.root, treeContext, null)
 }
-
