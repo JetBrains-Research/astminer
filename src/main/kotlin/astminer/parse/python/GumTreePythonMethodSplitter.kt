@@ -17,11 +17,14 @@ class GumTreePythonMethodSplitter : TreeMethodSplitter<GumTreePythonNode> {
             const val posOnlyArgs = "posonlyargs"
             const val kwOnlyArgs = "kwonlyargs"
             const val arguments = "arguments"
+            const val vararg = "vararg"
+            const val kwarg = "kwarg"
             const val args = "args"
             const val arg = "arg"
 
             const val body = "body"
             const val returnTypeLabel = "Return"
+            const val passTypeLabel = "Pass"
             const val constantType = "Constant-"
 
             val methodDefinitions = listOf(functionDefinition, asyncFunctionDefinition)
@@ -84,6 +87,14 @@ class GumTreePythonMethodSplitter : TreeMethodSplitter<GumTreePythonNode> {
             it.getChildren()
         }.filter {
             it.getTypeLabel() == TypeLabels.arg
+        } as MutableList
+
+        methodNode.getChildrenOfType(TypeLabels.arguments).flatMap {
+            it.getChildren()
+        }.filter {
+            it.getTypeLabel() == TypeLabels.vararg || it.getTypeLabel() == TypeLabels.kwarg
+        }.forEach {
+            params.add(it)
         }
 
         return params.map {
