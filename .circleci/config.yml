@@ -3,37 +3,28 @@ jobs:
   # build with machine executor
   build:
     machine:
-      image: ubuntu-1604:202101-01
+      image: ubuntu-2004:202010-01
     working_directory: ~/astminer
     steps:
       - checkout:
           path: ~/astminer
       - run:
-          name: Installing Python 3.8
-          command: |
-            sudo apt-get install software-properties-common
-            sudo add-apt-repository ppa:deadsnakes/ppa
-            sudo apt-get update
-            sudo apt-get install python3.8
-            sudo apt-get -y install python3-pip
-            ls -l /usr/bin/python*
-            python3 --version
-      - run:
           name: Installing backend GumTree parser for Python
-          # for using pythonparser we need /tmp folder in PATH variable
           command: |
-            pwd
             git clone https://github.com/JetBrains-Research/pythonparser pythonparser_tmp_dir
             pip3 install -r pythonparser_tmp_dir/requirements.txt
             mv pythonparser_tmp_dir/src/main/python/pythonparser/pythonparser_3.py /tmp/pythonparser
             chmod +x /tmp/pythonparser
-            ls -l /tmp
       - run: 
-          name: Build and tests
+          # for using pythonparser we need /tmp folder in PATH variable
+          name: Build
           command: |
               export PATH=$PATH:/tmp
-              echo $PATH 
               ./gradlew build --stacktrace
+      - run:
+          name: Test
+          command: |
+              export PATH=$PATH:/tmp
               ./gradlew test --stacktrace
 
   # release
