@@ -3,12 +3,29 @@ jobs:
   # build with machine executor
   build:
     machine:
-      enabled: true
+      image: ubuntu-2004:202010-01
     working_directory: ~/astminer
     steps:
       - checkout:
           path: ~/astminer
-      - run: ./gradlew build --stacktrace
+      - run:
+          name: Installing backend GumTree parser for Python
+          command: |
+            git clone https://github.com/JetBrains-Research/pythonparser pythonparser_tmp_dir
+            pip3 install -r pythonparser_tmp_dir/requirements.txt
+            mv pythonparser_tmp_dir/src/main/python/pythonparser/pythonparser_3.py /tmp/pythonparser
+            chmod +x /tmp/pythonparser
+      - run: 
+          # for using pythonparser we need /tmp folder in PATH variable
+          name: Build
+          command: |
+              export PATH=$PATH:/tmp
+              ./gradlew build --stacktrace
+      - run:
+          name: Test
+          command: |
+              export PATH=$PATH:/tmp
+              ./gradlew test --stacktrace
 
   # release
   release:
@@ -21,6 +38,7 @@ jobs:
       - checkout:
           path: ~/astminer
       - run: ./gradlew bintrayUpload "-PbranchName=$GIT_BRANCH"
+
 
   release-dev:
     machine:
