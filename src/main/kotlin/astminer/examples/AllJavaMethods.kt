@@ -4,7 +4,7 @@ import astminer.common.model.LabeledPathContexts
 import astminer.common.model.MethodInfo
 import astminer.parse.java.GumTreeJavaNode
 import astminer.parse.java.GumTreeJavaParser
-import astminer.parse.java.GumTreeMethodSplitter
+import astminer.parse.java.GumTreeJavaMethodSplitter
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
 import astminer.paths.CsvPathStorage
@@ -34,7 +34,7 @@ fun allJavaMethods() {
         val fileNode = GumTreeJavaParser().parseInputStream(file.inputStream()) ?: return@forFilesWithSuffix
 
         //extract method nodes
-        val methodNodes = GumTreeMethodSplitter().splitIntoMethods(fileNode)
+        val methodNodes = GumTreeJavaMethodSplitter().splitIntoMethods(fileNode)
 
         methodNodes.forEach { methodInfo ->
             //Retrieve paths from every node individually
