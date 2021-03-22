@@ -11,10 +11,10 @@ private fun createTree(filename: String): GumTreeJavaNode {
 }
 
 private fun createAndSplitTree(filename: String): Collection<MethodInfo<GumTreeJavaNode>> {
-    return GumTreeMethodSplitter().splitIntoMethods(createTree(filename))
+    return GumTreeJavaMethodSplitter().splitIntoMethods(createTree(filename))
 }
 
-class GumTreeMethodSplitterTest {
+class GumTreeJavaMethodSplitterTest {
     @Test
     fun testMethodExtraction1() {
         val methodInfos = createAndSplitTree("src/test/resources/gumTreeMethodSplitter/1.java")

@@ -6,7 +6,7 @@ import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-class GumTreeMethodSplitterTest {
+class GumTreeJavaMethodSplitterTest {
     private fun parse(filename: String): GumTreePythonNode? =
         GumTreePythonParser().parseInputStream(File(filename).inputStream())
 

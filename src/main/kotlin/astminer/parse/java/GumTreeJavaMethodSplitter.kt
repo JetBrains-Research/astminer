@@ -5,7 +5,7 @@ import astminer.common.preOrder
 
 private fun GumTreeJavaNode.isTypeNode() = getTypeLabel().endsWith("Type")
 
-class GumTreeMethodSplitter : TreeMethodSplitter<GumTreeJavaNode> {
+class GumTreeJavaMethodSplitter : TreeMethodSplitter<GumTreeJavaNode> {
 
     companion object {
         private object TypeLabels {
