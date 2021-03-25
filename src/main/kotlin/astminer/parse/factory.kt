@@ -4,6 +4,7 @@ fun getLanguageHandler(extension: String, parserType: String): LanguageHandler {
     return when (parserType) {
         "gumtree" -> getGumtreeHandler(extension)
         "antlr" -> getAntlrHandler(extension)
+        "fuzzy" -> getFuzzyHandler(extension)
         else -> throw UnsupportedOperationException()
     }
 }
@@ -21,6 +22,13 @@ private fun getAntlrHandler(extension: String): AntlrLanguageHandler {
         "java" -> AntlrJavaHandler()
         "javascript" -> AntlrJavascriptHandler()
         "python" -> AntlrPythonHandler()
+        else -> throw UnsupportedOperationException()
+    }
+}
+
+private fun getFuzzyHandler(extension: String): FuzzyHandler {
+    return when(extension) {
+        "c","cpp" -> CppFuzzyHandler()
         else -> throw UnsupportedOperationException()
     }
 }
