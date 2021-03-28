@@ -12,7 +12,9 @@ import astminer.parse.antlr.python.PythonMethodSplitter
 import astminer.parse.cpp.FuzzyMethodSplitter
 import astminer.parse.cpp.FuzzyNode
 import astminer.parse.java.GumTreeJavaNode
-import astminer.parse.java.GumTreeMethodSplitter
+import astminer.parse.java.GumTreeJavaMethodSplitter
+import astminer.parse.python.GumTreePythonMethodSplitter
+import astminer.parse.python.GumTreePythonNode
 import java.io.File
 
 
@@ -42,7 +44,8 @@ abstract class FileLabelExtractor : LabelExtractor {
 
 abstract class MethodLabelExtractor(
         open val filterPredicates: Collection<MethodFilterPredicate> = emptyList(),
-        open val javaParser: String = "gumtree"
+        open val javaParser: String = "gumtree",
+        open val pythonParser: String = "antlr"
 ) : LabelExtractor {
 
     override fun toLabeledData(
@@ -61,7 +64,7 @@ abstract class MethodLabelExtractor(
             "java" -> {
                 when (javaParser) {
                     "gumtree" -> {
-                        val methodSplitter = GumTreeMethodSplitter()
+                        val methodSplitter = GumTreeJavaMethodSplitter()
                         methodSplitter.splitIntoMethods(root as GumTreeJavaNode)
                     }
                     "antlr" -> {
@@ -74,8 +77,19 @@ abstract class MethodLabelExtractor(
                 }
             }
             "py" -> {
-                val methodSplitter = PythonMethodSplitter()
-                methodSplitter.splitIntoMethods(root as SimpleNode)
+                when (pythonParser) {
+                    "gumtree" -> {
+                        val methodSplitter = GumTreePythonMethodSplitter()
+                        methodSplitter.splitIntoMethods(root as GumTreePythonNode)
+                    }
+                    "antlr" -> {
+                        val methodSplitter = PythonMethodSplitter()
+                        methodSplitter.splitIntoMethods(root as SimpleNode)
+                    }
+                    else -> {
+                        throw UnsupportedOperationException("Unsupported parser $pythonParser")
+                    }
+                }
             }
             "js" -> {
                 val methodSplitter = JavaScriptMethodSplitter()
@@ -111,8 +125,9 @@ class FolderExtractor : FileLabelExtractor() {
 class MethodNameExtractor(
         val hideMethodNames: Boolean = false,
         override val filterPredicates: Collection<MethodFilterPredicate> = emptyList(),
-        override val javaParser: String = "gumtree"
-) : MethodLabelExtractor(filterPredicates, javaParser) {
+        override val javaParser: String = "gumtree",
+        override val pythonParser: String = "antlr"
+) : MethodLabelExtractor(filterPredicates, javaParser, pythonParser) {
 
     override fun <T : Node> extractLabel(methodInfo: MethodInfo<T>, filePath: String): String? {
         val methodNameNode = methodInfo.method.nameNode ?: return null
