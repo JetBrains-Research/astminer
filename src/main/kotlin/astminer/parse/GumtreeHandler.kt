@@ -4,7 +4,7 @@ import astminer.common.model.MethodInfo
 import astminer.common.model.Node
 import astminer.parse.java.GumTreeJavaNode
 import astminer.parse.java.GumTreeJavaParser
-import astminer.parse.java.GumTreeMethodSplitter
+import astminer.parse.java.GumTreeJavaMethodSplitter
 import astminer.parse.python.GumTreePythonMethodSplitter
 import astminer.parse.python.GumTreePythonNode
 import astminer.parse.python.GumTreePythonParser
@@ -13,7 +13,7 @@ abstract class GumTreeHandler : LanguageHandler
 
 class JavaGumtreeHandler() : GumTreeHandler() {
     override val parser = GumTreeJavaParser()
-    private val splitter = GumTreeMethodSplitter()
+    private val splitter = GumTreeJavaMethodSplitter()
 
     override fun splitIntoMethods(root: Node): Collection<MethodInfo<out Node>> {
         require(root is GumTreeJavaNode) { "Wrong node type" }
