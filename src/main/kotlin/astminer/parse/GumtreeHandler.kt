@@ -1,31 +1,28 @@
 package astminer.parse
 
-import astminer.common.model.MethodInfo
-import astminer.common.model.Node
+import astminer.common.model.ParseResult
 import astminer.parse.java.GumTreeJavaNode
 import astminer.parse.java.GumTreeJavaParser
 import astminer.parse.java.GumTreeJavaMethodSplitter
 import astminer.parse.python.GumTreePythonMethodSplitter
 import astminer.parse.python.GumTreePythonNode
 import astminer.parse.python.GumTreePythonParser
+import java.io.File
 
-abstract class GumTreeHandler : LanguageHandler
+object JavaGumtreeHandlerFactory : HandlerFactory {
+    override fun createHandler(file: File): LanguageHandler<GumTreeJavaNode> = JavaGumtreeHandler(file)
 
-class JavaGumtreeHandler() : GumTreeHandler() {
-    override val parser = GumTreeJavaParser()
-    private val splitter = GumTreeJavaMethodSplitter()
-
-    override fun splitIntoMethods(root: Node): Collection<MethodInfo<out Node>> {
-        require(root is GumTreeJavaNode) { "Wrong node type" }
-        return splitter.splitIntoMethods(root)
+    class JavaGumtreeHandler(file: File) : LanguageHandler<GumTreeJavaNode>() {
+        override val splitter = GumTreeJavaMethodSplitter()
+        override val parseResult: ParseResult<GumTreeJavaNode> = GumTreeJavaParser().parseFile(file)
     }
 }
 
-class PythonGumTreeHandler : GumTreeHandler() {
-    override val parser = GumTreePythonParser()
-    private val splitter = GumTreePythonMethodSplitter()
-    override fun splitIntoMethods(root: Node): Collection<MethodInfo<out Node>> {
-        require(root is GumTreePythonNode) { "Wrong node type" }
-        return splitter.splitIntoMethods(root)
+object PythonGumTreeHandlerFactory : HandlerFactory {
+    override fun createHandler(file: File): LanguageHandler<GumTreePythonNode> = PythonGumTreeHandler(file)
+
+    class PythonGumTreeHandler(file: File) :  LanguageHandler<GumTreePythonNode>() {
+        override val splitter = GumTreePythonMethodSplitter()
+        override val parseResult: ParseResult<GumTreePythonNode> = GumTreePythonParser().parseFile(file)
     }
 }

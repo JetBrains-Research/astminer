@@ -1,34 +1,36 @@
 package astminer.parse
 
-fun getLanguageHandler(extension: String, parserType: String): LanguageHandler {
+import java.io.File
+
+fun getHandlerFactory(extension: String, parserType: String): HandlerFactory {
     return when (parserType) {
-        "gumtree" -> getGumtreeHandler(extension)
-        "antlr" -> getAntlrHandler(extension)
-        "fuzzy" -> getFuzzyHandler(extension)
+        "gumtree" -> getGumtreeHandlerFactory(extension)
+        "antlr" -> getAntlrHandlerFactory(extension)
+        "fuzzy" -> getFuzzyHandlerFactory(extension)
         else -> throw UnsupportedOperationException()
     }
 }
 
-private fun getGumtreeHandler(extension: String): GumTreeHandler {
+private fun getGumtreeHandlerFactory(extension: String): HandlerFactory {
     return when (extension) {
-        "java" -> JavaGumtreeHandler()
-        "python" -> PythonGumTreeHandler()
+        "java" -> JavaGumtreeHandlerFactory
+        "python" -> PythonGumTreeHandlerFactory
         else -> throw UnsupportedOperationException()
     }
 }
 
-private fun getAntlrHandler(extension: String): AntlrLanguageHandler {
+private fun getAntlrHandlerFactory(extension: String): HandlerFactory {
     return when (extension) {
-        "java" -> AntlrJavaHandler()
-        "javascript" -> AntlrJavascriptHandler()
-        "python" -> AntlrPythonHandler()
+        "java" -> AntlrJavaHandlerFactory
+        "javascript" -> AntlrJavascriptHandlerFactory
+        "python" -> AntlrPythonHandlerFactory
         else -> throw UnsupportedOperationException()
     }
 }
 
-private fun getFuzzyHandler(extension: String): FuzzyHandler {
-    return when(extension) {
-        "c","cpp" -> CppFuzzyHandler()
+private fun getFuzzyHandlerFactory(extension: String): HandlerFactory {
+    return when (extension) {
+        "c", "cpp" -> CppFuzzyHandlerFactory
         else -> throw UnsupportedOperationException()
     }
 }

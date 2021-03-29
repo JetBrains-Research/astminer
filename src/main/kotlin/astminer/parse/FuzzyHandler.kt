@@ -2,20 +2,18 @@ package astminer.parse
 
 import astminer.common.model.MethodInfo
 import astminer.common.model.Node
+import astminer.common.model.ParseResult
 import astminer.common.model.TreeMethodSplitter
 import astminer.parse.cpp.FuzzyCppParser
 import astminer.parse.cpp.FuzzyMethodSplitter
 import astminer.parse.cpp.FuzzyNode
+import java.io.File
 
-abstract class FuzzyHandler : LanguageHandler {
-    abstract val splitter: TreeMethodSplitter<FuzzyNode>
-    override fun splitIntoMethods(root: Node): Collection<MethodInfo<out Node>> {
-        require(root is FuzzyNode) { "Wrong node type" }
-        return splitter.splitIntoMethods(root)
-    }
+object CppFuzzyHandlerFactory: HandlerFactory {
+    override fun createHandler(file: File): LanguageHandler<FuzzyNode> = CppFuzzyHandler(file)
 }
 
-class CppFuzzyHandler : FuzzyHandler() {
+class CppFuzzyHandler(file: File) : LanguageHandler<FuzzyNode>() {
     override val splitter = FuzzyMethodSplitter()
-    override val parser = FuzzyCppParser()
+    override val parseResult: ParseResult<FuzzyNode> = FuzzyCppParser().parseFile(file)
 }

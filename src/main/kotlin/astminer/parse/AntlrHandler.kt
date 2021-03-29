@@ -1,8 +1,6 @@
 package astminer.parse
 
-import astminer.common.model.MethodInfo
-import astminer.common.model.Node
-import astminer.common.model.TreeMethodSplitter
+import astminer.common.model.ParseResult
 import astminer.parse.antlr.SimpleNode
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.java.JavaParser
@@ -10,26 +8,31 @@ import astminer.parse.antlr.javascript.JavaScriptMethodSplitter
 import astminer.parse.antlr.javascript.JavaScriptParser
 import astminer.parse.antlr.python.PythonMethodSplitter
 import astminer.parse.antlr.python.PythonParser
+import java.io.File
 
-abstract class AntlrLanguageHandler : LanguageHandler {
-    abstract val splitter: TreeMethodSplitter<SimpleNode>
-    override fun splitIntoMethods(root: Node): Collection<MethodInfo<out Node>> {
-        require(root is SimpleNode) { "Wrong node type" }
-        return splitter.splitIntoMethods(root)
+object AntlrJavaHandlerFactory : HandlerFactory {
+    override fun createHandler(file: File) = AntlrJavaHandler(file)
+
+    class AntlrJavaHandler(file: File) : LanguageHandler<SimpleNode>() {
+        override val parseResult: ParseResult<SimpleNode> = JavaParser().parseFile(file)
+        override val splitter = JavaMethodSplitter()
     }
 }
 
-class AntlrJavaHandler : AntlrLanguageHandler() {
-    override val parser = JavaParser()
-    override val splitter = JavaMethodSplitter()
+object AntlrPythonHandlerFactory : HandlerFactory {
+    override fun createHandler(file: File) = AntlrPythonHandler(file)
+
+    class AntlrPythonHandler(file: File) : LanguageHandler<SimpleNode>() {
+        override val parseResult: ParseResult<SimpleNode> = PythonParser().parseFile(file)
+        override val splitter = PythonMethodSplitter()
+    }
 }
 
-class AntlrPythonHandler : AntlrLanguageHandler() {
-    override val parser = PythonParser()
-    override val splitter = PythonMethodSplitter()
-}
+object AntlrJavascriptHandlerFactory : HandlerFactory {
+    override fun createHandler(file: File) = AntlrJavascriptHandler(file)
 
-class AntlrJavascriptHandler : AntlrLanguageHandler() {
-    override val parser = JavaScriptParser()
-    override val splitter = JavaScriptMethodSplitter()
+    class AntlrJavascriptHandler(file: File) : LanguageHandler<SimpleNode>() {
+        override val parseResult: ParseResult<SimpleNode> = JavaScriptParser().parseFile(file)
+        override val splitter = JavaScriptMethodSplitter()
+    }
 }
