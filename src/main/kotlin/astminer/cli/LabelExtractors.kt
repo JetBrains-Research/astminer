@@ -9,12 +9,12 @@ import astminer.parse.antlr.SimpleNode
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.javascript.JavaScriptMethodSplitter
 import astminer.parse.antlr.python.PythonMethodSplitter
-import astminer.parse.cpp.FuzzyMethodSplitter
-import astminer.parse.cpp.FuzzyNode
-import astminer.parse.java.GumTreeJavaNode
-import astminer.parse.java.GumTreeJavaMethodSplitter
-import astminer.parse.python.GumTreePythonMethodSplitter
-import astminer.parse.python.GumTreePythonNode
+import astminer.parse.fuzzy.cpp.FuzzyMethodSplitter
+import astminer.parse.fuzzy.cpp.FuzzyNode
+import astminer.parse.gumtree.java.GumTreeJavaNode
+import astminer.parse.gumtree.java.GumTreeJavaMethodSplitter
+import astminer.parse.gumtree.python.GumTreePythonMethodSplitter
+import astminer.parse.gumtree.python.GumTreePythonNode
 import java.io.File
 
 

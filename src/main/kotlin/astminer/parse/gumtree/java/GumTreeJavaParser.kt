@@ -1,9 +1,10 @@
-package astminer.parse.java
+package astminer.parse.gumtree.java
 
 import com.github.gumtreediff.client.Run
 import com.github.gumtreediff.gen.jdt.JdtTreeGenerator
 import com.github.gumtreediff.tree.TreeContext
 import astminer.common.model.Parser
+import astminer.parse.gumtree.java.GumTreeJavaNode
 import java.io.InputStream
 import java.io.InputStreamReader
 

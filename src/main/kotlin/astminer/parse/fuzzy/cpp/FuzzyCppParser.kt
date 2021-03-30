@@ -1,4 +1,4 @@
-package astminer.parse.cpp
+package astminer.parse.fuzzy.cpp
 
 import astminer.common.model.ParseResult
 import astminer.common.model.Parser
@@ -9,7 +9,6 @@ import io.shiftleft.codepropertygraph.generated.NodeTypes
 import io.shiftleft.fuzzyc2cpg.FuzzyC2Cpg
 import overflowdb.Edge
 import overflowdb.Node
-import overflowdb.Element
 import scala.Option
 import scala.collection.immutable.Set
 import java.io.File
@@ -102,7 +101,7 @@ class FuzzyCppParser : Parser<FuzzyNode> {
 
     /**
      * Convert [cpg][io.shiftleft.codepropertygraph.Cpg] created by fuzzyc2cpg
-     * to list of [FuzzyNode][astminer.parse.cpp.FuzzyNode].
+     * to list of [FuzzyNode][astminer.parse.fuzzy.cpp.FuzzyNode].
      * Cpg may contain graphs for several files, in that case several ASTs will be created.
      * @param cpg to be converted
      * @param filePath to the parsed file that will be used if parsing failed

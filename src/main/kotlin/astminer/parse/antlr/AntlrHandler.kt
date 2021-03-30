@@ -1,7 +1,8 @@
-package astminer.parse
+package astminer.parse.antlr
 
 import astminer.common.model.ParseResult
-import astminer.parse.antlr.SimpleNode
+import astminer.parse.HandlerFactory
+import astminer.parse.LanguageHandler
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.javascript.JavaScriptMethodSplitter

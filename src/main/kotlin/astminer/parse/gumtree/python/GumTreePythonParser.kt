@@ -1,6 +1,7 @@
-package astminer.parse.python
+package astminer.parse.gumtree.python
 
 import astminer.common.model.Parser
+import astminer.parse.gumtree.python.GumTreePythonNode
 import com.github.gumtreediff.client.Run
 import com.github.gumtreediff.gen.python.PythonTreeGenerator
 import com.github.gumtreediff.tree.TreeContext

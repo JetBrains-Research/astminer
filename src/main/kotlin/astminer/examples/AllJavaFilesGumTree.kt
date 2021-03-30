@@ -1,7 +1,7 @@
 package astminer.examples
 
 import astminer.common.model.LabeledPathContexts
-import astminer.parse.java.GumTreeJavaParser
+import astminer.parse.gumtree.java.GumTreeJavaParser
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
 import astminer.paths.CsvPathStorage

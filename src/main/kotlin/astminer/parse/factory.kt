@@ -1,6 +1,10 @@
 package astminer.parse
 
-import java.io.File
+import astminer.parse.antlr.AntlrJavaHandlerFactory
+import astminer.parse.antlr.AntlrJavascriptHandlerFactory
+import astminer.parse.antlr.AntlrPythonHandlerFactory
+import astminer.parse.gumtree.JavaGumtreeHandlerFactory
+import astminer.parse.gumtree.PythonGumTreeHandlerFactory
 
 fun getHandlerFactory(extension: String, parserType: String): HandlerFactory {
     return when (parserType) {

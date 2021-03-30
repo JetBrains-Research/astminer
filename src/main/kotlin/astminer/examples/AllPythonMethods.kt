@@ -2,9 +2,9 @@ package astminer.examples
 
 import astminer.common.model.LabeledPathContexts
 import astminer.common.model.MethodInfo
-import astminer.parse.python.GumTreePythonMethodSplitter
-import astminer.parse.python.GumTreePythonNode
-import astminer.parse.python.GumTreePythonParser
+import astminer.parse.gumtree.python.GumTreePythonMethodSplitter
+import astminer.parse.gumtree.python.GumTreePythonNode
+import astminer.parse.gumtree.python.GumTreePythonParser
 import astminer.paths.CsvPathStorage
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings

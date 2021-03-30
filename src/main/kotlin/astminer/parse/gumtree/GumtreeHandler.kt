@@ -1,12 +1,14 @@
-package astminer.parse
+package astminer.parse.gumtree
 
 import astminer.common.model.ParseResult
-import astminer.parse.java.GumTreeJavaNode
-import astminer.parse.java.GumTreeJavaParser
-import astminer.parse.java.GumTreeJavaMethodSplitter
-import astminer.parse.python.GumTreePythonMethodSplitter
-import astminer.parse.python.GumTreePythonNode
-import astminer.parse.python.GumTreePythonParser
+import astminer.parse.HandlerFactory
+import astminer.parse.LanguageHandler
+import astminer.parse.gumtree.java.GumTreeJavaNode
+import astminer.parse.gumtree.java.GumTreeJavaParser
+import astminer.parse.gumtree.java.GumTreeJavaMethodSplitter
+import astminer.parse.gumtree.python.GumTreePythonMethodSplitter
+import astminer.parse.gumtree.python.GumTreePythonNode
+import astminer.parse.gumtree.python.GumTreePythonParser
 import java.io.File
 
 object JavaGumtreeHandlerFactory : HandlerFactory {

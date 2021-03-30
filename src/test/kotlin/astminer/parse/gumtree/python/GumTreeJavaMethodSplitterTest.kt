@@ -1,6 +1,7 @@
-package astminer.parse.python
+package astminer.parse.gumtree.python
 
 import astminer.common.model.MethodInfo
+import astminer.parse.gumtree.python.GumTreePythonParser
 import org.junit.Test
 import java.io.File
 import kotlin.test.assertEquals

@@ -1,4 +1,4 @@
-package astminer.parse.cpp
+package astminer.parse.fuzzy.cpp
 
 import astminer.common.model.Node
 import com.google.common.collect.TreeMultiset

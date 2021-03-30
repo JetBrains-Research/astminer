@@ -1,12 +1,9 @@
 package astminer.parse
 
-import astminer.common.model.MethodInfo
-import astminer.common.model.Node
 import astminer.common.model.ParseResult
-import astminer.common.model.TreeMethodSplitter
-import astminer.parse.cpp.FuzzyCppParser
-import astminer.parse.cpp.FuzzyMethodSplitter
-import astminer.parse.cpp.FuzzyNode
+import astminer.parse.fuzzy.cpp.FuzzyCppParser
+import astminer.parse.fuzzy.cpp.FuzzyMethodSplitter
+import astminer.parse.fuzzy.cpp.FuzzyNode
 import java.io.File
 
 object CppFuzzyHandlerFactory: HandlerFactory {

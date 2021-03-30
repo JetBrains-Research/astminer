@@ -1,4 +1,4 @@
-package astminer.parse.python
+package astminer.parse.gumtree.python
 
 import astminer.common.model.ElementNode
 import astminer.common.model.MethodInfo
