@@ -9,7 +9,7 @@ import astminer.parse.gumtree.python.GumTreePythonMethodSplitter
 import astminer.parse.gumtree.python.GumTreePythonParser
 import java.io.File
 
-object JavaGumtreeHandlerFactory : HandlerFactory {
+object GumtreeJavaHandlerFactory : HandlerFactory {
     override fun createHandler(file: File): LanguageHandler<GumTreeNode> = JavaGumtreeHandler(file)
 
     class JavaGumtreeHandler(file: File) : LanguageHandler<GumTreeNode>() {
@@ -18,7 +18,7 @@ object JavaGumtreeHandlerFactory : HandlerFactory {
     }
 }
 
-object PythonGumTreeHandlerFactory : HandlerFactory {
+object GumtreePythonHandlerFactory : HandlerFactory {
     override fun createHandler(file: File): LanguageHandler<GumTreeNode> = PythonGumTreeHandler(file)
 
     class PythonGumTreeHandler(file: File) :  LanguageHandler<GumTreeNode>() {

@@ -3,8 +3,8 @@ package astminer.parse
 import astminer.parse.antlr.AntlrJavaHandlerFactory
 import astminer.parse.antlr.AntlrJavascriptHandlerFactory
 import astminer.parse.antlr.AntlrPythonHandlerFactory
-import astminer.parse.gumtree.JavaGumtreeHandlerFactory
-import astminer.parse.gumtree.PythonGumTreeHandlerFactory
+import astminer.parse.gumtree.GumtreeJavaHandlerFactory
+import astminer.parse.gumtree.GumtreePythonHandlerFactory
 
 fun getHandlerFactory(extension: String, parserType: String): HandlerFactory {
     return when (parserType) {
@@ -17,8 +17,8 @@ fun getHandlerFactory(extension: String, parserType: String): HandlerFactory {
 
 private fun getGumtreeHandlerFactory(extension: String): HandlerFactory {
     return when (extension) {
-        "java" -> JavaGumtreeHandlerFactory
-        "python" -> PythonGumTreeHandlerFactory
+        "java" -> GumtreeJavaHandlerFactory
+        "python" -> GumtreePythonHandlerFactory
         else -> throw UnsupportedOperationException()
     }
 }
@@ -34,7 +34,7 @@ private fun getAntlrHandlerFactory(extension: String): HandlerFactory {
 
 private fun getFuzzyHandlerFactory(extension: String): HandlerFactory {
     return when (extension) {
-        "c", "cpp" -> CppFuzzyHandlerFactory
+        "c", "cpp" -> FuzzyCppHandler
         else -> throw UnsupportedOperationException()
     }
 }
