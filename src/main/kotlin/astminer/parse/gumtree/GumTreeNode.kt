@@ -1,10 +1,10 @@
-package astminer.parse.gumtree.python
+package astminer.parse.gumtree
 
 import astminer.common.model.Node
 import com.github.gumtreediff.tree.ITree
 import com.github.gumtreediff.tree.TreeContext
 
-class GumTreePythonNode(val wrappedNode: ITree, val context: TreeContext, val parent: GumTreePythonNode?) : Node {
+class GumTreeNode(val wrappedNode: ITree, val context: TreeContext, val parent: GumTreeNode?): Node {
     private val metadata: MutableMap<String, Any> = HashMap()
 
     override fun getMetadata(key: String): Any? {
@@ -19,8 +19,8 @@ class GumTreePythonNode(val wrappedNode: ITree, val context: TreeContext, val pa
         return childrenList.isEmpty()
     }
 
-    private val childrenList: MutableList<GumTreePythonNode> by lazy {
-        wrappedNode.children.map { GumTreePythonNode(it, context, this) }.toMutableList()
+    private val childrenList: MutableList<GumTreeNode> by lazy {
+        wrappedNode.children.map { GumTreeNode(it, context, this) }.toMutableList()
     }
 
     override fun getTypeLabel(): String {
@@ -40,6 +40,6 @@ class GumTreePythonNode(val wrappedNode: ITree, val context: TreeContext, val pa
     }
 
     override fun removeChildrenOfType(typeLabel: String) {
-        childrenList.removeIf { it.getTypeLabel() == typeLabel }
+        childrenList.removeIf{ it.getTypeLabel() == typeLabel}
     }
 }

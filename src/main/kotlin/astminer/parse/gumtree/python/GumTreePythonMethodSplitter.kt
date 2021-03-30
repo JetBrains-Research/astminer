@@ -6,8 +6,9 @@ import astminer.common.model.MethodNode
 import astminer.common.model.ParameterNode
 import astminer.common.model.TreeMethodSplitter
 import astminer.common.preOrder
+import astminer.parse.gumtree.GumTreeNode
 
-class GumTreePythonMethodSplitter : TreeMethodSplitter<GumTreePythonNode> {
+class GumTreePythonMethodSplitter : TreeMethodSplitter<GumTreeNode> {
     companion object {
         private object TypeLabels {
             const val classDefinition = "ClassDef"
@@ -32,12 +33,12 @@ class GumTreePythonMethodSplitter : TreeMethodSplitter<GumTreePythonNode> {
         }
     }
 
-    override fun splitIntoMethods(root: GumTreePythonNode): Collection<MethodInfo<GumTreePythonNode>> {
+    override fun splitIntoMethods(root: GumTreeNode): Collection<MethodInfo<GumTreeNode>> {
         val methodRoots = root.preOrder().filter { TypeLabels.methodDefinitions.contains(it.getTypeLabel()) }
-        return methodRoots.map { collectMethodInfo(it as GumTreePythonNode) }
+        return methodRoots.map { collectMethodInfo(it as GumTreeNode) }
     }
 
-    private fun collectMethodInfo(methodNode: GumTreePythonNode): MethodInfo<GumTreePythonNode> {
+    private fun collectMethodInfo(methodNode: GumTreeNode): MethodInfo<GumTreeNode> {
         val methodReturnType = getElementType(methodNode) // no methods return types for current parser
         val methodName = getElementName(methodNode)
 
@@ -53,32 +54,32 @@ class GumTreePythonMethodSplitter : TreeMethodSplitter<GumTreePythonNode> {
         )
     }
 
-    private fun getElementName(node: GumTreePythonNode) = node
+    private fun getElementName(node: GumTreeNode) = node
 
-    private fun getElementType(node: GumTreePythonNode): GumTreePythonNode? {
+    private fun getElementType(node: GumTreeNode): GumTreeNode? {
         if (node.getTypeLabel() == TypeLabels.arg) {
-            return node.getChildOfType(TypeLabels.nameLoad) as GumTreePythonNode?
+            return node.getChildOfType(TypeLabels.nameLoad) as GumTreeNode?
         }
         // if return statement has "Constant-`Type`" return value => function type is `Type`
         if (TypeLabels.methodDefinitions.contains(node.getTypeLabel())) {
             return node.getChildOfType(TypeLabels.body)?.getChildOfType(TypeLabels.returnTypeLabel)?.let {
                 it.getChildren().firstOrNull { child ->
                     child.getTypeLabel().startsWith(TypeLabels.constantType)
-                } as GumTreePythonNode?
+                } as GumTreeNode?
             }
         }
         return null
     }
 
-    private fun getEnclosingClass(node: GumTreePythonNode): GumTreePythonNode? {
+    private fun getEnclosingClass(node: GumTreeNode): GumTreeNode? {
         if (node.getTypeLabel() == TypeLabels.classDefinition) {
             return node
         }
-        val parentNode = node.getParent() as? GumTreePythonNode
+        val parentNode = node.getParent() as? GumTreeNode
         return parentNode?.let { getEnclosingClass(it) }
     }
 
-    private fun getParameters(methodNode: GumTreePythonNode): List<ParameterNode<GumTreePythonNode>> {
+    private fun getParameters(methodNode: GumTreeNode): List<ParameterNode<GumTreeNode>> {
         val params = methodNode.getChildrenOfType(TypeLabels.arguments).flatMap {
             it.getChildren()
         }.filter {
@@ -98,8 +99,8 @@ class GumTreePythonMethodSplitter : TreeMethodSplitter<GumTreePythonNode> {
         }
 
         return params.map {
-            val node = it as GumTreePythonNode
-            ParameterNode<GumTreePythonNode>(
+            val node = it as GumTreeNode
+            ParameterNode<GumTreeNode>(
                 node,
                 getElementType(node),
                 getElementName(node)
