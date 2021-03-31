@@ -51,7 +51,7 @@ interface Parser<T : Node> {
      * @param files files to parse
      * @param handleResult handler to invoke on each file parse result
      */
-    fun parseFiles(files: List<File>, handleResult: (ParseResult<T>) -> Any) {
+    fun parseFiles(files: List<File>, handleResult: (ParseResult<T>) -> Any?) {
         files.forEach { handleResult(parseFile(it)) }
     }
 }

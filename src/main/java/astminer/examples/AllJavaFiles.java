@@ -2,14 +2,15 @@ package astminer.examples;
 
 import astminer.common.model.*;
 import astminer.parse.java.GumTreeJavaParser;
-import astminer.paths.*;
+import astminer.storage.CountingPathStorage;
+import astminer.storage.CountingPathStorageConfig;
+import astminer.storage.CsvPathStorage;
+import astminer.storage.LabellingResult;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 //Retrieve paths from Java files, using a GumTree parser.
 public class AllJavaFiles {
@@ -17,8 +18,8 @@ public class AllJavaFiles {
     private static final String OUTPUT_FOLDER = "out_examples/allJavaFiles_GumTree_java";
 
     public static void runExample() {
-        final PathMiner miner = new PathMiner(new PathRetrievalSettings(5,5));
-        final CountingPathStorage<String> pathStorage = new CsvPathStorage(OUTPUT_FOLDER, Long.MAX_VALUE, Long.MAX_VALUE);
+        final CountingPathStorageConfig config = new CountingPathStorageConfig(5, 5, false, Long.MAX_VALUE, Long.MAX_VALUE, Integer.MAX_VALUE);
+        final CountingPathStorage pathStorage = new CsvPathStorage(OUTPUT_FOLDER, config);
 
         final Path inputFolder = Paths.get(INPUT_FOLDER);
 
@@ -29,14 +30,9 @@ public class AllJavaFiles {
                 if (fileTree == null) {
                     return FileVisitResult.CONTINUE;
                 }
-                final Collection<ASTPath> paths = miner.retrievePaths(fileTree);
-                final Collection<PathContext> pathContexts = paths
-                        .stream()
-                        .map(node ->
-                                PathUtilKt.toPathContext(node, (Node::getToken))
-                        ).collect(Collectors.toList());
 
-                pathStorage.store(new LabeledPathContexts<>(file.toAbsolutePath().toString(), pathContexts));
+                String filePath = file.toAbsolutePath().toString();
+                pathStorage.store(new LabellingResult<>(fileTree, filePath, filePath));
 
                 return FileVisitResult.CONTINUE;
             }

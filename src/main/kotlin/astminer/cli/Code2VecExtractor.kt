@@ -1,14 +1,11 @@
 package astminer.cli
 
 import astminer.common.getProjectFilesWithExtension
-import astminer.common.getNormalizedToken
-import astminer.common.model.LabeledPathContexts
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
-import astminer.paths.Code2VecPathStorage
-import astminer.paths.PathMiner
-import astminer.paths.PathRetrievalSettings
-import astminer.paths.toPathContext
+import astminer.storage.Code2VecPathStorage
+import astminer.storage.CountingPathStorageConfig
+import astminer.storage.toLabellingResult
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.int
@@ -121,32 +118,32 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
 
     private fun <T : Node> extractFromTree(
         parseResult: ParseResult<out T>,
-        miner: PathMiner,
         storage: Code2VecPathStorage,
         labelExtractor: LabelExtractor
     ) {
         val labeledParseResults = labelExtractor.toLabeledData(parseResult)
 
         // Retrieve paths from every node individually
-        labeledParseResults.forEach { (root, label) ->
-            val paths = miner.retrievePaths(root).take(maxPathContexts)
-            storage.store(LabeledPathContexts(label, paths.map {
-                toPathContext(it) { node ->
-                    node.getNormalizedToken()
-                }
-            }))
+        labeledParseResults.forEach {
+            storage.store(it.toLabellingResult(parseResult.filePath))
         }
     }
 
     private fun extract(labelExtractor: LabelExtractor) {
         val outputDir = File(outputDirName)
+        val storageConfig = CountingPathStorageConfig(
+            maxPathLength,
+            maxPathWidth,
+            true,
+            maxTokens,
+            maxPaths,
+            maxPathContexts
+        )
         for (extension in extensions) {
-            val miner = PathMiner(PathRetrievalSettings(maxPathLength, maxPathWidth))
-
             val outputDirForLanguage = outputDir.resolve(extension)
             outputDirForLanguage.mkdir()
             // Choose type of storage
-            val storage = Code2VecPathStorage(outputDirForLanguage.path, maxPaths, maxTokens)
+            val storage = Code2VecPathStorage(outputDirForLanguage.path, storageConfig)
             // Choose type of parser
             val parser = getParser(
                 extension,
@@ -156,7 +153,7 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
             parser.parseFiles(getProjectFilesWithExtension(File(projectRoot), extension)) {
                 normalizeParseResult(it, isTokenSplitted)
                 // Retrieve labeled data
-                extractFromTree(it, miner, storage, labelExtractor)
+                extractFromTree(it, storage, labelExtractor)
             }
             // Save stored data on disk
             storage.close()

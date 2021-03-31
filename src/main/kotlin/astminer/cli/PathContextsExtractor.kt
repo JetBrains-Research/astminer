@@ -1,6 +1,5 @@
 package astminer.cli
 
-import astminer.common.getNormalizedToken
 import astminer.common.getProjectFilesWithExtension
 import astminer.common.model.*
 import astminer.parse.antlr.java.JavaParser
@@ -8,10 +7,9 @@ import astminer.parse.antlr.javascript.JavaScriptParser
 import astminer.parse.antlr.python.PythonParser
 import astminer.parse.cpp.FuzzyCppParser
 import astminer.parse.java.GumTreeJavaParser
-import astminer.paths.Code2VecPathStorage
-import astminer.paths.PathMiner
-import astminer.paths.PathRetrievalSettings
-import astminer.paths.toPathContext
+import astminer.storage.Code2VecPathStorage
+import astminer.storage.CountingPathStorageConfig
+import astminer.storage.toLabellingResult
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.int
@@ -87,7 +85,7 @@ class PathContextsExtractor(private val customLabelExtractor: LabelExtractor? = 
 
     private fun getParser(extension: String): Parser<out Node> {
         if (extension == "java") {
-            return when(javaParser) {
+            return when (javaParser) {
                 "gumtree" -> GumTreeJavaParser()
                 "antlr" -> JavaParser()
                 else -> throw IllegalArgumentException("javaParser should be `antlr` or `gumtree`, not $javaParser")
@@ -103,25 +101,27 @@ class PathContextsExtractor(private val customLabelExtractor: LabelExtractor? = 
 
     private fun extractPathContexts(labelExtractor: LabelExtractor) {
         val outputDir = File(outputDirName)
+        val storageConfig = CountingPathStorageConfig(
+            maxPathLength,
+            maxPathWidth,
+            true,
+            maxTokens,
+            maxPaths,
+            maxPathContexts
+        )
         for (extension in extensions) {
-            val miner = PathMiner(PathRetrievalSettings(maxPathLength, maxPathWidth))
             val parser = getParser(extension)
             
             val outputDirForLanguage = outputDir.resolve(extension)
             outputDirForLanguage.mkdir()
-            val storage = Code2VecPathStorage(outputDirForLanguage.path, maxPaths, maxTokens)
+            val storage = Code2VecPathStorage(outputDirForLanguage.path, storageConfig)
 
             val files = getProjectFilesWithExtension(File(projectRoot), extension)
             parser.parseFiles(files) { parseResult ->
                 normalizeParseResult(parseResult, splitTokens = true)
                 val labeledParseResults = labelExtractor.toLabeledData(parseResult)
-                labeledParseResults.forEach { (root, label) ->
-                    val paths = miner.retrievePaths(root).take(maxPathContexts)
-                    storage.store(LabeledPathContexts(label, paths.map { astPath ->
-                        toPathContext(astPath) { node ->
-                            node.getNormalizedToken()
-                        }
-                    }))
+                labeledParseResults.forEach {
+                    storage.store(it.toLabellingResult(parseResult.filePath))
                 }
             }
 
