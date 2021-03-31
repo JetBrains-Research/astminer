@@ -1,6 +1,7 @@
-package astminer.ast
+package astminer.storage
 
 import astminer.common.createSmallTree
+import astminer.common.labeledWith
 import org.junit.Test
 import java.io.File
 import kotlin.test.assertEquals
@@ -11,7 +12,7 @@ class DotAstStorageTest {
     fun testDotStorageOnSmallTree() {
         val root = createSmallTree()
         val storage = DotAstStorage("test_examples")
-        storage.store(root, "entityId")
+        storage.store(root.labeledWith("entityId"))
 
         storage.close()
 

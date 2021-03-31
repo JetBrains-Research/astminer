@@ -1,26 +1,24 @@
 package astminer.examples
 
-import astminer.common.model.LabeledPathContexts
+import astminer.common.getProjectFilesWithExtension
 import astminer.parse.java.GumTreeJavaParser
-import astminer.paths.PathMiner
-import astminer.paths.PathRetrievalSettings
-import astminer.paths.CsvPathStorage
-import astminer.paths.toPathContext
+import astminer.storage.CsvPathStorage
+import astminer.storage.CountingPathStorageConfig
+import astminer.storage.labeledWithFilePath
 import java.io.File
 
 //Retrieve paths from Java files, using a GumTree parser.
 fun allJavaFilesGumTree() {
     val inputDir = "src/test/resources/gumTreeMethodSplitter/"
 
-    val miner = PathMiner(PathRetrievalSettings(5, 5))
     val outputDir = "out_examples/allJavaFilesGumTree"
-    val storage = CsvPathStorage(outputDir)
+    val storage = CsvPathStorage(outputDir, CountingPathStorageConfig(5, 5, false))
 
-    File(inputDir).forFilesWithSuffix(".java") { file ->
-        val node = GumTreeJavaParser().parseInputStream(file.inputStream()) ?: return@forFilesWithSuffix
-        val paths = miner.retrievePaths(node)
-
-        storage.store(LabeledPathContexts(file.path, paths.map { toPathContext(it) }))
+    val files = getProjectFilesWithExtension(File(inputDir), "java")
+    GumTreeJavaParser().parseFiles(files) { parseResult ->
+        parseResult.labeledWithFilePath()?.let {
+            storage.store(it)
+        }
     }
 
     storage.close()

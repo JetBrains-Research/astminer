@@ -1,6 +1,5 @@
-package astminer.ast
+package astminer.storage
 
-import astminer.common.model.AstStorage
 import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.common.storage.*
@@ -11,7 +10,7 @@ import java.io.PrintWriter
  * Stores multiple ASTs by their roots and saves them in .csv format.
  * Output consists of 3 .csv files: with node types, with tokens and with ASTs.
  */
-class CsvAstStorage(override val directoryPath: String) : AstStorage {
+class CsvAstStorage(override val outputDirectoryPath: String) : Storage {
 
     private val tokensMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
     private val nodeTypesMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
@@ -19,24 +18,24 @@ class CsvAstStorage(override val directoryPath: String) : AstStorage {
     private val astsOutputStream: PrintWriter
 
     init {
-        File(directoryPath).mkdirs()
-        val astsFile = File("$directoryPath/asts.csv")
+        File(outputDirectoryPath).mkdirs()
+        val astsFile = File("$outputDirectoryPath/asts.csv")
         astsFile.createNewFile()
         astsOutputStream = PrintWriter(astsFile)
         astsOutputStream.write("id,ast\n")
     }
 
-    override fun store(root: Node, label: String, filePath: String) {
-        for (node in root.preOrder()) {
+    override fun store(labellingResult: LabellingResult<out Node>) {
+        for (node in labellingResult.root.preOrder()) {
             tokensMap.record(node.getToken())
             nodeTypesMap.record(node.getTypeLabel())
         }
-        dumpAst(root, label)
+        dumpAst(labellingResult.root, labellingResult.label)
     }
 
     override fun close() {
-        dumpTokenStorage(File("$directoryPath/tokens.csv"))
-        dumpNodeTypesStorage(File("$directoryPath/node_types.csv"))
+        dumpTokenStorage(File("$outputDirectoryPath/tokens.csv"))
+        dumpNodeTypesStorage(File("$outputDirectoryPath/node_types.csv"))
 
         astsOutputStream.close()
     }
@@ -55,7 +54,7 @@ class CsvAstStorage(override val directoryPath: String) : AstStorage {
 
     internal fun astString(node: Node): String {
         return "${tokensMap.getId(node.getToken())} ${nodeTypesMap.getId(node.getTypeLabel())}{${
-        node.getChildren().joinToString(separator = "", transform = ::astString)
+            node.getChildren().joinToString(separator = "", transform = ::astString)
         }}"
     }
 }

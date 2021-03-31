@@ -1,26 +1,24 @@
 package astminer.examples
 
-import astminer.common.model.LabeledPathContexts
+import astminer.common.getProjectFilesWithExtension
 import astminer.parse.antlr.python.PythonParser
-import astminer.paths.PathMiner
-import astminer.paths.PathRetrievalSettings
-import astminer.paths.CsvPathStorage
-import astminer.paths.toPathContext
+import astminer.storage.CsvPathStorage
+import astminer.storage.CountingPathStorageConfig
+import astminer.storage.labeledWithFilePath
 import java.io.File
 
 
 fun allPythonFiles() {
     val inputDir = "src/test/resources/examples/"
 
-    val miner = PathMiner(PathRetrievalSettings(5, 5))
     val outputDir = "out_examples/allPythonFiles"
-    val storage = CsvPathStorage(outputDir)
+    val storage = CsvPathStorage(outputDir, CountingPathStorageConfig(5, 5, false))
 
-    File(inputDir).forFilesWithSuffix(".py") { file ->
-        val node = PythonParser().parseInputStream(file.inputStream()) ?: return@forFilesWithSuffix
-        val paths = miner.retrievePaths(node)
-
-        storage.store(LabeledPathContexts(file.path, paths.map { toPathContext(it) }))
+    val files = getProjectFilesWithExtension(File(inputDir), "py")
+    PythonParser().parseFiles(files) { parseResult ->
+        parseResult.labeledWithFilePath()?.let {
+            storage.store(it)
+        }
     }
 
     storage.close()

@@ -1,6 +1,7 @@
-package astminer.ast
+package astminer.storage
 
 import astminer.common.createSmallTree
+import astminer.common.labeledWith
 import org.junit.Assert
 import org.junit.Test
 
@@ -10,7 +11,7 @@ class CsvAstStorageTest {
     fun testAstString() {
         val root = createSmallTree()
         val storage = CsvAstStorage(".")
-        storage.store(root, "entityId")
+        storage.store(root.labeledWith("entityId"))
 
         Assert.assertEquals(storage.astString(root), "1 1{2 2{}3 3{4 4{}}}")
     }

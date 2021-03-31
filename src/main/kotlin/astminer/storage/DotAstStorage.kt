@@ -1,7 +1,6 @@
-package astminer.ast
+package astminer.storage
 
 import astminer.common.getNormalizedToken
-import astminer.common.model.AstStorage
 import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.common.storage.RankedIncrementalIdStorage
@@ -12,7 +11,7 @@ import java.io.PrintWriter
  * Stores multiple ASTs in dot format (https://en.wikipedia.org/wiki/DOT_(graph_description_language))
  * Output consist of separate .dot files for each AST and one full description in .csv format
  */
-class DotAstStorage(override val directoryPath: String) : AstStorage {
+class DotAstStorage(override val outputDirectoryPath: String) : Storage {
 
     internal data class FilePath(val parentPath: String, val fileName: String)
 
@@ -22,24 +21,30 @@ class DotAstStorage(override val directoryPath: String) : AstStorage {
     private var index: Long = 0
 
     init {
-        File(directoryPath).mkdirs()
-        astDirectoryPath = File(directoryPath, "asts")
+        File(outputDirectoryPath).mkdirs()
+        astDirectoryPath = File(outputDirectoryPath, "asts")
         astDirectoryPath.mkdirs()
-        val descriptionFile = File(directoryPath, "description.csv")
+        val descriptionFile = File(outputDirectoryPath, "description.csv")
         descriptionFile.createNewFile()
         descriptionFileStream = PrintWriter(descriptionFile)
         descriptionFileStream.write("dot_file,source_file,label,node_id,token,type\n")
     }
 
-    override fun store(root: Node, label: String, filePath: String) {
+    override fun store(labellingResult: LabellingResult<out Node>) {
         // Use filename as a label for ast
         // TODO: save full signature for method
-        val normalizedLabel = normalizeAstLabel(label)
-        val normalizedFilepath = normalizeFilepath(filePath)
-        val nodesMap = dumpAst(root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
+        val normalizedLabel = normalizeAstLabel(labellingResult.label)
+        val normalizedFilepath = normalizeFilepath(labellingResult.filePath)
+        val nodesMap = dumpAst(labellingResult.root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
         val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$normalizedFilepath,$normalizedLabel,%d,%s,%s"
-        for (node in root.preOrder()) {
-            descriptionFileStream.write(nodeDescriptionFormat.format(nodesMap.getId(node) - 1, node.getNormalizedToken(), node.getTypeLabel()) + "\n")
+        for (node in labellingResult.root.preOrder()) {
+            descriptionFileStream.write(
+                nodeDescriptionFormat.format(
+                    nodesMap.getId(node) - 1,
+                    node.getNormalizedToken(),
+                    node.getTypeLabel()
+                ) + "\n"
+            )
         }
         ++index
     }
@@ -48,7 +53,7 @@ class DotAstStorage(override val directoryPath: String) : AstStorage {
         descriptionFileStream.close()
     }
 
-    private fun dumpAst(root: Node, file: File, astName: String) : RankedIncrementalIdStorage<Node> {
+    private fun dumpAst(root: Node, file: File, astName: String): RankedIncrementalIdStorage<Node> {
         val nodesMap = RankedIncrementalIdStorage<Node>()
         // dot parsers (e.g. pydot) can't parse graph/digraph if its name is "graph"
         val fixedAstName = if (astName == "graph" || astName == "digraph") "_$astName" else astName
@@ -59,7 +64,7 @@ class DotAstStorage(override val directoryPath: String) : AstStorage {
                 val rootId = nodesMap.record(node) - 1
                 val childrenIds = node.getChildren().map { nodesMap.record(it) - 1 }
                 out.println(
-                        "$rootId -- {${childrenIds.joinToString(" ") { it.toString() }}};"
+                    "$rootId -- {${childrenIds.joinToString(" ") { it.toString() }}};"
                 )
             }
 
