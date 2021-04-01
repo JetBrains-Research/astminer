@@ -4,6 +4,7 @@ import astminer.common.getProjectFilesWithExtension
 import astminer.parse.java.GumTreeJavaParser
 import astminer.storage.CsvPathStorage
 import astminer.storage.CountingPathStorageConfig
+import astminer.storage.identityTokenProcessor
 import astminer.storage.labeledWithFilePath
 import java.io.File
 
@@ -12,7 +13,7 @@ fun allJavaFilesGumTree() {
     val inputDir = "src/test/resources/gumTreeMethodSplitter/"
 
     val outputDir = "out_examples/allJavaFilesGumTree"
-    val storage = CsvPathStorage(outputDir, CountingPathStorageConfig(5, 5, false))
+    val storage = CsvPathStorage(outputDir, CountingPathStorageConfig(5, 5))
 
     val files = getProjectFilesWithExtension(File(inputDir), "java")
     GumTreeJavaParser().parseFiles(files) { parseResult ->

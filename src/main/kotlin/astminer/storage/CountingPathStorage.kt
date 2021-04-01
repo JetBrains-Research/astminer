@@ -22,18 +22,24 @@ import java.io.PrintWriter
 data class CountingPathStorageConfig(
     val maxPathLength: Int,
     val maxPathWidth: Int,
-    val normalizeToken: Boolean = true, // TODO: discuss this
     val maxTokens: Long = Long.MAX_VALUE,
     val maxPaths: Long = Long.MAX_VALUE,
     val maxPathContextsPerEntity: Int = Int.MAX_VALUE
 )
+
+enum class TokenProcessing {
+    Split,
+    LeaveUnchanged,
+    Code2VecNormalize
+}
 
 /**
  * abstract Base class
  */
 abstract class CountingPathStorage(
     final override val outputDirectoryPath: String,
-    private val config: CountingPathStorageConfig
+    private val config: CountingPathStorageConfig,
+    private val tokenProcessor: TokenProcessor
 ) : Storage {
 
     private val pathMiner = PathMiner(PathRetrievalSettings(config.maxPathLength, config.maxPathWidth))
@@ -53,6 +59,8 @@ abstract class CountingPathStorage(
     }
 
     abstract fun pathContextIdsToString(pathContextIds: List<PathContextId>, label: String): String
+
+    private fun Node.getProcessedToken(): String = this.run(tokenProcessor)
 
     private fun dumpPathContexts(labeledPathContextIds: LabeledPathContextIds<String>) {
         val pathContextIdsString = labeledPathContextIds.pathContexts.filter {
@@ -74,14 +82,7 @@ abstract class CountingPathStorage(
     private fun retrieveLabeledPathContexts(labellingResult: LabellingResult<out Node>): LabeledPathContexts<String> {
         val paths = pathMiner.retrievePaths(labellingResult.root).take(config.maxPathContextsPerEntity)
         return LabeledPathContexts(labellingResult.label, paths.map { astPath ->
-            toPathContext(astPath) { node ->
-                // TODO: maybe this whole hassle is not needed
-                if (config.normalizeToken) {
-                    node.getNormalizedToken()
-                } else {
-                    node.getToken()
-                }
-            }
+            toPathContext(astPath) { node -> node.getProcessedToken() }
         })
     }
 

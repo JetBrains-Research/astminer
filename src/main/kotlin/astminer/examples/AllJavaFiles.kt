@@ -4,6 +4,7 @@ import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.java.JavaParser
 import astminer.storage.CsvPathStorage
 import astminer.storage.CountingPathStorageConfig
+import astminer.storage.identityTokenProcessor
 import astminer.storage.labeledWithFilePath
 import java.io.File
 
@@ -12,7 +13,7 @@ fun allJavaFiles() {
     val inputDir = "src/test/resources/examples/"
 
     val outputDir = "out_examples/allJavaFilesAntlr"
-    val storage = CsvPathStorage(outputDir, CountingPathStorageConfig(5, 5, false))
+    val storage = CsvPathStorage(outputDir, CountingPathStorageConfig(5, 5))
 
     File(inputDir).forFilesWithSuffix("11.java") { file ->
         val node = JavaParser().parseInputStream(file.inputStream()) ?: return@forFilesWithSuffix

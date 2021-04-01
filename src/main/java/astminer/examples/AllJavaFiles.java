@@ -2,10 +2,7 @@ package astminer.examples;
 
 import astminer.common.model.*;
 import astminer.parse.java.GumTreeJavaParser;
-import astminer.storage.CountingPathStorage;
-import astminer.storage.CountingPathStorageConfig;
-import astminer.storage.CsvPathStorage;
-import astminer.storage.LabellingResult;
+import astminer.storage.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,8 +15,8 @@ public class AllJavaFiles {
     private static final String OUTPUT_FOLDER = "out_examples/allJavaFiles_GumTree_java";
 
     public static void runExample() {
-        final CountingPathStorageConfig config = new CountingPathStorageConfig(5, 5, false, Long.MAX_VALUE, Long.MAX_VALUE, Integer.MAX_VALUE);
-        final CountingPathStorage pathStorage = new CsvPathStorage(OUTPUT_FOLDER, config);
+        final CountingPathStorageConfig config = new CountingPathStorageConfig(5, 5, Long.MAX_VALUE, Long.MAX_VALUE, Integer.MAX_VALUE);
+        final CountingPathStorage pathStorage = new CsvPathStorage(OUTPUT_FOLDER, config, TokenProcessorsKt.getIdentityTokenProcessor());
 
         final Path inputFolder = Paths.get(INPUT_FOLDER);
 

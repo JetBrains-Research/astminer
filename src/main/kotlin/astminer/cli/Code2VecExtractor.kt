@@ -3,9 +3,7 @@ package astminer.cli
 import astminer.common.getProjectFilesWithExtension
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
-import astminer.storage.Code2VecPathStorage
-import astminer.storage.CountingPathStorageConfig
-import astminer.storage.toLabellingResult
+import astminer.storage.*
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.int
@@ -134,7 +132,6 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
         val storageConfig = CountingPathStorageConfig(
             maxPathLength,
             maxPathWidth,
-            true,
             maxTokens,
             maxPaths,
             maxPathContexts
@@ -142,8 +139,14 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
         for (extension in extensions) {
             val outputDirForLanguage = outputDir.resolve(extension)
             outputDirForLanguage.mkdir()
+            // Choose how to process tokens
+            val tokenProcessor = if (isTokenSplitted) {
+                splitTokenProcessor
+            } else {
+                code2vecTokenProcessor
+            }
             // Choose type of storage
-            val storage = Code2VecPathStorage(outputDirForLanguage.path, storageConfig)
+            val storage = Code2VecPathStorage(outputDirForLanguage.path, storageConfig, tokenProcessor)
             // Choose type of parser
             val parser = getParser(
                 extension,
@@ -151,6 +154,7 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
             )
             // Parse project one file at a time
             parser.parseFiles(getProjectFilesWithExtension(File(projectRoot), extension)) {
+                // TODO: might not be needed
                 normalizeParseResult(it, isTokenSplitted)
                 // Retrieve labeled data
                 extractFromTree(it, storage, labelExtractor)

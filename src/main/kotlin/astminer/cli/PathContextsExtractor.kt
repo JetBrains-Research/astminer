@@ -9,6 +9,7 @@ import astminer.parse.cpp.FuzzyCppParser
 import astminer.parse.java.GumTreeJavaParser
 import astminer.storage.Code2VecPathStorage
 import astminer.storage.CountingPathStorageConfig
+import astminer.storage.splitTokenProcessor
 import astminer.storage.toLabellingResult
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.*
@@ -104,7 +105,6 @@ class PathContextsExtractor(private val customLabelExtractor: LabelExtractor? = 
         val storageConfig = CountingPathStorageConfig(
             maxPathLength,
             maxPathWidth,
-            true,
             maxTokens,
             maxPaths,
             maxPathContexts
@@ -114,10 +114,11 @@ class PathContextsExtractor(private val customLabelExtractor: LabelExtractor? = 
             
             val outputDirForLanguage = outputDir.resolve(extension)
             outputDirForLanguage.mkdir()
-            val storage = Code2VecPathStorage(outputDirForLanguage.path, storageConfig)
+            val storage = Code2VecPathStorage(outputDirForLanguage.path, storageConfig, splitTokenProcessor)
 
             val files = getProjectFilesWithExtension(File(projectRoot), extension)
             parser.parseFiles(files) { parseResult ->
+                // TODO: might not be needed
                 normalizeParseResult(parseResult, splitTokens = true)
                 val labeledParseResults = labelExtractor.toLabeledData(parseResult)
                 labeledParseResults.forEach {
