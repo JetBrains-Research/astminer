@@ -1,7 +1,5 @@
 package astminer.storage
 
-import astminer.cli.separateToken
-import astminer.common.model.Node
 import astminer.common.model.PathContextId
 
 class CsvPathStorage(

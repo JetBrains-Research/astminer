@@ -1,6 +1,5 @@
 package astminer.storage
 
-import astminer.common.getNormalizedToken
 import astminer.common.model.*
 import astminer.common.storage.*
 import astminer.paths.PathMiner
@@ -11,13 +10,13 @@ import java.io.PrintWriter
 
 // TODO: finish the documentation
 /**
- * Config for CountingPathStorage which contains several hyperparameters.
+ * Config for CountingPathStorage which contains all hyperparameters for path extraction.
+ * @property maxPathLength The maximum length of a single path (based on the formal math definition of path length)
+ * @property maxPathWidth The maximum width of a single path (based on the formal math definition of path width)
  * @property maxTokens ??
  * @property maxPaths ??
  * @property maxPathContextsPerEntity The maximum number of path contexts that should be extracted from LabeledParseResult.
  * In other words, the maximum number of path contexts to save from each file/method (depending on granularity)
- * @property maxPathLength The maximum length of a single path (based on the formal math definition of path length)
- * @property maxPathWidth The maximum width of a single path (based on the formal math definition of path width)
  */
 data class CountingPathStorageConfig(
     val maxPathLength: Int,
@@ -27,14 +26,11 @@ data class CountingPathStorageConfig(
     val maxPathContextsPerEntity: Int = Int.MAX_VALUE
 )
 
-enum class TokenProcessing {
-    Split,
-    LeaveUnchanged,
-    Code2VecNormalize
-}
-
 /**
- * abstract Base class
+ * Base class for all path storages. Extracts paths from given LabellingResult and stores it in a specified format.
+ * @property outputDirectoryPath The path to the output directory.
+ * @property config The config that contains hyperparameters for path extraction.
+ * @property tokenProcessor The token processor that is used to extract tokens from nodes.
  */
 abstract class CountingPathStorage(
     final override val outputDirectoryPath: String,
@@ -86,6 +82,9 @@ abstract class CountingPathStorage(
         })
     }
 
+    /**
+     * Extract paths from [labellingResult] and store them in the specified format.
+     */
     override fun store(labellingResult: LabellingResult<out Node>) {
         val labeledPathContexts = retrieveLabeledPathContexts(labellingResult)
         val labeledPathContextIds = LabeledPathContextIds(
