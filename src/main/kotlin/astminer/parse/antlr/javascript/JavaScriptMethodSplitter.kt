@@ -79,7 +79,7 @@ abstract class JavaScriptElement(private val element: AntlrNode) {
     open fun getEnclosingElementName(enclosingRoot: AntlrNode?) : AntlrNode? {
         return enclosingRoot?.getChildren()?.firstOrNull {
             decompressTypeLabel(it.getTypeLabel()).last() == ENCLOSING_ELEMENT_NAME_NODE
-        } as? AntlrNode
+        }
     }
 
     /**
@@ -133,7 +133,7 @@ class ArrowElement(private val element: AntlrNode) : JavaScriptElement(element) 
     override fun getElementName(): AntlrNode? {
         return element.getChildren().firstOrNull {
             it.getTypeLabel() == ARROW_NAME_NODE
-        } as? AntlrNode
+        }
     }
 
     override fun getElementParametersRoot(): AntlrNode? {
@@ -152,7 +152,7 @@ class FunctionElement(private val element: AntlrNode) : JavaScriptElement(elemen
     override fun getElementName(): AntlrNode? {
         return element.getChildren().firstOrNull {
             it.getTypeLabel() == FUNCTION_NAME_NODE
-        } as? AntlrNode
+        }
     }
 
     override fun getElementParametersRoot(): AntlrNode? {
@@ -171,11 +171,11 @@ class MethodElement(private val element: AntlrNode) : JavaScriptElement(element)
     override fun getElementName(): AntlrNode? {
         val methodNameParent = element.getChildren().firstOrNull {
             METHOD_GETTERS_SETTERS.contains(it.getTypeLabel())
-        } as? AntlrNode ?: element
+        } ?: element
 
         return methodNameParent.getChildren().firstOrNull {
             decompressTypeLabel(it.getTypeLabel()).contains(METHOD_NAME_NODE)
-        } as? AntlrNode
+        }
     }
 
     override fun getElementParametersRoot(): AntlrNode? {

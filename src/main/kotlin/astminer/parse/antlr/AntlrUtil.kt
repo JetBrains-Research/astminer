@@ -44,9 +44,9 @@ private fun convertErrorNode(errorNode: ErrorNode, parent: Node?): AntlrNode {
  */
 fun simplifyTree(tree: AntlrNode): AntlrNode {
     return if (tree.getChildren().size == 1) {
-        simplifyTree(tree.getChildren().first() as AntlrNode)
+        simplifyTree(tree.getChildren().first())
     } else {
-        tree.setChildren(tree.getChildren().map { simplifyTree(it as AntlrNode) }.toMutableList())
+        tree.setChildren(tree.getChildren().map { simplifyTree(it) }.toMutableList())
         tree
     }
 }
@@ -56,7 +56,7 @@ fun simplifyTree(tree: AntlrNode): AntlrNode {
  */
 fun compressTree(root: AntlrNode): AntlrNode {
     return if (root.getChildren().size == 1) {
-        val child = compressTree(root.getChildren().first() as AntlrNode)
+        val child = compressTree(root.getChildren().first())
         val compressedNode = AntlrNode(
                 root.getTypeLabel() + "|" + child.getTypeLabel(),
                 root.getParent(),
@@ -65,7 +65,7 @@ fun compressTree(root: AntlrNode): AntlrNode {
         compressedNode.setChildren(child.getChildren())
         compressedNode
     } else {
-        root.setChildren(root.getChildren().map { compressTree(it as AntlrNode) }.toMutableList())
+        root.setChildren(root.getChildren().map { compressTree(it) }.toMutableList())
         root
     }
 }

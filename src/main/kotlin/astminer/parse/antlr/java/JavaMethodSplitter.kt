@@ -71,7 +71,7 @@ class JavaMethodSplitter : TreeMethodSplitter<AntlrNode> {
             val firstType = decompressTypeLabel(it.getTypeLabel()).first()
             METHOD_SINGLE_PARAMETER_NODE.contains(firstType)
         }.map {
-            getParameterInfoFromNode(it as AntlrNode)
+            getParameterInfoFromNode(it)
         }
     }
 
@@ -90,7 +90,7 @@ class JavaMethodSplitter : TreeMethodSplitter<AntlrNode> {
             return parameterRoot.getToken()
         }
         return parameterRoot.getChildren().joinToString(separator = "") { child ->
-            collectParameterToken(child as AntlrNode)
+            collectParameterToken(child)
         }
     }
 }

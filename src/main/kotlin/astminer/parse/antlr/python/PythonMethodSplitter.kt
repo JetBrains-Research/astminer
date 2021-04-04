@@ -67,9 +67,9 @@ class PythonMethodSplitter : TreeMethodSplitter<AntlrNode> {
         }
         return parameterRoot.getChildrenOfType(METHOD_SINGLE_PARAMETER_NODE).map {
             if (decompressTypeLabel(it.getTypeLabel()).last() == PARAMETER_NAME_NODE) {
-                ParameterNode(it as AntlrNode, null, it)
+                ParameterNode(it, null, it)
             } else {
-                ParameterNode(it as AntlrNode, null, it.getChildOfType(PARAMETER_NAME_NODE) as AntlrNode)
+                ParameterNode(it, null, it.getChildOfType(PARAMETER_NAME_NODE) as AntlrNode)
             }
         }
     }
