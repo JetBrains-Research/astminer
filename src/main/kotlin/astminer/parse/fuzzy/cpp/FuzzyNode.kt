@@ -11,7 +11,7 @@ import com.google.common.collect.TreeMultiset
  */
 class FuzzyNode(private val typeLabel: String, private val token: String?, order: Int?) : Node {
     private val order = order ?: -1
-    private val metadata: MutableMap<String, Any> = HashMap()
+    override val metadata: MutableMap<String, Any> = HashMap()
     private var parent: Node? = null
     private var children = TreeMultiset.create<FuzzyNode>(compareBy(
             { it.order },
@@ -45,14 +45,6 @@ class FuzzyNode(private val typeLabel: String, private val token: String?, order
 
     override fun isLeaf(): Boolean {
         return children.isEmpty()
-    }
-
-    override fun getMetadata(key: String): Any? {
-        return metadata[key]
-    }
-
-    override fun setMetadata(key: String, value: Any) {
-        metadata[key] = value
     }
 
     private fun setParent(node: Node) {

@@ -175,7 +175,7 @@ class FuzzyCppParser : Parser<FuzzyNode> {
                 val node = FuzzyNode(v.property(replaceableNodeKey.key).toString(), token, order)
                 v.propertyKeys().forEach { k ->
                     val property = v.property(k) ?: return@forEach
-                    node.setMetadata(k, property.toString())
+                    node.metadata[k] = property.toString()
                 }
                 return node
             }
@@ -191,7 +191,7 @@ class FuzzyCppParser : Parser<FuzzyNode> {
                     return@forEach
                 }
             }
-            node.setMetadata(k, property)
+            node.metadata[k]= property
         }
         return node
     }
