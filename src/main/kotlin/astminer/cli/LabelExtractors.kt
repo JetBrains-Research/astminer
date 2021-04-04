@@ -5,7 +5,7 @@ import astminer.common.model.Node
 import astminer.common.model.ParseResult
 import astminer.common.preOrder
 import astminer.common.setNormalizedToken
-import astminer.parse.antlr.SimpleNode
+import astminer.parse.antlr.AntlrNode
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.javascript.JavaScriptMethodSplitter
 import astminer.parse.antlr.python.PythonMethodSplitter
@@ -68,7 +68,7 @@ abstract class MethodLabelExtractor(
                     }
                     "antlr" -> {
                         val methodSplitter = JavaMethodSplitter()
-                        methodSplitter.splitIntoMethods(root as SimpleNode)
+                        methodSplitter.splitIntoMethods(root as AntlrNode)
                     }
                     else -> {
                         throw UnsupportedOperationException("Unsupported parser $javaParser")
@@ -83,7 +83,7 @@ abstract class MethodLabelExtractor(
                     }
                     "antlr" -> {
                         val methodSplitter = PythonMethodSplitter()
-                        methodSplitter.splitIntoMethods(root as SimpleNode)
+                        methodSplitter.splitIntoMethods(root as AntlrNode)
                     }
                     else -> {
                         throw UnsupportedOperationException("Unsupported parser $pythonParser")
@@ -92,7 +92,7 @@ abstract class MethodLabelExtractor(
             }
             "js" -> {
                 val methodSplitter = JavaScriptMethodSplitter()
-                methodSplitter.splitIntoMethods(root as SimpleNode)
+                methodSplitter.splitIntoMethods(root as AntlrNode)
             }
             else -> throw UnsupportedOperationException("Unsupported extension $fileExtension")
         }.filter { methodInfo ->

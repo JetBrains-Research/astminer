@@ -14,8 +14,8 @@ import java.io.File
 object AntlrJavaHandlerFactory : HandlerFactory {
     override fun createHandler(file: File) = AntlrJavaHandler(file)
 
-    class AntlrJavaHandler(file: File) : LanguageHandler<SimpleNode>() {
-        override val parseResult: ParseResult<SimpleNode> = JavaParser().parseFile(file)
+    class AntlrJavaHandler(file: File) : LanguageHandler<AntlrNode>() {
+        override val parseResult: ParseResult<AntlrNode> = JavaParser().parseFile(file)
         override val splitter = JavaMethodSplitter()
     }
 }
@@ -23,8 +23,8 @@ object AntlrJavaHandlerFactory : HandlerFactory {
 object AntlrPythonHandlerFactory : HandlerFactory {
     override fun createHandler(file: File) = AntlrPythonHandler(file)
 
-    class AntlrPythonHandler(file: File) : LanguageHandler<SimpleNode>() {
-        override val parseResult: ParseResult<SimpleNode> = PythonParser().parseFile(file)
+    class AntlrPythonHandler(file: File) : LanguageHandler<AntlrNode>() {
+        override val parseResult: ParseResult<AntlrNode> = PythonParser().parseFile(file)
         override val splitter = PythonMethodSplitter()
     }
 }
@@ -32,8 +32,8 @@ object AntlrPythonHandlerFactory : HandlerFactory {
 object AntlrJavascriptHandlerFactory : HandlerFactory {
     override fun createHandler(file: File) = AntlrJavascriptHandler(file)
 
-    class AntlrJavascriptHandler(file: File) : LanguageHandler<SimpleNode>() {
-        override val parseResult: ParseResult<SimpleNode> = JavaScriptParser().parseFile(file)
+    class AntlrJavascriptHandler(file: File) : LanguageHandler<AntlrNode>() {
+        override val parseResult: ParseResult<AntlrNode> = JavaScriptParser().parseFile(file)
         override val splitter = JavaScriptMethodSplitter()
     }
 }

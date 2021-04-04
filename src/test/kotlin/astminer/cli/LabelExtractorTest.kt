@@ -5,7 +5,7 @@ import astminer.common.model.ElementNode
 import astminer.common.model.MethodInfo
 import astminer.common.model.MethodNode
 import astminer.common.model.ParseResult
-import astminer.parse.antlr.SimpleNode
+import astminer.parse.antlr.AntlrNode
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -17,7 +17,7 @@ internal class LabelExtractorTest {
         private const val FOLDER = "folder"
         private const val FILENAME = "file.txt"
         private const val METHOD_NAME = "method"
-        private val DUMMY_ROOT = SimpleNode("", null, null)
+        private val DUMMY_ROOT = AntlrNode("", null, null)
     }
 
     @Test
@@ -60,8 +60,8 @@ internal class LabelExtractorTest {
 
     @Test
     fun testMethodNameExtractor() {
-        val nameNode = SimpleNode("", DUMMY_ROOT, METHOD_NAME)
-        val methodInfo = MethodInfo<SimpleNode>(
+        val nameNode = AntlrNode("", DUMMY_ROOT, METHOD_NAME)
+        val methodInfo = MethodInfo<AntlrNode>(
                 MethodNode(DUMMY_ROOT, null, nameNode),
                 ElementNode(null, null),
                 emptyList()
@@ -75,8 +75,8 @@ internal class LabelExtractorTest {
 
     @Test
     fun testMethodNameExtractorHide() {
-        val nameNode = SimpleNode("", DUMMY_ROOT, METHOD_NAME)
-        val methodInfo = MethodInfo<SimpleNode>(
+        val nameNode = AntlrNode("", DUMMY_ROOT, METHOD_NAME)
+        val methodInfo = MethodInfo<AntlrNode>(
                 MethodNode(DUMMY_ROOT, null, nameNode),
                 ElementNode(null, null),
                 emptyList()

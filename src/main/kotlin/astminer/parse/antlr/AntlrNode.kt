@@ -2,14 +2,14 @@ package astminer.parse.antlr
 
 import astminer.common.model.Node
 
-class SimpleNode(private val typeLabel: String, private var parent: Node?, private var token: String?) : Node {
+class AntlrNode(private val typeLabel: String, private var parent: Node?, private var token: String?) : Node {
     private val metadata: MutableMap<String, Any> = HashMap()
 
     private var children: MutableList<Node> = mutableListOf()
 
     fun setChildren(newChildren: List<Node>) {
         children = newChildren.toMutableList()
-        children.forEach { (it as SimpleNode).setParent(this) }
+        children.forEach { (it as AntlrNode).setParent(this) }
     }
 
     fun setParent(newParent: Node?) {

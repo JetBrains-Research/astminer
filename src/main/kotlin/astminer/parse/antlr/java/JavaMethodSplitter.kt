@@ -2,10 +2,10 @@ package astminer.parse.antlr.java
 
 import astminer.common.*
 import astminer.common.model.*
-import astminer.parse.antlr.SimpleNode
+import astminer.parse.antlr.AntlrNode
 import astminer.parse.antlr.decompressTypeLabel
 
-class JavaMethodSplitter : TreeMethodSplitter<SimpleNode> {
+class JavaMethodSplitter : TreeMethodSplitter<AntlrNode> {
     companion object {
         private const val METHOD_NODE = "methodDeclaration"
         private const val METHOD_RETURN_TYPE_NODE = "typeTypeOrVoid"
@@ -21,23 +21,23 @@ class JavaMethodSplitter : TreeMethodSplitter<SimpleNode> {
         private const val PARAMETER_NAME_NODE = "variableDeclaratorId"
     }
 
-    override fun splitIntoMethods(root: SimpleNode): Collection<MethodInfo<SimpleNode>> {
+    override fun splitIntoMethods(root: AntlrNode): Collection<MethodInfo<AntlrNode>> {
         val methodRoots = root.preOrder().filter {
             decompressTypeLabel(it.getTypeLabel()).last() == METHOD_NODE
         }
-        return methodRoots.map { collectMethodInfo(it as SimpleNode) }
+        return methodRoots.map { collectMethodInfo(it as AntlrNode) }
     }
 
-    private fun collectMethodInfo(methodNode: SimpleNode): MethodInfo<SimpleNode> {
-        val methodName = methodNode.getChildOfType(METHOD_NAME_NODE) as? SimpleNode
-        val methodReturnTypeNode =  methodNode.getChildOfType(METHOD_RETURN_TYPE_NODE) as? SimpleNode
+    private fun collectMethodInfo(methodNode: AntlrNode): MethodInfo<AntlrNode> {
+        val methodName = methodNode.getChildOfType(METHOD_NAME_NODE) as? AntlrNode
+        val methodReturnTypeNode =  methodNode.getChildOfType(METHOD_RETURN_TYPE_NODE) as? AntlrNode
         methodReturnTypeNode?.setToken(collectParameterToken(methodReturnTypeNode))
 
         val classRoot = getEnclosingClass(methodNode)
-        val className = classRoot?.getChildOfType(CLASS_NAME_NODE) as? SimpleNode
+        val className = classRoot?.getChildOfType(CLASS_NAME_NODE) as? AntlrNode
 
-        val parametersRoot = methodNode.getChildOfType(METHOD_PARAMETER_NODE) as? SimpleNode
-        val innerParametersRoot = parametersRoot?.getChildOfType(METHOD_PARAMETER_INNER_NODE) as? SimpleNode
+        val parametersRoot = methodNode.getChildOfType(METHOD_PARAMETER_NODE) as? AntlrNode
+        val innerParametersRoot = parametersRoot?.getChildOfType(METHOD_PARAMETER_INNER_NODE) as? AntlrNode
 
         val parametersList = when {
             innerParametersRoot != null -> getListOfParameters(innerParametersRoot)
@@ -52,18 +52,18 @@ class JavaMethodSplitter : TreeMethodSplitter<SimpleNode> {
         )
     }
 
-    private fun getEnclosingClass(node: SimpleNode): SimpleNode? {
+    private fun getEnclosingClass(node: AntlrNode): AntlrNode? {
         if (decompressTypeLabel(node.getTypeLabel()).last() == CLASS_DECLARATION_NODE) {
             return node
         }
-        val parentNode = node.getParent() as? SimpleNode
+        val parentNode = node.getParent() as? AntlrNode
         if (parentNode != null) {
             return getEnclosingClass(parentNode)
         }
         return null
     }
 
-    private fun getListOfParameters(parametersRoot: SimpleNode): List<ParameterNode<SimpleNode>> {
+    private fun getListOfParameters(parametersRoot: AntlrNode): List<ParameterNode<AntlrNode>> {
         if (METHOD_SINGLE_PARAMETER_NODE.contains(decompressTypeLabel(parametersRoot.getTypeLabel()).last())) {
             return listOf(getParameterInfoFromNode(parametersRoot))
         }
@@ -71,26 +71,26 @@ class JavaMethodSplitter : TreeMethodSplitter<SimpleNode> {
             val firstType = decompressTypeLabel(it.getTypeLabel()).first()
             METHOD_SINGLE_PARAMETER_NODE.contains(firstType)
         }.map {
-            getParameterInfoFromNode(it as SimpleNode)
+            getParameterInfoFromNode(it as AntlrNode)
         }
     }
 
-    private fun getParameterInfoFromNode(parameterRoot: SimpleNode): ParameterNode<SimpleNode> {
-        val returnTypeNode = parameterRoot.getChildOfType(PARAMETER_RETURN_TYPE_NODE) as? SimpleNode
+    private fun getParameterInfoFromNode(parameterRoot: AntlrNode): ParameterNode<AntlrNode> {
+        val returnTypeNode = parameterRoot.getChildOfType(PARAMETER_RETURN_TYPE_NODE) as? AntlrNode
         returnTypeNode?.setToken(collectParameterToken(returnTypeNode))
         return ParameterNode(
                 parameterRoot,
                 returnTypeNode,
-                parameterRoot.getChildOfType(PARAMETER_NAME_NODE) as? SimpleNode
+                parameterRoot.getChildOfType(PARAMETER_NAME_NODE) as? AntlrNode
         )
     }
 
-    private fun collectParameterToken(parameterRoot: SimpleNode): String {
+    private fun collectParameterToken(parameterRoot: AntlrNode): String {
         if (parameterRoot.isLeaf()) {
             return parameterRoot.getToken()
         }
         return parameterRoot.getChildren().joinToString(separator = "") { child ->
-            collectParameterToken(child as SimpleNode)
+            collectParameterToken(child as AntlrNode)
         }
     }
 }
