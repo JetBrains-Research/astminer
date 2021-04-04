@@ -5,15 +5,7 @@ import com.github.gumtreediff.tree.ITree
 import com.github.gumtreediff.tree.TreeContext
 
 class GumTreeNode(val wrappedNode: ITree, val context: TreeContext, val parent: GumTreeNode?): Node {
-    private val metadata: MutableMap<String, Any> = HashMap()
-
-    override fun getMetadata(key: String): Any? {
-        return metadata[key]
-    }
-
-    override fun setMetadata(key: String, value: Any) {
-        metadata[key] = value
-    }
+    override val metadata: MutableMap<String, Any> = HashMap()
 
     override fun isLeaf(): Boolean {
         return childrenList.isEmpty()

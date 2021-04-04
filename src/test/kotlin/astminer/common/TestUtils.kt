@@ -4,13 +4,7 @@ import astminer.common.model.Node
 
 
 class DummyNode(val data: String, val childrenList: MutableList<DummyNode>) : Node {
-    override fun setMetadata(key: String, value: Any) {
-
-    }
-
-    override fun getMetadata(key: String): Any? {
-        return null
-    }
+    override val metadata: MutableMap<String, Any> = hashMapOf()
 
     override fun isLeaf(): Boolean {
         return childrenList.isEmpty()

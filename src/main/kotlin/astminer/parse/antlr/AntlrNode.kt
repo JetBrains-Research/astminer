@@ -3,16 +3,16 @@ package astminer.parse.antlr
 import astminer.common.model.Node
 
 class AntlrNode(private val typeLabel: String, private var parent: Node?, private var token: String?) : Node {
-    private val metadata: MutableMap<String, Any> = HashMap()
+    override val metadata: MutableMap<String, Any> = HashMap()
 
-    private var children: MutableList<Node> = mutableListOf()
+    private var children: MutableList<AntlrNode> = mutableListOf()
 
-    fun setChildren(newChildren: List<Node>) {
+    fun setChildren(newChildren: List<AntlrNode>) {
         children = newChildren.toMutableList()
-        children.forEach { (it as AntlrNode).setParent(this) }
+        children.forEach { it.setParent(this) }
     }
 
-    fun setParent(newParent: Node?) {
+    private fun setParent(newParent: Node?) {
         parent = newParent
     }
 
@@ -20,7 +20,7 @@ class AntlrNode(private val typeLabel: String, private var parent: Node?, privat
         return typeLabel
     }
 
-    override fun getChildren(): MutableList<Node> {
+    override fun getChildren(): List<AntlrNode> {
         return children
     }
 
@@ -38,14 +38,6 @@ class AntlrNode(private val typeLabel: String, private var parent: Node?, privat
 
     override fun isLeaf(): Boolean {
         return children.isEmpty()
-    }
-
-    override fun getMetadata(key: String): Any? {
-        return metadata[key]
-    }
-
-    override fun setMetadata(key: String, value: Any) {
-        metadata[key] = value
     }
 
     override fun getChildrenOfType(typeLabel: String) = getChildren().filter {

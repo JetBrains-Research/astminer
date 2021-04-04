@@ -42,17 +42,17 @@ const val DEFAULT_TOKEN = "EMPTY_TOKEN"
  * Set normalized token for a node with default normalizing function.
  */
 fun Node.setNormalizedToken() {
-    setMetadata(NORMALIZED_TOKEN_KEY, normalizeToken(getToken(), DEFAULT_TOKEN))
+    metadata[NORMALIZED_TOKEN_KEY] = normalizeToken(getToken(), DEFAULT_TOKEN)
 }
 
 /**
  * Set normalized token to a custom value.
  */
 fun Node.setNormalizedToken(normalizedToken: String) {
-    setMetadata(NORMALIZED_TOKEN_KEY, normalizedToken)
+    metadata[NORMALIZED_TOKEN_KEY] = normalizedToken
 }
 
-fun Node.getNormalizedToken(): String = getMetadata(NORMALIZED_TOKEN_KEY)?.toString() ?: DEFAULT_TOKEN
+fun Node.getNormalizedToken(): String = metadata[NORMALIZED_TOKEN_KEY]?.toString() ?: DEFAULT_TOKEN
 
 /**
  * The function was adopted from the original code2vec implementation in order to match their behavior:

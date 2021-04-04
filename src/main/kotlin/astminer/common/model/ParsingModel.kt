@@ -11,8 +11,7 @@ interface Node {
     fun getToken(): String
     fun isLeaf(): Boolean
 
-    fun getMetadata(key: String): Any?
-    fun setMetadata(key: String, value: Any)
+    val metadata: MutableMap<String, Any>
 
     fun prettyPrint(indent: Int = 0, indentSymbol: String = "--") {
         repeat(indent) { print(indentSymbol) }

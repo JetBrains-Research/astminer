@@ -13,7 +13,7 @@ fun convertAntlrTree(tree: ParserRuleContext, ruleNames: Array<String>, vocabula
 private fun convertRuleContext(ruleContext: ParserRuleContext, ruleNames: Array<String>, parent: Node?, vocabulary: Vocabulary): AntlrNode {
     val typeLabel = ruleNames[ruleContext.ruleIndex]
     val currentNode = AntlrNode(typeLabel, parent, null)
-    val children: MutableList<Node> = ArrayList()
+    val children: MutableList<AntlrNode> = ArrayList()
 
     ruleContext.children?.forEach {
         if (it is TerminalNode) {
