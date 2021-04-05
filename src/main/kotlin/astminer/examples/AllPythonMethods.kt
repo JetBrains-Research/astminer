@@ -5,9 +5,8 @@ import astminer.parse.python.GumTreePythonMethodSplitter
 import astminer.parse.python.GumTreePythonNode
 import astminer.parse.python.GumTreePythonParser
 import astminer.storage.CsvPathStorage
-import astminer.storage.CountingPathStorageConfig
+import astminer.storage.PathBasedStorageConfig
 import astminer.storage.LabellingResult
-import astminer.storage.identityTokenProcessor
 import java.io.File
 
 private fun getCsvFriendlyMethodId(methodInfo: MethodInfo<GumTreePythonNode>): String {
@@ -21,7 +20,7 @@ fun allPythonMethods() {
     val inputDir = "src/test/resources/gumTreeMethodSplitter"
 
     val outputDir = "out_examples/allPythonMethods"
-    val storage = CsvPathStorage(outputDir, CountingPathStorageConfig(5, 5))
+    val storage = CsvPathStorage(outputDir, PathBasedStorageConfig(5, 5))
 
     File(inputDir).forFilesWithSuffix(".py") { file ->
         // parse file

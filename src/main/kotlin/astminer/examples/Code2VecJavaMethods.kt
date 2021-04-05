@@ -5,7 +5,7 @@ import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.java.JavaParser
 import astminer.paths.*
 import astminer.storage.Code2VecPathStorage
-import astminer.storage.CountingPathStorageConfig
+import astminer.storage.PathBasedStorageConfig
 import astminer.storage.LabellingResult
 import java.io.File
 
@@ -17,7 +17,7 @@ fun code2vecJavaMethods() {
     val outputDir = "out_examples/code2vecPathMining"
 
 
-    val storage = Code2VecPathStorage(outputDir, CountingPathStorageConfig(5, 5))
+    val storage = Code2VecPathStorage(outputDir, PathBasedStorageConfig(5, 5))
 
     File(folder).forFilesWithSuffix(".java") { file ->
         //parse file

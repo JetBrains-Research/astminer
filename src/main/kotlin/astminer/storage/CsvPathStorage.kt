@@ -4,10 +4,10 @@ import astminer.common.model.PathContextId
 
 class CsvPathStorage(
     outputDirectoryPath: String,
-    config: CountingPathStorageConfig,
+    config: PathBasedStorageConfig,
     tokenProcessor: TokenProcessor = identityTokenProcessor
 ) :
-    CountingPathStorage(outputDirectoryPath, config, tokenProcessor) {
+    PathBasedStorage(outputDirectoryPath, config, tokenProcessor) {
 
     override fun pathContextIdsToString(pathContextIds: List<PathContextId>, label: String): String {
         val joinedPathContexts = pathContextIds.joinToString(";") { pathContextId ->

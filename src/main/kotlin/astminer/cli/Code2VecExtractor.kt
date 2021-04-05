@@ -129,7 +129,7 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
 
     private fun extract(labelExtractor: LabelExtractor) {
         val outputDir = File(outputDirName)
-        val storageConfig = CountingPathStorageConfig(
+        val storageConfig = PathBasedStorageConfig(
             maxPathLength,
             maxPathWidth,
             maxTokens,

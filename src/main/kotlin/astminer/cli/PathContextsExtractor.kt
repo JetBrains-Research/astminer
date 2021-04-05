@@ -8,7 +8,7 @@ import astminer.parse.antlr.python.PythonParser
 import astminer.parse.cpp.FuzzyCppParser
 import astminer.parse.java.GumTreeJavaParser
 import astminer.storage.Code2VecPathStorage
-import astminer.storage.CountingPathStorageConfig
+import astminer.storage.PathBasedStorageConfig
 import astminer.storage.splitTokenProcessor
 import astminer.storage.toLabellingResult
 import com.github.ajalt.clikt.core.CliktCommand
@@ -102,7 +102,7 @@ class PathContextsExtractor(private val customLabelExtractor: LabelExtractor? = 
 
     private fun extractPathContexts(labelExtractor: LabelExtractor) {
         val outputDir = File(outputDirName)
-        val storageConfig = CountingPathStorageConfig(
+        val storageConfig = PathBasedStorageConfig(
             maxPathLength,
             maxPathWidth,
             maxTokens,

@@ -3,7 +3,6 @@
 package astminer.examples
 
 import astminer.common.getProjectFilesWithExtension
-import astminer.common.model.Node
 import astminer.parse.cpp.FuzzyCppParser
 import astminer.storage.*
 import java.io.File
@@ -13,7 +12,7 @@ fun allCppFiles() {
     val inputDir = File("src/test/resources/examples/cpp")
 
     val outputDir = "out_examples/allCppFiles"
-    val storage = CsvPathStorage(outputDir, CountingPathStorageConfig(5, 5))
+    val storage = CsvPathStorage(outputDir, PathBasedStorageConfig(5, 5))
     val parser = FuzzyCppParser()
     val preprocOutputFolder = File("preprocessed")
 

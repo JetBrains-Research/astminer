@@ -18,7 +18,7 @@ import java.io.PrintWriter
  * @property maxPathContextsPerEntity The maximum number of path contexts that should be extracted from LabeledParseResult.
  * In other words, the maximum number of path contexts to save from each file/method (depending on granularity)
  */
-data class CountingPathStorageConfig(
+data class PathBasedStorageConfig(
     val maxPathLength: Int,
     val maxPathWidth: Int,
     val maxTokens: Long = Long.MAX_VALUE,
@@ -32,9 +32,9 @@ data class CountingPathStorageConfig(
  * @property config The config that contains hyperparameters for path extraction.
  * @property tokenProcessor The token processor that is used to extract tokens from nodes.
  */
-abstract class CountingPathStorage(
+abstract class PathBasedStorage(
     final override val outputDirectoryPath: String,
-    private val config: CountingPathStorageConfig,
+    private val config: PathBasedStorageConfig,
     private val tokenProcessor: TokenProcessor
 ) : Storage {
 

@@ -15,8 +15,8 @@ public class AllJavaFiles {
     private static final String OUTPUT_FOLDER = "out_examples/allJavaFiles_GumTree_java";
 
     public static void runExample() {
-        final CountingPathStorageConfig config = new CountingPathStorageConfig(5, 5, Long.MAX_VALUE, Long.MAX_VALUE, Integer.MAX_VALUE);
-        final CountingPathStorage pathStorage = new CsvPathStorage(OUTPUT_FOLDER, config, TokenProcessorsKt.getIdentityTokenProcessor());
+        final PathBasedStorageConfig config = new PathBasedStorageConfig(5, 5, Long.MAX_VALUE, Long.MAX_VALUE, Integer.MAX_VALUE);
+        final PathBasedStorage pathStorage = new CsvPathStorage(OUTPUT_FOLDER, config, TokenProcessorsKt.getIdentityTokenProcessor());
 
         final Path inputFolder = Paths.get(INPUT_FOLDER);
 

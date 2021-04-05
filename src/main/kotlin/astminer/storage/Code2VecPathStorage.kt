@@ -4,10 +4,10 @@ import astminer.common.model.PathContextId
 
 class Code2VecPathStorage(
     outputDirectoryPath: String,
-    config: CountingPathStorageConfig,
+    config: PathBasedStorageConfig,
     tokenProcessor: TokenProcessor = code2vecTokenProcessor
 ) :
-    CountingPathStorage(outputDirectoryPath, config, tokenProcessor) {
+    PathBasedStorage(outputDirectoryPath, config, tokenProcessor) {
 
     override fun pathContextIdsToString(pathContextIds: List<PathContextId>, label: String): String {
         val joinedPathContexts = pathContextIds.joinToString(" ") { pathContextId ->
