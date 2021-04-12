@@ -16,7 +16,7 @@ public class AllJavaFiles {
 
     public static void runExample() {
         final PathBasedStorageConfig config = new PathBasedStorageConfig(5, 5, Long.MAX_VALUE, Long.MAX_VALUE, Integer.MAX_VALUE);
-        final PathBasedStorage pathStorage = new CsvPathStorage(OUTPUT_FOLDER, config, TokenProcessorsKt.getIdentityTokenProcessor());
+        final PathBasedStorage pathStorage = new CsvPathStorage(OUTPUT_FOLDER, config, TokenProcessor.LeaveOriginal);
 
         final Path inputFolder = Paths.get(INPUT_FOLDER);
 

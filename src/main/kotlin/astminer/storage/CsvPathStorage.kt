@@ -5,7 +5,7 @@ import astminer.common.model.PathContextId
 class CsvPathStorage(
     outputDirectoryPath: String,
     config: PathBasedStorageConfig,
-    tokenProcessor: TokenProcessor = identityTokenProcessor
+    tokenProcessor: TokenProcessor = TokenProcessor.LeaveOriginal
 ) :
     PathBasedStorage(outputDirectoryPath, config, tokenProcessor) {
 

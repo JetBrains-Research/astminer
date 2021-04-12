@@ -5,7 +5,7 @@ import astminer.common.model.PathContextId
 class Code2VecPathStorage(
     outputDirectoryPath: String,
     config: PathBasedStorageConfig,
-    tokenProcessor: TokenProcessor = code2vecTokenProcessor
+    tokenProcessor: TokenProcessor = TokenProcessor.Normalize
 ) :
     PathBasedStorage(outputDirectoryPath, config, tokenProcessor) {
 

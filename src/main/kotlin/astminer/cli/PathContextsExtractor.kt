@@ -7,10 +7,7 @@ import astminer.parse.antlr.javascript.JavaScriptParser
 import astminer.parse.antlr.python.PythonParser
 import astminer.parse.cpp.FuzzyCppParser
 import astminer.parse.java.GumTreeJavaParser
-import astminer.storage.Code2VecPathStorage
-import astminer.storage.PathBasedStorageConfig
-import astminer.storage.splitTokenProcessor
-import astminer.storage.toLabellingResult
+import astminer.storage.*
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.int
@@ -114,7 +111,7 @@ class PathContextsExtractor(private val customLabelExtractor: LabelExtractor? = 
             
             val outputDirForLanguage = outputDir.resolve(extension)
             outputDirForLanguage.mkdir()
-            val storage = Code2VecPathStorage(outputDirForLanguage.path, storageConfig, splitTokenProcessor)
+            val storage = Code2VecPathStorage(outputDirForLanguage.path, storageConfig, TokenProcessor.Split)
 
             val files = getProjectFilesWithExtension(File(projectRoot), extension)
             parser.parseFiles(files) { parseResult ->

@@ -141,9 +141,9 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
             outputDirForLanguage.mkdir()
             // Choose how to process tokens
             val tokenProcessor = if (isTokenSplitted) {
-                splitTokenProcessor
+                TokenProcessor.Split
             } else {
-                code2vecTokenProcessor
+                TokenProcessor.Normalize
             }
             // Choose type of storage
             val storage = Code2VecPathStorage(outputDirForLanguage.path, storageConfig, tokenProcessor)

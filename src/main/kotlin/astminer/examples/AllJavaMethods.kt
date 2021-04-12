@@ -4,10 +4,7 @@ import astminer.common.model.MethodInfo
 import astminer.parse.java.GumTreeJavaNode
 import astminer.parse.java.GumTreeJavaParser
 import astminer.parse.java.GumTreeJavaMethodSplitter
-import astminer.storage.CsvPathStorage
-import astminer.storage.PathBasedStorageConfig
-import astminer.storage.LabellingResult
-import astminer.storage.splitTokenProcessor
+import astminer.storage.*
 import java.io.File
 
 
@@ -25,7 +22,7 @@ fun allJavaMethods() {
     val inputDir = "src/test/resources/gumTreeMethodSplitter"
 
     val outputDir = "out_examples/allJavaMethods"
-    val storage = CsvPathStorage(outputDir, PathBasedStorageConfig(5, 5), splitTokenProcessor)
+    val storage = CsvPathStorage(outputDir, PathBasedStorageConfig(5, 5), TokenProcessor.Split)
 
     File(inputDir).forFilesWithSuffix(".java") { file ->
         //parse file

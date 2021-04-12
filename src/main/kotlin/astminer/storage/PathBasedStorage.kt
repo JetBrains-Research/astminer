@@ -21,9 +21,9 @@ import java.io.PrintWriter
 data class PathBasedStorageConfig(
     val maxPathLength: Int,
     val maxPathWidth: Int,
-    val maxTokens: Long = Long.MAX_VALUE,
-    val maxPaths: Long = Long.MAX_VALUE,
-    val maxPathContextsPerEntity: Int = Int.MAX_VALUE
+    val maxTokens: Long? = null,
+    val maxPaths: Long? = null,
+    val maxPathContextsPerEntity: Int? = null
 )
 
 /**
@@ -56,14 +56,18 @@ abstract class PathBasedStorage(
 
     abstract fun pathContextIdsToString(pathContextIds: List<PathContextId>, label: String): String
 
-    private fun Node.getProcessedToken(): String = this.run(tokenProcessor)
+    private fun Node.getProcessedToken(): String = tokenProcessor.processToken(this)
 
     private fun dumpPathContexts(labeledPathContextIds: LabeledPathContextIds<String>) {
         val pathContextIdsString = labeledPathContextIds.pathContexts.filter {
-            tokensMap.getIdRank(it.startTokenId) <= config.maxTokens &&
-                    tokensMap.getIdRank(it.endTokenId) <= config.maxTokens &&
-                    pathsMap.getIdRank(it.pathId) <= config.maxPaths
+            val isNumberOfTokensValid = config.maxTokens == null ||
+                    tokensMap.getIdRank(it.startTokenId) <= config.maxTokens &&
+                    tokensMap.getIdRank(it.endTokenId) <= config.maxTokens
+            val isNumberOfPathsValid = config.maxPaths == null || pathsMap.getIdRank(it.pathId) <= config.maxPaths
+
+            isNumberOfTokensValid && isNumberOfPathsValid
         }
+
         labeledPathContextIdsWriter.println(pathContextIdsToString(pathContextIdsString, labeledPathContextIds.label))
     }
 
@@ -75,8 +79,14 @@ abstract class PathBasedStorage(
         return PathContextId(startTokenId, pathId, endTokenId)
     }
 
+    private fun retrievePaths(node: Node) = if (config.maxPathContextsPerEntity != null) {
+        pathMiner.retrievePaths(node).take(config.maxPathContextsPerEntity)
+    } else {
+        pathMiner.retrievePaths(node)
+    }
+
     private fun retrieveLabeledPathContexts(labellingResult: LabellingResult<out Node>): LabeledPathContexts<String> {
-        val paths = pathMiner.retrievePaths(labellingResult.root).take(config.maxPathContextsPerEntity)
+        val paths = retrievePaths(labellingResult.root)
         return LabeledPathContexts(labellingResult.label, paths.map { astPath ->
             toPathContext(astPath) { node -> node.getProcessedToken() }
         })
@@ -106,8 +116,7 @@ abstract class PathBasedStorage(
             orientedNodeTypesMap,
             "node_type",
             orientedNodeToCsvString,
-            File("$outputDirectoryPath/node_types.csv"),
-            Long.MAX_VALUE
+            File("$outputDirectoryPath/node_types.csv")
         )
         dumpIdStorageToCsv(pathsMap, "path", pathToCsvString, File("$outputDirectoryPath/paths.csv"), config.maxPaths)
 
