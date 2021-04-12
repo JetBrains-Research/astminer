@@ -2,8 +2,8 @@ package astminer.examples
 
 import astminer.common.getProjectFilesWithExtension
 import astminer.parse.antlr.python.PythonParser
-import astminer.storage.CsvPathStorage
-import astminer.storage.PathBasedStorageConfig
+import astminer.storage.path.CsvPathStorage
+import astminer.storage.path.PathBasedStorageConfig
 import astminer.storage.TokenProcessor
 import astminer.storage.labeledWithFilePath
 import java.io.File

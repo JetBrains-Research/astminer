@@ -1,10 +1,13 @@
-package astminer.storage
+package astminer.storage.path
 
 import astminer.common.model.*
 import astminer.common.storage.*
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
 import astminer.paths.toPathContext
+import astminer.storage.LabellingResult
+import astminer.storage.Storage
+import astminer.storage.TokenProcessor
 import java.io.File
 import java.io.PrintWriter
 

@@ -1,9 +1,11 @@
-package astminer.storage
+package astminer.storage.ast
 
 import astminer.common.getNormalizedToken
 import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.common.storage.RankedIncrementalIdStorage
+import astminer.storage.LabellingResult
+import astminer.storage.Storage
 import java.io.File
 import java.io.PrintWriter
 

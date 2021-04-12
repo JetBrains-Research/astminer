@@ -2,8 +2,8 @@ package astminer.examples
 
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.java.JavaParser
-import astminer.storage.CsvPathStorage
-import astminer.storage.PathBasedStorageConfig
+import astminer.storage.path.CsvPathStorage
+import astminer.storage.path.PathBasedStorageConfig
 import astminer.storage.labeledWithFilePath
 import java.io.File
 

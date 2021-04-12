@@ -3,9 +3,8 @@ package astminer.examples
 import astminer.common.*
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.java.JavaParser
-import astminer.paths.*
-import astminer.storage.Code2VecPathStorage
-import astminer.storage.PathBasedStorageConfig
+import astminer.storage.path.Code2VecPathStorage
+import astminer.storage.path.PathBasedStorageConfig
 import astminer.storage.LabellingResult
 import java.io.File
 

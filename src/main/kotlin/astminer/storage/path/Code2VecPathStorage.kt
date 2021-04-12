@@ -1,6 +1,7 @@
-package astminer.storage
+package astminer.storage.path
 
 import astminer.common.model.PathContextId
+import astminer.storage.TokenProcessor
 
 class Code2VecPathStorage(
     outputDirectoryPath: String,

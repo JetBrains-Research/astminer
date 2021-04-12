@@ -4,6 +4,8 @@ import astminer.common.getProjectFilesWithExtension
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
 import astminer.storage.*
+import astminer.storage.path.Code2VecPathStorage
+import astminer.storage.path.PathBasedStorageConfig
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.int

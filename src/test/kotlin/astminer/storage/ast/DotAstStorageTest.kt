@@ -1,4 +1,4 @@
-package astminer.storage
+package astminer.storage.ast
 
 import astminer.common.createSmallTree
 import astminer.common.labeledWith

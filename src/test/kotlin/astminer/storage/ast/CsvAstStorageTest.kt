@@ -1,7 +1,8 @@
-package astminer.storage
+package astminer.storage.ast
 
 import astminer.common.createSmallTree
 import astminer.common.labeledWith
+import astminer.storage.ast.CsvAstStorage
 import org.junit.Assert
 import org.junit.Test
 

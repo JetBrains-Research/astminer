@@ -5,6 +5,8 @@ package astminer.examples
 import astminer.common.getProjectFilesWithExtension
 import astminer.parse.cpp.FuzzyCppParser
 import astminer.storage.*
+import astminer.storage.path.CsvPathStorage
+import astminer.storage.path.PathBasedStorageConfig
 import java.io.File
 
 // Retrieve paths from .cpp preprocessed files, using a fuzzyc2cpg parser.

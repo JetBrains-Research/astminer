@@ -4,8 +4,8 @@ import astminer.common.model.MethodInfo
 import astminer.parse.python.GumTreePythonMethodSplitter
 import astminer.parse.python.GumTreePythonNode
 import astminer.parse.python.GumTreePythonParser
-import astminer.storage.CsvPathStorage
-import astminer.storage.PathBasedStorageConfig
+import astminer.storage.path.CsvPathStorage
+import astminer.storage.path.PathBasedStorageConfig
 import astminer.storage.LabellingResult
 import java.io.File
 

@@ -1,7 +1,7 @@
 package astminer.examples
 
 import astminer.common.getProjectFilesWithExtension
-import astminer.storage.CsvAstStorage
+import astminer.storage.ast.CsvAstStorage
 import astminer.parse.antlr.java.JavaParser
 import astminer.storage.labeledWithFilePath
 import java.io.File

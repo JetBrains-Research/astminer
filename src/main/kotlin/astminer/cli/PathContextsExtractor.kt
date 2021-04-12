@@ -8,6 +8,8 @@ import astminer.parse.antlr.python.PythonParser
 import astminer.parse.cpp.FuzzyCppParser
 import astminer.parse.java.GumTreeJavaParser
 import astminer.storage.*
+import astminer.storage.path.Code2VecPathStorage
+import astminer.storage.path.PathBasedStorageConfig
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.int
