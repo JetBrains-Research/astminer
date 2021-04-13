@@ -6,7 +6,7 @@ import astminer.storage.TokenProcessor
 class CsvPathStorage(
     outputDirectoryPath: String,
     config: PathBasedStorageConfig,
-    tokenProcessor: TokenProcessor = TokenProcessor.LeaveOriginal
+    tokenProcessor: TokenProcessor
 ) :
     PathBasedStorage(outputDirectoryPath, config, tokenProcessor) {
 

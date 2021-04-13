@@ -11,14 +11,6 @@ import astminer.common.normalizeToken
  */
 enum class TokenProcessor {
     /**
-     * Does not actually process the token, returns the original unchanged token.
-     * Works like the identity function id: x --> x, hence the name.
-     */
-    LeaveOriginal {
-        override fun processToken(node: Node): String = node.getToken()
-    },
-
-    /**
      * Splits the token into subtokens (words).
      * For example, "getFull_name" --> "get full name"
      */
