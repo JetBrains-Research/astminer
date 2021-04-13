@@ -1,12 +1,33 @@
 package astminer.storage.ast
 
-import astminer.common.createSmallTree
-import astminer.common.labeledWith
+import astminer.common.*
 import org.junit.Test
 import java.io.File
 import kotlin.test.assertEquals
 
 class DotAstStorageTest {
+    private fun testOnTree(root: DummyNode, expectedLines: List<String>) {
+        DotAstStorage("test_examples").use { storage ->
+            storage.store(root.labeledWith("entityId"))
+        }
+
+        val storageLines = File(File("test_examples", "asts"), "ast_0.dot").readLines()
+
+        File("test_examples").deleteRecursively()
+
+        assertEquals(expectedLines, storageLines)
+    }
+
+    private fun getBambooLines(size: Int): List<String> {
+        val lines = mutableListOf<String>()
+        lines.add("digraph entityId {")
+        for (i in 0..(size - 2)) {
+            lines.add("$i -- {${i + 1}};")
+        }
+        lines.add("${size - 1} -- {};")
+        lines.add("}")
+        return lines
+    }
 
     @Test
     fun testDotStorageOnSmallTree() {
@@ -29,6 +50,34 @@ class DotAstStorageTest {
         File("test_examples").deleteRecursively()
 
         assertEquals(trueLines, storageLines)
+    }
+
+    @Test
+    fun `test dot storage on dummy tree`() {
+        val trueLines = listOf(
+            "digraph entityId {",
+            "0 -- {1 2};",
+            "1 -- {3 4 5};",
+            "3 -- {};",
+            "4 -- {};",
+            "5 -- {};",
+            "2 -- {6 7};",
+            "6 -- {};",
+            "7 -- {};",
+            "}"
+        )
+
+        testOnTree(createDummyTree(), trueLines)
+    }
+
+    @Test
+    fun `test dot storage on small bamboo`() {
+        testOnTree(createBamboo(10), getBambooLines(10))
+    }
+
+    @Test
+    fun `test dot storage on big bamboo`() {
+        testOnTree(createBamboo(100), getBambooLines(100))
     }
 
     @Test

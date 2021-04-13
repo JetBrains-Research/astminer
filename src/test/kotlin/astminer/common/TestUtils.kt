@@ -81,4 +81,21 @@ fun createSmallTree(): DummyNode {
     return node1
 }
 
+/**
+ * Creates a bamboo
+ * Diagram for [size] 3:
+ * 1
+ *  \
+ *   2
+ *    \
+ *     3
+ */
+fun createBamboo(size: Int): DummyNode {
+    var root = DummyNode(size.toString(), mutableListOf())
+    for (i in 1 until size) {
+        root = DummyNode((size - i).toString(), mutableListOf(root))
+    }
+    return root
+}
+
 fun <T : Node> T.labeledWith(label: String) = LabeledResult(this, label, "")
