@@ -1,11 +1,11 @@
 package astminer.examples
 
+import astminer.cli.LabeledResult
 import astminer.common.*
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.java.JavaParser
 import astminer.storage.path.Code2VecPathStorage
 import astminer.storage.path.PathBasedStorageConfig
-import astminer.storage.LabellingResult
 import java.io.File
 
 
@@ -33,7 +33,7 @@ fun code2vecJavaMethods() {
             methodNameNode.setNormalizedToken("METHOD_NAME")
 
             // Retrieve paths from every node individually and store them
-            storage.store(LabellingResult(methodRoot, label, file.absolutePath))
+            storage.store(LabeledResult(methodRoot, label, file.absolutePath))
         }
     }
 

@@ -1,7 +1,7 @@
 package astminer.common
 
+import astminer.cli.LabeledResult
 import astminer.common.model.Node
-import astminer.storage.LabellingResult
 
 
 class DummyNode(val data: String, val childrenList: MutableList<DummyNode>) : Node {
@@ -61,4 +61,4 @@ fun createSmallTree(): DummyNode {
     return node1
 }
 
-fun <T : Node> T.labeledWith(label: String) = LabellingResult(this, label, "")
+fun <T : Node> T.labeledWith(label: String) = LabeledResult(this, label, "")

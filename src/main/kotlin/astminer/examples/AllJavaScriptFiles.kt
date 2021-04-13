@@ -5,7 +5,6 @@ import astminer.parse.antlr.javascript.JavaScriptParser
 import astminer.storage.path.CsvPathStorage
 import astminer.storage.path.PathBasedStorageConfig
 import astminer.storage.TokenProcessor
-import astminer.storage.labeledWithFilePath
 import java.io.File
 
 fun allJavaScriptFiles() {
@@ -16,8 +15,8 @@ fun allJavaScriptFiles() {
 
     val files = getProjectFilesWithExtension(File(folder), "js")
     JavaScriptParser().parseFiles(files) { parseResult ->
-        parseResult.labeledWithFilePath()?.let {
-            storage.store(it)
+        parseResult.labeledWithFilePath()?.let { labeledResult ->
+            storage.store(labeledResult)
         }
     }
 

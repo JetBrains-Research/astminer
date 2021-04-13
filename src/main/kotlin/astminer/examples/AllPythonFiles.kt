@@ -5,7 +5,6 @@ import astminer.parse.antlr.python.PythonParser
 import astminer.storage.path.CsvPathStorage
 import astminer.storage.path.PathBasedStorageConfig
 import astminer.storage.TokenProcessor
-import astminer.storage.labeledWithFilePath
 import java.io.File
 
 
@@ -17,8 +16,8 @@ fun allPythonFiles() {
 
     val files = getProjectFilesWithExtension(File(inputDir), "py")
     PythonParser().parseFiles(files) { parseResult ->
-        parseResult.labeledWithFilePath()?.let {
-            storage.store(it)
+        parseResult.labeledWithFilePath()?.let { labeledResult ->
+            storage.store(labeledResult)
         }
     }
 

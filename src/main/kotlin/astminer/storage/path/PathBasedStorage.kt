@@ -1,11 +1,11 @@
 package astminer.storage.path
 
+import astminer.cli.LabeledResult
 import astminer.common.model.*
 import astminer.common.storage.*
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
 import astminer.paths.toPathContext
-import astminer.storage.LabellingResult
 import astminer.storage.Storage
 import astminer.storage.TokenProcessor
 import java.io.File
@@ -88,18 +88,18 @@ abstract class PathBasedStorage(
         pathMiner.retrievePaths(node)
     }
 
-    private fun retrieveLabeledPathContexts(labellingResult: LabellingResult<out Node>): LabeledPathContexts<String> {
-        val paths = retrievePaths(labellingResult.root)
-        return LabeledPathContexts(labellingResult.label, paths.map { astPath ->
+    private fun retrieveLabeledPathContexts(labeledResult: LabeledResult<out Node>): LabeledPathContexts<String> {
+        val paths = retrievePaths(labeledResult.root)
+        return LabeledPathContexts(labeledResult.label, paths.map { astPath ->
             toPathContext(astPath) { node -> node.getProcessedToken() }
         })
     }
 
     /**
-     * Extract paths from [labellingResult] and store them in the specified format.
+     * Extract paths from [labeledResult] and store them in the specified format.
      */
-    override fun store(labellingResult: LabellingResult<out Node>) {
-        val labeledPathContexts = retrieveLabeledPathContexts(labellingResult)
+    override fun store(labeledResult: LabeledResult<out Node>) {
+        val labeledPathContexts = retrieveLabeledPathContexts(labeledResult)
         val labeledPathContextIds = LabeledPathContextIds(
             labeledPathContexts.label,
             labeledPathContexts.pathContexts.map { storePathContext(it) }

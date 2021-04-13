@@ -1,12 +1,12 @@
 package astminer.examples
 
+import astminer.cli.LabeledResult
 import astminer.common.model.MethodInfo
 import astminer.parse.python.GumTreePythonMethodSplitter
 import astminer.parse.python.GumTreePythonNode
 import astminer.parse.python.GumTreePythonParser
 import astminer.storage.path.CsvPathStorage
 import astminer.storage.path.PathBasedStorageConfig
-import astminer.storage.LabellingResult
 import java.io.File
 
 private fun getCsvFriendlyMethodId(methodInfo: MethodInfo<GumTreePythonNode>): String {
@@ -32,7 +32,7 @@ fun allPythonMethods() {
         methodNodes.forEach { methodInfo ->
             // Retrieve a method identifier
             val entityId = "${file.path}::${getCsvFriendlyMethodId(methodInfo)}"
-            val labelingResult = LabellingResult(fileNode, entityId, file.path)
+            val labelingResult = LabeledResult(fileNode, entityId, file.path)
             // Retrieve paths from each method individually and store them
             storage.store(labelingResult)
         }

@@ -123,10 +123,8 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
     ) {
         val labeledParseResults = labelExtractor.toLabeledData(parseResult)
 
-        // Retrieve paths from every node individually
-        labeledParseResults.forEach {
-            storage.store(it.toLabellingResult(parseResult.filePath))
-        }
+        // Retrieve paths from every node individually and store them
+        storage.store(labeledParseResults)
     }
 
     private fun extract(labelExtractor: LabelExtractor) {

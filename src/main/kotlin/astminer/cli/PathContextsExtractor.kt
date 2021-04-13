@@ -120,9 +120,7 @@ class PathContextsExtractor(private val customLabelExtractor: LabelExtractor? = 
                 // TODO: might not be needed
                 normalizeParseResult(parseResult, splitTokens = true)
                 val labeledParseResults = labelExtractor.toLabeledData(parseResult)
-                labeledParseResults.forEach {
-                    storage.store(it.toLabellingResult(parseResult.filePath))
-                }
+                storage.store(labeledParseResults)
             }
 
             // Save stored data on disk

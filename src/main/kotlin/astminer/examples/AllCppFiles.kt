@@ -4,7 +4,6 @@ package astminer.examples
 
 import astminer.common.getProjectFilesWithExtension
 import astminer.parse.cpp.FuzzyCppParser
-import astminer.storage.*
 import astminer.storage.path.CsvPathStorage
 import astminer.storage.path.PathBasedStorageConfig
 import java.io.File
@@ -23,8 +22,8 @@ fun allCppFiles() {
     val files = getProjectFilesWithExtension(preprocOutputFolder, "cpp")
 
     parser.parseFiles(files) { parseResult ->
-        parseResult.labeledWithFilePath()?.let {
-            storage.store(it)
+        parseResult.labeledWithFilePath()?.let { labeledResult ->
+            storage.store(labeledResult)
         }
     }
 

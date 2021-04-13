@@ -1,5 +1,6 @@
 package astminer.examples;
 
+import astminer.cli.LabeledResult;
 import astminer.common.model.*;
 import astminer.parse.java.GumTreeJavaParser;
 import astminer.storage.*;
@@ -32,7 +33,7 @@ public class AllJavaFiles {
                 }
 
                 String filePath = file.toAbsolutePath().toString();
-                pathStorage.store(new LabellingResult<>(fileTree, filePath, filePath));
+                pathStorage.store(new LabeledResult<>(fileTree, filePath, filePath));
 
                 return FileVisitResult.CONTINUE;
             }

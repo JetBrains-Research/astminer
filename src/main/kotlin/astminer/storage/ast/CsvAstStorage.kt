@@ -1,9 +1,9 @@
 package astminer.storage.ast
 
+import astminer.cli.LabeledResult
 import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.common.storage.*
-import astminer.storage.LabellingResult
 import astminer.storage.Storage
 import java.io.File
 import java.io.PrintWriter
@@ -27,12 +27,12 @@ class CsvAstStorage(override val outputDirectoryPath: String) : Storage {
         astsOutputStream.write("id,ast\n")
     }
 
-    override fun store(labellingResult: LabellingResult<out Node>) {
-        for (node in labellingResult.root.preOrder()) {
+    override fun store(labeledResult: LabeledResult<out Node>) {
+        for (node in labeledResult.root.preOrder()) {
             tokensMap.record(node.getToken())
             nodeTypesMap.record(node.getTypeLabel())
         }
-        dumpAst(labellingResult.root, labellingResult.label)
+        dumpAst(labeledResult.root, labeledResult.label)
     }
 
     override fun close() {

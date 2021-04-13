@@ -1,10 +1,10 @@
 package astminer.storage.ast
 
+import astminer.cli.LabeledResult
 import astminer.common.getNormalizedToken
 import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.common.storage.RankedIncrementalIdStorage
-import astminer.storage.LabellingResult
 import astminer.storage.Storage
 import java.io.File
 import java.io.PrintWriter
@@ -32,14 +32,14 @@ class DotAstStorage(override val outputDirectoryPath: String) : Storage {
         descriptionFileStream.write("dot_file,source_file,label,node_id,token,type\n")
     }
 
-    override fun store(labellingResult: LabellingResult<out Node>) {
+    override fun store(labeledResult: LabeledResult<out Node>) {
         // Use filename as a label for ast
         // TODO: save full signature for method
-        val normalizedLabel = normalizeAstLabel(labellingResult.label)
-        val normalizedFilepath = normalizeFilepath(labellingResult.filePath)
-        val nodesMap = dumpAst(labellingResult.root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
+        val normalizedLabel = normalizeAstLabel(labeledResult.label)
+        val normalizedFilepath = normalizeFilepath(labeledResult.filePath)
+        val nodesMap = dumpAst(labeledResult.root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
         val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$normalizedFilepath,$normalizedLabel,%d,%s,%s"
-        for (node in labellingResult.root.preOrder()) {
+        for (node in labeledResult.root.preOrder()) {
             descriptionFileStream.write(
                 nodeDescriptionFormat.format(
                     nodesMap.getId(node) - 1,

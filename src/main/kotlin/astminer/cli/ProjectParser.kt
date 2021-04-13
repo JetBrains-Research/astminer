@@ -5,7 +5,6 @@ import astminer.storage.ast.DotAstStorage
 import astminer.common.getProjectFilesWithExtension
 import astminer.common.preOrder
 import astminer.storage.Storage
-import astminer.storage.toLabellingResult
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.int
@@ -127,12 +126,12 @@ class ProjectParser(private val customLabelExtractor: LabelExtractor? = null) : 
             parser.parseFiles(filesToParse) { parseResult ->
                 normalizeParseResult(parseResult, isTokenSplitted)
                 val labeledParseResults = labelExtractor.toLabeledData(parseResult)
-                labeledParseResults.forEach { labeled ->
-                    labeled.root.preOrder().forEach { node ->
+                labeledParseResults.forEach { labeledParseResult ->
+                    labeledParseResult.root.preOrder().forEach { node ->
                         excludeNodes.forEach { node.removeChildrenOfType(it) }
                     }
                     // Save AST as it is or process it to extract features / path-based representations
-                    storage.store(labeled.toLabellingResult(parseResult.filePath))
+                    storage.store(labeledParseResult)
                 }
             }
             // Save stored data on disk

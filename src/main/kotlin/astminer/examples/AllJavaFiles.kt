@@ -1,10 +1,10 @@
 package astminer.examples
 
+import astminer.cli.LabeledResult
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.java.JavaParser
 import astminer.storage.path.CsvPathStorage
 import astminer.storage.path.PathBasedStorageConfig
-import astminer.storage.labeledWithFilePath
 import java.io.File
 
 //Retrieve paths from Java files, using a generated parser.
@@ -25,7 +25,7 @@ fun allJavaFiles() {
                 println("${parameters.name()} ${parameters.returnType()}")
             }
         }
-        storage.store(node.labeledWithFilePath(file.path))
+        storage.store(LabeledResult(node, file.path, file.path))
     }
 
     storage.close()

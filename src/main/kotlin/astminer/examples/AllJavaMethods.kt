@@ -1,5 +1,6 @@
 package astminer.examples
 
+import astminer.cli.LabeledResult
 import astminer.common.model.MethodInfo
 import astminer.parse.java.GumTreeJavaNode
 import astminer.parse.java.GumTreeJavaParser
@@ -36,7 +37,7 @@ fun allJavaMethods() {
         methodNodes.forEach { methodInfo ->
             //Retrieve a method identifier
             val entityId = "${file.path}::${getCsvFriendlyMethodId(methodInfo)}"
-            val labelingResult = LabellingResult(fileNode, entityId, file.path)
+            val labelingResult = LabeledResult(fileNode, entityId, file.path)
             storage.store(labelingResult)
         }
     }
