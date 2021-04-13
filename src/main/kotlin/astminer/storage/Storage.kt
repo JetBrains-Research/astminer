@@ -2,8 +2,9 @@ package astminer.storage
 
 import astminer.cli.LabeledResult
 import astminer.common.model.Node
+import java.io.Closeable
 
-interface Storage {
+interface Storage : Closeable {
     val outputDirectoryPath: String
 
     fun store(labeledResult: LabeledResult<out Node>)
@@ -14,5 +15,5 @@ interface Storage {
         }
     }
 
-    fun close()
+    override fun close()
 }
