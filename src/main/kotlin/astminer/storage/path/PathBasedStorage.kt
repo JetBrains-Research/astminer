@@ -59,7 +59,7 @@ abstract class PathBasedStorage(
 
     abstract fun pathContextIdsToString(pathContextIds: List<PathContextId>, label: String): String
 
-    private fun Node.getProcessedToken(): String = tokenProcessor.processToken(this)
+    private fun Node.getPresentableToken(): String = tokenProcessor.getPresentableToken(this)
 
     private fun dumpPathContexts(labeledPathContextIds: LabeledPathContextIds<String>) {
         val pathContextIdsString = labeledPathContextIds.pathContexts.filter {
@@ -91,7 +91,7 @@ abstract class PathBasedStorage(
     private fun retrieveLabeledPathContexts(labeledResult: LabeledResult<out Node>): LabeledPathContexts<String> {
         val paths = retrievePaths(labeledResult.root)
         return LabeledPathContexts(labeledResult.label, paths.map { astPath ->
-            toPathContext(astPath) { node -> node.getProcessedToken() }
+            toPathContext(astPath) { node -> node.getPresentableToken() }
         })
     }
 

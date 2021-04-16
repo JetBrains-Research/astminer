@@ -2,17 +2,18 @@ package astminer.storage
 
 import astminer.cli.separateToken
 import astminer.common.DEFAULT_TOKEN
+import astminer.common.getTechnicalToken
 import astminer.common.model.Node
 import astminer.common.normalizeToken
 
 /**
- * Each TokenProcessor processes a node's token and returns a new representation of it.
+ * Each TokenProcessor processes a node's token and returns a new representation of it. *It respects technical tokens*.
  * Before saving a token on the disk one usually processes the token with a TokenProcessor.
  */
 enum class TokenProcessor {
     /**
      * Splits the token into subtokens (words).
-     * For example, "getFull_name" --> "get full name"
+     * For example, "getFull_name" --> "get|full|name"
      */
     Split {
         override fun processToken(node: Node): String = separateToken(node.getToken())
@@ -25,5 +26,10 @@ enum class TokenProcessor {
         override fun processToken(node: Node): String = normalizeToken(node.getToken(), DEFAULT_TOKEN)
     };
 
-    abstract fun processToken(node: Node): String
+    protected abstract fun processToken(node: Node): String
+
+    /**
+     * Returns technical token, if technical token is set. Returns processed original token otherwise.
+     */
+    fun getPresentableToken(node: Node) = node.getTechnicalToken() ?: processToken(node)
 }

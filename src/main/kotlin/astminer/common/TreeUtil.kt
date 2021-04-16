@@ -1,8 +1,8 @@
 package astminer.common
 
 import astminer.common.model.Node
+import astminer.storage.TokenProcessor
 import java.util.ArrayList
-
 
 fun Node.postOrderIterator(): Iterator<Node> {
     //TODO implement properly
@@ -52,7 +52,18 @@ fun Node.setNormalizedToken(normalizedToken: String) {
     setMetadata(NORMALIZED_TOKEN_KEY, normalizedToken)
 }
 
-fun Node.getNormalizedToken(): String = getMetadata(NORMALIZED_TOKEN_KEY)?.toString() ?: DEFAULT_TOKEN
+/**
+ * Sets a node's technical token.
+ * Technical tokens do not have to represent original tokens.
+ * @see TokenProcessor and how it treats technical tokens
+ */
+fun Node.setTechnicalToken(token: String) = setMetadata("technical_token", token)
+
+/**
+ * Get a node's technical token.
+ * @see setTechnicalToken for more
+ */
+fun Node.getTechnicalToken(): String? = getMetadata("technical_token")?.toString()
 
 /**
  * The function was adopted from the original code2vec implementation in order to match their behavior:

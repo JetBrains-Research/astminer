@@ -4,7 +4,7 @@ import astminer.common.model.MethodInfo
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
 import astminer.common.preOrder
-import astminer.common.setNormalizedToken
+import astminer.common.setTechnicalToken
 import astminer.parse.antlr.SimpleNode
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.javascript.JavaScriptMethodSplitter
@@ -143,10 +143,10 @@ class MethodNameExtractor(
         if (hideMethodNames) {
             methodRoot.preOrder().forEach { node ->
                 if (node.getToken() == methodName) {
-                    node.setNormalizedToken("SELF")
+                    node.setTechnicalToken("SELF")
                 }
             }
-            methodNameNode.setNormalizedToken("METHOD_NAME")
+            methodNameNode.setTechnicalToken("METHOD_NAME")
         }
         return methodName
     }

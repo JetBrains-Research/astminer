@@ -1,6 +1,6 @@
 package astminer.cli
 
-import astminer.common.getNormalizedToken
+import astminer.common.getTechnicalToken
 import astminer.common.model.ElementNode
 import astminer.common.model.MethodInfo
 import astminer.common.model.MethodNode
@@ -8,6 +8,7 @@ import astminer.common.model.ParseResult
 import astminer.parse.antlr.SimpleNode
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 internal class LabelExtractorTest {
@@ -70,7 +71,7 @@ internal class LabelExtractorTest {
         val methodNameExtractor = MethodNameExtractor(false)
         val label = methodNameExtractor.extractLabel(methodInfo, PATH_STRING)
         assertEquals(METHOD_NAME, label)
-        assertEquals(METHOD_NAME, nameNode.getNormalizedToken())
+        assertNull(nameNode.getTechnicalToken())
     }
 
     @Test
@@ -85,6 +86,6 @@ internal class LabelExtractorTest {
         val methodNameExtractor = MethodNameExtractor(true)
         val label = methodNameExtractor.extractLabel(methodInfo, PATH_STRING)
         assertEquals(METHOD_NAME, label)
-        assertEquals("METHOD_NAME", nameNode.getNormalizedToken())
+        assertEquals("METHOD_NAME", nameNode.getTechnicalToken())
     }
 }

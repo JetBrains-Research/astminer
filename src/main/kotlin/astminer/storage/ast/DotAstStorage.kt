@@ -1,11 +1,11 @@
 package astminer.storage.ast
 
 import astminer.cli.LabeledResult
-import astminer.common.getNormalizedToken
 import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.common.storage.RankedIncrementalIdStorage
 import astminer.storage.Storage
+import astminer.storage.TokenProcessor
 import java.io.File
 import java.io.PrintWriter
 
@@ -13,7 +13,10 @@ import java.io.PrintWriter
  * Stores multiple ASTs in dot format (https://en.wikipedia.org/wiki/DOT_(graph_description_language))
  * Output consist of separate .dot files for each AST and one full description in .csv format
  */
-class DotAstStorage(override val outputDirectoryPath: String) : Storage {
+class DotAstStorage(
+    override val outputDirectoryPath: String,
+    val tokenProcessor: TokenProcessor = TokenProcessor.Normalize
+) : Storage {
 
     internal data class FilePath(val parentPath: String, val fileName: String)
 
@@ -32,18 +35,21 @@ class DotAstStorage(override val outputDirectoryPath: String) : Storage {
         descriptionFileStream.write("dot_file,source_file,label,node_id,token,type\n")
     }
 
+    private fun Node.getPresentableToken(): String = tokenProcessor.getPresentableToken(this)
+
     override fun store(labeledResult: LabeledResult<out Node>) {
         // Use filename as a label for ast
         // TODO: save full signature for method
         val normalizedLabel = normalizeAstLabel(labeledResult.label)
         val normalizedFilepath = normalizeFilepath(labeledResult.filePath)
-        val nodesMap = dumpAst(labeledResult.root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
+        val nodesMap =
+            dumpAst(labeledResult.root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
         val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$normalizedFilepath,$normalizedLabel,%d,%s,%s"
         for (node in labeledResult.root.preOrder()) {
             descriptionFileStream.write(
                 nodeDescriptionFormat.format(
                     nodesMap.getId(node) - 1,
-                    node.getNormalizedToken(),
+                    node.getPresentableToken(),
                     node.getTypeLabel()
                 ) + "\n"
             )
@@ -77,14 +83,14 @@ class DotAstStorage(override val outputDirectoryPath: String) : Storage {
 
     // Label should contain only latin letters, numbers and underscores, other symbols replace with an underscore
     internal fun normalizeAstLabel(label: String): String =
-            label.replace("[^A-z^0-9^_]".toRegex(), "_")
+        label.replace("[^A-z^0-9^_]".toRegex(), "_")
 
     /**
      * Filepath should contain only latin letters, numbers, underscores, hyphens, backslashes and dots
      * Underscore replace other symbols
      */
     internal fun normalizeFilepath(filepath: String): String =
-            filepath.replace("[^A-z^0-9^_^\\-^.^/]".toRegex(), "_")
+        filepath.replace("[^A-z^0-9^_^\\-^.^/]".toRegex(), "_")
 
     /**
      * Split the full path to specified file into the parent's path, and the file name

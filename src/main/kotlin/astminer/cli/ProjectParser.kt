@@ -5,6 +5,7 @@ import astminer.storage.ast.DotAstStorage
 import astminer.common.getProjectFilesWithExtension
 import astminer.common.preOrder
 import astminer.storage.Storage
+import astminer.storage.TokenProcessor
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.int
@@ -94,15 +95,18 @@ class ProjectParser(private val customLabelExtractor: LabelExtractor? = null) : 
     ).int().default(-1)
 
     val folderLabel: Boolean by option(
-            "--folder-label",
-            help = "if passed with file-level granularity, the folder name is used to label paths"
+        "--folder-label",
+        help = "if passed with file-level granularity, the folder name is used to label paths"
     ).flag(default = false)
 
 
     private fun getStorage(storageType: String, directoryPath: String): Storage {
         return when (storageType) {
             "csv" -> CsvAstStorage(directoryPath)
-            "dot" -> DotAstStorage(directoryPath)
+            "dot" -> DotAstStorage(
+                directoryPath,
+                if (isTokenSplitted) TokenProcessor.Split else TokenProcessor.Normalize
+            )
             else -> {
                 throw UnsupportedOperationException("Unsupported AST storage $storageType")
             }
@@ -118,8 +122,8 @@ class ProjectParser(private val customLabelExtractor: LabelExtractor? = null) : 
             val storage = getStorage(astStorageType, outputDirForLanguage.path)
             // Choose type of parser
             val parser = getParser(
-                    extension,
-                    javaParser
+                extension,
+                javaParser
             )
             // Parse project
             val filesToParse = getProjectFilesWithExtension(File(projectRoot), extension)
@@ -142,16 +146,16 @@ class ProjectParser(private val customLabelExtractor: LabelExtractor? = null) : 
 
     override fun run() {
         val labelExtractor = customLabelExtractor ?: getLabelExtractor(
-                granularityLevel,
-                javaParser,
-                isMethodNameHide,
-                excludeModifiers,
-                excludeAnnotations,
-                filterConstructors,
-                maxMethodNameLength,
-                maxTokenLength,
-                maxTreeSize,
-                folderLabel
+            granularityLevel,
+            javaParser,
+            isMethodNameHide,
+            excludeModifiers,
+            excludeAnnotations,
+            filterConstructors,
+            maxMethodNameLength,
+            maxTokenLength,
+            maxTreeSize,
+            folderLabel
         )
         parsing(labelExtractor)
     }

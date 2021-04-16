@@ -14,6 +14,4 @@ interface Storage : Closeable {
             store(labeledResult)
         }
     }
-
-    override fun close()
 }
