@@ -35,25 +35,8 @@ fun Node.preOrder(): List<Node> {
     return result
 }
 
-const val NORMALIZED_TOKEN_KEY = "normalized_token"
 const val DEFAULT_TOKEN = "EMPTY_TOKEN"
 const val TECHNICAL_TOKEN_KEY = "technical_token"
-
-/**
- * Set normalized token for a node with default normalizing function.
- */
-@Deprecated("use setTechnicalToken or TokenProcessor")
-fun Node.setNormalizedToken() {
-    setMetadata(NORMALIZED_TOKEN_KEY, normalizeToken(getToken(), DEFAULT_TOKEN))
-}
-
-/**
- * Set normalized token to a custom value.
- */
-@Deprecated("use setTechnicalToken or TokenProcessor")
-fun Node.setNormalizedToken(normalizedToken: String) {
-    setMetadata(NORMALIZED_TOKEN_KEY, normalizedToken)
-}
 
 /**
  * Sets a node's technical token.

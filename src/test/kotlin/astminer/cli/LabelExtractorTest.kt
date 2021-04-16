@@ -67,7 +67,6 @@ internal class LabelExtractorTest {
                 ElementNode(null, null),
                 emptyList()
         )
-        processNodeToken(nameNode, false)
         val methodNameExtractor = MethodNameExtractor(false)
         val label = methodNameExtractor.extractLabel(methodInfo, PATH_STRING)
         assertEquals(METHOD_NAME, label)
@@ -82,7 +81,6 @@ internal class LabelExtractorTest {
                 ElementNode(null, null),
                 emptyList()
         )
-        processNodeToken(nameNode, false)
         val methodNameExtractor = MethodNameExtractor(true)
         val label = methodNameExtractor.extractLabel(methodInfo, PATH_STRING)
         assertEquals(METHOD_NAME, label)

@@ -1,10 +1,10 @@
 package astminer.storage
 
-import astminer.cli.separateToken
 import astminer.common.DEFAULT_TOKEN
 import astminer.common.getTechnicalToken
 import astminer.common.model.Node
 import astminer.common.normalizeToken
+import astminer.common.splitToSubtokens
 
 /**
  * Each TokenProcessor processes a node's token and returns a new representation of it. *It respects technical tokens*.
@@ -16,6 +16,10 @@ enum class TokenProcessor {
      * For example, "getFull_name" --> "get|full|name"
      */
     Split {
+        private fun separateToken(token: String): String {
+            return splitToSubtokens(token).joinToString("|")
+        }
+
         override fun processToken(node: Node): String = separateToken(node.getToken())
     },
 

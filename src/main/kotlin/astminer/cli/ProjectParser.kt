@@ -128,7 +128,6 @@ class ProjectParser(private val customLabelExtractor: LabelExtractor? = null) : 
             // Parse project
             val filesToParse = getProjectFilesWithExtension(File(projectRoot), extension)
             parser.parseFiles(filesToParse) { parseResult ->
-                normalizeParseResult(parseResult, isTokenSplitted)
                 val labeledParseResults = labelExtractor.toLabeledData(parseResult)
                 labeledParseResults.forEach { labeledParseResult ->
                     labeledParseResult.root.preOrder().forEach { node ->

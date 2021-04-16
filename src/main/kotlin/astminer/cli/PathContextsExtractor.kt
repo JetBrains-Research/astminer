@@ -117,8 +117,6 @@ class PathContextsExtractor(private val customLabelExtractor: LabelExtractor? = 
 
             val files = getProjectFilesWithExtension(File(projectRoot), extension)
             parser.parseFiles(files) { parseResult ->
-                // TODO: might not be needed
-                normalizeParseResult(parseResult, splitTokens = true)
                 val labeledParseResults = labelExtractor.toLabeledData(parseResult)
                 storage.store(labeledParseResults)
             }
