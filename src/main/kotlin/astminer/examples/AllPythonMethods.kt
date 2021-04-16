@@ -5,7 +5,7 @@ import astminer.common.model.MethodInfo
 import astminer.parse.python.GumTreePythonMethodSplitter
 import astminer.parse.python.GumTreePythonNode
 import astminer.parse.python.GumTreePythonParser
-import astminer.storage.path.CsvPathStorage
+import astminer.storage.path.Code2VecPathStorage
 import astminer.storage.path.PathBasedStorageConfig
 import java.io.File
 
@@ -20,7 +20,7 @@ fun allPythonMethods() {
     val inputDir = "src/test/resources/gumTreeMethodSplitter"
 
     val outputDir = "out_examples/allPythonMethods"
-    val storage = CsvPathStorage(outputDir, PathBasedStorageConfig(5, 5))
+    val storage = Code2VecPathStorage(outputDir, PathBasedStorageConfig(5, 5))
 
     File(inputDir).forFilesWithSuffix(".py") { file ->
         // parse file

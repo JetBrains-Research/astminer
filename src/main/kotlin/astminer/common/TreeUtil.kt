@@ -37,10 +37,12 @@ fun Node.preOrder(): List<Node> {
 
 const val NORMALIZED_TOKEN_KEY = "normalized_token"
 const val DEFAULT_TOKEN = "EMPTY_TOKEN"
+const val TECHNICAL_TOKEN_KEY = "technical_token"
 
 /**
  * Set normalized token for a node with default normalizing function.
  */
+@Deprecated("use setTechnicalToken or TokenProcessor")
 fun Node.setNormalizedToken() {
     setMetadata(NORMALIZED_TOKEN_KEY, normalizeToken(getToken(), DEFAULT_TOKEN))
 }
@@ -48,6 +50,7 @@ fun Node.setNormalizedToken() {
 /**
  * Set normalized token to a custom value.
  */
+@Deprecated("use setTechnicalToken or TokenProcessor")
 fun Node.setNormalizedToken(normalizedToken: String) {
     setMetadata(NORMALIZED_TOKEN_KEY, normalizedToken)
 }
@@ -57,13 +60,13 @@ fun Node.setNormalizedToken(normalizedToken: String) {
  * Technical tokens do not have to represent original tokens.
  * @see TokenProcessor and how it treats technical tokens
  */
-fun Node.setTechnicalToken(token: String) = setMetadata("technical_token", token)
+fun Node.setTechnicalToken(token: String) = setMetadata(TECHNICAL_TOKEN_KEY, token)
 
 /**
  * Get a node's technical token.
  * @see setTechnicalToken for more
  */
-fun Node.getTechnicalToken(): String? = getMetadata("technical_token")?.toString()
+fun Node.getTechnicalToken(): String? = getMetadata(TECHNICAL_TOKEN_KEY)?.toString()
 
 /**
  * The function was adopted from the original code2vec implementation in order to match their behavior:
