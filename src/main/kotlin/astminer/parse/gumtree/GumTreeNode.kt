@@ -36,7 +36,7 @@ class GumTreeNode(val wrappedNode: ITree, val context: TreeContext, val parent: 
     }
 
     override fun getChildOfType(typeLabel: String): GumTreeNode? =
-        getChildren().firstOrNull { it.getTypeLabel() == typeLabel }
+        getChildrenOfType(typeLabel).firstOrNull()
 
     override fun getChildrenOfType(typeLabel: String): List<GumTreeNode> {
         val children = super.getChildrenOfType(typeLabel)
