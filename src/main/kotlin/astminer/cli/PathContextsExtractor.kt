@@ -113,7 +113,7 @@ class PathContextsExtractor(private val customLabelExtractor: LabelExtractor? = 
 
             val files = getProjectFilesWithExtension(File(projectRoot), extension)
             parser.parseFiles(files) { parseResult ->
-                normalizeParseResult(parseResult, splitTokens = true)
+                parseResult.normalize(splitTokens = true)
                 val labeledParseResults = labelExtractor.toLabeledData(parseResult)
                 labeledParseResults.forEach { (root, label) ->
                     val paths = miner.retrievePaths(root).take(maxPathContexts)

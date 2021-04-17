@@ -154,7 +154,7 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
             )
             // Parse project one file at a time
             parser.parseFiles(getProjectFilesWithExtension(File(projectRoot), extension)) {
-                normalizeParseResult(it, isTokenSplitted)
+                it.normalize(isTokenSplitted)
                 // Retrieve labeled data
                 extractFromTree(it, miner, storage, labelExtractor)
             }

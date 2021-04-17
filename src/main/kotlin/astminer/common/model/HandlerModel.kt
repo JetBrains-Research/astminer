@@ -1,6 +1,5 @@
-package astminer.parse
+package astminer.common.model
 
-import astminer.common.model.*
 import astminer.common.preOrder
 import astminer.common.setNormalizedToken
 import astminer.common.splitToSubtokens
@@ -20,19 +19,7 @@ abstract class LanguageHandler<T: Node> {
     }
 
     fun normalizeParseResult(splitTokens: Boolean): LanguageHandler<T> {
-        parseResult.root?.preOrder()?.forEach { node -> processNodeToken(node, splitTokens) }
+        parseResult.normalize(splitTokens)
         return this
-    }
-
-    private fun processNodeToken(node: Node, splitToken: Boolean) {
-        if (splitToken) {
-            node.setNormalizedToken(separateToken(node.getToken()))
-        } else {
-            node.setNormalizedToken()
-        }
-    }
-
-    private fun separateToken(token: String, separator: CharSequence = "|"): String {
-        return splitToSubtokens(token).joinToString(separator)
     }
 }

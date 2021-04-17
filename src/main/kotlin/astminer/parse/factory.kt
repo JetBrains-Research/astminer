@@ -1,5 +1,6 @@
 package astminer.parse
 
+import astminer.common.model.HandlerFactory
 import astminer.parse.antlr.AntlrJavaHandlerFactory
 import astminer.parse.antlr.AntlrJavascriptHandlerFactory
 import astminer.parse.antlr.AntlrPythonHandlerFactory

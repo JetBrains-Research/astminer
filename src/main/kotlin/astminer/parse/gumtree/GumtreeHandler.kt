@@ -1,8 +1,8 @@
 package astminer.parse.gumtree
 
 import astminer.common.model.ParseResult
-import astminer.parse.HandlerFactory
-import astminer.parse.LanguageHandler
+import astminer.common.model.HandlerFactory
+import astminer.common.model.LanguageHandler
 import astminer.parse.gumtree.java.GumTreeJavaParser
 import astminer.parse.gumtree.java.GumTreeJavaMethodSplitter
 import astminer.parse.gumtree.python.GumTreePythonMethodSplitter
