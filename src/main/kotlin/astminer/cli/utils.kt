@@ -36,22 +36,6 @@ fun getParser(
     }
 }
 
-fun separateToken(token: String, separator: CharSequence = "|"): String {
-    return splitToSubtokens(token).joinToString(separator)
-}
-
-fun processNodeToken(node: Node, splitToken: Boolean) {
-    if (splitToken) {
-        node.setNormalizedToken(separateToken(node.getToken()))
-    } else {
-        node.setNormalizedToken()
-    }
-}
-
-fun <T : Node> normalizeParseResult(parseResult: ParseResult<T>, splitTokens: Boolean) {
-    parseResult.root?.preOrder()?.forEach { node -> processNodeToken(node, splitTokens) }
-}
-
 fun getLabelExtractor(
         granularityLevel: String,
         javaParser: String,

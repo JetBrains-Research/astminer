@@ -60,7 +60,7 @@ interface Parser<T : Node> {
 
 data class ParseResult<T : Node>(val root: T?, val filePath: String) {
     fun normalize(splitTokens: Boolean) {
-        this.root?.preOrder()?.forEach { node -> astminer.cli.processNodeToken(node, splitTokens) }
+        this.root?.preOrder()?.forEach { node -> processNodeToken(node, splitTokens) }
     }
 
     private fun processNodeToken(node: Node, splitToken: Boolean) {
