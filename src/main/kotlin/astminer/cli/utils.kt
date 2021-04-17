@@ -36,6 +36,18 @@ fun getParser(
     }
 }
 
+fun processNodeToken(node: Node, splitToken: Boolean) {
+    if (splitToken) {
+        node.setNormalizedToken(separateToken(node.getToken()))
+    } else {
+        node.setNormalizedToken()
+    }
+}
+
+fun separateToken(token: String, separator: CharSequence = "|"): String {
+    return splitToSubtokens(token).joinToString(separator)
+}
+
 fun getLabelExtractor(
         granularityLevel: String,
         javaParser: String,

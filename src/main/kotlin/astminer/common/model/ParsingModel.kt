@@ -1,5 +1,6 @@
 package astminer.common.model
 
+import astminer.cli.processNodeToken
 import astminer.common.preOrder
 import astminer.common.setNormalizedToken
 import astminer.common.splitToSubtokens
@@ -61,17 +62,5 @@ interface Parser<T : Node> {
 data class ParseResult<T : Node>(val root: T?, val filePath: String) {
     fun normalize(splitTokens: Boolean) {
         this.root?.preOrder()?.forEach { node -> processNodeToken(node, splitTokens) }
-    }
-
-    private fun processNodeToken(node: Node, splitToken: Boolean) {
-        if (splitToken) {
-            node.setNormalizedToken(separateToken(node.getToken()))
-        } else {
-            node.setNormalizedToken()
-        }
-    }
-
-    private fun separateToken(token: String, separator: CharSequence = "|"): String {
-        return splitToSubtokens(token).joinToString(separator)
     }
 }
