@@ -32,20 +32,20 @@ class GumTreeJavaMethodSplitter : TreeMethodSplitter<GumTreeNode> {
         val parameters = getParameters(methodNode)
 
         return MethodInfo(
-                MethodNode(methodNode, methodReturnType, methodName),
-                ElementNode(classRoot, className),
-                parameters
+            MethodNode(methodNode, methodReturnType, methodName),
+            ElementNode(classRoot, className),
+            parameters
         )
     }
 
     private fun getElementName(node: GumTreeNode) = node.getChildren().map {
-        it as GumTreeNode
+        it
     }.firstOrNull {
         it.getTypeLabel() == TypeLabels.simpleName
     }
 
     private fun getElementType(node: GumTreeNode) = node.getChildren().map {
-        it as GumTreeNode
+        it
     }.firstOrNull {
         it.isTypeNode()
     }
@@ -62,12 +62,11 @@ class GumTreeJavaMethodSplitter : TreeMethodSplitter<GumTreeNode> {
         val params = methodNode.getChildren().filter {
             it.getTypeLabel() == TypeLabels.singleVariableDeclaration
         }
-        return params.map {
-            val node = it as GumTreeNode
-            ParameterNode<GumTreeNode>(
-                    node,
-                    getElementType(node),
-                    getElementName(node)
+        return params.map { node ->
+            ParameterNode(
+                node,
+                getElementType(node),
+                getElementName(node)
             )
         }.toList()
     }

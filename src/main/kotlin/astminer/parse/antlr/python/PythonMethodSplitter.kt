@@ -29,13 +29,13 @@ class PythonMethodSplitter : TreeMethodSplitter<AntlrNode> {
     }
 
     private fun collectMethodInfo(methodNode: AntlrNode): MethodInfo<AntlrNode> {
-        val methodName = methodNode.getChildOfType(METHOD_NAME_NODE) as? AntlrNode
+        val methodName = methodNode.getChildOfType(METHOD_NAME_NODE)
 
         val classRoot = getEnclosingClass(methodNode)
-        val className = classRoot?.getChildOfType(CLASS_NAME_NODE) as? AntlrNode
+        val className = classRoot?.getChildOfType(CLASS_NAME_NODE)
 
-        val parametersRoot = methodNode.getChildOfType(METHOD_PARAMETER_NODE) as? AntlrNode
-        val innerParametersRoot = parametersRoot?.getChildOfType(METHOD_PARAMETER_INNER_NODE) as? AntlrNode
+        val parametersRoot = methodNode.getChildOfType(METHOD_PARAMETER_NODE)
+        val innerParametersRoot = parametersRoot?.getChildOfType(METHOD_PARAMETER_INNER_NODE)
 
         val parametersList = when {
             innerParametersRoot != null -> getListOfParameters(innerParametersRoot)

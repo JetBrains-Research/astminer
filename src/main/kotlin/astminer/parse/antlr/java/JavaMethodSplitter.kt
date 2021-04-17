@@ -29,15 +29,15 @@ class JavaMethodSplitter : TreeMethodSplitter<AntlrNode> {
     }
 
     private fun collectMethodInfo(methodNode: AntlrNode): MethodInfo<AntlrNode> {
-        val methodName = methodNode.getChildOfType(METHOD_NAME_NODE) as? AntlrNode
-        val methodReturnTypeNode =  methodNode.getChildOfType(METHOD_RETURN_TYPE_NODE) as? AntlrNode
+        val methodName = methodNode.getChildOfType(METHOD_NAME_NODE)
+        val methodReturnTypeNode =  methodNode.getChildOfType(METHOD_RETURN_TYPE_NODE)
         methodReturnTypeNode?.setToken(collectParameterToken(methodReturnTypeNode))
 
         val classRoot = getEnclosingClass(methodNode)
-        val className = classRoot?.getChildOfType(CLASS_NAME_NODE) as? AntlrNode
+        val className = classRoot?.getChildOfType(CLASS_NAME_NODE)
 
-        val parametersRoot = methodNode.getChildOfType(METHOD_PARAMETER_NODE) as? AntlrNode
-        val innerParametersRoot = parametersRoot?.getChildOfType(METHOD_PARAMETER_INNER_NODE) as? AntlrNode
+        val parametersRoot = methodNode.getChildOfType(METHOD_PARAMETER_NODE)
+        val innerParametersRoot = parametersRoot?.getChildOfType(METHOD_PARAMETER_INNER_NODE)
 
         val parametersList = when {
             innerParametersRoot != null -> getListOfParameters(innerParametersRoot)
@@ -76,12 +76,12 @@ class JavaMethodSplitter : TreeMethodSplitter<AntlrNode> {
     }
 
     private fun getParameterInfoFromNode(parameterRoot: AntlrNode): ParameterNode<AntlrNode> {
-        val returnTypeNode = parameterRoot.getChildOfType(PARAMETER_RETURN_TYPE_NODE) as? AntlrNode
+        val returnTypeNode = parameterRoot.getChildOfType(PARAMETER_RETURN_TYPE_NODE)
         returnTypeNode?.setToken(collectParameterToken(returnTypeNode))
         return ParameterNode(
                 parameterRoot,
                 returnTypeNode,
-                parameterRoot.getChildOfType(PARAMETER_NAME_NODE) as? AntlrNode
+                parameterRoot.getChildOfType(PARAMETER_NAME_NODE)
         )
     }
 

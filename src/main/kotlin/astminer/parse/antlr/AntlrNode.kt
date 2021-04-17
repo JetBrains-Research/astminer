@@ -44,6 +44,9 @@ class AntlrNode(private val typeLabel: String, private var parent: Node?, privat
         decompressTypeLabel(it.getTypeLabel()).firstOrNull() == typeLabel
     }
 
+    override fun getChildOfType(typeLabel: String): AntlrNode? =
+        getChildren().firstOrNull { it.getTypeLabel() == typeLabel }
+
     override fun removeChildrenOfType(typeLabel: String) {
        children.removeIf { it.getTypeLabel() == typeLabel }
     }

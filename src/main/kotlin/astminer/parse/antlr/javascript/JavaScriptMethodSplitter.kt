@@ -137,8 +137,8 @@ class ArrowElement(private val element: AntlrNode) : JavaScriptElement(element) 
     }
 
     override fun getElementParametersRoot(): AntlrNode? {
-        val parameterRoot = element.getChildOfType(ARROW_PARAMETER_NODE) as? AntlrNode
-        return parameterRoot?.getChildOfType(ARROW_PARAMETER_INNER_NODE) as? AntlrNode ?: parameterRoot
+        val parameterRoot = element.getChildOfType(ARROW_PARAMETER_NODE)
+        return parameterRoot?.getChildOfType(ARROW_PARAMETER_INNER_NODE) ?: parameterRoot
     }
 }
 
@@ -156,7 +156,7 @@ class FunctionElement(private val element: AntlrNode) : JavaScriptElement(elemen
     }
 
     override fun getElementParametersRoot(): AntlrNode? {
-        return element.getChildOfType(FUNCTION_PARAMETER_NODE) as? AntlrNode
+        return element.getChildOfType(FUNCTION_PARAMETER_NODE)
     }
 }
 
@@ -179,6 +179,6 @@ class MethodElement(private val element: AntlrNode) : JavaScriptElement(element)
     }
 
     override fun getElementParametersRoot(): AntlrNode? {
-        return element.getChildOfType(METHOD_PARAMETER_NODE) as? AntlrNode
+        return element.getChildOfType(METHOD_PARAMETER_NODE)
     }
 }

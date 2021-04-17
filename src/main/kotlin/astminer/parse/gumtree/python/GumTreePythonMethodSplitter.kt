@@ -58,14 +58,14 @@ class GumTreePythonMethodSplitter : TreeMethodSplitter<GumTreeNode> {
 
     private fun getElementType(node: GumTreeNode): GumTreeNode? {
         if (node.getTypeLabel() == TypeLabels.arg) {
-            return node.getChildOfType(TypeLabels.nameLoad) as GumTreeNode?
+            return node.getChildOfType(TypeLabels.nameLoad)
         }
         // if return statement has "Constant-`Type`" return value => function type is `Type`
         if (TypeLabels.methodDefinitions.contains(node.getTypeLabel())) {
             return node.getChildOfType(TypeLabels.body)?.getChildOfType(TypeLabels.returnTypeLabel)?.let {
                 it.getChildren().firstOrNull { child ->
                     child.getTypeLabel().startsWith(TypeLabels.constantType)
-                } as GumTreeNode?
+                }
             }
         }
         return null
@@ -98,9 +98,8 @@ class GumTreePythonMethodSplitter : TreeMethodSplitter<GumTreeNode> {
             params.add(it)
         }
 
-        return params.map {
-            val node = it as GumTreeNode
-            ParameterNode<GumTreeNode>(
+        return params.map {node ->
+            ParameterNode(
                 node,
                 getElementType(node),
                 getElementName(node)
