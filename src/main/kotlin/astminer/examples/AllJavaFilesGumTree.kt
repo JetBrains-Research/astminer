@@ -1,7 +1,7 @@
 package astminer.examples
 
 import astminer.common.getProjectFilesWithExtension
-import astminer.parse.java.GumTreeJavaParser
+import astminer.parse.gumtree.java.GumTreeJavaParser
 import astminer.storage.path.Code2VecPathStorage
 import astminer.storage.path.PathBasedStorageConfig
 import java.io.File

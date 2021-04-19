@@ -3,7 +3,7 @@
 package astminer.examples
 
 import astminer.common.getProjectFilesWithExtension
-import astminer.parse.cpp.FuzzyCppParser
+import astminer.parse.fuzzy.cpp.FuzzyCppParser
 import astminer.storage.path.Code2VecPathStorage
 import astminer.storage.path.PathBasedStorageConfig
 import java.io.File

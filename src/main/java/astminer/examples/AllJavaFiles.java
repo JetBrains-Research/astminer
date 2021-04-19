@@ -2,7 +2,7 @@ package astminer.examples;
 
 import astminer.cli.LabeledResult;
 import astminer.common.model.*;
-import astminer.parse.java.GumTreeJavaParser;
+import astminer.parse.gumtree.java.GumTreeJavaParser;
 import astminer.storage.*;
 import astminer.storage.path.Code2VecPathStorage;
 import astminer.storage.path.PathBasedStorage;

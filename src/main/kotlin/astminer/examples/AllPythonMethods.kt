@@ -2,14 +2,14 @@ package astminer.examples
 
 import astminer.cli.LabeledResult
 import astminer.common.model.MethodInfo
-import astminer.parse.python.GumTreePythonMethodSplitter
-import astminer.parse.python.GumTreePythonNode
-import astminer.parse.python.GumTreePythonParser
+import astminer.parse.gumtree.python.GumTreePythonMethodSplitter
+import astminer.parse.gumtree.GumTreeNode
+import astminer.parse.gumtree.python.GumTreePythonParser
 import astminer.storage.path.Code2VecPathStorage
 import astminer.storage.path.PathBasedStorageConfig
 import java.io.File
 
-private fun getCsvFriendlyMethodId(methodInfo: MethodInfo<GumTreePythonNode>): String {
+private fun getCsvFriendlyMethodId(methodInfo: MethodInfo<GumTreeNode>): String {
     val className = methodInfo.enclosingElementName() ?: ""
     val methodName = methodInfo.name() ?: "unknown_method"
     val parameterTypes = methodInfo.methodParameters.joinToString("|") { it.name() ?: "_" }
