@@ -4,6 +4,7 @@ import astminer.common.model.Node
 import astminer.storage.TokenProcessor
 import java.util.ArrayList
 
+
 fun Node.postOrderIterator(): Iterator<Node> {
     //TODO implement properly
     return postOrder().listIterator()
@@ -43,13 +44,15 @@ const val TECHNICAL_TOKEN_KEY = "technical_token"
  * Technical tokens do not have to represent original tokens.
  * @see TokenProcessor and how it treats technical tokens
  */
-fun Node.setTechnicalToken(token: String) = setMetadata(TECHNICAL_TOKEN_KEY, token)
+fun Node.setTechnicalToken(token: String) {
+    metadata[TECHNICAL_TOKEN_KEY] = token
+}
 
 /**
  * Get a node's technical token.
  * @see setTechnicalToken for more
  */
-fun Node.getTechnicalToken(): String? = getMetadata(TECHNICAL_TOKEN_KEY)?.toString()
+fun Node.getTechnicalToken(): String? = metadata[TECHNICAL_TOKEN_KEY]?.toString()
 
 /**
  * The function was adopted from the original code2vec implementation in order to match their behavior:

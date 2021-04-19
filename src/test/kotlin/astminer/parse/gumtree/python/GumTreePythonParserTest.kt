@@ -1,4 +1,4 @@
-package astminer.parse.python
+package astminer.parse.gumtree.python
 
 import org.junit.After
 import org.junit.Before

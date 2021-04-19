@@ -12,10 +12,10 @@ class PathWorker {
         private const val PATH_PIECES_KEY = "path_pieces"
 
         private fun Node.setPathPieces(pathPieces: List<PathPiece>) {
-            this.setMetadata(PATH_PIECES_KEY, pathPieces)
+            this.metadata[PATH_PIECES_KEY] = pathPieces
         }
 
-        private fun Node.getPathPieces(): List<PathPiece>? = this.getMetadata(PATH_PIECES_KEY) as List<PathPiece>?
+        private fun Node.getPathPieces(): List<PathPiece>? = this.metadata[PATH_PIECES_KEY] as List<PathPiece>?
     }
 
     fun retrievePaths(tree: Node) = retrievePaths(tree, null, null)

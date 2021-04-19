@@ -1,4 +1,4 @@
-package astminer.parse.cpp
+package astminer.parse.fuzzy.cpp
 
 import java.io.File
 import java.util.concurrent.TimeUnit

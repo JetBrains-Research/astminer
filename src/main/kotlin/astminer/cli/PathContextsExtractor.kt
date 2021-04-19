@@ -10,6 +10,12 @@ import astminer.parse.java.GumTreeJavaParser
 import astminer.storage.*
 import astminer.storage.path.Code2VecPathStorage
 import astminer.storage.path.PathBasedStorageConfig
+import astminer.parse.fuzzy.cpp.FuzzyCppParser
+import astminer.parse.gumtree.java.GumTreeJavaParser
+import astminer.paths.Code2VecPathStorage
+import astminer.paths.PathMiner
+import astminer.paths.PathRetrievalSettings
+import astminer.paths.toPathContext
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.int

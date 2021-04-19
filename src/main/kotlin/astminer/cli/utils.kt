@@ -2,8 +2,8 @@ package astminer.cli
 
 import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.python.PythonParser
-import astminer.parse.cpp.FuzzyCppParser
-import astminer.parse.java.GumTreeJavaParser
+import astminer.parse.fuzzy.cpp.FuzzyCppParser
+import astminer.parse.gumtree.java.GumTreeJavaParser
 import astminer.common.model.Node
 import astminer.common.model.Parser
 import astminer.parse.antlr.javascript.JavaScriptParser

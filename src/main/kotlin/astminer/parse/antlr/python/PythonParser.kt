@@ -3,15 +3,15 @@ package astminer.parse.antlr.python
 import me.vovak.antlr.parser.Python3Lexer
 import me.vovak.antlr.parser.Python3Parser
 import astminer.common.model.Parser
-import astminer.parse.antlr.SimpleNode
+import astminer.parse.antlr.AntlrNode
 import astminer.parse.antlr.convertAntlrTree
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import java.io.InputStream
 import java.lang.Exception
 
-class PythonParser : Parser<SimpleNode> {
-    override fun parseInputStream(content: InputStream): SimpleNode? {
+class PythonParser : Parser<AntlrNode> {
+    override fun parseInputStream(content: InputStream): AntlrNode? {
         return try {
             val lexer = Python3Lexer(CharStreams.fromStream(content))
             lexer.removeErrorListeners()
