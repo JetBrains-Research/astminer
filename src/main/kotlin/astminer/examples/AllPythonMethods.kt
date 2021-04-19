@@ -1,14 +1,12 @@
 package astminer.examples
 
-import astminer.common.model.LabeledPathContexts
+import astminer.cli.LabeledResult
 import astminer.common.model.MethodInfo
 import astminer.parse.gumtree.python.GumTreePythonMethodSplitter
 import astminer.parse.gumtree.GumTreeNode
 import astminer.parse.gumtree.python.GumTreePythonParser
-import astminer.paths.CsvPathStorage
-import astminer.paths.PathMiner
-import astminer.paths.PathRetrievalSettings
-import astminer.paths.toPathContext
+import astminer.storage.path.Code2VecPathStorage
+import astminer.storage.path.PathBasedStorageConfig
 import java.io.File
 
 private fun getCsvFriendlyMethodId(methodInfo: MethodInfo<GumTreeNode>): String {
@@ -21,9 +19,8 @@ private fun getCsvFriendlyMethodId(methodInfo: MethodInfo<GumTreeNode>): String 
 fun allPythonMethods() {
     val inputDir = "src/test/resources/gumTreeMethodSplitter"
 
-    val miner = PathMiner(PathRetrievalSettings(5, 5))
     val outputDir = "out_examples/allPythonMethods"
-    val storage = CsvPathStorage(outputDir)
+    val storage = Code2VecPathStorage(outputDir, PathBasedStorageConfig(5, 5))
 
     File(inputDir).forFilesWithSuffix(".py") { file ->
         // parse file
@@ -33,11 +30,11 @@ fun allPythonMethods() {
         val methodNodes = GumTreePythonMethodSplitter().splitIntoMethods(fileNode)
 
         methodNodes.forEach { methodInfo ->
-            // Retrieve paths from every node individually
-            val paths = miner.retrievePaths(methodInfo.method.root)
             // Retrieve a method identifier
             val entityId = "${file.path}::${getCsvFriendlyMethodId(methodInfo)}"
-            storage.store(LabeledPathContexts(entityId, paths.map { toPathContext(it) }))
+            val labelingResult = LabeledResult(fileNode, entityId, file.path)
+            // Retrieve paths from each method individually and store them
+            storage.store(labelingResult)
         }
     }
 

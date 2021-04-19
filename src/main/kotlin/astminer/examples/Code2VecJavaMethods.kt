@@ -1,10 +1,11 @@
 package astminer.examples
 
+import astminer.cli.LabeledResult
 import astminer.common.*
-import astminer.common.model.LabeledPathContexts
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.java.JavaParser
-import astminer.paths.*
+import astminer.storage.path.Code2VecPathStorage
+import astminer.storage.path.PathBasedStorageConfig
 import java.io.File
 
 
@@ -14,9 +15,8 @@ fun code2vecJavaMethods() {
     val folder = "src/test/resources/code2vecPathMining"
     val outputDir = "out_examples/code2vecPathMining"
 
-    val miner = PathMiner(PathRetrievalSettings(5, 5))
 
-    val storage = Code2VecPathStorage(outputDir)
+    val storage = Code2VecPathStorage(outputDir, PathBasedStorageConfig(5, 5))
 
     File(folder).forFilesWithSuffix(".java") { file ->
         //parse file
@@ -29,12 +29,10 @@ fun code2vecJavaMethods() {
             val methodNameNode = methodInfo.method.nameNode ?: return@forEach
             val methodRoot = methodInfo.method.root
             val label = splitToSubtokens(methodNameNode.getToken()).joinToString("|")
-            methodRoot.preOrder().forEach { it.setNormalizedToken() }
-            methodNameNode.setNormalizedToken("METHOD_NAME")
+            methodNameNode.setTechnicalToken("METHOD_NAME")
 
-            // Retrieve paths from every node individually
-            val paths = miner.retrievePaths(methodRoot)
-            storage.store(LabeledPathContexts(label, paths.map { toPathContext(it) { node -> node.getNormalizedToken() } }))
+            // Retrieve paths from every node individually and store them
+            storage.store(LabeledResult(methodRoot, label, file.absolutePath))
         }
     }
 

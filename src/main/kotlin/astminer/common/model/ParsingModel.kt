@@ -1,9 +1,6 @@
 package astminer.common.model
 
-import astminer.cli.processNodeToken
-import astminer.common.preOrder
-import astminer.common.setNormalizedToken
-import astminer.common.splitToSubtokens
+import astminer.cli.LabeledResult
 import java.io.File
 import java.io.InputStream
 
@@ -45,7 +42,7 @@ interface Parser<T : Node> {
     /**
      * Parse file into an AST.
      * @param file file to parse
-     * @return ParseResult instance 
+     * @return ParseResult instance
      */
     fun parseFile(file: File) = ParseResult(parseInputStream(file.inputStream()), file.path)
 
@@ -54,13 +51,13 @@ interface Parser<T : Node> {
      * @param files files to parse
      * @param handleResult handler to invoke on each file parse result
      */
-    fun parseFiles(files: List<File>, handleResult: (ParseResult<T>) -> Any) {
+    fun parseFiles(files: List<File>, handleResult: (ParseResult<T>) -> Any?) {
         files.forEach { handleResult(parseFile(it)) }
     }
 }
 
 data class ParseResult<T : Node>(val root: T?, val filePath: String) {
-    fun normalize(splitTokens: Boolean) {
-        this.root?.preOrder()?.forEach { node -> processNodeToken(node, splitTokens) }
-    }
+    fun labeledWith(label: String): LabeledResult<T>? = root?.let { LabeledResult(it, label, filePath) }
+
+    fun labeledWithFilePath(): LabeledResult<T>? = labeledWith(filePath)
 }

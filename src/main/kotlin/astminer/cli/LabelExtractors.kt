@@ -4,7 +4,7 @@ import astminer.common.model.MethodInfo
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
 import astminer.common.preOrder
-import astminer.common.setNormalizedToken
+import astminer.common.setTechnicalToken
 import astminer.parse.antlr.AntlrNode
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.javascript.JavaScriptMethodSplitter
@@ -17,24 +17,30 @@ import astminer.parse.gumtree.python.GumTreePythonMethodSplitter
 import java.io.File
 
 
-data class LabeledParseResult<T : Node>(val root: T, val label: String)
+/**
+ * An AST subtree with a label and the path of the source file.
+ * @property root The root of the AST subtree.
+ * @property label Any label for this subtree.
+ * @property filePath The path to the source file where the AST is from.
+ */
+data class LabeledResult<T : Node>(val root: T, val label: String, val filePath: String)
 
 
 interface LabelExtractor {
-    fun toLabeledData(parseResult: ParseResult<out Node>): List<LabeledParseResult<out Node>>
+    fun toLabeledData(parseResult: ParseResult<out Node>): List<LabeledResult<out Node>>
 }
 
 abstract class FileLabelExtractor : LabelExtractor {
 
     override fun toLabeledData(
             parseResult: ParseResult<out Node>
-    ): List<LabeledParseResult<out Node>> {
+    ): List<LabeledResult<out Node>> {
         val (root, filePath) = parseResult
         return if (root == null) {
             emptyList()
         } else {
             val label = extractLabel(root, filePath) ?: return emptyList()
-            listOf(LabeledParseResult(root, label))
+            listOf(LabeledResult(root, label, parseResult.filePath))
         }
     }
 
@@ -49,7 +55,7 @@ abstract class MethodLabelExtractor(
 
     override fun toLabeledData(
             parseResult: ParseResult<out Node>
-    ): List<LabeledParseResult<out Node>> {
+    ): List<LabeledResult<out Node>> {
         val (root, filePath) = parseResult
         if (root == null) {
             return emptyList()
@@ -102,7 +108,7 @@ abstract class MethodLabelExtractor(
         }
         return methodInfos.mapNotNull {
             val label = extractLabel(it, filePath) ?: return@mapNotNull null
-            LabeledParseResult(it.method.root, label)
+            LabeledResult(it.method.root, label, filePath)
         }
     }
 
@@ -110,7 +116,7 @@ abstract class MethodLabelExtractor(
 }
 
 class FilePathExtractor : FileLabelExtractor() {
-    override fun extractLabel(root: Node, filePath: String): String? {
+    override fun extractLabel(root: Node, filePath: String): String {
         return filePath
     }
 }
@@ -136,10 +142,10 @@ class MethodNameExtractor(
         if (hideMethodNames) {
             methodRoot.preOrder().forEach { node ->
                 if (node.getToken() == methodName) {
-                    node.setNormalizedToken("SELF")
+                    node.setTechnicalToken("SELF")
                 }
             }
-            methodNameNode.setNormalizedToken("METHOD_NAME")
+            methodNameNode.setTechnicalToken("METHOD_NAME")
         }
         return methodName
     }

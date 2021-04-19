@@ -1,5 +1,6 @@
 package astminer.common
 
+import astminer.cli.LabeledResult
 import astminer.common.model.Node
 
 
@@ -32,6 +33,17 @@ class DummyNode(val data: String, val childrenList: MutableList<DummyNode>) : No
 
 }
 
+/**
+ * Returns a small tree.
+ * Diagram:
+ *         1
+ *       /   \
+ *     /      \
+ *    2        3
+ *  / | \     / \
+ * 4  5  6   7   8
+ *
+ */
 fun createDummyTree(): DummyNode {
     val node4 = DummyNode("4", mutableListOf())
     val node5 = DummyNode("5", mutableListOf())
@@ -45,6 +57,15 @@ fun createDummyTree(): DummyNode {
     return DummyNode("1", mutableListOf(node2, node3))
 }
 
+/**
+ * Returns a small tree.
+ * Diagram:
+ *      1
+ *    /  \
+ *   2    3
+ *         \
+ *          4
+ */
 fun createSmallTree(): DummyNode {
     val node4 = DummyNode("4", mutableListOf())
     val node3 = DummyNode("3", mutableListOf(node4))
@@ -53,3 +74,22 @@ fun createSmallTree(): DummyNode {
 
     return node1
 }
+
+/**
+ * Creates a bamboo
+ * Diagram for [size] 3:
+ * 1
+ *  \
+ *   2
+ *    \
+ *     3
+ */
+fun createBamboo(size: Int): DummyNode {
+    var root = DummyNode(size.toString(), mutableListOf())
+    for (i in 1 until size) {
+        root = DummyNode((size - i).toString(), mutableListOf(root))
+    }
+    return root
+}
+
+fun <T : Node> T.labeledWith(label: String) = LabeledResult(this, label, "")
