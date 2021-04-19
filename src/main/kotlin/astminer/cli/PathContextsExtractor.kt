@@ -6,8 +6,8 @@ import astminer.common.model.*
 import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.javascript.JavaScriptParser
 import astminer.parse.antlr.python.PythonParser
-import astminer.parse.cpp.FuzzyCppParser
-import astminer.parse.java.GumTreeJavaParser
+import astminer.parse.fuzzy.cpp.FuzzyCppParser
+import astminer.parse.gumtree.java.GumTreeJavaParser
 import astminer.paths.Code2VecPathStorage
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
@@ -113,7 +113,7 @@ class PathContextsExtractor(private val customLabelExtractor: LabelExtractor? = 
 
             val files = getProjectFilesWithExtension(File(projectRoot), extension)
             parser.parseFiles(files) { parseResult ->
-                normalizeParseResult(parseResult, splitTokens = true)
+                parseResult.normalize(splitTokens = true)
                 val labeledParseResults = labelExtractor.toLabeledData(parseResult)
                 labeledParseResults.forEach { (root, label) ->
                     val paths = miner.retrievePaths(root).take(maxPathContexts)

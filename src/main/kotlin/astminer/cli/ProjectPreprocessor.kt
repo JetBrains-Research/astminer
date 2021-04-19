@@ -1,6 +1,6 @@
 package astminer.cli
 
-import astminer.parse.cpp.FuzzyCppParser
+import astminer.parse.fuzzy.cpp.FuzzyCppParser
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required

@@ -1,7 +1,7 @@
 package astminer.examples;
 
 import astminer.common.model.*;
-import astminer.parse.java.GumTreeJavaParser;
+import astminer.parse.gumtree.java.GumTreeJavaParser;
 import astminer.paths.*;
 
 import java.io.FileInputStream;

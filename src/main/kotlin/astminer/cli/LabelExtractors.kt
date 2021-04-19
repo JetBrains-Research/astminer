@@ -5,16 +5,15 @@ import astminer.common.model.Node
 import astminer.common.model.ParseResult
 import astminer.common.preOrder
 import astminer.common.setNormalizedToken
-import astminer.parse.antlr.SimpleNode
+import astminer.parse.antlr.AntlrNode
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.javascript.JavaScriptMethodSplitter
 import astminer.parse.antlr.python.PythonMethodSplitter
-import astminer.parse.cpp.FuzzyMethodSplitter
-import astminer.parse.cpp.FuzzyNode
-import astminer.parse.java.GumTreeJavaNode
-import astminer.parse.java.GumTreeJavaMethodSplitter
-import astminer.parse.python.GumTreePythonMethodSplitter
-import astminer.parse.python.GumTreePythonNode
+import astminer.parse.fuzzy.cpp.FuzzyMethodSplitter
+import astminer.parse.fuzzy.cpp.FuzzyNode
+import astminer.parse.gumtree.GumTreeNode
+import astminer.parse.gumtree.java.GumTreeJavaMethodSplitter
+import astminer.parse.gumtree.python.GumTreePythonMethodSplitter
 import java.io.File
 
 
@@ -65,11 +64,11 @@ abstract class MethodLabelExtractor(
                 when (javaParser) {
                     "gumtree" -> {
                         val methodSplitter = GumTreeJavaMethodSplitter()
-                        methodSplitter.splitIntoMethods(root as GumTreeJavaNode)
+                        methodSplitter.splitIntoMethods(root as GumTreeNode)
                     }
                     "antlr" -> {
                         val methodSplitter = JavaMethodSplitter()
-                        methodSplitter.splitIntoMethods(root as SimpleNode)
+                        methodSplitter.splitIntoMethods(root as AntlrNode)
                     }
                     else -> {
                         throw UnsupportedOperationException("Unsupported parser $javaParser")
@@ -80,11 +79,11 @@ abstract class MethodLabelExtractor(
                 when (pythonParser) {
                     "gumtree" -> {
                         val methodSplitter = GumTreePythonMethodSplitter()
-                        methodSplitter.splitIntoMethods(root as GumTreePythonNode)
+                        methodSplitter.splitIntoMethods(root as GumTreeNode)
                     }
                     "antlr" -> {
                         val methodSplitter = PythonMethodSplitter()
-                        methodSplitter.splitIntoMethods(root as SimpleNode)
+                        methodSplitter.splitIntoMethods(root as AntlrNode)
                     }
                     else -> {
                         throw UnsupportedOperationException("Unsupported parser $pythonParser")
@@ -93,7 +92,7 @@ abstract class MethodLabelExtractor(
             }
             "js" -> {
                 val methodSplitter = JavaScriptMethodSplitter()
-                methodSplitter.splitIntoMethods(root as SimpleNode)
+                methodSplitter.splitIntoMethods(root as AntlrNode)
             }
             else -> throw UnsupportedOperationException("Unsupported extension $fileExtension")
         }.filter { methodInfo ->

@@ -1,4 +1,4 @@
-package astminer.parse.java
+package astminer.parse.gumtree.java
 
 import astminer.common.getProjectFilesWithExtension
 import astminer.common.model.Node

@@ -1,6 +1,9 @@
 package astminer.parse.cpp
 
 import astminer.common.model.MethodInfo
+import astminer.parse.fuzzy.cpp.FuzzyCppParser
+import astminer.parse.fuzzy.cpp.FuzzyMethodSplitter
+import astminer.parse.fuzzy.cpp.FuzzyNode
 import org.junit.Test
 import kotlin.test.assertEquals
 import java.io.File

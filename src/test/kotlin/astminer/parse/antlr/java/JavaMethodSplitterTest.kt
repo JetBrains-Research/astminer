@@ -1,7 +1,7 @@
 package astminer.parse.antlr.java
 
 import astminer.common.model.MethodInfo
-import astminer.parse.antlr.SimpleNode
+import astminer.parse.antlr.AntlrNode
 import org.junit.Test
 import kotlin.test.assertEquals
 import java.io.File
@@ -15,7 +15,7 @@ class JavaMethodSplitterTest {
         val parser = JavaParser()
     }
 
-    var methodInfos: Collection<MethodInfo<SimpleNode>> = listOf()
+    var methodInfos: Collection<MethodInfo<AntlrNode>> = listOf()
 
     @BeforeTest
     fun parseTree() {

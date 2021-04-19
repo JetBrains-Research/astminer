@@ -1,16 +1,17 @@
-package astminer.parse.python
+package astminer.parse.gumtree.python
 
 import astminer.common.model.MethodInfo
+import astminer.parse.gumtree.GumTreeNode
 import org.junit.Test
 import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class GumTreeJavaMethodSplitterTest {
-    private fun parse(filename: String): GumTreePythonNode? =
+    private fun parse(filename: String): GumTreeNode? =
         GumTreePythonParser().parseInputStream(File(filename).inputStream())
 
-    private fun splitMethods(filename: String): Collection<MethodInfo<GumTreePythonNode>> = parse(filename)?.let {
+    private fun splitMethods(filename: String): Collection<MethodInfo<GumTreeNode>> = parse(filename)?.let {
         GumTreePythonMethodSplitter().splitIntoMethods(it)
     } ?: emptyList()
 

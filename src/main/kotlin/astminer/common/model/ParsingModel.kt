@@ -1,5 +1,9 @@
 package astminer.common.model
 
+import astminer.cli.processNodeToken
+import astminer.common.preOrder
+import astminer.common.setNormalizedToken
+import astminer.common.splitToSubtokens
 import java.io.File
 import java.io.InputStream
 
@@ -11,8 +15,7 @@ interface Node {
     fun getToken(): String
     fun isLeaf(): Boolean
 
-    fun getMetadata(key: String): Any?
-    fun setMetadata(key: String, value: Any)
+    val metadata: MutableMap<String, Any>
 
     fun prettyPrint(indent: Int = 0, indentSymbol: String = "--") {
         repeat(indent) { print(indentSymbol) }
@@ -56,4 +59,8 @@ interface Parser<T : Node> {
     }
 }
 
-data class ParseResult<T : Node>(val root: T?, val filePath: String)
+data class ParseResult<T : Node>(val root: T?, val filePath: String) {
+    fun normalize(splitTokens: Boolean) {
+        this.root?.preOrder()?.forEach { node -> processNodeToken(node, splitTokens) }
+    }
+}

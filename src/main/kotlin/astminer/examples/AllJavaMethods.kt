@@ -2,9 +2,9 @@ package astminer.examples
 
 import astminer.common.model.LabeledPathContexts
 import astminer.common.model.MethodInfo
-import astminer.parse.java.GumTreeJavaNode
-import astminer.parse.java.GumTreeJavaParser
-import astminer.parse.java.GumTreeJavaMethodSplitter
+import astminer.parse.gumtree.GumTreeNode
+import astminer.parse.gumtree.java.GumTreeJavaParser
+import astminer.parse.gumtree.java.GumTreeJavaMethodSplitter
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
 import astminer.paths.CsvPathStorage
@@ -12,7 +12,7 @@ import astminer.paths.toPathContext
 import java.io.File
 
 
-private fun getCsvFriendlyMethodId(methodInfo: MethodInfo<GumTreeJavaNode>): String {
+private fun getCsvFriendlyMethodId(methodInfo: MethodInfo<GumTreeNode>): String {
     val className = methodInfo.enclosingElementName() ?: ""
     val methodName = methodInfo.name() ?: "unknown_method"
     val parameterTypes = methodInfo.methodParameters.joinToString("|") { it.name() ?: "_" }

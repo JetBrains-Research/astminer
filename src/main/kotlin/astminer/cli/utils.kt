@@ -2,8 +2,8 @@ package astminer.cli
 
 import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.python.PythonParser
-import astminer.parse.cpp.FuzzyCppParser
-import astminer.parse.java.GumTreeJavaParser
+import astminer.parse.fuzzy.cpp.FuzzyCppParser
+import astminer.parse.gumtree.java.GumTreeJavaParser
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
 import astminer.common.model.Parser
@@ -36,10 +36,6 @@ fun getParser(
     }
 }
 
-fun separateToken(token: String, separator: CharSequence = "|"): String {
-    return splitToSubtokens(token).joinToString(separator)
-}
-
 fun processNodeToken(node: Node, splitToken: Boolean) {
     if (splitToken) {
         node.setNormalizedToken(separateToken(node.getToken()))
@@ -48,8 +44,8 @@ fun processNodeToken(node: Node, splitToken: Boolean) {
     }
 }
 
-fun <T : Node> normalizeParseResult(parseResult: ParseResult<T>, splitTokens: Boolean) {
-    parseResult.root?.preOrder()?.forEach { node -> processNodeToken(node, splitTokens) }
+fun separateToken(token: String, separator: CharSequence = "|"): String {
+    return splitToSubtokens(token).joinToString(separator)
 }
 
 fun getLabelExtractor(

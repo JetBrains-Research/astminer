@@ -4,7 +4,7 @@ package astminer.examples
 
 import astminer.common.getProjectFilesWithExtension
 import astminer.common.model.LabeledPathContexts
-import astminer.parse.cpp.FuzzyCppParser
+import astminer.parse.fuzzy.cpp.FuzzyCppParser
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
 import astminer.paths.CsvPathStorage
