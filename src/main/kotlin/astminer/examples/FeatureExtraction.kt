@@ -2,7 +2,7 @@ package astminer.examples
 
 import astminer.common.numberOfLines
 import astminer.featureextraction.*
-import astminer.parse.java.GumTreeJavaParser
+import astminer.parse.gumtree.java.GumTreeJavaParser
 import java.io.File
 
 

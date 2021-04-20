@@ -1,7 +1,7 @@
 package astminer.parse.antlr.javascript
 
 import astminer.common.model.MethodInfo
-import astminer.parse.antlr.SimpleNode
+import astminer.parse.antlr.AntlrNode
 import org.junit.Test
 import java.io.File
 import kotlin.test.BeforeTest
@@ -17,7 +17,7 @@ class JavaScriptMethodSplitterTest {
         val parser = JavaScriptParser()
     }
 
-    var methodInfos: Collection<MethodInfo<SimpleNode>> = listOf()
+    var methodInfos: Collection<MethodInfo<AntlrNode>> = listOf()
 
     @BeforeTest
     fun parseTree() {
@@ -43,7 +43,7 @@ class JavaScriptMethodSplitterTest {
             }
         }
 
-        fun MethodInfo<SimpleNode>.getJsonInfo(): String {
+        fun MethodInfo<AntlrNode>.getJsonInfo(): String {
             return "info : {" +
                     "name : ${name()}, " +
                     "args : ${methodParameters.map { it.name() }.joinToString(", ")}, " +
