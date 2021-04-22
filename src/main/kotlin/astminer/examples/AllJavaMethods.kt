@@ -1,7 +1,7 @@
 package astminer.examples
 
 import astminer.cli.LabeledResult
-import astminer.common.model.MethodInfo
+import astminer.common.model.FunctionInfo
 import astminer.parse.gumtree.GumTreeNode
 import astminer.parse.gumtree.java.GumTreeJavaParser
 import astminer.parse.gumtree.java.GumTreeJavaMethodSplitter
@@ -11,10 +11,10 @@ import astminer.storage.path.PathBasedStorageConfig
 import java.io.File
 
 
-private fun getCsvFriendlyMethodId(methodInfo: MethodInfo<GumTreeNode>): String {
-    val className = methodInfo.enclosingElementName() ?: ""
-    val methodName = methodInfo.name() ?: "unknown_method"
-    val parameterTypes = methodInfo.methodParameters.joinToString("|") { it.name() ?: "_" }
+private fun getCsvFriendlyMethodId(functionInfo: FunctionInfo<GumTreeNode>): String {
+    val className = functionInfo.className ?: ""
+    val methodName = functionInfo.name
+    val parameterTypes = functionInfo.parameters.joinToString("|") { it.name }
     return "$className.$methodName($parameterTypes)"
 }
 

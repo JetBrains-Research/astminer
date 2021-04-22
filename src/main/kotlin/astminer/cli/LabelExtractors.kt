@@ -1,8 +1,8 @@
 package astminer.cli
 
-import astminer.common.model.MethodInfo
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
+import astminer.common.model.FunctionInfo
 import astminer.common.preOrder
 import astminer.common.setTechnicalToken
 import astminer.parse.antlr.AntlrNode
@@ -48,7 +48,7 @@ abstract class FileLabelExtractor : LabelExtractor {
 }
 
 abstract class MethodLabelExtractor(
-        open val filterPredicates: Collection<MethodFilterPredicate> = emptyList(),
+        open val filterPredicates: Collection<MethodFilter> = emptyList(),
         open val javaParser: String = "gumtree",
         open val pythonParser: String = "antlr"
 ) : LabelExtractor {
@@ -108,11 +108,11 @@ abstract class MethodLabelExtractor(
         }
         return methodInfos.mapNotNull {
             val label = extractLabel(it, filePath) ?: return@mapNotNull null
-            LabeledResult(it.method.root, label, filePath)
+            LabeledResult(it.root, label, filePath)
         }
     }
 
-    abstract fun <T : Node> extractLabel(methodInfo: MethodInfo<T>, filePath: String): String?
+    abstract fun <T : Node> extractLabel(functionInfo: FunctionInfo<T>, filePath: String): String?
 }
 
 class FilePathExtractor : FileLabelExtractor() {
@@ -128,25 +128,20 @@ class FolderExtractor : FileLabelExtractor() {
 }
 
 class MethodNameExtractor(
-        val hideMethodNames: Boolean = false,
-        override val filterPredicates: Collection<MethodFilterPredicate> = emptyList(),
+        override val filterPredicates: Collection<MethodFilter> = emptyList(),
         override val javaParser: String = "gumtree",
         override val pythonParser: String = "antlr"
 ) : MethodLabelExtractor(filterPredicates, javaParser, pythonParser) {
 
-    override fun <T : Node> extractLabel(methodInfo: MethodInfo<T>, filePath: String): String? {
-        val methodNameNode = methodInfo.method.nameNode ?: return null
-        val methodRoot = methodInfo.method.root
-        val methodName = methodInfo.name() ?: return null
-
-        if (hideMethodNames) {
-            methodRoot.preOrder().forEach { node ->
-                if (node.getToken() == methodName) {
-                    node.setTechnicalToken("SELF")
-                }
+    override fun <T : Node> extractLabel(functionInfo: FunctionInfo<T>, filePath: String): String? {
+        val name = functionInfo.name ?: return null
+        functionInfo.root.preOrder().forEach { node ->
+            if (node.getToken() == name) {
+                node.setTechnicalToken("SELF")
             }
-            methodNameNode.setTechnicalToken("METHOD_NAME")
         }
-        return methodName
+        functionInfo.nameNode?.setTechnicalToken("METHOD_NAME")
+        // TODO: for some reason it is not normalized, check if something is wrong. Maybe storages normalize the label
+        return name
     }
 }

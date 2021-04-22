@@ -18,11 +18,11 @@ fun allJavaFiles() {
         val node = JavaParser().parseInputStream(file.inputStream()) ?: return@forFilesWithSuffix
         node.prettyPrint()
         JavaMethodSplitter().splitIntoMethods(node).forEach {
-            println(it.name())
-            println(it.returnType())
-            println(it.enclosingElementName())
-            it.methodParameters.forEach { parameters ->
-                println("${parameters.name()} ${parameters.returnType()}")
+            println(it.name)
+            println(it.returnType)
+            println(it.className)
+            it.parameters.forEach { parameter ->
+                println("${parameter.name} ${parameter.type}")
             }
         }
         storage.store(LabeledResult(node, file.path, file.path))

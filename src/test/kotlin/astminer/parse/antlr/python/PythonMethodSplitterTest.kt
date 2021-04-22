@@ -1,5 +1,6 @@
 package astminer.parse.antlr.python
 
+import astminer.common.model.FunctionInfo
 import astminer.common.model.MethodInfo
 import astminer.parse.antlr.AntlrNode
 import org.junit.Test
@@ -16,7 +17,7 @@ class PythonMethodSplitterTest {
         val parser = PythonParser()
     }
 
-    var methodInfos: Collection<MethodInfo<AntlrNode>> = listOf()
+    var methodInfos: Collection<FunctionInfo<AntlrNode>> = listOf()
 
     @BeforeTest
     fun parseTree() {
@@ -32,35 +33,35 @@ class PythonMethodSplitterTest {
 
     @Test
     fun testFunctionNotInClass() {
-        val methodClass = methodInfos.find { it.name() == "funWithNoClass"  }
+        val methodClass = methodInfos.find { it.name == "funWithNoClass"  }
         assertNotNull(methodClass)
         assertNull(methodClass.enclosingElement.root)
     }
 
     @Test
     fun testFunctionInClass() {
-        val methodClass = methodInfos.find { it.name() == "funInClass1"  }
+        val methodClass = methodInfos.find { it.name == "funInClass1"  }
         assertNotNull(methodClass)
         assertEquals( "Class1", methodClass.enclosingElementName())
     }
 
     @Test
     fun testFunctionInNestedClass() {
-        val methodClass = methodInfos.find { it.name() == "funInClass2"  }
+        val methodClass = methodInfos.find { it.name == "funInClass2"  }
         assertNotNull(methodClass)
         assertEquals( "Class2", methodClass.enclosingElementName())
     }
 
     @Test
     fun testNoParameters() {
-        val methodNoParameters = methodInfos.find { it.name() == "functionWithNoParameters"  }
+        val methodNoParameters = methodInfos.find { it.name == "functionWithNoParameters"  }
         assertNotNull(methodNoParameters)
         assertEquals(0, methodNoParameters.methodParameters.size)
     }
 
     @Test
     fun testOneParameter() {
-        val methodOneParameter = methodInfos.find { it.name() == "functionWithOneParameter"  }
+        val methodOneParameter = methodInfos.find { it.name == "functionWithOneParameter"  }
         assertNotNull(methodOneParameter)
         assertEquals(1, methodOneParameter.methodParameters.size)
         val parameter = methodOneParameter.methodParameters[0]
@@ -69,7 +70,7 @@ class PythonMethodSplitterTest {
 
     @Test
     fun testThreeParameters() {
-        val methodThreeParameters = methodInfos.find { it.name() == "functionWithThreeParameters"  }
+        val methodThreeParameters = methodInfos.find { it.name == "functionWithThreeParameters"  }
         assertNotNull(methodThreeParameters)
         assertEquals(3, methodThreeParameters.methodParameters.size)
         for (i in 0 until 3) {

@@ -1,6 +1,7 @@
 package astminer.examples
 
 import astminer.cli.LabeledResult
+import astminer.cli.MethodNameExtractor
 import astminer.common.*
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.java.JavaParser
@@ -25,14 +26,14 @@ fun code2vecJavaMethods() {
         //extract method nodes
         val methods = JavaMethodSplitter().splitIntoMethods(fileNode)
 
-        methods.forEach { methodInfo ->
-            val methodNameNode = methodInfo.method.nameNode ?: return@forEach
-            val methodRoot = methodInfo.method.root
-            val label = splitToSubtokens(methodNameNode.getToken()).joinToString("|")
-            methodNameNode.setTechnicalToken("METHOD_NAME")
+        val labelExtractor = MethodNameExtractor()
 
+        methods.forEach { methodInfo ->
+            val label = labelExtractor.extractLabel(methodInfo, file.absolutePath) ?: return@forEach
+            // TODO: this is ugly maybe label should be normalized by default
+            val normalizedLabel = splitToSubtokens(label).joinToString("|")
             // Retrieve paths from every node individually and store them
-            storage.store(LabeledResult(methodRoot, label, file.absolutePath))
+            storage.store(LabeledResult(methodInfo.root, normalizedLabel, file.absolutePath))
         }
     }
 

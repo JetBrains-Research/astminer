@@ -1,7 +1,7 @@
 package astminer.common.model
 
 interface TreeMethodSplitter<T : Node> {
-    fun splitIntoMethods(root: T): Collection<MethodInfo<T>>
+    fun splitIntoMethods(root: T): Collection<FunctionInfo<T>>
 }
 
 class MethodInfo<T : Node>(
@@ -18,7 +18,7 @@ class MethodInfo<T : Node>(
 class MethodNode<T : Node>(
         val root: T,
         val returnTypeNode: T?,
-        val nameNode: T?
+        val nameNode: T? // why is it nullable??
 ) {
     fun name() = nameNode?.getToken()
     fun returnType() = returnTypeNode?.getToken()

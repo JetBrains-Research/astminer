@@ -1,10 +1,6 @@
 package astminer.parse.gumtree.python
 
-import astminer.common.model.ElementNode
-import astminer.common.model.MethodInfo
-import astminer.common.model.MethodNode
-import astminer.common.model.ParameterNode
-import astminer.common.model.TreeMethodSplitter
+import astminer.common.model.*
 import astminer.common.preOrder
 import astminer.parse.gumtree.GumTreeNode
 
@@ -33,9 +29,10 @@ class GumTreePythonMethodSplitter : TreeMethodSplitter<GumTreeNode> {
         }
     }
 
-    override fun splitIntoMethods(root: GumTreeNode): Collection<MethodInfo<GumTreeNode>> {
+    override fun splitIntoMethods(root: GumTreeNode): Collection<FunctionInfo<GumTreeNode>> {
         val methodRoots = root.preOrder().filter { TypeLabels.methodDefinitions.contains(it.getTypeLabel()) }
-        return methodRoots.map { collectMethodInfo(it as GumTreeNode) }
+        return dummyMethodInfos()
+//        return methodRoots.map { collectMethodInfo(it as GumTreeNode) }
     }
 
     private fun collectMethodInfo(methodNode: GumTreeNode): MethodInfo<GumTreeNode> {

@@ -1,6 +1,6 @@
 package astminer.parse.antlr.javascript
 
-import astminer.common.model.MethodInfo
+import astminer.common.model.FunctionInfo
 import astminer.parse.antlr.AntlrNode
 import org.junit.Test
 import java.io.File
@@ -17,18 +17,18 @@ class JavaScriptMethodSplitterTest {
         val parser = JavaScriptParser()
     }
 
-    var methodInfos: Collection<MethodInfo<AntlrNode>> = listOf()
+    var functionInfos: Collection<FunctionInfo<AntlrNode>> = listOf()
 
     @BeforeTest
     fun parseTree() {
         val testTree = parser.parseInputStream(File(testFilePath).inputStream())
         assertNotNull(testTree)
-        methodInfos = methodSplitter.splitIntoMethods(testTree)
+        functionInfos = methodSplitter.splitIntoMethods(testTree)
     }
 
     @Test
     fun testValidSplitting() {
-        assertEquals(N_METHODS, methodInfos.size, "Test file contains $N_METHODS methods")
+        assertEquals(N_METHODS, functionInfos.size, "Test file contains $N_METHODS methods")
     }
 
     @Test
@@ -43,16 +43,16 @@ class JavaScriptMethodSplitterTest {
             }
         }
 
-        fun MethodInfo<AntlrNode>.getJsonInfo(): String {
+        fun FunctionInfo<AntlrNode>.getJsonInfo(): String {
             return "info : {" +
-                    "name : ${name()}, " +
-                    "args : ${methodParameters.map { it.name() }.joinToString(", ")}, " +
-                    "enclosing element : ${enclosingElement.root?.getTypeLabel()?.getEnclosingElementType()}, " +
-                    "enclosing element name : ${enclosingElementName()}" +
+                    "name : ${name}, " +
+                    "args : ${parameters.map { it.name }.joinToString(", ")}, " +
+                    "enclosing element : ${enclosingElement?.getTypeLabel()?.getEnclosingElementType()}, " +
+                    "enclosing element name : ${className}" +
                     "}"
         }
 
-        val actualJsonInfos = methodInfos.map { it.getJsonInfo() }.sorted()
+        val actualJsonInfos = functionInfos.map { it.getJsonInfo() }.sorted()
 
         val text = File(testFilePath).readText()
         val expectedJsonInfos = Regex("info : \\{.*\\}").findAll(text).toList().map { it.value }.sorted()

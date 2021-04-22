@@ -21,11 +21,12 @@ class JavaMethodSplitter : TreeMethodSplitter<AntlrNode> {
         private const val PARAMETER_NAME_NODE = "variableDeclaratorId"
     }
 
-    override fun splitIntoMethods(root: AntlrNode): Collection<MethodInfo<AntlrNode>> {
+    override fun splitIntoMethods(root: AntlrNode): Collection<FunctionInfo<AntlrNode>> {
         val methodRoots = root.preOrder().filter {
             decompressTypeLabel(it.getTypeLabel()).last() == METHOD_NODE
         }
-        return methodRoots.map { collectMethodInfo(it as AntlrNode) }
+        return dummyMethodInfos()
+//        return methodRoots.map { collectMethodInfo(it as AntlrNode) }
     }
 
     private fun collectMethodInfo(methodNode: AntlrNode): MethodInfo<AntlrNode> {
