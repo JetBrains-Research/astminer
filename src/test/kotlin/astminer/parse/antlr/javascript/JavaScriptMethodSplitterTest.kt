@@ -47,7 +47,7 @@ class JavaScriptMethodSplitterTest {
             return "info : {" +
                     "name : ${name()}, " +
                     "args : ${methodParameters.map { it.name() }.joinToString(", ")}, " +
-                    "enclosing element : ${enclosingElement.root?.getTypeLabel()?.getEnclosingElementType()}, " +
+                    "enclosing element : ${enclosingElement.root?.typeLabel?.getEnclosingElementType()}, " +
                     "enclosing element name : ${enclosingElementName()}" +
                     "}"
         }

@@ -20,14 +20,14 @@ enum class TokenProcessor {
             return splitToSubtokens(token).joinToString("|")
         }
 
-        override fun processToken(node: Node): String = separateToken(node.getToken())
+        override fun processToken(node: Node): String = separateToken(node.token)
     },
 
     /**
      * Processes the token according to the original code2vec implementation in order to match their behavior.
      */
     Normalize {
-        override fun processToken(node: Node): String = normalizeToken(node.getToken(), DEFAULT_TOKEN)
+        override fun processToken(node: Node): String = normalizeToken(node.token, DEFAULT_TOKEN)
     };
 
     protected abstract fun processToken(node: Node): String

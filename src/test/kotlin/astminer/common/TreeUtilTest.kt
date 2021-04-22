@@ -7,7 +7,7 @@ class TreeUtilTest {
     @Test
     fun testPostOrder() {
         val root = createDummyTree()
-        val dataList = root.postOrderIterator().asSequence().map { it.getTypeLabel() }
+        val dataList = root.postOrderIterator().asSequence().map { it.typeLabel }
 
         Assert.assertArrayEquals(arrayOf("4", "5", "6", "2", "7", "8", "3", "1"), dataList.toList().toTypedArray())
     }
@@ -15,7 +15,7 @@ class TreeUtilTest {
     @Test
     fun testPreOrder() {
         val root = createDummyTree()
-        val dataList = root.preOrderIterator().asSequence().map { it.getTypeLabel() }
+        val dataList = root.preOrderIterator().asSequence().map { it.typeLabel }
 
         Assert.assertArrayEquals(arrayOf("1", "2", "4", "5", "6", "3", "7", "8"), dataList.toList().toTypedArray())
     }

@@ -6,15 +6,15 @@ import astminer.common.postOrder
 import astminer.parse.antlr.AntlrNode
 import org.junit.Assert
 
-fun simpleNode(number: Int, parent: Node?): AntlrNode {
+fun simpleNode(number: Int, parent: AntlrNode?): AntlrNode {
     return AntlrNode("$number", parent, "node_$number")
 }
 
-fun simpleNodes(numbers: List<Int>, parent: Node?): List<AntlrNode> {
+fun simpleNodes(numbers: List<Int>, parent: AntlrNode?): List<AntlrNode> {
     return numbers.map { simpleNode(it, parent) }
 }
 
-fun getParentStack(node: Node): List<Node> = (node.getParent()?.let { getParentStack(it) } ?: emptyList()) + node
+fun getParentStack(node: Node): List<Node> = (node.parent?.let { getParentStack(it) } ?: emptyList()) + node
 
 fun getAllPathCharacteristics(root: Node): Collection<Pair<Int, Int>> {
     val leaves = root.postOrder().filter { it.isLeaf() }
@@ -28,8 +28,8 @@ fun getAllPathCharacteristics(root: Node): Collection<Pair<Int, Int>> {
                 var rightDepth = rightStack.size
                 leftStack.zip(rightStack).zipWithNext { (left1, right1), (left2, right2) ->
                     if (left1 == right1 && left2 != right2) {
-                        val leftIndex = left1.getChildren().indexOf(left2)
-                        val rightIndex = left1.getChildren().indexOf(right2)
+                        val leftIndex = left1.children.indexOf(left2)
+                        val rightIndex = left1.children.indexOf(right2)
                         allPathCharacteristics.add(Pair(rightIndex - leftIndex, leftDepth + rightDepth - 1))
                         return@zipWithNext
                     }

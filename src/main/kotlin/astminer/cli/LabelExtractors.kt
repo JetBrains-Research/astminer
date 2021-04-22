@@ -141,7 +141,7 @@ class MethodNameExtractor(
 
         if (hideMethodNames) {
             methodRoot.preOrder().forEach { node ->
-                if (node.getToken() == methodName) {
+                if (node.token == methodName) {
                     node.setTechnicalToken("SELF")
                 }
             }

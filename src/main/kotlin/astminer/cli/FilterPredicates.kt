@@ -10,7 +10,7 @@ abstract class MethodFilterPredicate {
 
     fun typeBasedFilterPredicate(root: Node?, nodeType: String, excludeValues: List<String>): Boolean {
         root?.getChildrenOfType(nodeType)?.forEach {
-            if (it.getToken() in excludeValues) {
+            if (it.token in excludeValues) {
                 return false
             }
         }
@@ -58,7 +58,7 @@ class MethodNameLengthFilterPredicate(private val maxLength: Int) : MethodFilter
         }
         val nameNode = methodInfo.method.nameNode
         return if (nameNode != null) {
-            splitToSubtokens(nameNode.getToken()).size <= maxLength
+            splitToSubtokens(nameNode.token).size <= maxLength
         } else {
             false
         }
@@ -71,7 +71,7 @@ class TokenLengthFilterPredicate(private val maxLength: Int) : MethodFilterPredi
             return true
         }
         methodInfo.method.root.preOrder().forEach { node ->
-            if (splitToSubtokens(node.getToken()).size > maxLength) {
+            if (splitToSubtokens(node.token).size > maxLength) {
                 return false
             }
         }

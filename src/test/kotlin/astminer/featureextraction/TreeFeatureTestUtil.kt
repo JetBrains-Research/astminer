@@ -2,42 +2,36 @@ package astminer.featureextraction
 
 import astminer.common.model.Node
 
-class PrettyNode(private val type: String, private val token: String) : Node {
-    private var children: MutableList<PrettyNode> = ArrayList()
-    private var parent: PrettyNode? = null
-    override val metadata: MutableMap<String, Any> = HashMap()
+class PrettyNode(override val typeLabel: String, override val token: String) : Node() {
+    override var children: MutableList<PrettyNode> = ArrayList()
+    override var parent: PrettyNode? = null
+    set(value)  {
+        value?.addChild(this)
+        field = value
+    }
 
-    override fun getChildren(): MutableList<PrettyNode> =  children
-
-    override fun getParent(): PrettyNode? = parent
 
     fun addChild(node: PrettyNode) = children.add(node)
 
-    fun setParent(node: PrettyNode?) {
+    /*fun setParent(node: PrettyNode?) {
         node?.addChild(this)
         parent = node
-    }
+    }*/
 
     fun toPrettyString(indent: Int = 0, indentSymbol: String = "--") : String = with(StringBuilder()) {
         repeat(indent) { append(indentSymbol) }
-        append(getTypeLabel())
-        if (getToken().isNotEmpty()) {
-            appendln(" : ${getToken()}")
+        append(typeLabel)
+        if (token.isNotEmpty()) {
+            appendln(" : $token")
         } else {
             appendln()
         }
-        getChildren().forEach { append(it.toPrettyString(indent + 1, indentSymbol)) }
+        children.forEach { append(it.toPrettyString(indent + 1, indentSymbol)) }
         toString()
     }
 
-    override fun getToken(): String =  token
-
-    override fun isLeaf(): Boolean =  children.isEmpty()
-
-    override fun getTypeLabel(): String = type
-
     override fun removeChildrenOfType(typeLabel: String) {
-        children.removeIf { it.getTypeLabel() == typeLabel }
+        children.removeIf { it.typeLabel == typeLabel }
     }
 
 }
@@ -47,7 +41,7 @@ fun restoreFromPrettyPrint(prettyPrintedTree: String, indentSymbol: String = "--
     val tree = prettyPrintedTree.lines().map { s ->
         val (node, indent) = restorePrintedNode(s, indentSymbol)
         lastNodeByIndent[indent] = node
-        node.setParent(lastNodeByIndent[indent - 1])
+        node.parent = lastNodeByIndent[indent - 1]
         node
     }
     return tree.first()

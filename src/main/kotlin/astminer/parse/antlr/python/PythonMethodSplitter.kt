@@ -23,7 +23,7 @@ class PythonMethodSplitter : TreeMethodSplitter<AntlrNode> {
 
     override fun splitIntoMethods(root: AntlrNode): Collection<MethodInfo<AntlrNode>> {
         val methodRoots = root.preOrder().filter {
-            decompressTypeLabel(it.getTypeLabel()).last() == METHOD_NODE
+            decompressTypeLabel(it.typeLabel).last() == METHOD_NODE
         }
         return methodRoots.map { collectMethodInfo(it as AntlrNode) }
     }
@@ -51,10 +51,10 @@ class PythonMethodSplitter : TreeMethodSplitter<AntlrNode> {
     }
 
     private fun getEnclosingClass(node: AntlrNode): AntlrNode? {
-        if (decompressTypeLabel(node.getTypeLabel()).last() == CLASS_DECLARATION_NODE) {
+        if (decompressTypeLabel(node.typeLabel).last() == CLASS_DECLARATION_NODE) {
             return node
         }
-        val parentNode = node.getParent() as? AntlrNode
+        val parentNode = node.parent
         if (parentNode != null) {
             return getEnclosingClass(parentNode)
         }
@@ -62,11 +62,11 @@ class PythonMethodSplitter : TreeMethodSplitter<AntlrNode> {
     }
 
     private fun getListOfParameters(parameterRoot: AntlrNode): List<ParameterNode<AntlrNode>> {
-        if (decompressTypeLabel(parameterRoot.getTypeLabel()).last() == PARAMETER_NAME_NODE) {
+        if (decompressTypeLabel(parameterRoot.typeLabel).last() == PARAMETER_NAME_NODE) {
             return listOf(ParameterNode(parameterRoot, null, parameterRoot))
         }
         return parameterRoot.getChildrenOfType(METHOD_SINGLE_PARAMETER_NODE).map {
-            if (decompressTypeLabel(it.getTypeLabel()).last() == PARAMETER_NAME_NODE) {
+            if (decompressTypeLabel(it.typeLabel).last() == PARAMETER_NAME_NODE) {
                 ParameterNode(it, null, it)
             } else {
                 ParameterNode(it, null, it.getChildOfType(PARAMETER_NAME_NODE) as AntlrNode)

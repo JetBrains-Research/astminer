@@ -31,7 +31,7 @@ class JavaScriptMethodSplitter : TreeMethodSplitter<AntlrNode> {
 
     private fun Node.isArrowElement() = this.getChildOfType(ARROW_NODE) != null
     private fun Node.isFunctionElement() = this.getChildOfType(FUNCTION_NODE) != null
-    private fun Node.isMethodElement() = decompressTypeLabel(this.getTypeLabel()).last() == METHOD_NODE
+    private fun Node.isMethodElement() = decompressTypeLabel(this.typeLabel).last() == METHOD_NODE
 }
 
 /**
@@ -51,7 +51,7 @@ abstract class JavaScriptElement(private val element: AntlrNode) {
      * @return element info
      */
     fun getElementInfo() : MethodInfo<AntlrNode> {
-        val enclosingRoot = getEnclosingElementRoot(element.getParent() as AntlrNode)
+        val enclosingRoot = getEnclosingElementRoot(element.parent as AntlrNode)
         return MethodInfo(
                 MethodNode(element, null, getElementName()),
                 ElementNode(enclosingRoot, getEnclosingElementName(enclosingRoot)),
@@ -65,10 +65,10 @@ abstract class JavaScriptElement(private val element: AntlrNode) {
      * @return root of enclosing element
      */
     open fun getEnclosingElementRoot(node: AntlrNode?): AntlrNode? {
-        if (node == null || decompressTypeLabel(node.getTypeLabel()).intersect(ENCLOSING_ELEMENT_NODES).isNotEmpty()) {
+        if (node == null || decompressTypeLabel(node.typeLabel).intersect(ENCLOSING_ELEMENT_NODES).isNotEmpty()) {
             return node
         }
-        return getEnclosingElementRoot(node.getParent() as? AntlrNode)
+        return getEnclosingElementRoot(node.parent)
     }
 
     /**
@@ -77,8 +77,8 @@ abstract class JavaScriptElement(private val element: AntlrNode) {
      * @return name node of enclosing element
      */
     open fun getEnclosingElementName(enclosingRoot: AntlrNode?) : AntlrNode? {
-        return enclosingRoot?.getChildren()?.firstOrNull {
-            decompressTypeLabel(it.getTypeLabel()).last() == ENCLOSING_ELEMENT_NAME_NODE
+        return enclosingRoot?.children?.firstOrNull {
+            decompressTypeLabel(it.typeLabel).last() == ENCLOSING_ELEMENT_NAME_NODE
         }
     }
 
@@ -98,7 +98,7 @@ abstract class JavaScriptElement(private val element: AntlrNode) {
     }
 
     private fun Node.hasLastLabel(typeLabel: String): Boolean {
-        return decompressTypeLabel(getTypeLabel()).last() == typeLabel
+        return decompressTypeLabel(typeLabel).last() == typeLabel
     }
 
     private fun AntlrNode.getItOrChildrenOfType(typeLabel: String) : List<AntlrNode> {
@@ -131,8 +131,8 @@ class ArrowElement(private val element: AntlrNode) : JavaScriptElement(element) 
     }
 
     override fun getElementName(): AntlrNode? {
-        return element.getChildren().firstOrNull {
-            it.getTypeLabel() == ARROW_NAME_NODE
+        return element.children.firstOrNull {
+            it.typeLabel == ARROW_NAME_NODE
         }
     }
 
@@ -150,8 +150,8 @@ class FunctionElement(private val element: AntlrNode) : JavaScriptElement(elemen
     }
 
     override fun getElementName(): AntlrNode? {
-        return element.getChildren().firstOrNull {
-            it.getTypeLabel() == FUNCTION_NAME_NODE
+        return element.children.firstOrNull {
+            it.typeLabel == FUNCTION_NAME_NODE
         }
     }
 
@@ -169,12 +169,12 @@ class MethodElement(private val element: AntlrNode) : JavaScriptElement(element)
     }
 
     override fun getElementName(): AntlrNode? {
-        val methodNameParent = element.getChildren().firstOrNull {
-            METHOD_GETTERS_SETTERS.contains(it.getTypeLabel())
+        val methodNameParent = element.children.firstOrNull {
+            METHOD_GETTERS_SETTERS.contains(it.typeLabel)
         } ?: element
 
-        return methodNameParent.getChildren().firstOrNull {
-            decompressTypeLabel(it.getTypeLabel()).contains(METHOD_NAME_NODE)
+        return methodNameParent.children.firstOrNull {
+            decompressTypeLabel(it.typeLabel).contains(METHOD_NAME_NODE)
         }
     }
 

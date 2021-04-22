@@ -4,7 +4,7 @@ import astminer.common.model.*
 import astminer.common.preOrder
 import astminer.parse.gumtree.GumTreeNode
 
-private fun GumTreeNode.isTypeNode() = getTypeLabel().endsWith("Type")
+private fun GumTreeNode.isTypeNode() = typeLabel.endsWith("Type")
 
 class GumTreeJavaMethodSplitter : TreeMethodSplitter<GumTreeNode> {
 
@@ -18,7 +18,7 @@ class GumTreeJavaMethodSplitter : TreeMethodSplitter<GumTreeNode> {
     }
 
     override fun splitIntoMethods(root: GumTreeNode): Collection<MethodInfo<GumTreeNode>> {
-        val methodRoots = root.preOrder().filter { it.getTypeLabel() == TypeLabels.methodDeclaration }
+        val methodRoots = root.preOrder().filter { it.typeLabel == TypeLabels.methodDeclaration }
         return methodRoots.map { collectMethodInfo(it as GumTreeNode) }
     }
 
@@ -38,29 +38,29 @@ class GumTreeJavaMethodSplitter : TreeMethodSplitter<GumTreeNode> {
         )
     }
 
-    private fun getElementName(node: GumTreeNode) = node.getChildren().map {
+    private fun getElementName(node: GumTreeNode) = node.children.map {
         it
     }.firstOrNull {
-        it.getTypeLabel() == TypeLabels.simpleName
+        it.typeLabel == TypeLabels.simpleName
     }
 
-    private fun getElementType(node: GumTreeNode) = node.getChildren().map {
+    private fun getElementType(node: GumTreeNode) = node.children.map {
         it
     }.firstOrNull {
         it.isTypeNode()
     }
 
     private fun getEnclosingClass(node: GumTreeNode): GumTreeNode? {
-        if (node.getTypeLabel() == TypeLabels.typeDeclaration) {
+        if (node.typeLabel == TypeLabels.typeDeclaration) {
             return node
         }
-        val parentNode = node.getParent() as? GumTreeNode
+        val parentNode = node.parent
         return parentNode?.let { getEnclosingClass(it) }
     }
 
     private fun getParameters(methodNode: GumTreeNode): List<ParameterNode<GumTreeNode>> {
-        val params = methodNode.getChildren().filter {
-            it.getTypeLabel() == TypeLabels.singleVariableDeclaration
+        val params = methodNode.children.filter {
+            it.typeLabel == TypeLabels.singleVariableDeclaration
         }
         return params.map { node ->
             ParameterNode(

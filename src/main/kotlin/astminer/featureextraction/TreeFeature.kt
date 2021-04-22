@@ -21,7 +21,7 @@ interface TreeFeature<out T> {
  */
 object Depth : TreeFeature<Int> {
     override fun compute(tree: Node): Int {
-        val max =  tree.getChildren().map { compute(it) }.max() ?: 0
+        val max =  tree.children.map { compute(it) }.max() ?: 0
         return max + 1
     }
 }
@@ -48,7 +48,7 @@ object BranchingFactor : TreeFeature<Double> {
  */
 object NumberOfNodes : TreeFeature<Int> {
     override fun compute(tree: Node): Int {
-        return tree.getChildren().map { compute(it) }.sum() + 1
+        return tree.children.map { compute(it) }.sum() + 1
     }
 }
 
@@ -61,8 +61,8 @@ object Tokens : TreeFeature<List<String>> {
     }
 
     private fun findTokens(node: Node, tokensList: MutableList<String>): List<String> {
-        node.getChildren().forEach { findTokens(it, tokensList) }
-        tokensList.add(node.getToken())
+        node.children.forEach { findTokens(it, tokensList) }
+        tokensList.add(node.token)
         return tokensList
     }
 }
@@ -76,8 +76,8 @@ object NodeTypes : TreeFeature<List<String>> {
     }
 
     private fun findNodeTypes(node: Node, nodeTypesList: MutableList<String>): List<String> {
-        node.getChildren().forEach { findNodeTypes(it, nodeTypesList) }
-        nodeTypesList.add(node.getTypeLabel())
+        node.children.forEach { findNodeTypes(it, nodeTypesList) }
+        nodeTypesList.add(node.typeLabel)
         return nodeTypesList
     }
 }
@@ -94,18 +94,18 @@ object CompressiblePathLengths : TreeFeature<List<Int>> {
     }
 
     private fun Node.isStartingNode() : Boolean {
-        return this.hasOneChild() && !(this.getParent()?.hasOneChild() ?: false)
+        return this.hasOneChild() && !(this.parent?.hasOneChild() ?: false)
     }
 
-    private fun Node.hasOneChild() : Boolean = getChildren().size == 1
+    private fun Node.hasOneChild() : Boolean = children.size == 1
 
     private fun findPathLengthFromStartingNode(node: Node) : Int {
         var length = 1
-        var next = node.getChildren().first()
+        var next = node.children.first()
 
         while (next.hasOneChild()) {
             length++
-            next = next.getChildren().first()
+            next = next.children.first()
         }
         return length
     }

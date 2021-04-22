@@ -20,7 +20,7 @@ class FuzzyMethodSplitter : TreeMethodSplitter<FuzzyNode> {
     }
 
     override fun splitIntoMethods(root: FuzzyNode): Collection<MethodInfo<FuzzyNode>> {
-        val methodRoots = root.preOrder().filter { it.getTypeLabel() == METHOD_NODE }
+        val methodRoots = root.preOrder().filter { it.typeLabel == METHOD_NODE }
         return methodRoots.map { collectMethodInfo(it as FuzzyNode) }
     }
 
@@ -50,10 +50,10 @@ class FuzzyMethodSplitter : TreeMethodSplitter<FuzzyNode> {
     }
 
     private fun getEnclosingClass(node: FuzzyNode): FuzzyNode? {
-        if (node.getTypeLabel() == CLASS_DECLARATION_NODE) {
+        if (node.typeLabel == CLASS_DECLARATION_NODE) {
             return node
         }
-        val parentNode = node.getParent() as? FuzzyNode
+        val parentNode = node.parent as? FuzzyNode
         if (parentNode != null) {
             return getEnclosingClass(parentNode)
         }

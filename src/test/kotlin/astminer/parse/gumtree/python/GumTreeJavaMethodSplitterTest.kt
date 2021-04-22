@@ -58,7 +58,7 @@ class GumTreeJavaMethodSplitterTest {
         assertNotNull(method)
         with(method) {
             assertEquals("func_dif_args_typed_return", name())
-            assertEquals("Constant-int", this.method.returnTypeNode?.getTypeLabel())
+            assertEquals("Constant-int", this.method.returnTypeNode?.typeLabel)
             assertEquals(6, methodParameters.size)
             assertEquals(listOf("a", "b", "c", "d", "e", "f"), methodParameters.map { it.name() }.toList())
             assertEquals(emptyList(), methodParameters.mapNotNull { it.returnType() }.toList())
@@ -102,9 +102,9 @@ class GumTreeJavaMethodSplitterTest {
         assertNotNull(method)
         with(method) {
             assertEquals("async_schrecklich_typed", name())
-            assertEquals("AsyncFunctionDef", this.method.root.getTypeLabel())
+            assertEquals("AsyncFunctionDef", this.method.root.typeLabel)
             assertEquals(null, enclosingElementName())
-            assertEquals("Constant-int", this.method.returnTypeNode?.getTypeLabel())
+            assertEquals("Constant-int", this.method.returnTypeNode?.typeLabel)
             assertEquals(4, methodParameters.size)
             assertEquals(listOf("event", "x", "args", "kwargs"), methodParameters.map { it.name() }.toList())
             assertEquals(listOf("str", "int", null, null), methodParameters.map { it.returnType() }.toList())
@@ -118,14 +118,14 @@ class GumTreeJavaMethodSplitterTest {
         assertNotNull(method)
         with(method) {
             assertEquals("async_simple_no_typed", name())
-            assertEquals("AsyncFunctionDef", this.method.root.getTypeLabel())
+            assertEquals("AsyncFunctionDef", this.method.root.typeLabel)
             assertEquals(null, enclosingElementName())
             assertEquals(
                 "\n    async doc\n    ",
                 this.method.root.getChildOfType("body")
                     ?.getChildOfType("Expr")
                     ?.getChildOfType("Constant-str")
-                    ?.getToken()
+                    ?.token
             )
             assertEquals(4, methodParameters.size)
             assertEquals(
@@ -145,7 +145,7 @@ class GumTreeJavaMethodSplitterTest {
             assertEquals("foo_2", name())
             assertEquals("foo_1", method.method.root.parent?.wrappedNode?.parent?.label)
             assertEquals(null, enclosingElementName())
-            assertEquals("Constant-NoneType", this.method.returnTypeNode?.getTypeLabel())
+            assertEquals("Constant-NoneType", this.method.returnTypeNode?.typeLabel)
             assertEquals(1, methodParameters.size)
             assertEquals(listOf("c"), methodParameters.map { it.name() }.toList())
             assertEquals(listOf(null), methodParameters.map { it.returnType() }.toList())
@@ -161,7 +161,7 @@ class GumTreeJavaMethodSplitterTest {
             assertEquals("bar_2", name())
             assertEquals("bar_1", method.method.root.parent?.wrappedNode?.parent?.label)
             assertEquals(null, enclosingElementName())
-            assertEquals("Constant-int", this.method.returnTypeNode?.getTypeLabel())
+            assertEquals("Constant-int", this.method.returnTypeNode?.typeLabel)
             assertEquals(2, methodParameters.size)
             assertEquals(listOf("d", "e"), methodParameters.map { it.name() }.toList())
             assertEquals(listOf("int", "int"), methodParameters.map { it.returnType() }.toList())

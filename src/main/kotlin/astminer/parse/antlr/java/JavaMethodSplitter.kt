@@ -23,7 +23,7 @@ class JavaMethodSplitter : TreeMethodSplitter<AntlrNode> {
 
     override fun splitIntoMethods(root: AntlrNode): Collection<MethodInfo<AntlrNode>> {
         val methodRoots = root.preOrder().filter {
-            decompressTypeLabel(it.getTypeLabel()).last() == METHOD_NODE
+            decompressTypeLabel(it.typeLabel).last() == METHOD_NODE
         }
         return methodRoots.map { collectMethodInfo(it as AntlrNode) }
     }
@@ -31,7 +31,7 @@ class JavaMethodSplitter : TreeMethodSplitter<AntlrNode> {
     private fun collectMethodInfo(methodNode: AntlrNode): MethodInfo<AntlrNode> {
         val methodName = methodNode.getChildOfType(METHOD_NAME_NODE)
         val methodReturnTypeNode =  methodNode.getChildOfType(METHOD_RETURN_TYPE_NODE)
-        methodReturnTypeNode?.setToken(collectParameterToken(methodReturnTypeNode))
+        methodReturnTypeNode?.let { it.token = collectParameterToken(it) }
 
         val classRoot = getEnclosingClass(methodNode)
         val className = classRoot?.getChildOfType(CLASS_NAME_NODE)
@@ -53,10 +53,10 @@ class JavaMethodSplitter : TreeMethodSplitter<AntlrNode> {
     }
 
     private fun getEnclosingClass(node: AntlrNode): AntlrNode? {
-        if (decompressTypeLabel(node.getTypeLabel()).last() == CLASS_DECLARATION_NODE) {
+        if (decompressTypeLabel(node.typeLabel).last() == CLASS_DECLARATION_NODE) {
             return node
         }
-        val parentNode = node.getParent() as? AntlrNode
+        val parentNode = node.parent
         if (parentNode != null) {
             return getEnclosingClass(parentNode)
         }
@@ -64,11 +64,11 @@ class JavaMethodSplitter : TreeMethodSplitter<AntlrNode> {
     }
 
     private fun getListOfParameters(parametersRoot: AntlrNode): List<ParameterNode<AntlrNode>> {
-        if (METHOD_SINGLE_PARAMETER_NODE.contains(decompressTypeLabel(parametersRoot.getTypeLabel()).last())) {
+        if (METHOD_SINGLE_PARAMETER_NODE.contains(decompressTypeLabel(parametersRoot.typeLabel).last())) {
             return listOf(getParameterInfoFromNode(parametersRoot))
         }
-        return parametersRoot.getChildren().filter {
-            val firstType = decompressTypeLabel(it.getTypeLabel()).first()
+        return parametersRoot.children.filter {
+            val firstType = decompressTypeLabel(it.typeLabel).first()
             METHOD_SINGLE_PARAMETER_NODE.contains(firstType)
         }.map {
             getParameterInfoFromNode(it)
@@ -77,7 +77,7 @@ class JavaMethodSplitter : TreeMethodSplitter<AntlrNode> {
 
     private fun getParameterInfoFromNode(parameterRoot: AntlrNode): ParameterNode<AntlrNode> {
         val returnTypeNode = parameterRoot.getChildOfType(PARAMETER_RETURN_TYPE_NODE)
-        returnTypeNode?.setToken(collectParameterToken(returnTypeNode))
+        returnTypeNode?.let { it.token = collectParameterToken(it) }
         return ParameterNode(
                 parameterRoot,
                 returnTypeNode,
@@ -87,9 +87,9 @@ class JavaMethodSplitter : TreeMethodSplitter<AntlrNode> {
 
     private fun collectParameterToken(parameterRoot: AntlrNode): String {
         if (parameterRoot.isLeaf()) {
-            return parameterRoot.getToken()
+            return parameterRoot.token
         }
-        return parameterRoot.getChildren().joinToString(separator = "") { child ->
+        return parameterRoot.children.joinToString(separator = "") { child ->
             collectParameterToken(child)
         }
     }

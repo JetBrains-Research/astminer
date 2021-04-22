@@ -34,7 +34,7 @@ class GumTreePythonMethodSplitter : TreeMethodSplitter<GumTreeNode> {
     }
 
     override fun splitIntoMethods(root: GumTreeNode): Collection<MethodInfo<GumTreeNode>> {
-        val methodRoots = root.preOrder().filter { TypeLabels.methodDefinitions.contains(it.getTypeLabel()) }
+        val methodRoots = root.preOrder().filter { TypeLabels.methodDefinitions.contains(it.typeLabel) }
         return methodRoots.map { collectMethodInfo(it as GumTreeNode) }
     }
 
@@ -57,14 +57,14 @@ class GumTreePythonMethodSplitter : TreeMethodSplitter<GumTreeNode> {
     private fun getElementName(node: GumTreeNode) = node
 
     private fun getElementType(node: GumTreeNode): GumTreeNode? {
-        if (node.getTypeLabel() == TypeLabels.arg) {
+        if (node.typeLabel == TypeLabels.arg) {
             return node.getChildOfType(TypeLabels.nameLoad)
         }
         // if return statement has "Constant-`Type`" return value => function type is `Type`
-        if (TypeLabels.methodDefinitions.contains(node.getTypeLabel())) {
+        if (TypeLabels.methodDefinitions.contains(node.typeLabel)) {
             return node.getChildOfType(TypeLabels.body)?.getChildOfType(TypeLabels.returnTypeLabel)?.let {
-                it.getChildren().firstOrNull { child ->
-                    child.getTypeLabel().startsWith(TypeLabels.constantType)
+                it.children.firstOrNull { child ->
+                    child.typeLabel.startsWith(TypeLabels.constantType)
                 }
             }
         }
@@ -72,28 +72,28 @@ class GumTreePythonMethodSplitter : TreeMethodSplitter<GumTreeNode> {
     }
 
     private fun getEnclosingClass(node: GumTreeNode): GumTreeNode? {
-        if (node.getTypeLabel() == TypeLabels.classDefinition) {
+        if (node.typeLabel == TypeLabels.classDefinition) {
             return node
         }
-        val parentNode = node.getParent() as? GumTreeNode
+        val parentNode = node.parent
         return parentNode?.let { getEnclosingClass(it) }
     }
 
     private fun getParameters(methodNode: GumTreeNode): List<ParameterNode<GumTreeNode>> {
         val params = methodNode.getChildrenOfType(TypeLabels.arguments).flatMap {
-            it.getChildren()
+            it.children
         }.filter {
-            TypeLabels.funcArgsTypesNodes.contains(it.getTypeLabel())
+            TypeLabels.funcArgsTypesNodes.contains(it.typeLabel)
         }.flatMap {
-            it.getChildren()
+            it.children
         }.filter {
-            it.getTypeLabel() == TypeLabels.arg
+            it.typeLabel == TypeLabels.arg
         } as MutableList
 
         methodNode.getChildrenOfType(TypeLabels.arguments).flatMap {
-            it.getChildren()
+            it.children
         }.filter {
-            it.getTypeLabel() == TypeLabels.vararg || it.getTypeLabel() == TypeLabels.kwarg
+            it.typeLabel == TypeLabels.vararg || it.typeLabel == TypeLabels.kwarg
         }.forEach {
             params.add(it)
         }

@@ -20,15 +20,15 @@ class MethodNode<T : Node>(
         val returnTypeNode: T?,
         val nameNode: T?
 ) {
-    fun name() = nameNode?.getToken()
-    fun returnType() = returnTypeNode?.getToken()
+    fun name() = nameNode?.token
+    fun returnType() = returnTypeNode?.token
 }
 
 class ElementNode<T : Node>(
         val root: T?,
         val nameNode: T?
 ) {
-    fun name() = nameNode?.getToken()
+    fun name() = nameNode?.token
 }
 
 data class ParameterNode<T : Node>(
@@ -36,6 +36,6 @@ data class ParameterNode<T : Node>(
         val returnTypeNode: T?,
         val nameNode: T?
 ) {
-    fun name() = nameNode?.getToken()
-    fun returnType() = returnTypeNode?.getToken()
+    fun name() = nameNode?.token
+    fun returnType() = returnTypeNode?.token
 }

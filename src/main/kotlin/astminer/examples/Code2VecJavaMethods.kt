@@ -28,7 +28,7 @@ fun code2vecJavaMethods() {
         methods.forEach { methodInfo ->
             val methodNameNode = methodInfo.method.nameNode ?: return@forEach
             val methodRoot = methodInfo.method.root
-            val label = splitToSubtokens(methodNameNode.getToken()).joinToString("|")
+            val label = splitToSubtokens(methodNameNode.token).joinToString("|")
             methodNameNode.setTechnicalToken("METHOD_NAME")
 
             // Retrieve paths from every node individually and store them

@@ -29,8 +29,8 @@ class CsvAstStorage(override val outputDirectoryPath: String) : Storage {
 
     override fun store(labeledResult: LabeledResult<out Node>) {
         for (node in labeledResult.root.preOrder()) {
-            tokensMap.record(node.getToken())
-            nodeTypesMap.record(node.getTypeLabel())
+            tokensMap.record(node.token)
+            nodeTypesMap.record(node.typeLabel)
         }
         dumpAst(labeledResult.root, labeledResult.label)
     }
@@ -55,8 +55,8 @@ class CsvAstStorage(override val outputDirectoryPath: String) : Storage {
     }
 
     internal fun astString(node: Node): String {
-        return "${tokensMap.getId(node.getToken())} ${nodeTypesMap.getId(node.getTypeLabel())}{${
-            node.getChildren().joinToString(separator = "", transform = ::astString)
+        return "${tokensMap.getId(node.token)} ${nodeTypesMap.getId(node.typeLabel)}{${
+            node.children.joinToString(separator = "", transform = ::astString)
         }}"
     }
 }

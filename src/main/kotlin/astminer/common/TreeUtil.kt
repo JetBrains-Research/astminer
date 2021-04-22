@@ -15,13 +15,13 @@ fun Node.preOrderIterator(): Iterator<Node> {
 }
 
 fun doTraversePostOrder(node: Node, resultList: MutableList<Node>) {
-    node.getChildren().forEach { doTraversePostOrder(it, resultList) }
+    node.children.forEach { doTraversePostOrder(it, resultList) }
     resultList.add(node)
 }
 
 fun doTraversePreOrder(node: Node, resultList: MutableList<Node>) {
     resultList.add(node)
-    node.getChildren().forEach { doTraversePreOrder(it, resultList) }
+    node.children.forEach { doTraversePreOrder(it, resultList) }
 }
 
 fun Node.postOrder(): List<Node> {

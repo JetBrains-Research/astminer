@@ -9,49 +9,25 @@ import com.google.common.collect.TreeMultiset
  * @param token - node's token
  * @param order - node's order, which used to express the ordering of children in the AST when it matters
  */
-class FuzzyNode(private val typeLabel: String, private val token: String?, order: Int?) : Node {
+class FuzzyNode(override val typeLabel: String,token: String?, order: Int?) : Node() {
     private val order = order ?: -1
-    override val metadata: MutableMap<String, Any> = HashMap()
-    private var parent: Node? = null
-    private var children = TreeMultiset.create<FuzzyNode>(compareBy(
-            { it.order },
-            { System.identityHashCode(it) }
+    override var parent: Node? = null
+    private val childrenMultiset = TreeMultiset.create<FuzzyNode>(compareBy(
+        { it.order },
+        { System.identityHashCode(it) }
     ))
 
-    fun getOrder(): Int {
-        return order
-    }
+    override val children
+    get() = childrenMultiset.toList()
+
+    override var token: String = token ?: "null"
 
     fun addChild(node: FuzzyNode) {
-        children.add(node)
-        node.setParent(this)
-    }
-
-    override fun getTypeLabel(): String {
-        return typeLabel
-    }
-
-    override fun getChildren(): List<Node> {
-        return children.toList()
-    }
-
-    override fun getParent(): Node? {
-        return parent
-    }
-
-    override fun getToken(): String {
-        return token ?: "null"
-    }
-
-    override fun isLeaf(): Boolean {
-        return children.isEmpty()
-    }
-
-    private fun setParent(node: Node) {
-        parent = node
+        childrenMultiset.add(node)
+        node.parent = this
     }
 
     override fun removeChildrenOfType(typeLabel: String) {
-        children.removeIf { it.getTypeLabel() == typeLabel }
+        childrenMultiset.removeIf { it.typeLabel == typeLabel }
     }
 }

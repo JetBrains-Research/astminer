@@ -50,7 +50,7 @@ class DotAstStorage(
                 nodeDescriptionFormat.format(
                     nodesMap.getId(node) - 1,
                     node.getPresentableToken(),
-                    node.getTypeLabel()
+                    node.typeLabel
                 ) + "\n"
             )
         }
@@ -70,7 +70,7 @@ class DotAstStorage(
             out.println("digraph $fixedAstName {")
             for (node in root.preOrder()) {
                 val rootId = nodesMap.record(node) - 1
-                val childrenIds = node.getChildren().map { nodesMap.record(it) - 1 }
+                val childrenIds = node.children.map { nodesMap.record(it) - 1 }
                 out.println(
                     "$rootId -- {${childrenIds.joinToString(" ") { it.toString() }}};"
                 )

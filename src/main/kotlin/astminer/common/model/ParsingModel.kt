@@ -5,30 +5,31 @@ import java.io.File
 import java.io.InputStream
 
 
-interface Node {
-    fun getTypeLabel(): String
-    fun getChildren(): List<Node>
-    fun getParent(): Node?
-    fun getToken(): String
-    fun isLeaf(): Boolean
+abstract class Node{
+    abstract val typeLabel: String
+    abstract val children: List<Node>
+    abstract val parent: Node?
+    abstract val token: String
 
-    val metadata: MutableMap<String, Any>
+    val metadata: MutableMap<String, Any> = HashMap()
+    fun isLeaf() = children.isEmpty()
 
     fun prettyPrint(indent: Int = 0, indentSymbol: String = "--") {
         repeat(indent) { print(indentSymbol) }
-        print(getTypeLabel())
-        if (getToken().isNotEmpty()) {
-            println(" : ${getToken()}")
+        print(typeLabel)
+        if (token.isNotEmpty()) {
+            println(" : $token")
         } else {
             println()
         }
-        getChildren().forEach { it.prettyPrint(indent + 1, indentSymbol) }
+        children.forEach { it.prettyPrint(indent + 1, indentSymbol) }
     }
 
-    fun getChildrenOfType(typeLabel: String) = getChildren().filter { it.getTypeLabel() == typeLabel }
-    fun getChildOfType(typeLabel: String) = getChildrenOfType(typeLabel).firstOrNull()
+    open fun getChildrenOfType(typeLabel: String) = children.filter { it.typeLabel == typeLabel }
+    open fun getChildOfType(typeLabel: String) = getChildrenOfType(typeLabel).firstOrNull()
 
-    fun removeChildrenOfType(typeLabel: String)
+    abstract fun removeChildrenOfType(typeLabel: String)
+    //TODO(move orders here)
 }
 
 interface Parser<T : Node> {
