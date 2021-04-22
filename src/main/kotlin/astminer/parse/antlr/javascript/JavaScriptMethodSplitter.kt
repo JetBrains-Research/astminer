@@ -98,7 +98,7 @@ abstract class JavaScriptElement(private val element: AntlrNode) {
     }
 
     private fun Node.hasLastLabel(typeLabel: String): Boolean {
-        return decompressTypeLabel(typeLabel).last() == typeLabel
+        return decompressTypeLabel(this.typeLabel).last() == typeLabel
     }
 
     private fun AntlrNode.getItOrChildrenOfType(typeLabel: String) : List<AntlrNode> {
