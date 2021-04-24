@@ -23,6 +23,8 @@ interface FunctionInfo<T : Node> {
         get() = notImplemented("parameters")
     val returnType: String?
         get() = notImplemented("returnType")
+    val returnTypeNode: T?
+        get() = notImplemented("returnTypeNode")
 
     // is null because can be only from a small set like {variableDeclaration, classDeclaration..}
     // for instance it cannot be the root of the tree

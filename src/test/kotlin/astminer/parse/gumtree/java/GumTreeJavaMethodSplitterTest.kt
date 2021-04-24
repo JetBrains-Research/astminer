@@ -1,5 +1,6 @@
 package astminer.parse.gumtree.java
 
+import astminer.common.model.FunctionInfo
 import astminer.common.model.MethodInfo
 import astminer.parse.gumtree.GumTreeNode
 import org.junit.Test
@@ -11,7 +12,7 @@ private fun createTree(filename: String): GumTreeNode {
     return parser.parseInputStream(File(filename).inputStream()) as GumTreeNode
 }
 
-private fun createAndSplitTree(filename: String): Collection<MethodInfo<GumTreeNode>> {
+private fun createAndSplitTree(filename: String): Collection<FunctionInfo<GumTreeNode>> {
     return GumTreeJavaMethodSplitter().splitIntoMethods(createTree(filename))
 }
 
@@ -22,11 +23,11 @@ class GumTreeJavaMethodSplitterTest {
 
         assertEquals(1, methodInfos.size)
         with(methodInfos.first()) {
-            assertEquals("fun", name())
-            assertEquals("void", returnType())
-            assertEquals("SingleFunction", enclosingElementName())
-            assertEquals(listOf("args", "param"), methodParameters.map { it.name() }.toList())
-            assertEquals(listOf("String[]", "int"), methodParameters.map { it.returnType() }.toList())
+            assertEquals("fun", name)
+            assertEquals("void", returnType)
+            assertEquals("SingleFunction", enclosingElementName)
+            assertEquals(listOf("args", "param"), parameters.map { it.name }.toList())
+            assertEquals(listOf("String[]", "int"), parameters.map { it.type }.toList())
         }
 
     }
@@ -37,11 +38,11 @@ class GumTreeJavaMethodSplitterTest {
 
         assertEquals(1, methodInfos.size)
         with(methodInfos.first()) {
-            assertEquals("main", name())
-            assertEquals("void", returnType())
-            assertEquals("InnerClass", enclosingElementName())
-            assertEquals(listOf("args"), methodParameters.map { it.name() }.toList())
-            assertEquals(listOf("String[]"), methodParameters.map { it.returnType() }.toList())
+            assertEquals("main", name)
+            assertEquals("void", returnType)
+            assertEquals("InnerClass", enclosingElementName)
+            assertEquals(listOf("args"), parameters.map { it.name }.toList())
+            assertEquals(listOf("String[]"), parameters.map { it.type }.toList())
         }
     }
 
@@ -51,18 +52,18 @@ class GumTreeJavaMethodSplitterTest {
 
         assertEquals(2, methodInfos.size)
         with(methodInfos.first()) {
-            assertEquals("main", name())
-            assertEquals("void", returnType())
-            assertEquals("InnerClass", enclosingElementName())
-            assertEquals(listOf("args"), methodParameters.map { it.name() }.toList())
-            assertEquals(listOf("String[]"), methodParameters.map { it.returnType() }.toList())
+            assertEquals("main", name)
+            assertEquals("void", returnType)
+            assertEquals("InnerClass", enclosingElementName)
+            assertEquals(listOf("args"), parameters.map { it.name }.toList())
+            assertEquals(listOf("String[]"), parameters.map { it.type }.toList())
         }
         with(methodInfos.last()) {
-            assertEquals("fun", name())
-            assertEquals("void", returnType())
-            assertEquals("SingleMethodInnerClass", enclosingElementName())
-            assertEquals(listOf("args", "param"), methodParameters.map { it.name() }.toList())
-            assertEquals(listOf("String[]", "int"), methodParameters.map { it.returnType() }.toList())
+            assertEquals("fun", name)
+            assertEquals("void", returnType)
+            assertEquals("SingleMethodInnerClass", enclosingElementName)
+            assertEquals(listOf("args", "param"), parameters.map { it.name }.toList())
+            assertEquals(listOf("String[]", "int"), parameters.map { it.type }.toList())
         }
     }
 
@@ -72,11 +73,11 @@ class GumTreeJavaMethodSplitterTest {
 
         assertEquals(1, methodInfos.size)
         with(methodInfos.first()) {
-            assertEquals("fun", name())
-            assertEquals("int", returnType())
-            assertEquals("SingleFunction", enclosingElementName())
-            assertEquals(listOf("args", "param"), methodParameters.map { it.name() }.toList())
-            assertEquals(listOf("int", "SingleFunction"), methodParameters.map { it.returnType() }.toList())
+            assertEquals("fun", name)
+            assertEquals("int", returnType)
+            assertEquals("SingleFunction", enclosingElementName)
+            assertEquals(listOf("args", "param"), parameters.map { it.name }.toList())
+            assertEquals(listOf("int", "SingleFunction"), parameters.map { it.type }.toList())
         }
     }
 }

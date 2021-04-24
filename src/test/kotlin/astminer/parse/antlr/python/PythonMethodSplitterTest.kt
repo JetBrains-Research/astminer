@@ -35,47 +35,47 @@ class PythonMethodSplitterTest {
     fun testFunctionNotInClass() {
         val methodClass = methodInfos.find { it.name == "funWithNoClass"  }
         assertNotNull(methodClass)
-        assertNull(methodClass.enclosingElement.root)
+        assertNull(methodClass.enclosingElement)
     }
 
     @Test
     fun testFunctionInClass() {
         val methodClass = methodInfos.find { it.name == "funInClass1"  }
         assertNotNull(methodClass)
-        assertEquals( "Class1", methodClass.enclosingElementName())
+        assertEquals( "Class1", methodClass.enclosingElementName)
     }
 
     @Test
     fun testFunctionInNestedClass() {
         val methodClass = methodInfos.find { it.name == "funInClass2"  }
         assertNotNull(methodClass)
-        assertEquals( "Class2", methodClass.enclosingElementName())
+        assertEquals( "Class2", methodClass.enclosingElementName)
     }
 
     @Test
     fun testNoParameters() {
         val methodNoParameters = methodInfos.find { it.name == "functionWithNoParameters"  }
         assertNotNull(methodNoParameters)
-        assertEquals(0, methodNoParameters.methodParameters.size)
+        assertEquals(0, methodNoParameters.parameters.size)
     }
 
     @Test
     fun testOneParameter() {
         val methodOneParameter = methodInfos.find { it.name == "functionWithOneParameter"  }
         assertNotNull(methodOneParameter)
-        assertEquals(1, methodOneParameter.methodParameters.size)
-        val parameter = methodOneParameter.methodParameters[0]
-        assertEquals("p1", parameter.name())
+        assertEquals(1, methodOneParameter.parameters.size)
+        val parameter = methodOneParameter.parameters[0]
+        assertEquals("p1", parameter.name)
     }
 
     @Test
     fun testThreeParameters() {
         val methodThreeParameters = methodInfos.find { it.name == "functionWithThreeParameters"  }
         assertNotNull(methodThreeParameters)
-        assertEquals(3, methodThreeParameters.methodParameters.size)
+        assertEquals(3, methodThreeParameters.parameters.size)
         for (i in 0 until 3) {
-            val parameter = methodThreeParameters.methodParameters[i]
-            assertEquals("p${i + 1}", parameter.name())
+            val parameter = methodThreeParameters.parameters[i]
+            assertEquals("p${i + 1}", parameter.name)
         }
     }
 }

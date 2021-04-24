@@ -1,5 +1,6 @@
 package astminer.parse.cpp
 
+import astminer.common.model.FunctionInfo
 import astminer.common.model.MethodInfo
 import astminer.parse.fuzzy.cpp.FuzzyCppParser
 import astminer.parse.fuzzy.cpp.FuzzyMethodSplitter
@@ -19,7 +20,7 @@ class FuzzyMethodSplitterTest {
         val parser = FuzzyCppParser()
     }
 
-    var methodInfos: Collection<MethodInfo<FuzzyNode>> = listOf()
+    var methodInfos: Collection<FunctionInfo<FuzzyNode>> = listOf()
 
     @BeforeTest
     fun parseTree() {
@@ -35,79 +36,79 @@ class FuzzyMethodSplitterTest {
 
     @Test
     fun testReturnVoid() {
-        val methodVoid = methodInfos.find { it.name() == "functionReturningVoid"  }
+        val methodVoid = methodInfos.find { it.name == "functionReturningVoid"  }
         assertNotNull(methodVoid)
-        assertEquals( "void", methodVoid.returnType())
+        assertEquals( "void", methodVoid.returnType)
     }
 
     @Test
     fun testReturnInt() {
-        val methodInt = methodInfos.find { it.name() == "functionReturningInt"  }
+        val methodInt = methodInfos.find { it.name == "functionReturningInt"  }
         assertNotNull(methodInt)
-        assertEquals( "int", methodInt.returnType())
+        assertEquals( "int", methodInt.returnType)
     }
 
     @Test
     fun testReturnString() {
-        val methodString = methodInfos.find { it.name() == "functionReturningString"  }
+        val methodString = methodInfos.find { it.name == "functionReturningString"  }
         assertNotNull(methodString)
-        assertEquals( "string", methodString.returnType())
+        assertEquals( "string", methodString.returnType)
     }
 
     @Test
     fun testReturnClass() {
-        val methodClass = methodInfos.find { it.name() == "functionReturningClass"  }
+        val methodClass = methodInfos.find { it.name == "functionReturningClass"  }
         assertNotNull(methodClass)
-        assertEquals( "Class", methodClass.returnType())
+        assertEquals( "Class", methodClass.returnType)
     }
 
     @Test
     fun testFunctionNotInClass() {
-        val methodClass = methodInfos.find { it.name() == "functionWithNoClass"  }
+        val methodClass = methodInfos.find { it.name == "functionWithNoClass"  }
         assertNotNull(methodClass)
-        assertNull(methodClass.enclosingElement.root)
+        assertNull(methodClass.enclosingElement)
     }
 
     @Test
     fun testFunctionInClass() {
-        val methodClass = methodInfos.find { it.name() == "functionInClass1"  }
+        val methodClass = methodInfos.find { it.name == "functionInClass1"  }
         assertNotNull(methodClass)
-        assertEquals( "Class1", methodClass.enclosingElementName())
+        assertEquals( "Class1", methodClass.enclosingElementName)
     }
 
     @Test
     fun testFunctionInNestedClass() {
-        val methodClass = methodInfos.find { it.name() == "functionInClass2"  }
+        val methodClass = methodInfos.find { it.name == "functionInClass2"  }
         assertNotNull(methodClass)
-        assertEquals( "Class2", methodClass.enclosingElementName())
+        assertEquals( "Class2", methodClass.enclosingElementName)
     }
 
     @Test
     fun testNoParameters() {
-        val methodNoParameters = methodInfos.find { it.name() == "functionWithNoParameters"  }
+        val methodNoParameters = methodInfos.find { it.name == "functionWithNoParameters"  }
         assertNotNull(methodNoParameters)
-        assertEquals(0, methodNoParameters.methodParameters.size)
+        assertEquals(0, methodNoParameters.parameters.size)
     }
 
     @Test
     fun testOneParameter() {
-        val methodOneParameter = methodInfos.find { it.name() == "functionWithOneParameter"  }
+        val methodOneParameter = methodInfos.find { it.name == "functionWithOneParameter"  }
         assertNotNull(methodOneParameter)
-        assertEquals(1, methodOneParameter.methodParameters.size)
-        val parameter = methodOneParameter.methodParameters[0]
-        assertEquals("p1", parameter.name())
-        assertEquals("int", parameter.returnType())
+        assertEquals(1, methodOneParameter.parameters.size)
+        val parameter = methodOneParameter.parameters[0]
+        assertEquals("p1", parameter.name)
+        assertEquals("int", parameter.type)
     }
 
     @Test
     fun testThreeParameters() {
-        val methodThreeParameters = methodInfos.find { it.name() == "functionWithThreeParameters"  }
+        val methodThreeParameters = methodInfos.find { it.name == "functionWithThreeParameters"  }
         assertNotNull(methodThreeParameters)
-        assertEquals(3, methodThreeParameters.methodParameters.size)
+        assertEquals(3, methodThreeParameters.parameters.size)
         for (i in 0 until 3) {
-            val parameter = methodThreeParameters.methodParameters[i]
-            assertEquals("p${i + 1}", parameter.name())
-            assertEquals("int", parameter.returnType())
+            val parameter = methodThreeParameters.parameters[i]
+            assertEquals("p${i + 1}", parameter.name)
+            assertEquals("int", parameter.type)
         }
     }
 }
