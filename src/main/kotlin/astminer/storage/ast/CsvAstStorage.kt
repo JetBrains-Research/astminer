@@ -2,7 +2,7 @@ package astminer.storage.ast
 
 import astminer.cli.LabeledResult
 import astminer.common.model.Node
-import astminer.common.preOrder
+/*import astminer.common.preOrder*/
 import astminer.common.storage.*
 import astminer.storage.Storage
 import java.io.File

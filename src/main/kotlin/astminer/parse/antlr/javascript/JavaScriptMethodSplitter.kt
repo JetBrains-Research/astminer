@@ -1,7 +1,7 @@
 package astminer.parse.antlr.javascript
 
 import astminer.common.model.*
-import astminer.common.preOrder
+/*import astminer.common.preOrder*/
 import astminer.parse.antlr.AntlrNode
 import astminer.parse.antlr.decompressTypeLabel
 

@@ -5,7 +5,7 @@ import astminer.common.model.MethodInfo
 import astminer.common.model.MethodNode
 import astminer.common.model.ParameterNode
 import astminer.common.model.TreeMethodSplitter
-import astminer.common.preOrder
+/*import astminer.common.preOrder*/
 import astminer.parse.gumtree.GumTreeNode
 
 class GumTreePythonMethodSplitter : TreeMethodSplitter<GumTreeNode> {

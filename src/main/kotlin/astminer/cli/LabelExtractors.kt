@@ -3,7 +3,7 @@ package astminer.cli
 import astminer.common.model.MethodInfo
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
-import astminer.common.preOrder
+/*import astminer.common.preOrder*/
 import astminer.common.setTechnicalToken
 import astminer.parse.antlr.AntlrNode
 import astminer.parse.antlr.java.JavaMethodSplitter

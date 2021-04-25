@@ -3,6 +3,8 @@ package astminer.common.model
 import astminer.cli.LabeledResult
 import java.io.File
 import java.io.InputStream
+import java.util.*
+import kotlin.collections.HashMap
 
 
 abstract class Node{
@@ -29,7 +31,39 @@ abstract class Node{
     open fun getChildOfType(typeLabel: String) = getChildrenOfType(typeLabel).firstOrNull()
 
     abstract fun removeChildrenOfType(typeLabel: String)
-    //TODO(move orders here)
+
+    fun preOrderIterator(): Iterator<Node> = PreOrderIterator(this)
+    open fun preOrder(): List<Node> = PreOrderIterator(this).asSequence().toList()
+}
+
+class PreOrderIterator(root: Node): Iterator<Node> {
+    private val stack = ArrayDeque<Node>()
+
+    init {
+        stack.push(root)
+    }
+
+    override fun hasNext(): Boolean {
+        return stack.isNotEmpty()
+    }
+
+    override fun next(): Node {
+        val currentNode = stack.pop()
+        currentNode.children.asReversed().forEach { stack.push(it) }
+        return currentNode
+    }
+}
+
+class PostOrderIterator(root: Node): Iterator<Node> {
+
+    override fun hasNext(): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun next(): Node {
+        TODO("Not yet implemented")
+    }
+
 }
 
 interface Parser<T : Node> {

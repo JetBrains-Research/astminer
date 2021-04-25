@@ -2,7 +2,7 @@ package astminer.cli
 
 import astminer.common.model.MethodInfo
 import astminer.common.model.Node
-import astminer.common.preOrder
+/*import astminer.common.preOrder*/
 import astminer.common.splitToSubtokens
 
 abstract class MethodFilterPredicate {

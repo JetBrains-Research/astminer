@@ -1,7 +1,7 @@
 package astminer.featureextraction
 
 import astminer.common.model.Node
-import astminer.common.preOrder
+/*import astminer.common.preOrder*/
 
 /**
  * Interface that describes tree feature.

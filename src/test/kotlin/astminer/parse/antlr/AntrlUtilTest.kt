@@ -1,6 +1,6 @@
 package astminer.parse.antlr
 
-import astminer.common.preOrder
+/*import astminer.common.preOrder*/
 import astminer.parse.antlr.java.JavaParser
 import org.junit.Assert
 import org.junit.Test

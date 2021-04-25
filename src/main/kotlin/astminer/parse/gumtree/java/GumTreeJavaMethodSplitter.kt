@@ -1,7 +1,7 @@
 package astminer.parse.gumtree.java
 
 import astminer.common.model.*
-import astminer.common.preOrder
+/*import astminer.common.preOrder*/
 import astminer.parse.gumtree.GumTreeNode
 
 private fun GumTreeNode.isTypeNode() = typeLabel.endsWith("Type")
