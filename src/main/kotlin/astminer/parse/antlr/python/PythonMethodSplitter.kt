@@ -43,7 +43,6 @@ class PythonMethodSplitter : TreeMethodSplitter<AntlrNode> {
             parametersRoot != null -> getListOfParameters(parametersRoot)
             else -> emptyList()
         }
-
         return MethodInfo(
                 MethodNode(methodNode, null, methodName),
                 ElementNode(classRoot, className),
