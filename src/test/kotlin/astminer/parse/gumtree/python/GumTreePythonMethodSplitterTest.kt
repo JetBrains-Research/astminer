@@ -73,7 +73,7 @@ class GumTreePythonMethodSplitterTest {
         assertNotNull(method)
         with(method) {
             assertEquals("foo_typed", name)
-            assertEquals("A", enclosingElementName)
+            assertEquals("A", enclosingElement?.name)
             assertEquals(null, returnType)
             assertEquals(3, parameters.size)
             assertEquals(listOf("self", "x", "y"), parameters.map { it.name }.toList())
@@ -88,7 +88,7 @@ class GumTreePythonMethodSplitterTest {
         assertNotNull(method)
         with(method) {
             assertEquals("bar_typed", name)
-            assertEquals("C", enclosingElementName)
+            assertEquals("C", enclosingElement?.name)
             assertEquals(null, returnType)
             assertEquals(2, parameters.size)
             assertEquals(listOf("self", "x"), parameters.map { it.name }.toList())
@@ -104,7 +104,7 @@ class GumTreePythonMethodSplitterTest {
         with(method) {
             assertEquals("async_schrecklich_typed", name)
             assertEquals("AsyncFunctionDef", root.getTypeLabel())
-            assertEquals(null, enclosingElementName)
+            assertEquals(null, enclosingElement?.name)
             assertEquals("int", returnType)
             assertEquals(4, parameters.size)
             assertEquals(listOf("event", "x", "args", "kwargs"), parameters.map { it.name }.toList())
@@ -120,7 +120,7 @@ class GumTreePythonMethodSplitterTest {
         with(method) {
             assertEquals("async_simple_no_typed", name)
             assertEquals("AsyncFunctionDef", root.getTypeLabel())
-            assertEquals(null, enclosingElementName)
+            assertEquals(null, enclosingElement?.name)
             assertEquals(
                 "\n    async doc\n    ",
                 root.getChildOfType("body")
@@ -145,7 +145,7 @@ class GumTreePythonMethodSplitterTest {
         with(method) {
             assertEquals("foo_2", name)
             assertEquals("foo_1", method.root.parent?.wrappedNode?.parent?.label)
-            assertEquals(null, enclosingElementName)
+            assertEquals(null, enclosingElement?.name)
             assertEquals("None", returnType)
             assertEquals(1, parameters.size)
             assertEquals(listOf("c"), parameters.map { it.name }.toList())
@@ -161,7 +161,7 @@ class GumTreePythonMethodSplitterTest {
         with(method) {
             assertEquals("bar_2", name)
             assertEquals("bar_1", method.root.parent?.wrappedNode?.parent?.label)
-            assertEquals(null, enclosingElementName)
+            assertEquals(null, enclosingElement?.name)
             assertEquals("int", returnType)
             assertEquals(2, parameters.size)
             assertEquals(listOf("d", "e"), parameters.map { it.name }.toList())

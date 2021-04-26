@@ -1,5 +1,6 @@
 package astminer.parse.antlr.javascript
 
+import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
 import astminer.parse.antlr.AntlrNode
 import org.junit.Test
@@ -33,12 +34,12 @@ class JavaScriptMethodSplitterTest {
 
     @Test
     fun testValidMethodInfo() {
-        fun String.getEnclosingElementType(): String {
-            return when {
-                "functionDeclaration" in this -> "fun"
-                "classDeclaration" in this -> "class"
-                "methodDefinition" in this -> "method"
-                "variableDeclaration" in this -> "var"
+        fun EnclosingElementType.getEnclosingElementType(): String {
+            return when (this) {
+                EnclosingElementType.Function -> "fun"
+                EnclosingElementType.Class -> "class"
+                EnclosingElementType.Method -> "method"
+                EnclosingElementType.VariableDeclaration -> "var"
                 else -> ""
             }
         }
@@ -46,9 +47,9 @@ class JavaScriptMethodSplitterTest {
         fun FunctionInfo<AntlrNode>.getJsonInfo(): String {
             return "info : {" +
                     "name : ${name}, " +
-                    "args : ${parameters.map { it.name }.joinToString(", ")}, " +
-                    "enclosing element : ${enclosingElement?.getTypeLabel()?.getEnclosingElementType()}, " +
-                    "enclosing element name : ${className}" +
+                    "args : ${parameters.joinToString(", ") { it.name }}, " +
+                    "enclosing element : ${enclosingElement?.type?.getEnclosingElementType()}, " +
+                    "enclosing element name : ${enclosingElement?.name}" +
                     "}"
         }
 
