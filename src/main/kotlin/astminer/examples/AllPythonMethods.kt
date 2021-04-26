@@ -10,7 +10,7 @@ import astminer.storage.path.PathBasedStorageConfig
 import java.io.File
 
 private fun getCsvFriendlyMethodId(functionInfo: FunctionInfo<GumTreeNode>): String {
-    val className = functionInfo.className ?: ""
+    val className = functionInfo.enclosingElement?.name ?: ""
     val methodName = functionInfo.name
     val parameterTypes = functionInfo.parameters.joinToString("|") { it.name }
     return "$className.$methodName($parameterTypes)"

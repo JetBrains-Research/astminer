@@ -23,21 +23,22 @@ interface FunctionInfo<T : Node> {
         get() = notImplemented("parameters")
     val returnType: String?
         get() = notImplemented("returnType")
-
-    // is null because can be only from a small set like {variableDeclaration, classDeclaration..}
-    // for instance it cannot be the root of the tree
-    // thats why it is probably called "element" and not "node"
-    val enclosingElement: T?
-        get() = notImplemented("enclosingNode")
-    val enclosingElementName: String?
-        get() = notImplemented("enclosingElementName")
-    val className: String?
-        get() = notImplemented("className")
+    val enclosingElement: EnclosingElement<T>?
+        get() = notImplemented("enclosingElement")
     val isConstructor: Boolean
         get() = notImplemented("isConstructor")
 }
 
 data class MethodInfoParameter(val name: String, val type: String?)
+
+data class EnclosingElement<T>(val type: EnclosingElementType, val name: String?, val root: T)
+
+enum class EnclosingElementType {
+    Class,
+    Function,
+    Method,
+    VariableDeclaration,
+}
 
 // TODO: should be removed
 class DummyFunctionInfo<T : Node> : FunctionInfo<T>

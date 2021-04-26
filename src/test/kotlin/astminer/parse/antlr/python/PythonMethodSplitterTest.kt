@@ -42,14 +42,14 @@ class PythonMethodSplitterTest {
     fun testFunctionInClass() {
         val methodClass = methodInfos.find { it.name == "funInClass1"  }
         assertNotNull(methodClass)
-        assertEquals( "Class1", methodClass.enclosingElementName)
+        assertEquals( "Class1", methodClass.enclosingElement?.name)
     }
 
     @Test
     fun testFunctionInNestedClass() {
         val methodClass = methodInfos.find { it.name == "funInClass2"  }
         assertNotNull(methodClass)
-        assertEquals( "Class2", methodClass.enclosingElementName)
+        assertEquals( "Class2", methodClass.enclosingElement?.name)
     }
 
     @Test

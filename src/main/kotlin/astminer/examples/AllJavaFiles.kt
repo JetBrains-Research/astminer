@@ -20,7 +20,7 @@ fun allJavaFiles() {
         JavaMethodSplitter().splitIntoMethods(node).forEach {
             println(it.name)
             println(it.returnType)
-            println(it.className)
+            println(it.enclosingElement?.name)
             it.parameters.forEach { parameter ->
                 println("${parameter.name} ${parameter.type}")
             }
