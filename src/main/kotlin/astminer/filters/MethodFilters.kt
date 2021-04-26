@@ -1,4 +1,4 @@
-package astminer.cli
+package astminer.filters
 
 import astminer.common.model.FunctionInfo
 import astminer.common.model.Node
@@ -40,16 +40,6 @@ class MethodAnyNodeWordsNumberFilter(private val maxWordsNumber: Int) : MethodFi
             true
         } else {
             !functionInfo.root.preOrder().any { node -> splitToSubtokens(node.getToken()).size > maxWordsNumber }
-        }
-    }
-}
-
-class TreeSizeFilterPredicate(private val maxSize: Int) : MethodFilter {
-    override fun isFiltered(functionInfo: FunctionInfo<out Node>): Boolean {
-        return if (maxSize == -1) {
-            true
-        } else {
-            functionInfo.root.preOrder().size <= maxSize
         }
     }
 }

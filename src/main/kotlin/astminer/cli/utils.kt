@@ -6,6 +6,7 @@ import astminer.parse.fuzzy.cpp.FuzzyCppParser
 import astminer.parse.gumtree.java.GumTreeJavaParser
 import astminer.common.model.Node
 import astminer.common.model.Parser
+import astminer.filters.*
 import astminer.parse.antlr.javascript.JavaScriptParser
 
 fun getParser(

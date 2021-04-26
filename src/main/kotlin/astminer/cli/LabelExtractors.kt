@@ -5,6 +5,7 @@ import astminer.common.model.ParseResult
 import astminer.common.model.FunctionInfo
 import astminer.common.preOrder
 import astminer.common.setTechnicalToken
+import astminer.filters.MethodFilter
 import astminer.parse.antlr.AntlrNode
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.javascript.JavaScriptMethodSplitter
