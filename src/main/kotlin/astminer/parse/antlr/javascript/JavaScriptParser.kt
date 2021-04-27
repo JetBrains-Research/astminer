@@ -1,6 +1,7 @@
 package astminer.parse.antlr.javascript
 
 import astminer.common.model.Parser
+import astminer.parse.ParsingException
 import astminer.parse.antlr.AntlrNode
 import astminer.parse.antlr.convertAntlrTree
 import me.vovak.antlr.parser.JavaScriptLexer
@@ -11,7 +12,7 @@ import java.io.InputStream
 import java.lang.Exception
 
 class JavaScriptParser : Parser<AntlrNode> {
-    override fun parseInputStream(content: InputStream): AntlrNode? {
+    override fun parseInputStream(content: InputStream): AntlrNode {
         return try {
             val lexer = JavaScriptLexer(CharStreams.fromStream(content))
             lexer.removeErrorListeners()
@@ -21,7 +22,7 @@ class JavaScriptParser : Parser<AntlrNode> {
             val context = parser.program()
             convertAntlrTree(context, JavaScriptParser.ruleNames, JavaScriptParser.VOCABULARY)
         } catch (e: Exception) {
-            null
+            throw ParsingException("Failed to parse JavaScript code ${e.message}")
         }
     }
 }

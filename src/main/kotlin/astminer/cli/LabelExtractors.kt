@@ -36,12 +36,8 @@ abstract class FileLabelExtractor : LabelExtractor {
             parseResult: ParseResult<out Node>
     ): List<LabeledResult<out Node>> {
         val (root, filePath) = parseResult
-        return if (root == null) {
-            emptyList()
-        } else {
-            val label = extractLabel(root, filePath) ?: return emptyList()
-            listOf(LabeledResult(root, label, parseResult.filePath))
-        }
+        val label = extractLabel(root, filePath) ?: return emptyList()
+        return listOf(LabeledResult(root, label, parseResult.filePath))
     }
 
     abstract fun extractLabel(root: Node, filePath: String): String?
@@ -57,9 +53,6 @@ abstract class MethodLabelExtractor(
             parseResult: ParseResult<out Node>
     ): List<LabeledResult<out Node>> {
         val (root, filePath) = parseResult
-        if (root == null) {
-            return emptyList()
-        }
         val fileExtension = File(filePath).extension
         val methodInfos = when (fileExtension) {
             "c", "cpp" -> {
