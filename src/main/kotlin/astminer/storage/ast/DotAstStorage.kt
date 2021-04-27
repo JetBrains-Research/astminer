@@ -2,7 +2,6 @@ package astminer.storage.ast
 
 import astminer.cli.LabeledResult
 import astminer.common.model.Node
-/*import astminer.common.preOrder*/
 import astminer.common.storage.RankedIncrementalIdStorage
 import astminer.storage.Storage
 import astminer.storage.TokenProcessor
