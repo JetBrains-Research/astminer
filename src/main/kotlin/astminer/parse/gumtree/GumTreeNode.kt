@@ -26,4 +26,6 @@ class GumTreeNode(val wrappedNode: ITree, val context: TreeContext,override var 
         return children.filterIsInstance<GumTreeNode>()
             .apply { if (size != children.size) throw TypeCastException("Node have children of different types") }
     }
+
+    override fun preOrder(): List<GumTreeNode> = super.preOrder().map { it as GumTreeNode }
 }

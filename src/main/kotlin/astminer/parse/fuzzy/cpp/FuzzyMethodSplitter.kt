@@ -21,7 +21,7 @@ class FuzzyMethodSplitter : TreeMethodSplitter<FuzzyNode> {
 
     override fun splitIntoMethods(root: FuzzyNode): Collection<MethodInfo<FuzzyNode>> {
         val methodRoots = root.preOrder().filter { it.typeLabel == METHOD_NODE }
-        return methodRoots.map { collectMethodInfo(it as FuzzyNode) }
+        return methodRoots.map { collectMethodInfo(it) }
     }
 
     private fun collectMethodInfo(methodNode: FuzzyNode): MethodInfo<FuzzyNode> {

@@ -30,4 +30,6 @@ class FuzzyNode(override val typeLabel: String,token: String?, order: Int?) : No
     override fun removeChildrenOfType(typeLabel: String) {
         childrenMultiset.removeIf { it.typeLabel == typeLabel }
     }
+
+    override fun preOrder(): List<FuzzyNode> = super.preOrder().map { it as FuzzyNode }
 }

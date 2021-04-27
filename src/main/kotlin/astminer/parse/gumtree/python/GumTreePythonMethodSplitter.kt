@@ -35,7 +35,7 @@ class GumTreePythonMethodSplitter : TreeMethodSplitter<GumTreeNode> {
 
     override fun splitIntoMethods(root: GumTreeNode): Collection<MethodInfo<GumTreeNode>> {
         val methodRoots = root.preOrder().filter { TypeLabels.methodDefinitions.contains(it.typeLabel) }
-        return methodRoots.map { collectMethodInfo(it as GumTreeNode) }
+        return methodRoots.map { collectMethodInfo(it) }
     }
 
     private fun collectMethodInfo(methodNode: GumTreeNode): MethodInfo<GumTreeNode> {
