@@ -25,7 +25,7 @@ class JavaMethodSplitter : TreeMethodSplitter<AntlrNode> {
         val methodRoots = root.preOrder().filter {
             decompressTypeLabel(it.typeLabel).last() == METHOD_NODE
         }
-        return methodRoots.map { collectMethodInfo(it as AntlrNode) }
+        return methodRoots.map { collectMethodInfo(it) }
     }
 
     private fun collectMethodInfo(methodNode: AntlrNode): MethodInfo<AntlrNode> {

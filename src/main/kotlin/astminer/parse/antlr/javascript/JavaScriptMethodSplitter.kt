@@ -19,9 +19,9 @@ class JavaScriptMethodSplitter : TreeMethodSplitter<AntlrNode> {
     override fun splitIntoMethods(root: AntlrNode): Collection<MethodInfo<AntlrNode>> {
         val methodRoots: List<JavaScriptElement> = root.preOrder().map { node ->
             when {
-                node.isArrowElement() -> ArrowElement(node as AntlrNode)
-                node.isFunctionElement() -> FunctionElement(node as AntlrNode)
-                node.isMethodElement() -> MethodElement(node as AntlrNode)
+                node.isArrowElement() -> ArrowElement(node)
+                node.isFunctionElement() -> FunctionElement(node)
+                node.isMethodElement() -> MethodElement(node)
                 else -> null
             }
         }.filterNotNull()
