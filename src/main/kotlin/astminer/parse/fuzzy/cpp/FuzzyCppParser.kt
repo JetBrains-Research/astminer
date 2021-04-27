@@ -2,6 +2,7 @@ package astminer.parse.fuzzy.cpp
 
 import astminer.common.model.ParseResult
 import astminer.common.model.Parser
+import astminer.parse.ParsingException
 import io.shiftleft.codepropertygraph.Cpg
 import io.shiftleft.codepropertygraph.generated.EdgeTypes
 import io.shiftleft.codepropertygraph.generated.NodeKeys
@@ -68,14 +69,13 @@ class FuzzyCppParser : Parser<FuzzyNode> {
      * @param content to parse
      * @return root of AST if content was parsed, null otherwise
      */
-    override fun parseInputStream(content: InputStream): FuzzyNode? {
+    override fun parseInputStream(content: InputStream): FuzzyNode {
         val file = File.createTempFile("fuzzy", ".cpp")
         file.deleteOnExit()
         file.outputStream().use {
             content.copyTo(it)
         }
-        val nodes = parseFile(file)
-        return nodes.root
+        return parseFile(file).root
     }
 
     /**
@@ -121,10 +121,11 @@ class FuzzyCppParser : Parser<FuzzyNode> {
                 if (File(actualFilePath).absolutePath != File(filePath).absolutePath) {
                     println("While parsing $filePath, actually parsed $actualFilePath")
                 }
-                return ParseResult(vertexToNode[it], actualFilePath)
+                val node = vertexToNode[it] ?: throw ParsingException("Unknown fuzzy cpp parser error.")
+                return ParseResult(node, actualFilePath)
             }
         }
-        return ParseResult(null, filePath)
+        throw ParsingException("Unknown fuzzy cpp parser error.")
     }
 
     /**

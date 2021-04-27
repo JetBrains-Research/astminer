@@ -9,7 +9,6 @@ import astminer.parse.antlr.AntlrNode
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 internal class LabelExtractorTest {
 
@@ -22,14 +21,6 @@ internal class LabelExtractorTest {
     }
 
     @Test
-    fun testEmptyFilePathExtractor() {
-        val labelExtractor = FilePathExtractor()
-        val emptyParseResult = ParseResult(null, PATH_STRING)
-        val labeledParseResults = labelExtractor.toLabeledData(emptyParseResult)
-        assertTrue { labeledParseResults.isEmpty() }
-    }
-
-    @Test
     fun testNonEmptyFilePathExtractor() {
         val labelExtractor = FilePathExtractor()
         val nonEmptyParseResult = ParseResult(DUMMY_ROOT, PATH_STRING)
@@ -38,14 +29,6 @@ internal class LabelExtractorTest {
         val (root, label) = labeledParseResults[0]
         assertEquals(DUMMY_ROOT, root)
         assertEquals(PATH_STRING, label)
-    }
-
-    @Test
-    fun testEmptyFolderExtractor() {
-        val labelExtractor = FolderExtractor()
-        val emptyParseResult = ParseResult(null, PATH_STRING)
-        val labeledParseResults = labelExtractor.toLabeledData(emptyParseResult)
-        assertTrue { labeledParseResults.isEmpty() }
     }
 
     @Test
