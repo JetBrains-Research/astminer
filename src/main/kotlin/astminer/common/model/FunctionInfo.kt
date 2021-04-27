@@ -13,8 +13,12 @@ interface FunctionInfo<T : Node> {
         get() = notImplemented("nameNode")
     val name: String?
         get() = nameNode?.getToken()
+    val parseResult: ParseResult<T>
+        get() = notImplemented("parseResult")
     val root: T
-        get() = notImplemented("root")
+        get() = parseResult.root
+    val filePath: String
+        get() = parseResult.filePath
     val annotations: List<String>
         get() = notImplemented("annotations")
     val modifiers: List<String>
