@@ -6,7 +6,7 @@ import astminer.parse.antlr.firstLabelIn
 import astminer.parse.antlr.hasLastLabel
 import astminer.parse.antlr.lastLabelIn
 
-data class AntlrJavaFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNode> {
+class AntlrJavaFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNode> {
     override val nameNode: AntlrNode? = collectNameNode()
     override val parameters: List<MethodInfoParameter> = collectParameters()
     override val returnType: String? = collectReturnType()
