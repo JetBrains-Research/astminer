@@ -1,31 +1,45 @@
-def funWithNoClass():
+def fun_with_no_class():
     pass
 
 class Class1:
 
-    def funInClass1():
+    def fun_in_class1(self):
         pass
 
     class Class2:
 
-        def funInClass2():
+        def fun_in_class2(self):
             pass
 
-def functionWithNoParameters():
+def function_with_no_parameters():
     pass
 
-def functionWithOneParameter(p1):
+def function_with_one_parameter(p1):
     pass
 
-def functionWithOneTypedParameter(p1: int):
+def function_with_one_typed_parameter(p1: int):
     pass
 
-def functionWithThreeParameters(p1, p2 = 4, p3: int = 3):
+def function_with_three_parameters(p1, p2 = 4, p3: int = 3):
     pass
 
-def functionContainingFunction():
-    def someFunction():
+class Class3:
+    def fun_with_parameter_in_class(self, p1):
+        pass
+
+    def fun_with_typed_parameter_in_class(self, p1: int):
+        pass
+
+def function_containing_function():
+    def function_inside_function():
         pass
     pass
 
-hello = lambda x, y: x + y
+class Class4:
+    def some_method(self):
+        def function_inside_method():
+            pass
+    def second_method(self):
+        def second_function_inside_method():
+            def fun_inside_fun_inside_method():
+                pass
