@@ -77,7 +77,7 @@ fun Node.hasLastLabel(label: String): Boolean {
     return decompressTypeLabel(this.getTypeLabel()).last() == label
 }
 
-fun Node.hasLastLabel(labels: List<String>): Boolean {
+fun Node.lastLabelIn(labels: List<String>): Boolean {
     return labels.contains(decompressTypeLabel(this.getTypeLabel()).last())
 }
 

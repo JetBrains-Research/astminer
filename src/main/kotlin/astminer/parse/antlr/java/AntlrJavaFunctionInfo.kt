@@ -4,12 +4,13 @@ import astminer.common.model.*
 import astminer.parse.antlr.AntlrNode
 import astminer.parse.antlr.firstLabelIn
 import astminer.parse.antlr.hasLastLabel
+import astminer.parse.antlr.lastLabelIn
 
 data class AntlrJavaFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNode> {
     override val nameNode: AntlrNode? = collectNameNode()
     override val parameters: List<MethodInfoParameter> = collectParameters()
     override val returnType: String? = collectReturnType()
-    override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingClass(root)
+    override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingClass()
 
     companion object {
         private const val METHOD_RETURN_TYPE_NODE = "typeTypeOrVoid"
@@ -31,53 +32,54 @@ data class AntlrJavaFunctionInfo(override val root: AntlrNode) : FunctionInfo<An
 
     private fun collectReturnType(): String? {
         val returnTypeNode = root.getChildOfType(METHOD_RETURN_TYPE_NODE)
-        return returnTypeNode?.let { collectParameterToken(it) }
-        //TODO(check postprocessing)
+        return returnTypeNode?.let { getTokensFromSubtree(it) }
     }
 
-    private fun collectEnclosingClass(node: AntlrNode?): EnclosingElement<AntlrNode>? {
-        return when {
-            node == null -> null
-            node.hasLastLabel(CLASS_DECLARATION_NODE) -> EnclosingElement(
-                type = EnclosingElementType.Class,
-                name = node.getChildOfType(CLASS_NAME_NODE)?.getToken(),
-                root = node
-            )
-            else -> collectEnclosingClass(node.getParent() as AntlrNode)
+    private fun collectEnclosingClass(): EnclosingElement<AntlrNode>? {
+        val enclosingClassNode = findEnclosingClassNode(root) ?: return null
+        return EnclosingElement(
+            type = EnclosingElementType.Class,
+            name = enclosingClassNode.getChildOfType(CLASS_NAME_NODE)?.getToken(),
+            root = enclosingClassNode
+        )
+    }
+
+    private fun findEnclosingClassNode(node: AntlrNode?): AntlrNode? {
+        if (node == null || node.hasLastLabel(CLASS_DECLARATION_NODE)) {
+            return node
         }
+        return findEnclosingClassNode(node.getParent() as AntlrNode)
     }
 
     private fun collectParameters(): List<MethodInfoParameter> {
         val parametersRoot = root.getChildOfType(METHOD_PARAMETER_NODE)
         val innerParametersRoot = parametersRoot?.getChildOfType(METHOD_PARAMETER_INNER_NODE) ?: return emptyList()
 
-        if (innerParametersRoot.hasLastLabel(METHOD_SINGLE_PARAMETER_NODES)) {
+        if (innerParametersRoot.lastLabelIn(METHOD_SINGLE_PARAMETER_NODES)) {
             return listOf(getParameterInfo(innerParametersRoot))
         }
 
         return innerParametersRoot.getChildren().filter {
             it.firstLabelIn(METHOD_SINGLE_PARAMETER_NODES)
-        }.map { getParameterInfo(it) }
+        }.map {singleParameter -> getParameterInfo(singleParameter) }
     }
 
     private fun getParameterInfo(parameterNode: AntlrNode): MethodInfoParameter {
         val returnTypeNode = parameterNode.getChildOfType(PARAMETER_RETURN_TYPE_NODE)
-        val returnTypeToken = returnTypeNode?.let { collectParameterToken(it) }
+        val returnTypeToken = returnTypeNode?.let { getTokensFromSubtree(it) }
 
         val parameterName = parameterNode.getChildOfType(PARAMETER_NAME_NODE)?.getToken()
             ?: throw IllegalStateException("Parameter name wasn't found")
 
         return MethodInfoParameter(parameterName, returnTypeToken)
-
     }
 
-    //TODO(rename)
-    private fun collectParameterToken(parameterNode: AntlrNode): String {
-        if (parameterNode.isLeaf()) {
-            return parameterNode.getToken()
+    private fun getTokensFromSubtree(node: AntlrNode): String {
+        if (node.isLeaf()) {
+            return node.getToken()
         }
-        return parameterNode.getChildren().joinToString(separator = "") { child ->
-            collectParameterToken(child)
+        return node.getChildren().joinToString(separator = "") { child ->
+            getTokensFromSubtree(child)
         }
     }
 }
