@@ -12,7 +12,7 @@ import kotlin.test.assertNull
 
 class PythonMethodSplitterTest {
     companion object {
-        const val N_FUNCTIONS = 6
+        const val N_FUNCTIONS = 9
         val methodSplitter = PythonMethodSplitter()
         val parser = PythonParser()
     }
