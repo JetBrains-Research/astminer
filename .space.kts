@@ -1,5 +1,5 @@
 job("Test") {
-    container("openjdk:11") {
+    container("ubuntu") {
         shellScript {
             content = """
               ./gradlew test    
@@ -15,7 +15,7 @@ job("Release") {
         }
     }
 
-    container("openjdk:11") {
+    container("ubuntu") {
         env["PUBLISH_USER"] = Secrets("publish_user")
         env["PUBLISH_PASSWORD"] = Secrets("publish_password")
 
