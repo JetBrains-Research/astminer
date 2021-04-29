@@ -104,6 +104,14 @@ jmh {
 }
 
 publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "io.github.vovak"
+            artifactId = "astminer"
+            version = "0.6.0"
+            from(components["java"])
+        }
+    }
     repositories {
         maven {
             url = uri("https://packages.jetbrains.team/maven/p/astminer/astminer")
@@ -118,7 +126,7 @@ publishing {
 application.mainClassName = "astminer.MainKt"
 shadowJar {
     jar {
-        archiveName = "astminer-$version.jar"
+        archiveName = "astminer-0.6.0.jar"
         mainClass = "astminer.MainKt"
     }
 }.apply {
