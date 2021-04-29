@@ -112,8 +112,8 @@ publishing {
         maven {
             url = uri("https://packages.jetbrains.team/maven/p/astminer/astminer")
             credentials {
-                username = System.getenv("publish-user")
-                password = System.getenv("publish-password")
+                username = System.getenv("PUBLISH_USER")
+                password = System.getenv("PUBLISH_PASSWORD")
             }
         }
     }
