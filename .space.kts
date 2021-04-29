@@ -22,7 +22,7 @@ job("Release") {
 
         shellScript {
             content = """
-              apt-get update && apt-get install -y openjdk-8-jdk g++
+              apt-get update && apt-get install -y openjdk-8-jdk build-essential
               ./gradlew build publish    
           """
         }
