@@ -11,7 +11,7 @@ job("Release") {
 
         shellScript {
             content = """
-              ./gradlew publish    
+              ./gradlew build publish    
           """
         }
     }
