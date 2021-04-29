@@ -67,7 +67,7 @@ Parse all files written in specified language into ASTs, split into methods, and
 
 #### Import
 
-Astminer is available in [Bintray repo](https://bintray.com/egor-bogomolov/astminer/astminer). You can add the dependency in your `build.gradle` file:
+Astminer is available in the JetBrains Space package repository. You can add the dependency in your `build.gradle` file:
 ```
 repositories {
     maven {
