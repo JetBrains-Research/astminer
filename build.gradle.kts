@@ -1,3 +1,5 @@
+import tanvd.kosogor.proxy.shadowJar
+
 val version = "0.6.0"
 
 plugins {
@@ -118,4 +120,14 @@ publishing {
             }
         }
     }
+}
+
+application.mainClassName = "astminer.MainKt"
+shadowJar {
+    jar {
+        archiveName = "astminer-$version.jar"
+        mainClass = "astminer.MainKt"
+    }
+}.apply {
+    task.archiveClassifier.set("")
 }
