@@ -1,3 +1,5 @@
+val version = "0.6.dev1"
+
 plugins {
     id("java")
     kotlin("jvm") version "1.4.32" apply true
@@ -97,24 +99,21 @@ jmh {
     resultsFile = file("build/reports/benchmarks.csv")
 }
 
-val groupId: String by project
-val artifactId: String by project
-val version: String by project
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = groupId
-            artifactId = artifactId
+            groupId = "io.github.vovak"
+            artifactId = "astminer"
             version = version
+            from(components["java"])
         }
     }
     repositories {
         maven {
-            name = artifactId
-            url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+            url = uri("https://packages.jetbrains.team/maven/p/astminer/astminer")
             credentials {
-                username = System.getenv("MAVEN_USERNAME")
-                password = System.getenv("MAVEN_PASSWORD")
+                username = System.getenv("publish-user")
+                password = System.getenv("publish-password")
             }
         }
     }
