@@ -1,3 +1,13 @@
+job("Test") {
+    container("openjdk:11") {
+        shellScript {
+            content = """
+              ./gradlew test    
+          """
+        }
+    }
+}
+
 job("Release") {
     startOn {
         gitPush {
@@ -11,7 +21,7 @@ job("Release") {
 
         shellScript {
             content = """
-              ./gradlew publish    
+              ./gradlew build publish    
           """
         }
     }
