@@ -2,7 +2,7 @@ job("Test") {
     container("ubuntu") {
         shellScript {
             content = """
-              apt-get update && apt-get install -y openjdk-8-jdk gcc
+              apt-get update && apt-get install -y openjdk-8-jdk g++
               ./gradlew test    
           """
         }
@@ -22,7 +22,7 @@ job("Release") {
 
         shellScript {
             content = """
-              apt-get update && apt-get install -y openjdk-8-jdk gcc
+              apt-get update && apt-get install -y openjdk-8-jdk g++
               ./gradlew build publish    
           """
         }
