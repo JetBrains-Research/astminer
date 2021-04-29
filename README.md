@@ -72,7 +72,7 @@ Astminer is available in [Bintray repo](https://bintray.com/egor-bogomolov/astmi
 ```
 repositories {
     maven {
-        url  "https://dl.bintray.com/egor-bogomolov/astminer" 
+        url "https://packages.jetbrains.team/maven/p/astminer/astminer"
     }
 }
 
@@ -84,7 +84,7 @@ dependencies {
 If you use `build.gradle.kts`:
 ```
 repositories {
-    maven(url = "https://dl.bintray.com/egor-bogomolov/astminer/")
+    maven(url = uri("https://packages.jetbrains.team/maven/p/astminer/astminer"))
 }
 
 dependencies {
