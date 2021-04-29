@@ -94,7 +94,7 @@ dependencies {
 
 #### Examples
 
-If you want to use astminer as a library in your Java/Kotlin based data mining tool, check the following examples:
+If you want to use `astminer` as a library in your Java/Kotlin based data mining tool, check the following examples:
 
 * A few [simple usage examples](src/main/kotlin/astminer/examples) can be run with `./gradlew run`.
 
@@ -104,7 +104,7 @@ Please consider trying Kotlin for your data mining pipelines: from our experienc
 
 ### Output format
 
-For path-based representations, astminer supports two output formats. In both of them, we store 4 `.csv` files:
+For path-based representations, `astminer` supports two output formats. In both of them, we store 4 `.csv` files:
 1. `node_types.csv` contains numeric ids and corresponding node types with directions (up/down, as described in [paper](https://arxiv.org/pdf/1803.09544.pdf));
 2. `tokens.csv` contains numeric ids and corresponding tokens;
 3. `paths.csv` contains numeric ids and AST paths in form of space-separated sequences of node type ids;
@@ -132,14 +132,14 @@ If the language has a parsing tool that is available as Java library:
 See [FuzzyCppParser](src/main/kotlin/astminer/parse/cpp/FuzzyCppParser.kt) for an example of a wrapper.
 
 ## Contribution
-We believe that astminer could find use beyond our own mining tasks.
+We believe that `astminer` could find use beyond our own mining tasks.
 
-Please help make astminer easier to use by sharing your use cases. Pull requests are welcome as well.
+Please help make `astminer` easier to use by sharing your use cases. Pull requests are welcome as well.
 Support for other languages and documentation are the key areas of improvement.
 
 ## Citing astminer
-A [paper](https://zenodo.org/record/2595271) dedicated to astminer (more precisely, to its older version [PathMiner](https://github.com/vovak/astminer/tree/pathminer)) was presented at [MSR'19](https://2019.msrconf.org/). 
-If you use astminer in your academic work, please cite it.
+A [paper](https://zenodo.org/record/2595271) dedicated to `astminer` (more precisely, to its older version [PathMiner](https://github.com/vovak/astminer/tree/pathminer)) was presented at [MSR'19](https://2019.msrconf.org/). 
+If you use `astminer` in your academic work, please cite it.
 ```
 @inproceedings{kovalenko2019pathminer,
   title={PathMiner: a library for mining of path-based representations of code},
