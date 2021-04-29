@@ -1,4 +1,4 @@
-val version = "0.6.dev1"
+val version = "0.6.0"
 
 plugins {
     id("java")
@@ -9,6 +9,7 @@ plugins {
     id("org.jetbrains.dokka") version "0.9.18"
     id("me.champeau.gradle.jmh") version "0.5.0"
     id("maven-publish")
+    id("tanvd.kosogor") version "1.0.10" apply true
 }
 
 defaultTasks("run")
