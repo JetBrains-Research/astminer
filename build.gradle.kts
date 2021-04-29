@@ -1,6 +1,7 @@
 import tanvd.kosogor.proxy.shadowJar
 
-val version = "0.6.0"
+group = "io.github.vovak.astminer"
+version = "0.6.0"
 
 plugins {
     id("java")
@@ -103,14 +104,6 @@ jmh {
 }
 
 publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "io.github.vovak"
-            artifactId = "astminer"
-            version = version
-            from(components["java"])
-        }
-    }
     repositories {
         maven {
             url = uri("https://packages.jetbrains.team/maven/p/astminer/astminer")
