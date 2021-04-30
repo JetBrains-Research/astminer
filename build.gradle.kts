@@ -1,7 +1,7 @@
 import tanvd.kosogor.proxy.shadowJar
 
-group = "io.github.vovak.astminer"
-version = "0.6.0"
+group = "io.github.vovak"
+version = "0.6.1"
 
 plugins {
     id("java")
@@ -52,7 +52,7 @@ sourceSets["main"].java.srcDir(file(generatedSourcesPath))
 idea.module.generatedSourceDirs.add(file(generatedSourcesPath))
 
 tasks.generateGrammarSource {
-    maxHeapSize = "64m"
+//    maxHeapSize = "64m"
     arguments = arguments + listOf("-package", "me.vovak.antlr.parser")
     // Keep a copy of generated sources
     doLast {
@@ -104,14 +104,6 @@ jmh {
 }
 
 publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "io.github.vovak"
-            artifactId = "astminer"
-            version = "0.6.0"
-            from(components["java"])
-        }
-    }
     repositories {
         maven {
             url = uri("https://packages.jetbrains.team/maven/p/astminer/astminer")
@@ -126,8 +118,7 @@ publishing {
 application.mainClassName = "astminer.MainKt"
 shadowJar {
     jar {
-        archiveName = "astminer-0.6.0.jar"
-        mainClass = "astminer.MainKt"
+        archiveName = "astminer-$version.jar"
     }
 }.apply {
     task.archiveClassifier.set("")
