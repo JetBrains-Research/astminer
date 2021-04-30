@@ -22,9 +22,9 @@ class PrettyNode(private val type: String, private val token: String) : Node {
         repeat(indent) { append(indentSymbol) }
         append(getTypeLabel())
         if (getToken().isNotEmpty()) {
-            appendln(" : ${getToken()}")
+            appendLine(" : ${getToken()}")
         } else {
-            appendln()
+            appendLine()
         }
         getChildren().forEach { append(it.toPrettyString(indent + 1, indentSymbol)) }
         toString()
@@ -46,7 +46,7 @@ class PrettyNode(private val type: String, private val token: String) : Node {
 
 }
 
-fun restoreFromPrettyPrint(prettyPrintedTree: String, indentSymbol: String = "--") : PrettyNode? {
+fun restoreFromPrettyPrint(prettyPrintedTree: String, indentSymbol: String = "--") : PrettyNode {
     val lastNodeByIndent = HashMap<Int, PrettyNode>()
     val tree = prettyPrintedTree.lines().map { s ->
         val (node, indent) = restorePrintedNode(s, indentSymbol)

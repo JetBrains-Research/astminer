@@ -25,7 +25,7 @@ class TreeFeatureTestUtilTest {
         node7.setParent(node3)
 
         val prettyTree = node0.toPrettyString()
-        val restoredTree = restoreFromPrettyPrint(prettyTree)!!
+        val restoredTree = restoreFromPrettyPrint(prettyTree)
         val prettyRestoredTree = restoredTree.toPrettyString()
 
         Assert.assertEquals(prettyTree, prettyRestoredTree)
