@@ -1,6 +1,6 @@
 package astminer.common.model
 
-import astminer.cli.LabeledResult
+import astminer.problem.LabeledResult
 import astminer.parse.ParsingException
 import java.io.File
 import java.io.InputStream

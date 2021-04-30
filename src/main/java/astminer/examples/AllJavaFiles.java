@@ -1,6 +1,6 @@
 package astminer.examples;
 
-import astminer.cli.LabeledResult;
+import astminer.problem.LabeledResult;
 import astminer.common.model.*;
 import astminer.parse.gumtree.java.GumTreeJavaParser;
 import astminer.storage.*;
@@ -30,9 +30,6 @@ public class AllJavaFiles {
             @Override
             public FileVisitResult visitFile(@NotNull Path file, BasicFileAttributes attributes) throws IOException {
                 Node fileTree = new GumTreeJavaParser().parseInputStream(new FileInputStream(file.toFile()));
-                if (fileTree == null) {
-                    return FileVisitResult.CONTINUE;
-                }
 
                 String filePath = file.toAbsolutePath().toString();
                 pathStorage.store(new LabeledResult<>(fileTree, filePath, filePath));

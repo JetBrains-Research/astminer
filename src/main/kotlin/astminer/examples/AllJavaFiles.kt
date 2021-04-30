@@ -1,6 +1,6 @@
 package astminer.examples
 
-import astminer.cli.LabeledResult
+import astminer.problem.LabeledResult
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.java.JavaParser
 import astminer.storage.path.Code2VecPathStorage
@@ -15,7 +15,7 @@ fun allJavaFiles() {
     val storage = Code2VecPathStorage(outputDir, PathBasedStorageConfig(5, 5))
 
     File(inputDir).forFilesWithSuffix("11.java") { file ->
-        val node = JavaParser().parseInputStream(file.inputStream()) ?: return@forFilesWithSuffix
+        val node = JavaParser().parseInputStream(file.inputStream())
         node.prettyPrint()
         JavaMethodSplitter().splitIntoMethods(node).forEach {
             println(it.name)

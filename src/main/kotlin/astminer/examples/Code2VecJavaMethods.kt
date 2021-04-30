@@ -1,6 +1,6 @@
 package astminer.examples
 
-import astminer.cli.LabeledResult
+import astminer.problem.LabeledResult
 import astminer.cli.MethodNameExtractor
 import astminer.common.*
 import astminer.parse.antlr.java.JavaMethodSplitter
@@ -21,7 +21,7 @@ fun code2vecJavaMethods() {
 
     File(folder).forFilesWithSuffix(".java") { file ->
         //parse file
-        val fileNode = JavaParser().parseInputStream(file.inputStream()) ?: return@forFilesWithSuffix
+        val fileNode = JavaParser().parseInputStream(file.inputStream())
 
         //extract method nodes
         val methods = JavaMethodSplitter().splitIntoMethods(fileNode)

@@ -5,6 +5,7 @@ import astminer.common.model.ParseResult
 import astminer.common.model.FunctionInfo
 import astminer.common.preOrder
 import astminer.common.setTechnicalToken
+import astminer.problem.LabeledResult
 import astminer.parse.antlr.AntlrNode
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.javascript.JavaScriptMethodSplitter
@@ -15,15 +16,6 @@ import astminer.parse.gumtree.GumTreeNode
 import astminer.parse.gumtree.java.GumTreeJavaMethodSplitter
 import astminer.parse.gumtree.python.GumTreePythonMethodSplitter
 import java.io.File
-
-
-/**
- * An AST subtree with a label and the path of the source file.
- * @property root The root of the AST subtree.
- * @property label Any label for this subtree.
- * @property filePath The path to the source file where the AST is from.
- */
-data class LabeledResult<T : Node>(val root: T, val label: String, val filePath: String)
 
 
 interface LabelExtractor {

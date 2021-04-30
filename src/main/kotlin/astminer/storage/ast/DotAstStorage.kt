@@ -1,6 +1,6 @@
 package astminer.storage.ast
 
-import astminer.cli.LabeledResult
+import astminer.problem.LabeledResult
 import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.common.storage.RankedIncrementalIdStorage

@@ -1,6 +1,6 @@
 package astminer.common
 
-import astminer.cli.LabeledResult
+import astminer.problem.LabeledResult
 import astminer.common.model.Node
 
 

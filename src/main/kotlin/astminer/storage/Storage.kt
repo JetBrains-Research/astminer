@@ -1,6 +1,6 @@
 package astminer.storage
 
-import astminer.cli.LabeledResult
+import astminer.problem.LabeledResult
 import astminer.common.model.Node
 import java.io.Closeable
 

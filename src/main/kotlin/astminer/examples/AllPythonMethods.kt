@@ -1,6 +1,6 @@
 package astminer.examples
 
-import astminer.cli.LabeledResult
+import astminer.problem.LabeledResult
 import astminer.common.model.FunctionInfo
 import astminer.parse.gumtree.python.GumTreePythonMethodSplitter
 import astminer.parse.gumtree.GumTreeNode
@@ -24,7 +24,7 @@ fun allPythonMethods() {
 
     File(inputDir).forFilesWithSuffix(".py") { file ->
         // parse file
-        val fileNode = GumTreePythonParser().parseInputStream(file.inputStream()) ?: return@forFilesWithSuffix
+        val fileNode = GumTreePythonParser().parseInputStream(file.inputStream())
 
         // extract method nodes
         val methodNodes = GumTreePythonMethodSplitter().splitIntoMethods(fileNode)
