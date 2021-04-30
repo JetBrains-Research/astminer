@@ -5,19 +5,19 @@ import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.common.setTechnicalToken
 
-interface FunctionLevelProblem {
-    fun process(functionInfo: FunctionInfo<Node>): LabeledResult<Node>?
+interface FunctionLevelProblem : Problem<FunctionInfo<out Node>> {
+    override fun process(entity: FunctionInfo<out Node>): LabeledResult<out Node>?
 }
 
 object MethodNameExtractor : FunctionLevelProblem {
-    override fun process(functionInfo: FunctionInfo<Node>): LabeledResult<Node>? {
-        val name = functionInfo.name ?: return null
-        functionInfo.root.preOrder().forEach { node ->
+    override fun process(entity: FunctionInfo<out Node>): LabeledResult<out Node>? {
+        val name = entity.name ?: return null
+        entity.root.preOrder().forEach { node ->
             if (node.getToken() == name) {
                 node.setTechnicalToken("SELF")
             }
         }
-        functionInfo.nameNode?.setTechnicalToken("METHOD_NAME")
-        return LabeledResult(functionInfo.root, name, functionInfo.filePath)
+        entity.nameNode?.setTechnicalToken("METHOD_NAME")
+        return LabeledResult(entity.root, name, entity.filePath)
     }
 }

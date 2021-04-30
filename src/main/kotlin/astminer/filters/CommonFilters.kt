@@ -5,7 +5,7 @@ import astminer.common.model.Node
 import astminer.common.model.ParseResult
 import astminer.featureextraction.treeSize
 
-class TreeSizeFilterPredicate(private val maxSize: Int) : MethodFilter, FileFilter {
+abstract class TreeSizeFilterPredicate<T>(private val maxSize: Int) : Filter<T> {
     private fun isTreeFiltered(root: Node): Boolean {
         return if (maxSize == -1) {
             true
@@ -14,8 +14,18 @@ class TreeSizeFilterPredicate(private val maxSize: Int) : MethodFilter, FileFilt
         }
     }
 
-    override fun isFiltered(parseResult: ParseResult<out Node>) =
-        if (parseResult.root != null) isTreeFiltered(parseResult.root) else false
+    protected abstract val T.tree: Node
 
-    override fun isFiltered(functionInfo: FunctionInfo<out Node>) = isTreeFiltered(functionInfo.root)
+    override fun isFiltered(entity: T) = isTreeFiltered(entity.tree)
+}
+
+class FileTreeSizeFilterPredicate(maxSize: Int) : TreeSizeFilterPredicate<ParseResult<out Node>>(maxSize), FileFilter {
+    override val ParseResult<out Node>.tree: Node
+        get() = root
+}
+
+class FunctionTreeSizeFilterPredicate(maxSize: Int) : TreeSizeFilterPredicate<FunctionInfo<out Node>>(maxSize),
+    FunctionFilter {
+    override val FunctionInfo<out Node>.tree: Node
+        get() = root
 }

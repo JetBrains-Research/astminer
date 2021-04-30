@@ -6,7 +6,7 @@ import astminer.common.model.FunctionInfo
 import astminer.common.preOrder
 import astminer.common.setTechnicalToken
 import astminer.problem.LabeledResult
-import astminer.filters.MethodFilter
+import astminer.filters.FunctionFilter
 import astminer.parse.antlr.AntlrNode
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.javascript.JavaScriptMethodSplitter
@@ -37,9 +37,9 @@ abstract class FileLabelExtractor : LabelExtractor {
 }
 
 abstract class MethodLabelExtractor(
-        open val filterPredicates: Collection<MethodFilter> = emptyList(),
-        open val javaParser: String = "gumtree",
-        open val pythonParser: String = "antlr"
+    open val filterPredicates: Collection<FunctionFilter> = emptyList(),
+    open val javaParser: String = "gumtree",
+    open val pythonParser: String = "antlr"
 ) : LabelExtractor {
 
     override fun toLabeledData(
@@ -114,9 +114,9 @@ class FolderExtractor : FileLabelExtractor() {
 }
 
 class MethodNameExtractor(
-        override val filterPredicates: Collection<MethodFilter> = emptyList(),
-        override val javaParser: String = "gumtree",
-        override val pythonParser: String = "antlr"
+    override val filterPredicates: Collection<FunctionFilter> = emptyList(),
+    override val javaParser: String = "gumtree",
+    override val pythonParser: String = "antlr"
 ) : MethodLabelExtractor(filterPredicates, javaParser, pythonParser) {
 
     override fun <T : Node> extractLabel(functionInfo: FunctionInfo<T>, filePath: String): String? {
