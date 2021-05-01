@@ -1,10 +1,7 @@
 package astminer.parse.antlr.java
 
 import astminer.common.model.*
-import astminer.parse.antlr.AntlrNode
-import astminer.parse.antlr.firstLabelIn
-import astminer.parse.antlr.hasLastLabel
-import astminer.parse.antlr.lastLabelIn
+import astminer.parse.antlr.*
 
 class AntlrJavaFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNode> {
     override val nameNode: AntlrNode? = collectNameNode()
@@ -32,7 +29,7 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNo
 
     private fun collectReturnType(): String? {
         val returnTypeNode = root.getChildOfType(METHOD_RETURN_TYPE_NODE)
-        return returnTypeNode?.let { getTokensFromSubtree(it) }
+        return returnTypeNode?.getTokensFromSubtree()
     }
 
     private fun collectEnclosingClass(): EnclosingElement<AntlrNode>? {
@@ -66,21 +63,12 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNo
 
     private fun getParameterInfo(parameterNode: AntlrNode): MethodInfoParameter {
         val returnTypeNode = parameterNode.getChildOfType(PARAMETER_RETURN_TYPE_NODE)
-        val returnTypeToken = returnTypeNode?.let { getTokensFromSubtree(it) }
+        val returnTypeToken = returnTypeNode?.getTokensFromSubtree()
 
         val parameterName = parameterNode.getChildOfType(PARAMETER_NAME_NODE)?.getToken()
             ?: throw IllegalStateException("Parameter name wasn't found")
 
         return MethodInfoParameter(parameterName, returnTypeToken)
-    }
-
-    private fun getTokensFromSubtree(node: AntlrNode): String {
-        if (node.isLeaf()) {
-            return node.getToken()
-        }
-        return node.getChildren().joinToString(separator = "") { child ->
-            getTokensFromSubtree(child)
-        }
     }
 }
 

@@ -1,10 +1,7 @@
 package astminer.parse.antlr.python
 
 import astminer.common.model.*
-import astminer.parse.antlr.AntlrNode
-import astminer.parse.antlr.decompressTypeLabel
-import astminer.parse.antlr.hasLastLabel
-import astminer.parse.antlr.lastLabelIn
+import astminer.parse.antlr.*
 
 class AntlrPythonFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNode> {
     override val nameNode: AntlrNode? = collectNameNode()
@@ -59,7 +56,7 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode) : FunctionInfo<Antlr
         }
         require(parameterName != null) { "Method name was not found" }
 
-        val parameterType = parameterNode.getChildOfType(PARAMETER_TYPE_NODE)?.getToken()
+        val parameterType = parameterNode.getChildOfType(PARAMETER_TYPE_NODE)?.getTokensFromSubtree()
 
         return MethodInfoParameter(
             name = parameterName,

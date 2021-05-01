@@ -13,7 +13,7 @@ import kotlin.test.assertNull
 
 class PythonMethodSplitterTest {
     companion object {
-        const val N_FUNCTIONS = 16
+        const val N_FUNCTIONS = 17
         val methodSplitter = PythonMethodSplitter()
         val parser = PythonParser()
     }
@@ -79,6 +79,16 @@ class PythonMethodSplitterTest {
         val parameter = methodOneTypedParameter.parameters[0]
         assertEquals("p1", parameter.name)
         assertEquals("int", parameter.type)
+    }
+
+    @Test
+    fun functionWithComplexParameter() {
+        val methodOneTypedParameter = methodInfos.find { it.name == "function_with_complex_parameter" }
+        assertNotNull(methodOneTypedParameter)
+        assertEquals(1, methodOneTypedParameter.parameters.size)
+        val parameter = methodOneTypedParameter.parameters[0]
+        assertEquals("p1", parameter.name)
+        assertEquals("List[int]", parameter.type)
     }
 
     @Test

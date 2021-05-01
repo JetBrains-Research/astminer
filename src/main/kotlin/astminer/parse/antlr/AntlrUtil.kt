@@ -88,3 +88,12 @@ fun Node.hasFirstLabel(label: String): Boolean {
 fun Node.firstLabelIn(labels: List<String>): Boolean {
     return labels.contains(decompressTypeLabel(this.getTypeLabel()).first())
 }
+
+fun Node.getTokensFromSubtree(): String {
+    if (isLeaf()) {
+        return getToken()
+    }
+    return getChildren().joinToString(separator = "") { child ->
+        child.getTokensFromSubtree()
+    }
+}

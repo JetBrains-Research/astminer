@@ -20,6 +20,9 @@ def function_with_one_parameter(p1):
 def function_with_one_typed_parameter(p1: int):
     pass
 
+def function_with_complex_parameter(p1: List[int]):
+    pass
+
 def function_with_three_parameters(p1, p2 = 4, p3: int = 3):
     pass
 
