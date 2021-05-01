@@ -9,8 +9,8 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode) : FunctionInfo<Antlr
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingElement()
 
     companion object {
-        private const val METHOD_NODE = "funcdef"
-        private const val METHOD_NAME_NODE = "NAME"
+        private const val FUNCTION_NODE = "funcdef"
+        private const val FUNCTION_NAME_NODE = "NAME"
 
         private const val CLASS_DECLARATION_NODE = "classdef"
         private const val CLASS_NAME_NODE = "NAME"
@@ -24,12 +24,12 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode) : FunctionInfo<Antlr
         //test|or_test|and_test|not_test|comparison|expr|xor_expr...
         // ..|and_expr|shift_expr|arith_expr|term|factor|power|atom_expr|atom|NAME
 
-        private val POSSIBLE_ENCLOSING_ELEMENTS = listOf(CLASS_DECLARATION_NODE, METHOD_NODE)
+        private val POSSIBLE_ENCLOSING_ELEMENTS = listOf(CLASS_DECLARATION_NODE, FUNCTION_NODE)
         private const val BODY = "suite"
     }
 
     private fun collectNameNode(): AntlrNode? {
-        return root.getChildOfType(METHOD_NAME_NODE)
+        return root.getChildOfType(FUNCTION_NAME_NODE)
     }
 
     private fun collectParameters(): List<MethodInfoParameter> {
@@ -69,7 +69,7 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode) : FunctionInfo<Antlr
         val enclosingNode = findEnclosingNode(root.getParent() as AntlrNode?) ?: return null
         val type = when {
             enclosingNode.hasLastLabel(CLASS_DECLARATION_NODE) -> EnclosingElementType.Class
-            enclosingNode.hasLastLabel(METHOD_NODE) -> {
+            enclosingNode.hasLastLabel(FUNCTION_NODE) -> {
                 when {
                     enclosingNode.isMethod() -> EnclosingElementType.Method
                     else -> EnclosingElementType.Function
@@ -79,7 +79,7 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode) : FunctionInfo<Antlr
         }
         val name = when (type) {
             EnclosingElementType.Class -> enclosingNode.getChildOfType(CLASS_NAME_NODE)
-            EnclosingElementType.Method, EnclosingElementType.Function -> enclosingNode.getChildOfType(METHOD_NAME_NODE)
+            EnclosingElementType.Method, EnclosingElementType.Function -> enclosingNode.getChildOfType(FUNCTION_NAME_NODE)
             else -> throw IllegalStateException("Enclosing node can only be function or class")
         }?.getToken()
         return EnclosingElement(
