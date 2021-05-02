@@ -97,3 +97,22 @@ fun Node.getTokensFromSubtree(): String {
         child.getTokensFromSubtree()
     }
 }
+
+fun AntlrNode.getItOrChildrenOfType(typeLabel: String) : List<AntlrNode> {
+    return if (hasLastLabel(typeLabel)) {
+        listOf(this)
+    } else {
+        this.getChildrenOfType(typeLabel).mapNotNull { it as? AntlrNode }
+    }
+}
+
+fun AntlrNode.findEnclosingElementBy(condition: (AntlrNode) -> Boolean): AntlrNode? {
+    return findRecursively(this.getParent() as AntlrNode?, condition)
+}
+
+private fun findRecursively(node: AntlrNode?, condition: (AntlrNode) -> Boolean) : AntlrNode? {
+    if (node == null || condition(node)) {
+        return node
+    }
+    return findRecursively(node.getParent() as AntlrNode?, condition)
+}
