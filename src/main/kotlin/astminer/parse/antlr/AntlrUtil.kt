@@ -73,21 +73,17 @@ fun compressTree(root: AntlrNode): AntlrNode {
 
 fun decompressTypeLabel(typeLabel: String) = typeLabel.split("|")
 
-fun Node.hasLastLabel(label: String): Boolean {
-    return decompressTypeLabel(this.getTypeLabel()).last() == label
-}
+fun AntlrNode.lastLabel() = decompressTypeLabel(getTypeLabel()).last()
 
-fun Node.lastLabelIn(labels: List<String>): Boolean {
-    return labels.contains(decompressTypeLabel(this.getTypeLabel()).last())
-}
+fun AntlrNode.firstLabel() = decompressTypeLabel(getTypeLabel()).first()
 
-fun Node.hasFirstLabel(label: String): Boolean {
-    return decompressTypeLabel(this.getTypeLabel()).first() == label
-}
+fun AntlrNode.hasLastLabel(label: String): Boolean = lastLabel() == label
 
-fun Node.firstLabelIn(labels: List<String>): Boolean {
-    return labels.contains(decompressTypeLabel(this.getTypeLabel()).first())
-}
+fun AntlrNode.lastLabelIn(labels: List<String>): Boolean = labels.contains(lastLabel())
+
+fun AntlrNode.hasFirstLabel(label: String): Boolean = firstLabel() == label
+
+fun AntlrNode.firstLabelIn(labels: List<String>): Boolean = labels.contains(firstLabel())
 
 fun Node.getTokensFromSubtree(): String {
     if (isLeaf()) {
