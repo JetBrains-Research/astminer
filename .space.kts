@@ -1,8 +1,7 @@
 job("Test") {
-    container("ubuntu") {
+    container(image="voudy/astminer") {
         shellScript {
             content = """
-              apt-get update && apt-get install -y openjdk-8-jdk g++
               ./gradlew test    
           """
         }
@@ -16,14 +15,13 @@ job("Release") {
         }
     }
 
-    container("ubuntu") {
+    container(image="voudy/astminer") {
         env["PUBLISH_USER"] = Secrets("publish_user")
         env["PUBLISH_PASSWORD"] = Secrets("publish_password")
 
         shellScript {
             content = """
-              apt-get update && apt-get install -y openjdk-8-jdk g++
-              ./gradlew build publish    
+              ./gradlew test publish    
           """
         }
     }

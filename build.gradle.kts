@@ -52,7 +52,7 @@ sourceSets["main"].java.srcDir(file(generatedSourcesPath))
 idea.module.generatedSourceDirs.add(file(generatedSourcesPath))
 
 tasks.generateGrammarSource {
-//    maxHeapSize = "64m"
+    // maxHeapSize = "64m"
     arguments = arguments + listOf("-package", "me.vovak.antlr.parser")
     // Keep a copy of generated sources
     doLast {
@@ -104,6 +104,14 @@ jmh {
 }
 
 publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = project.group.toString()
+            artifactId = project.name
+            version = project.version.toString()
+            from(components["java"])
+        }
+    }
     repositories {
         maven {
             url = uri("https://packages.jetbrains.team/maven/p/astminer/astminer")
@@ -118,7 +126,7 @@ publishing {
 application.mainClassName = "astminer.MainKt"
 shadowJar {
     jar {
-        archiveName = "astminer-$version.jar"
+        archiveName = "astminer.jar"
     }
 }.apply {
     task.archiveClassifier.set("")
