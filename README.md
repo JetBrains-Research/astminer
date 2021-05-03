@@ -18,7 +18,7 @@ See [changelog](changelog.md)
 ## About
 Astminer was first implemented as a part of pipeline in the [code style extraction project](https://arxiv.org/abs/2002.03997) and later converted into a reusable tool.
 
-Currently it supports extraction of:
+Currently, it supports extraction of:
 * Path-based representations of files
 * Path-based representations of methods
 * Raw ASTs
@@ -29,10 +29,29 @@ For the output format, see the section below.
 
 ## Usage
 
+We provide docker image with preinstalled requirements for all supported parsers.
+You can use image with last release by pulling image from Docker hub:
+```shell
+docker pull voudy/astminer
+```
+If you want to run version from specific branch then you can rebuild image using following command:
+```shell
+docker build -t voudy/astminer .
+```
+
+If you don't want to use docker, you can always use Gradle tasks.
+It works almost for all parsers and languages as expected.
+
+There are two different ways to use ASTMiner.
+
 ### Use as CLI
 
-1. Run  `./gradlew shadowJar` in project directory 
-2. Now you can use shell script to run cli  `./cli.sh optionName parameters`, where `optionName` is one of the following options:
+You can run ASTMiner in CLI mode to preprocess your data with already implemented logic.
+Use special script for it:
+```shell
+./cli.sh optionName parameters
+```
+Where `optionName` is one of the following options:
 
 #### Preprocess
 
@@ -67,7 +86,7 @@ Parse all files written in specified language into ASTs, split into methods, and
 
 #### Import
 
-Astminer is available in the JetBrains Space package repository. You can add the dependency in your `build.gradle` file:
+ASTMiner is available in the JetBrains Space package repository. You can add the dependency in your `build.gradle` file:
 ```
 repositories {
     maven {
@@ -90,6 +109,14 @@ dependencies {
     compile("io.github.vovak.astminer", "astminer", "0.6.0")
 }
 ```
+
+#### Local development
+
+In order to use specific version of library navigate to required branch and build local version of ASTMiner:
+```shell
+./gradlew publishToMavenLocal
+```
+After that add `mavenLocal()` into `repositories` field inside your gradle configuration.
 
 #### Examples
 
