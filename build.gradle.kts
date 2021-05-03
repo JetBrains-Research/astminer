@@ -1,7 +1,7 @@
 import tanvd.kosogor.proxy.shadowJar
 
 group = "io.github.vovak"
-version = "0.6.1"
+version = "0.6.2"
 
 plugins {
     id("java")
