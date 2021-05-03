@@ -9,22 +9,23 @@ interface FunctionFilter : Filter<FunctionInfo<out Node>> {
     override fun isFiltered(entity: FunctionInfo<out Node>): Boolean
 }
 
-class ModifierFilterPredicate(private val excludeModifiers: List<String>) : FunctionFilter {
+class ModifierFilter(private val excludeModifiers: List<String>) : FunctionFilter {
     override fun isFiltered(entity: FunctionInfo<out Node>): Boolean =
         !excludeModifiers.any { modifier -> modifier in entity.modifiers }
 }
 
-class AnnotationFilterPredicate(private val excludeAnnotations: List<String>) : FunctionFilter {
+class AnnotationFilter(private val excludeAnnotations: List<String>) : FunctionFilter {
     override fun isFiltered(entity: FunctionInfo<out Node>): Boolean =
         !excludeAnnotations.any { annotation -> annotation in entity.annotations }
 }
 
-object ConstructorFilterPredicate : FunctionFilter {
+object ConstructorFilter : FunctionFilter {
     override fun isFiltered(entity: FunctionInfo<out Node>) = !entity.isConstructor
 }
 
-class MethodNameWordsNumberFilter(private val maxWordsNumber: Int) : FunctionFilter {
+class FunctionNameWordsNumberFilter(private val maxWordsNumber: Int) : FunctionFilter {
     override fun isFiltered(entity: FunctionInfo<out Node>): Boolean {
+        // TODO: this is not needed
         return if (maxWordsNumber == -1) {
             true
         } else {
@@ -34,8 +35,9 @@ class MethodNameWordsNumberFilter(private val maxWordsNumber: Int) : FunctionFil
     }
 }
 
-class MethodAnyNodeWordsNumberFilter(private val maxWordsNumber: Int) : FunctionFilter {
+class FunctionAnyNodeWordsNumberFilter(private val maxWordsNumber: Int) : FunctionFilter {
     override fun isFiltered(entity: FunctionInfo<out Node>): Boolean {
+        // TODO: this is not needed
         return if (maxWordsNumber == -1) {
             true
         } else {

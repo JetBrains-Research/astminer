@@ -56,12 +56,12 @@ fun getLabelExtractor(
         }
         "method" -> {
             val filterPredicates = mutableListOf(
-                ModifierFilterPredicate(excludeModifiers), AnnotationFilterPredicate(excludeAnnotations),
-                MethodNameWordsNumberFilter(maxMethodNameLength), MethodAnyNodeWordsNumberFilter(maxTokenLength),
-                TreeSizeFilterPredicate(maxTreeSize)
+                ModifierFilter(excludeModifiers), AnnotationFilter(excludeAnnotations),
+                FunctionNameWordsNumberFilter(maxMethodNameLength), FunctionAnyNodeWordsNumberFilter(maxTokenLength),
+                TreeSizeFilter(maxTreeSize)
             )
             if (filterConstructors) {
-                filterPredicates.add(ConstructorFilterPredicate)
+                filterPredicates.add(ConstructorFilter)
             }
             return MethodNameExtractor(filterPredicates, javaParser)
         }

@@ -2,14 +2,24 @@ package astminer.pipeline
 
 import astminer.common.model.*
 import astminer.parse.getHandlerFactory
+import java.io.Closeable
 import java.io.File
 
+data class EntitiesFromFiles<T>(val fileExtension: String, val entities: Sequence<T>)
+
 interface PipelineFrontend<T> {
-    fun parseEntities(files: List<File>): Sequence<T>
+    val inputDirectory: File
+    fun getEntities(): Sequence<EntitiesFromFiles<T>>
 }
 
-abstract class CompositePipelineFrontend<T>(private val parserType: String, extensions: List<String>) :
-    PipelineFrontend<T> {
+abstract class CompositePipelineFrontend<T>(
+    private val projectImporter: ProjectImporter,
+    private val parserType: String,
+    private val extensions: List<String>
+) :
+    PipelineFrontend<T>, Closeable {
+
+    override val inputDirectory: File = projectImporter.projectDirectory
 
     private val handlerFactories = extensions.associateWith { getHandlerFactory(it, parserType) }
 
@@ -18,8 +28,8 @@ abstract class CompositePipelineFrontend<T>(private val parserType: String, exte
 
     protected abstract fun LanguageHandler<out Node>.getEntities(): Sequence<T>
 
-    override fun parseEntities(files: List<File>): Sequence<T> {
-        return files.asSequence().flatMap { file ->
+    private fun getEntities(files: Sequence<File>): Sequence<T> {
+        return files.flatMap { file ->
             val handler = file.handler
             if (handler != null) {
                 handler.getEntities()
@@ -29,17 +39,29 @@ abstract class CompositePipelineFrontend<T>(private val parserType: String, exte
             }
         }
     }
+
+    override fun getEntities(): Sequence<EntitiesFromFiles<T>> = sequence {
+        for (extension in extensions) {
+            val files = projectImporter.getFiles(extension)
+            val entities = getEntities(files)
+            yield(EntitiesFromFiles(extension, entities))
+        }
+    }
+
+    override fun close() {
+        projectImporter.close()
+    }
 }
 
-class FilePipelineFrontend(parserType: String, extensions: List<String>) :
+class FilePipelineFrontend(projectImporter: ProjectImporter, parserType: String, extensions: List<String>) :
     CompositePipelineFrontend<ParseResult<out Node>>(
-        parserType, extensions
+        projectImporter, parserType, extensions
     ) {
     override fun LanguageHandler<out Node>.getEntities(): Sequence<ParseResult<out Node>> = sequenceOf(parseResult)
 }
 
-class FunctionPipelineFrontend(parserType: String, extensions: List<String>) :
-    CompositePipelineFrontend<FunctionInfo<out Node>>(parserType, extensions) {
+class FunctionPipelineFrontend(projectImporter: ProjectImporter, parserType: String, extensions: List<String>) :
+    CompositePipelineFrontend<FunctionInfo<out Node>>(projectImporter, parserType, extensions) {
 
     override fun LanguageHandler<out Node>.getEntities(): Sequence<FunctionInfo<out Node>> =
         splitIntoMethods().asSequence()

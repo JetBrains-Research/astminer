@@ -5,11 +5,9 @@ import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.common.setTechnicalToken
 
-interface FunctionLevelProblem : Problem<FunctionInfo<out Node>> {
-    override fun process(entity: FunctionInfo<out Node>): LabeledResult<out Node>?
-}
+interface FunctionLevelProblem : Problem<FunctionInfo<out Node>>
 
-object MethodNameExtractor : FunctionLevelProblem {
+object FunctionNameProblem : FunctionLevelProblem {
     override fun process(entity: FunctionInfo<out Node>): LabeledResult<out Node>? {
         val name = entity.name ?: return null
         entity.root.preOrder().forEach { node ->
