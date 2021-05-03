@@ -21,7 +21,7 @@ class GumTreeJavaFunctionInfo(override val root: GumTreeNode) : FunctionInfo<Gum
     override val enclosingElement: EnclosingElement<GumTreeNode>? = collectEnclosingClass()
 
     private fun collectEnclosingClass(): EnclosingElement<GumTreeNode>? {
-        val enclosingClassNode = getEnclosingClassNode(root.getParent() as GumTreeNode) ?: return null
+        val enclosingClassNode = getEnclosingClassNode(root.getParent() as GumTreeNode?) ?: return null
         val enclosingClassName = enclosingClassNode.getChildOfType(TypeLabels.simpleName)?.getToken()
         return EnclosingElement(
             root = enclosingClassNode,
@@ -30,12 +30,11 @@ class GumTreeJavaFunctionInfo(override val root: GumTreeNode) : FunctionInfo<Gum
         )
     }
 
-    private fun getEnclosingClassNode(node: GumTreeNode): GumTreeNode? {
-        if (node.getTypeLabel() == TypeLabels.typeDeclaration) {
+    private fun getEnclosingClassNode(node: GumTreeNode?): GumTreeNode? {
+        if (node == null || node.getTypeLabel() == TypeLabels.typeDeclaration) {
             return node
         }
-        val parentNode = node.getParent() as? GumTreeNode
-        return parentNode?.let { getEnclosingClassNode(it) }
+        return getEnclosingClassNode(node.getParent() as GumTreeNode?)
     }
 
     private fun collectParameters(): List<MethodInfoParameter> {
