@@ -5,9 +5,7 @@ import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.common.splitToSubtokens
 
-interface FunctionFilter : Filter<FunctionInfo<out Node>> {
-    override fun isFiltered(entity: FunctionInfo<out Node>): Boolean
-}
+interface FunctionFilter : Filter<FunctionInfo<out Node>>
 
 class ModifierFilter(private val excludeModifiers: List<String>) : FunctionFilter {
     override fun isFiltered(entity: FunctionInfo<out Node>): Boolean =

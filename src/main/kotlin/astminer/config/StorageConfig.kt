@@ -8,6 +8,7 @@ import astminer.storage.path.Code2VecPathStorage
 import astminer.storage.path.PathBasedStorageConfig
 
 sealed class StorageConfig {
+    // TODO: bad code. This function has a lot of side-effects
     abstract fun getStorage(outputDirectoryPath: String): Storage
 }
 
