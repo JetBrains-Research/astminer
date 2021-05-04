@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.Vocabulary
 import org.antlr.v4.runtime.tree.ErrorNode
 import org.antlr.v4.runtime.tree.TerminalNode
+import java.util.concurrent.locks.Condition
 
 fun convertAntlrTree(tree: ParserRuleContext, ruleNames: Array<String>, vocabulary: Vocabulary): AntlrNode {
     return compressTree(convertRuleContext(tree, ruleNames, null, vocabulary))
@@ -100,15 +101,4 @@ fun AntlrNode.getItOrChildrenOfType(typeLabel: String) : List<AntlrNode> {
     } else {
         this.getChildrenOfType(typeLabel).mapNotNull { it as? AntlrNode }
     }
-}
-
-fun AntlrNode.findEnclosingElementBy(condition: (AntlrNode) -> Boolean): AntlrNode? {
-    return findRecursively(this.getParent() as AntlrNode?, condition)
-}
-
-private fun findRecursively(node: AntlrNode?, condition: (AntlrNode) -> Boolean) : AntlrNode? {
-    if (node == null || condition(node)) {
-        return node
-    }
-    return findRecursively(node.getParent() as AntlrNode?, condition)
 }

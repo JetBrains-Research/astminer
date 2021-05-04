@@ -2,6 +2,7 @@ package astminer.parse.antlr.python
 
 import astminer.common.model.*
 import astminer.parse.antlr.*
+import astminer.parse.findEnclosingElementBy
 
 class AntlrPythonFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNode> {
     override val nameNode: AntlrNode? = collectNameNode()
@@ -66,7 +67,7 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode) : FunctionInfo<Antlr
 
     //TODO: refactor
     private fun collectEnclosingElement(): EnclosingElement<AntlrNode>? {
-        val enclosingNode = findEnclosingNode(root.getParent() as AntlrNode?) ?: return null
+        val enclosingNode = root.findEnclosingElementBy { it.lastLabelIn(POSSIBLE_ENCLOSING_ELEMENTS) } ?: return null
         val type = when {
             enclosingNode.hasLastLabel(CLASS_DECLARATION_NODE) -> EnclosingElementType.Class
             enclosingNode.hasLastLabel(FUNCTION_NODE) -> {
@@ -87,13 +88,6 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode) : FunctionInfo<Antlr
             name = name,
             root = enclosingNode
         )
-    }
-
-    private fun findEnclosingNode(node: AntlrNode?): AntlrNode? {
-        if (node == null || node.lastLabelIn(POSSIBLE_ENCLOSING_ELEMENTS)) {
-            return node
-        }
-        return findEnclosingNode(node.getParent() as AntlrNode?)
     }
 
     private fun Node.isMethod(): Boolean {

@@ -2,6 +2,7 @@ package astminer.parse.antlr.java
 
 import astminer.common.model.*
 import astminer.parse.antlr.*
+import astminer.parse.findEnclosingElementBy
 
 class AntlrJavaFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNode> {
     override val nameNode: AntlrNode? = collectNameNode()
@@ -33,19 +34,12 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNo
     }
 
     private fun collectEnclosingClass(): EnclosingElement<AntlrNode>? {
-        val enclosingClassNode = findEnclosingClassNode(root) ?: return null
+        val enclosingClassNode = root.findEnclosingElementBy { it.hasLastLabel(CLASS_DECLARATION_NODE) } ?: return null
         return EnclosingElement(
             type = EnclosingElementType.Class,
             name = enclosingClassNode.getChildOfType(CLASS_NAME_NODE)?.getToken(),
             root = enclosingClassNode
         )
-    }
-
-    private fun findEnclosingClassNode(node: AntlrNode?): AntlrNode? {
-        if (node == null || node.hasLastLabel(CLASS_DECLARATION_NODE)) {
-            return node
-        }
-        return findEnclosingClassNode(node.getParent() as AntlrNode)
     }
 
     private fun collectParameters(): List<MethodInfoParameter> {
@@ -58,7 +52,7 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNo
 
         return innerParametersRoot.getChildren().filter {
             it.firstLabelIn(METHOD_SINGLE_PARAMETER_NODES)
-        }.map {singleParameter -> getParameterInfo(singleParameter) }
+        }.map { singleParameter -> getParameterInfo(singleParameter) }
     }
 
     private fun getParameterInfo(parameterNode: AntlrNode): MethodInfoParameter {

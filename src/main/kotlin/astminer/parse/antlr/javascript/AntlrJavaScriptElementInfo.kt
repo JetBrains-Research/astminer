@@ -2,6 +2,7 @@ package astminer.parse.antlr.javascript
 
 import astminer.common.model.*
 import astminer.parse.antlr.*
+import astminer.parse.findEnclosingElementBy
 
 /**
 Base class for describing JavaScript methods, functions or arrow functions.
