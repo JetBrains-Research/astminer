@@ -22,7 +22,7 @@ class JavaParser : Parser<AntlrNode> {
             val context = parser.compilationUnit()
             convertAntlrTree(context, Java8Parser.ruleNames, Java8Parser.VOCABULARY)
         } catch (e: Exception) {
-            throw ParsingException("Failed to parse Java code: ${e.message}")
+            throw ParsingException("ANTLR", "Java", e.message)
         }
     }
 }

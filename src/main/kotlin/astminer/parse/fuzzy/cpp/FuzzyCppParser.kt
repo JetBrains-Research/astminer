@@ -121,11 +121,11 @@ class FuzzyCppParser : Parser<FuzzyNode> {
                 if (File(actualFilePath).absolutePath != File(filePath).absolutePath) {
                     println("While parsing $filePath, actually parsed $actualFilePath")
                 }
-                val node = vertexToNode[it] ?: throw ParsingException("Unknown fuzzy cpp parser error.")
+                val node = vertexToNode[it] ?: throw ParsingException("Fuzzy", "C++")
                 return ParseResult(node, actualFilePath)
             }
         }
-        throw ParsingException("Unknown fuzzy cpp parser error.")
+        throw ParsingException("Fuzzy", "C++")
     }
 
     /**
