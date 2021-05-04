@@ -8,7 +8,8 @@ import astminer.config.FunctionPipelineConfig
 import astminer.config.PipelineConfig
 
 /**
- * This function must have no side effects
+ * Initializes the Pipeline given the [pipelineConfig].
+ * This function must have no side effects!
  */
 fun getPipeline(pipelineConfig: PipelineConfig): Pipeline<*> {
     return when (pipelineConfig) {

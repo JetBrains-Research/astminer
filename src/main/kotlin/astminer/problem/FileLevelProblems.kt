@@ -6,10 +6,16 @@ import java.io.File
 
 interface FileLevelProblem : Problem<ParseResult<out Node>>
 
+/**
+ * Labels files with folder names
+ */
 object FilePathExtractor : FileLevelProblem {
     override fun process(entity: ParseResult<out Node>): LabeledResult<out Node> = entity.labeledWithFilePath()
 }
 
+/**
+ * Labels files with folder names
+ */
 object FolderExtractor : FileLevelProblem {
     override fun process(entity: ParseResult<out Node>): LabeledResult<out Node>? {
         val folderName = File(entity.filePath).parentFile.name ?: return null

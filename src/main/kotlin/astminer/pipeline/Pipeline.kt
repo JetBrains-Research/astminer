@@ -23,7 +23,7 @@ class Pipeline<T>(
 
     fun run() {
         for ((extension, entities) in frontend.getEntities()) {
-            storageCreator.createStorage(extension).use { storage ->
+            storageCreator.createStorageAndOutputFolder(extension).use { storage ->
                 val labeledResults = entities
                     .filter { functionInfo -> functionInfo.passesThroughFilters() }
                     .mapNotNull { problem.process(it) }
