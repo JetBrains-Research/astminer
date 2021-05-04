@@ -26,13 +26,13 @@ data class FilePipelineConfig(
 ) : PipelineConfig()
 
 data class FunctionPipelineConfig(
-    val inputDir: String,
-    val outputDir: String,
-    val parser: ParserConfig,
-    val problem: FunctionLevelProblem,
-    val filters: List<FunctionFilter>,
-    val storage: StorageConfig
-)
+    override val inputDir: String,
+    override val outputDir: String,
+    override val parser: ParserConfig,
+    override val problem: FunctionLevelProblem,
+    override val filters: List<FunctionFilter>,
+    override val storage: StorageConfig
+) : PipelineConfig()
 
 data class ParserConfig(
     val type: String,

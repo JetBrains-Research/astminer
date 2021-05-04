@@ -1,24 +1,13 @@
 package astminer.config
 
-import astminer.storage.Storage
 import astminer.storage.TokenProcessor
-import astminer.storage.ast.CsvAstStorage
-import astminer.storage.ast.DotAstStorage
-import astminer.storage.path.Code2VecPathStorage
 import astminer.storage.path.PathBasedStorageConfig
 
-sealed class StorageConfig {
-    // TODO: bad code. This function has a lot of side-effects
-    abstract fun getStorage(outputDirectoryPath: String): Storage
-}
+sealed class StorageConfig
 
-object CsvAstStorageConfig : StorageConfig() {
-    override fun getStorage(outputDirectoryPath: String) = CsvAstStorage(outputDirectoryPath)
-}
+object CsvAstStorageConfig : StorageConfig()
 
-data class DotAstStorageConfig(val tokenProcessor: TokenProcessor) : StorageConfig() {
-    override fun getStorage(outputDirectoryPath: String) = DotAstStorage(outputDirectoryPath, tokenProcessor)
-}
+data class DotAstStorageConfig(val tokenProcessor: TokenProcessor) : StorageConfig()
 
 data class Code2VecPathStorageConfig(
     val maxPathLength: Int,
@@ -28,15 +17,6 @@ data class Code2VecPathStorageConfig(
     val maxPathContextsPerEntity: Int? = null,
     val tokenProcessor: TokenProcessor
 ) : StorageConfig() {
-
-    private val storageConfig = PathBasedStorageConfig(
-        maxPathLength,
-        maxPathWidth,
-        maxTokens,
-        maxPaths,
-        maxPathContextsPerEntity
-    )
-
-    override fun getStorage(outputDirectoryPath: String) =
-        Code2VecPathStorage(outputDirectoryPath, storageConfig, tokenProcessor)
+    fun toPathBasedConfig() =
+        PathBasedStorageConfig(maxPathLength, maxPathWidth, maxTokens, maxPaths, maxPathContextsPerEntity)
 }
