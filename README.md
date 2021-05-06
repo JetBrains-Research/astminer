@@ -15,7 +15,7 @@ Supported languages of the input:
 See [changelog](changelog.md)
 
 ## About
-Astminer was first implemented as a part of pipeline in the [code style extraction project](https://arxiv.org/abs/2002.03997) and later converted into a reusable tool.
+`astminer` was first implemented as a part of pipeline in the [code style extraction project](https://arxiv.org/abs/2002.03997) and later converted into a reusable tool.
 
 Currently, it supports extraction of:
 * Path-based representations of files
@@ -41,11 +41,11 @@ docker build -t voudy/astminer .
 If you don't want to use docker, you can always use Gradle tasks.
 It works almost for all parsers and languages as expected.
 
-There are two different ways to use ASTMiner.
+There are two different ways to use `astminer`.
 
 ### Use as CLI
 
-You can run ASTMiner in CLI mode to preprocess your data with already implemented logic.
+You can run `astminer` in CLI mode to preprocess your data with already implemented logic.
 Use special script for it:
 ```shell
 ./cli.sh optionName parameters
@@ -85,7 +85,7 @@ Parse all files written in specified language into ASTs, split into methods, and
 
 #### Import
 
-ASTMiner is available in the JetBrains Space package repository. You can add the dependency in your `build.gradle` file:
+`astminer` is available in the JetBrains Space package repository. You can add the dependency in your `build.gradle` file:
 ```
 repositories {
     maven {
@@ -111,7 +111,7 @@ dependencies {
 
 #### Local development
 
-In order to use specific version of library navigate to required branch and build local version of ASTMiner:
+In order to use specific version of library navigate to required branch and build local version of `astminer`:
 ```shell
 ./gradlew publishToMavenLocal
 ```
