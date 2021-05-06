@@ -35,13 +35,8 @@ object ConstructorFilter : FunctionFilter {
  */
 class FunctionNameWordsNumberFilter(private val maxWordsNumber: Int) : FunctionFilter {
     override fun isFiltered(entity: FunctionInfo<out Node>): Boolean {
-        // TODO: this is not needed
-        return if (maxWordsNumber == -1) {
-            true
-        } else {
-            val name = entity.name
-            name != null && splitToSubtokens(name).size <= maxWordsNumber
-        }
+        val name = entity.name
+        return name != null && splitToSubtokens(name).size <= maxWordsNumber
     }
 }
 
@@ -49,12 +44,7 @@ class FunctionNameWordsNumberFilter(private val maxWordsNumber: Int) : FunctionF
  * Filter that excludes functions that have more words than [maxWordsNumber] in any token of their subtree.
  */
 class FunctionAnyNodeWordsNumberFilter(private val maxWordsNumber: Int) : FunctionFilter {
-    override fun isFiltered(entity: FunctionInfo<out Node>): Boolean {
-        // TODO: this is not needed
-        return if (maxWordsNumber == -1) {
-            true
-        } else {
-            !entity.root.preOrder().any { node -> splitToSubtokens(node.getToken()).size > maxWordsNumber }
-        }
-    }
+    override fun isFiltered(entity: FunctionInfo<out Node>): Boolean =
+        !entity.root.preOrder().any { node -> splitToSubtokens(node.getToken()).size > maxWordsNumber }
+
 }
