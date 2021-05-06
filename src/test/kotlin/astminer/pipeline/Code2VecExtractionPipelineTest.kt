@@ -14,7 +14,7 @@ internal class Code2VecExtractionPipelineTest {
     @Test
     fun testDefaultExtraction() {
         val extractedDataDir = createTempDir("extractedData")
-        val languages = listOf("java", "py")
+        val languages = listOf("java", "python")
 
         val config = FilePipelineConfig(
             testDataDir.path,

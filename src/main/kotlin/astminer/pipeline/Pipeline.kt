@@ -8,9 +8,9 @@ import astminer.problem.Problem
 
 class Pipeline<T>(
     private val frontend: PipelineFrontend<T>,
-    private val filters: List<Filter<T>>,
+    private val filters: List<Filter<T>> = emptyList(),
     private val problem: Problem<T>,
-    private val excludedNodeTypes: List<String>,
+    private val excludedNodeTypes: List<String> = emptyList(),
     private val storageCreator: StorageCreator
 ) {
     private fun T.passesThroughFilters() = filters.all { filter -> filter.isFiltered(this) }

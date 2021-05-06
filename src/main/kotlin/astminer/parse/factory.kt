@@ -19,7 +19,7 @@ fun getHandlerFactory(extension: String, parserType: String): HandlerFactory {
 private fun getGumtreeHandlerFactory(extension: String): HandlerFactory {
     return when (extension) {
         "java" -> GumtreeJavaHandlerFactory
-        "python" -> GumtreePythonHandlerFactory
+        "py" -> GumtreePythonHandlerFactory
         else -> throw UnsupportedOperationException()
     }
 }
@@ -27,8 +27,8 @@ private fun getGumtreeHandlerFactory(extension: String): HandlerFactory {
 private fun getAntlrHandlerFactory(extension: String): HandlerFactory {
     return when (extension) {
         "java" -> AntlrJavaHandlerFactory
-        "javascript" -> AntlrJavascriptHandlerFactory
-        "python" -> AntlrPythonHandlerFactory
+        "js" -> AntlrJavascriptHandlerFactory
+        "py" -> AntlrPythonHandlerFactory
         else -> throw UnsupportedOperationException()
     }
 }

@@ -9,7 +9,6 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class FunctionFiltersTest {
-    val a = ConstructorFilter
     @Test
     fun `test ModifierFilter should exclude function if it has the excluded modifier`() {
         val excludedModifiers = listOf("a", "b")
@@ -32,7 +31,7 @@ class FunctionFiltersTest {
     fun `test AnnotationFilter should exclude function if it has the excluded modifier`() {
         val excludedModifiers = listOf("a", "b")
         val functionInfo = object : FunctionInfo<Node> {
-            override val modifiers: List<String> = listOf("a", "c")
+            override val annotations: List<String> = listOf("a", "c")
         }
         assertFalse { AnnotationFilter(excludedModifiers).isFiltered(functionInfo) }
     }
@@ -41,7 +40,7 @@ class FunctionFiltersTest {
     fun `test AnnotationFilter should not exclude function if it does not have the excluded modifier`() {
         val excludedModifiers = listOf("a", "b")
         val functionInfo = object : FunctionInfo<Node> {
-            override val modifiers: List<String> = listOf("y", "x")
+            override val annotations: List<String> = listOf("y", "x")
         }
         assertTrue { AnnotationFilter(excludedModifiers).isFiltered(functionInfo) }
     }
@@ -63,14 +62,6 @@ class FunctionFiltersTest {
     }
 
     @Test
-    fun `test FunctionNameWordsNumberFilter should not exclude function if maxWordsNumber is -1`() {
-        val functionInfo = object : FunctionInfo<Node> {
-            override val name = "Word".repeat(100)
-        }
-        assertTrue { FunctionNameWordsNumberFilter(-1).isFiltered(functionInfo) }
-    }
-
-    @Test
     fun `test FunctionNameWordsNumberFilter for 50 should exclude function with name of 100 words`() {
         val functionInfo = object : FunctionInfo<Node> {
             override val name = "Word".repeat(100)
@@ -83,21 +74,13 @@ class FunctionFiltersTest {
         val functionInfo = object : FunctionInfo<Node> {
             override val name = "Word".repeat(100)
         }
-        assertFalse { FunctionNameWordsNumberFilter(101).isFiltered(functionInfo) }
-    }
-
-    @Test
-    fun `test FunctionAnyNodeWordsNumberFilter should not exclude function if maxWordsNumber is -1`() {
-        val functionInfo = object : FunctionInfo<Node> {
-            override val name = "Word".repeat(100)
-        }
-        assertTrue { FunctionAnyNodeWordsNumberFilter(-1).isFiltered(functionInfo) }
+        assertTrue { FunctionNameWordsNumberFilter(101).isFiltered(functionInfo) }
     }
 
     @Test
     fun `test FunctionAnyNodeWordsNumberFilter for 50 should exclude function with name of 100 words`() {
         val functionInfo = object : FunctionInfo<Node> {
-            override val name = "Word".repeat(100)
+            override val root = AntlrNode("", null,  "Word".repeat(100))
         }
         assertFalse { FunctionAnyNodeWordsNumberFilter(50).isFiltered(functionInfo) }
     }
@@ -106,8 +89,9 @@ class FunctionFiltersTest {
     fun `test FunctionAnyNodeWordsNumberFilter for 101 should not exclude function with name of 100 words`() {
         val functionInfo = object : FunctionInfo<Node> {
             override val name = "Word".repeat(100)
+            override val root = createBamboo(1)
         }
-        assertFalse { FunctionAnyNodeWordsNumberFilter(101).isFiltered(functionInfo) }
+        assertTrue { FunctionAnyNodeWordsNumberFilter(101).isFiltered(functionInfo) }
     }
 
     @Test
@@ -127,7 +111,7 @@ class FunctionFiltersTest {
         val functionInfo = object : FunctionInfo<Node> {
             override val root = createBamboo(101)
         }
-        assertFalse { FunctionTreeSizeFilter(101).isFiltered(functionInfo) }
+        assertFalse { FunctionTreeSizeFilter(100).isFiltered(functionInfo) }
     }
 
     @Test

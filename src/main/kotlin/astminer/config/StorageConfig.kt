@@ -7,7 +7,7 @@ sealed class StorageConfig
 
 object CsvAstStorageConfig : StorageConfig()
 
-data class DotAstStorageConfig(val tokenProcessor: TokenProcessor) : StorageConfig()
+data class DotAstStorageConfig(val tokenProcessor: TokenProcessor = TokenProcessor.Normalize) : StorageConfig()
 
 data class Code2VecPathStorageConfig(
     val maxPathLength: Int,

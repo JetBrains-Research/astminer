@@ -2,9 +2,10 @@ package astminer.common
 
 import astminer.problem.LabeledResult
 import astminer.common.model.Node
+import astminer.common.model.ParseResult
 
 
-class DummyNode(val data: String, val childrenList: MutableList<DummyNode>) : Node {
+class DummyNode(val data: String, val childrenList: MutableList<DummyNode> = mutableListOf()) : Node {
     override val metadata: MutableMap<String, Any> = hashMapOf()
 
     override fun isLeaf(): Boolean {
@@ -30,7 +31,6 @@ class DummyNode(val data: String, val childrenList: MutableList<DummyNode>) : No
     override fun removeChildrenOfType(typeLabel: String) {
         childrenList.removeIf { it.getTypeLabel() == typeLabel }
     }
-
 }
 
 /**
@@ -91,5 +91,7 @@ fun createBamboo(size: Int): DummyNode {
     }
     return root
 }
+
+fun <T : Node> T.toParseResult() = ParseResult(this, "")
 
 fun <T : Node> T.labeledWith(label: String) = LabeledResult(this, label, "")

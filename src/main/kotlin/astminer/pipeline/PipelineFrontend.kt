@@ -43,7 +43,13 @@ abstract class CompositePipelineFrontend<T>(
         val inputDirectory = File(inputDirectoryPath)
 
         for (extension in extensions) {
-            val handlerFactory = getHandlerFactory(extension, parserType)
+            val handlerFactory = try {
+                getHandlerFactory(extension, parserType)
+            } catch (e: UnsupportedOperationException) {
+                println("Damn")
+                yield(EntitiesFromFiles(extension, emptySequence()))
+                continue
+            }
             val files = getProjectFilesWithExtension(inputDirectory, extension).asSequence()
             val entities = files.flatMap { file -> handlerFactory.createHandler(file).getEntities() }
             yield(EntitiesFromFiles(extension, entities))
