@@ -15,7 +15,7 @@ data class Code2VecPathStorageConfig(
     val maxTokens: Long? = null,
     val maxPaths: Long? = null,
     val maxPathContextsPerEntity: Int? = null,
-    val tokenProcessor: TokenProcessor
+    val tokenProcessor: TokenProcessor = TokenProcessor.Normalize
 ) : StorageConfig() {
     fun toPathBasedConfig() =
         PathBasedStorageConfig(maxPathLength, maxPathWidth, maxTokens, maxPaths, maxPathContextsPerEntity)
