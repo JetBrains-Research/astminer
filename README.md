@@ -1,6 +1,6 @@
 [![JetBrains Research](https://jb.gg/badges/research.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
 
-# astminer
+# `astminer`
 A library for mining of [path-based representations of code](https://arxiv.org/pdf/1803.09544.pdf) and more, supported by the [Machine Learning Methods for Software Engineering](https://research.jetbrains.org/groups/ml_methods) group at [JetBrains Research](https://research.jetbrains.org).
 
 Supported languages of the input:
@@ -24,29 +24,35 @@ Currently, it supports extraction of:
 
 Supported languages are Java, Python, C/C++, but it is designed to be very easily extensible.
 
-For the output format, see the section below.
+For the output format, see [the section below](running-astminer-cli).
 
 ## Usage
+There are two ways to use `astminer`.
 
-We provide docker image with preinstalled requirements for all supported parsers.
-You can use image with last release by pulling image from Docker hub:
+- [As a standalone CLI tool](using-astminer-cli) with pre-implemented logic for common processing and mining tasks 
+- [Integrated](using-astminer-as-a-dependency) into your Kotlin/Java mining pipelines as a Gradle dependency.
+
+### Using `astminer` CLI
+#### Building or installing `astminer` CLI
+`astminer` CLI can be either built from sources or installed in a pre-built Docker image.
+
+##### Building locally
+`./cli.sh` will do the job for you by triggering a Gradle build on the first run.
+
+##### Installing the Docker image
+The C++ parser in `astminer` relies on `g++`. To avoid misconfiguration with this and likely other future external dependencies, you can use it from a Docker container.
+
+Install the image with the last release by pulling it from Docker Hub:
 ```shell
 docker pull voudy/astminer
 ```
-If you want to run version from specific branch then you can rebuild image using following command:
+To rebuild the image locally, run
 ```shell
 docker build -t voudy/astminer .
 ```
 
-If you don't want to use docker, you can always use Gradle tasks.
-It works almost for all parsers and languages as expected.
-
-There are two different ways to use `astminer`.
-
-### Use as CLI
-
-You can run `astminer` in CLI mode to preprocess your data with already implemented logic.
-Use special script for it:
+#### Running `astminer` CLI
+Run
 ```shell
 ./cli.sh optionName parameters
 ```
@@ -81,7 +87,7 @@ Parse all files written in specified language into ASTs, split into methods, and
 ./cli.sh code2vec --lang py,java,c,cpp,js --project path/to/project --output path/to/results --maxL L --maxW W --maxContexts C --maxTokens T --maxPaths P  --split-tokens --granularity method
 ```
 
-### Integrate in your mining pipeline
+### Using `astminer` as a dependency
 
 #### Import
 
@@ -111,11 +117,11 @@ dependencies {
 
 #### Local development
 
-In order to use specific version of library navigate to required branch and build local version of `astminer`:
+To use a specific version of the library, navigate to the required branch and build local version of `astminer`:
 ```shell
 ./gradlew publishToMavenLocal
 ```
-After that add `mavenLocal()` into `repositories` field inside your gradle configuration.
+After that add `mavenLocal()` into the `repositories` section in your gradle configuration.
 
 #### Examples
 
