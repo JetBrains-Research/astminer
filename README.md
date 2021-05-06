@@ -24,13 +24,13 @@ Currently, it supports extraction of:
 
 Supported languages are Java, Python, C/C++, but it is designed to be very easily extensible.
 
-For the output format, see [the section below](running-astminer-cli).
+For the output format, see [the section below](#output-format).
 
 ## Usage
 There are two ways to use `astminer`.
 
-- [As a standalone CLI tool](using-astminer-cli) with pre-implemented logic for common processing and mining tasks 
-- [Integrated](using-astminer-as-a-dependency) into your Kotlin/Java mining pipelines as a Gradle dependency.
+- [As a standalone CLI tool](#using-astminer-cli) with pre-implemented logic for common processing and mining tasks 
+- [Integrated](#using-astminer-as-a-dependency) into your Kotlin/Java mining pipelines as a Gradle dependency.
 
 ### Using `astminer` CLI
 #### Building or installing `astminer` CLI
@@ -121,7 +121,7 @@ To use a specific version of the library, navigate to the required branch and bu
 ```shell
 ./gradlew publishToMavenLocal
 ```
-After that add `mavenLocal()` into the `repositories` section in your gradle configuration.
+After that, add `mavenLocal()` into the `repositories` section in your gradle configuration.
 
 #### Examples
 
