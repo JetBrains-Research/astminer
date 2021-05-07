@@ -19,6 +19,8 @@ interface FunctionInfo<T : Node> {
         get() = nameNode?.getToken()
     val root: T
         get() = notImplemented("root")
+    val filePath: String
+        get() = notImplemented("filePath")
     val annotations: List<String>
         get() = notImplemented("annotations")
     val modifiers: List<String>

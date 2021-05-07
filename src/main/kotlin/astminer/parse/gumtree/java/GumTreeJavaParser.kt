@@ -13,7 +13,7 @@ class GumTreeJavaParser : Parser<GumTreeNode> {
         Run.initGenerators()
     }
 
-    override fun parseInputStream(content: InputStream): GumTreeNode? {
+    override fun parseInputStream(content: InputStream): GumTreeNode {
         val treeContext = JdtTreeGenerator().generate(InputStreamReader(content))
         return wrapGumTreeNode(treeContext)
     }
