@@ -46,6 +46,7 @@ abstract class CompositePipelineFrontend<T>(
             val handlerFactory = try {
                 getHandlerFactory(extension, parserType)
             } catch (e: UnsupportedOperationException) {
+                // TODO: log everything
                 println("Damn")
                 yield(EntitiesFromFiles(extension, emptySequence()))
                 continue
