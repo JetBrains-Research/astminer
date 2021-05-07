@@ -22,9 +22,7 @@ fun allCppFiles() {
     val files = getProjectFilesWithExtension(preprocOutputFolder, "cpp")
 
     parser.parseFiles(files) { parseResult ->
-        parseResult.labeledWithFilePath()?.let { labeledResult ->
-            storage.store(labeledResult)
-        }
+        storage.store(parseResult.labeledWithFilePath())
     }
 
     storage.close()
