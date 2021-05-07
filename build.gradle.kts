@@ -55,7 +55,8 @@ dependencies {
     // https://mvnrepository.com/artifact/io.shiftleft/fuzzyc2cpg
     api("io.shiftleft", "fuzzyc2cpg_2.13", "1.2.9")
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-    testImplementation("org.slf4j", "slf4j-simple", "1.7.30")
+    implementation("org.slf4j", "slf4j-simple", "1.7.30")
+    implementation("io.github.microutils:kotlin-logging:1.5.9")
 
     testImplementation("junit:junit:4.11")
     testImplementation(kotlin("test-junit"))

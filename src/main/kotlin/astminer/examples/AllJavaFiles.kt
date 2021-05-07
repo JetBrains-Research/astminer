@@ -15,7 +15,7 @@ fun allJavaFiles() {
     val storage = Code2VecPathStorage(outputDir, PathBasedStorageConfig(5, 5))
 
     File(inputDir).forFilesWithSuffix("11.java") { file ->
-        val node = JavaParser().parseInputStream(file.inputStream()) ?: return@forFilesWithSuffix
+        val node = JavaParser().parseInputStream(file.inputStream())
         node.prettyPrint()
         JavaMethodSplitter().splitIntoMethods(node).forEach {
             println(it.name)

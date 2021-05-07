@@ -24,7 +24,7 @@ fun allPythonMethods() {
 
     File(inputDir).forFilesWithSuffix(".py") { file ->
         // parse file
-        val fileNode = GumTreePythonParser().parseInputStream(file.inputStream()) ?: return@forFilesWithSuffix
+        val fileNode = GumTreePythonParser().parseInputStream(file.inputStream())
 
         // extract method nodes
         val methodNodes = GumTreePythonFunctionSplitter().splitIntoMethods(fileNode)

@@ -22,7 +22,7 @@ class PythonParser : Parser<AntlrNode> {
             val context = parser.file_input()
             convertAntlrTree(context, Python3Parser.ruleNames, Python3Parser.VOCABULARY)
         } catch (e: Exception) {
-            throw ParsingException("Failed to parse Python code: ${e.message}")
+            throw ParsingException("ANTLR", "Python", e.message)
         }
     }
 }

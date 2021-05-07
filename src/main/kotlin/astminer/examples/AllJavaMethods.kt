@@ -29,7 +29,7 @@ fun allJavaMethods() {
 
     File(inputDir).forFilesWithSuffix(".java") { file ->
         //parse file
-        val fileNode = GumTreeJavaParser().parseInputStream(file.inputStream()) ?: return@forFilesWithSuffix
+        val fileNode = GumTreeJavaParser().parseInputStream(file.inputStream())
 
         //extract method nodes
         val methodNodes = GumTreeJavaMethodSplitter().splitIntoMethods(fileNode)
