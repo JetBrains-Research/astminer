@@ -1,12 +1,16 @@
 package astminer.common.model
 
-class MethodInfoPropertyNotImplementedException(propertyName: String) :
+interface TreeFunctionSplitter<T : Node> {
+    fun splitIntoMethods(root: T): Collection<FunctionInfo<T>>
+}
+
+class FunctionInfoPropertyNotImplementedException(propertyName: String) :
     UnsupportedOperationException(
-        "The property $propertyName of MethodInfo for this language and parser type is not implemented yet. " +
+        "The property $propertyName of FunctionInfo for this language and parser type is not implemented yet. " +
                 "Consider implementing it."
     )
 
-private fun notImplemented(propertyName: String): Nothing = throw MethodInfoPropertyNotImplementedException(propertyName)
+private fun notImplemented(propertyName: String): Nothing = throw FunctionInfoPropertyNotImplementedException(propertyName)
 
 interface FunctionInfo<T : Node> {
     val nameNode: T?
@@ -21,7 +25,7 @@ interface FunctionInfo<T : Node> {
         get() = notImplemented("annotations")
     val modifiers: List<String>
         get() = notImplemented("modifiers")
-    val parameters: List<MethodInfoParameter>
+    val parameters: List<FunctionInfoParameter>
         get() = notImplemented("parameters")
     val returnType: String?
         get() = notImplemented("returnType")
@@ -31,7 +35,7 @@ interface FunctionInfo<T : Node> {
         get() = notImplemented("isConstructor")
 }
 
-data class MethodInfoParameter(val name: String, val type: String?)
+data class FunctionInfoParameter(val name: String, val type: String?)
 
 data class EnclosingElement<T>(val type: EnclosingElementType, val name: String?, val root: T)
 
@@ -41,8 +45,3 @@ enum class EnclosingElementType {
     Method,
     VariableDeclaration,
 }
-
-// TODO: should be removed
-class DummyFunctionInfo<T : Node> : FunctionInfo<T>
-
-fun <T : Node> dummyMethodInfos() = listOf(DummyFunctionInfo<T>())

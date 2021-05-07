@@ -14,7 +14,7 @@ class JavaScriptMethodSplitterTest {
     companion object {
         const val N_METHODS = 47
         const val testFilePath = "src/test/resources/methodSplitting/testMethodSplitting.js"
-        val methodSplitter = JavaScriptMethodSplitter()
+        val methodSplitter = JavaScriptFunctionSplitter()
         val parser = JavaScriptParser()
     }
 

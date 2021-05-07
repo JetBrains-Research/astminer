@@ -2,9 +2,12 @@ package astminer.common.model
 
 import astminer.problem.LabeledResult
 import astminer.parse.ParsingException
+import mu.KotlinLogging
 import java.io.File
 import java.io.InputStream
 
+// TODO: later move this logger to Pipeline
+private val logger = KotlinLogging.logger("ParsingModel")
 
 interface Node {
     fun getTypeLabel(): String
@@ -57,8 +60,7 @@ interface Parser<T : Node> {
             try {
                 handleResult(parseFile(file))
             } catch (parsingException: ParsingException) {
-                // TODO: all error reporting should be on the surface, in my opinion
-                println("Failed to parse file ${file.path}: ${parsingException.message}")
+                logger.error(parsingException) { "Failed to parse file ${file.path}" }
             }
         }
     }

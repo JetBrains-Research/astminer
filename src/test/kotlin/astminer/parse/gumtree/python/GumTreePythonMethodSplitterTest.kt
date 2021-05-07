@@ -1,7 +1,6 @@
 package astminer.parse.gumtree.python
 
 import astminer.common.model.FunctionInfo
-import astminer.common.model.MethodInfo
 import astminer.parse.gumtree.GumTreeNode
 import org.junit.Test
 import java.io.File
@@ -13,7 +12,7 @@ class GumTreePythonMethodSplitterTest {
         GumTreePythonParser().parseInputStream(File(filename).inputStream())
 
     private fun splitMethods(filename: String): Collection<FunctionInfo<GumTreeNode>> = parse(filename)?.let {
-        GumTreePythonMethodSplitter().splitIntoMethods(it)
+        GumTreePythonFunctionSplitter().splitIntoMethods(it)
     } ?: emptyList()
 
     private fun createPath(file: String) = "src/test/resources/gumTreeMethodSplitter/$file"

@@ -1,9 +1,8 @@
 package astminer.parse.cpp
 
 import astminer.common.model.FunctionInfo
-import astminer.common.model.MethodInfo
 import astminer.parse.fuzzy.cpp.FuzzyCppParser
-import astminer.parse.fuzzy.cpp.FuzzyMethodSplitter
+import astminer.parse.fuzzy.cpp.FuzzyFunctionSplitter
 import astminer.parse.fuzzy.cpp.FuzzyNode
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -16,7 +15,7 @@ class FuzzyMethodSplitterTest {
 
     companion object {
         const val N_FUNCTIONS = 10
-        val methodSplitter = FuzzyMethodSplitter()
+        val methodSplitter = FuzzyFunctionSplitter()
         val parser = FuzzyCppParser()
     }
 
