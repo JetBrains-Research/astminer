@@ -4,6 +4,8 @@ import astminer.common.model.FunctionInfo
 import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.common.splitToSubtokens
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 interface FunctionFilter : Filter<FunctionInfo<out Node>>
 

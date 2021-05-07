@@ -1,39 +1,36 @@
 package astminer.config
 
-import astminer.filters.FileFilter
-import astminer.filters.Filter
-import astminer.filters.FunctionFilter
-import astminer.problem.FileLevelProblem
-import astminer.problem.FunctionLevelProblem
-import astminer.problem.Problem
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-sealed class PipelineConfig {
-    abstract val inputDir: String
-    abstract val outputDir: String
-    abstract val parser: ParserConfig
-    abstract val filters: List<Filter<*>>
-    abstract val problem: Problem<*>
-    abstract val storage: StorageConfig
-}
+@Serializable
+sealed class PipelineConfig
 
+@Serializable
+@SerialName("file granularity")
 data class FilePipelineConfig(
-    override val inputDir: String,
-    override val outputDir: String,
-    override val parser: ParserConfig,
-    override val filters: List<FileFilter>,
-    override val problem: FileLevelProblem,
-    override val storage: StorageConfig
+    val inputDir: String,
+    val outputDir: String,
+    val parserConfig: ParserConfig,
+    val filterConfigs: List<FileFilterConfig> = emptyList(),
+    val problemConfig: FileProblemConfig,
+    val excludedNodeTypes: List<String> = emptyList(),
+    val storageCreatorConfig: StorageCreatorConfig
 ) : PipelineConfig()
 
+@Serializable
+@SerialName("function granularity")
 data class FunctionPipelineConfig(
-    override val inputDir: String,
-    override val outputDir: String,
-    override val parser: ParserConfig,
-    override val filters: List<FunctionFilter>,
-    override val problem: FunctionLevelProblem,
-    override val storage: StorageConfig
+    val inputDir: String,
+    val outputDir: String,
+    val parserConfig: ParserConfig,
+    val filterConfigs: List<FunctionFilterConfig> = emptyList(),
+    val problemConfig: FunctionProblemConfig,
+    val excludedNodeTypes: List<String> = emptyList(),
+    val storageCreatorConfig: StorageCreatorConfig
 ) : PipelineConfig()
 
+@Serializable
 data class ParserConfig(
     val type: String,
     val extensions: List<String>

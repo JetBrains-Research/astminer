@@ -20,14 +20,23 @@ fun getPipeline(pipelineConfig: PipelineConfig): Pipeline<*> {
 
 fun getFilePipeline(filePipelineConfig: FilePipelineConfig): Pipeline<ParseResult<out Node>> =
     with(filePipelineConfig) {
-        val frontend = FilePipelineFrontend(inputDir, parser.type, parser.extensions)
-        val storageCreator = StorageCreatorImpl(storage, outputDir)
-        Pipeline(frontend, filters, problem, emptyList(), storageCreator)
+        Pipeline(
+            frontend = FilePipelineFrontend(inputDir, parserConfig.type, parserConfig.extensions),
+            filters = filterConfigs.map { it.filter },
+            problem = problemConfig.problem,
+            excludedNodeTypes = excludedNodeTypes,
+            storageCreator = storageCreatorConfig.getCreator(outputDir)
+        )
     }
 
 fun getFunctionPipeline(functionPipelineConfig: FunctionPipelineConfig): Pipeline<FunctionInfo<out Node>> =
     with(functionPipelineConfig) {
-        val frontend = FunctionPipelineFrontend(inputDir, parser.type, parser.extensions)
-        val storageCreator = StorageCreatorImpl(storage, outputDir)
-        Pipeline(frontend, filters, problem, emptyList(), storageCreator)
+        Pipeline(
+            frontend = FunctionPipelineFrontend(inputDir, parserConfig.type, parserConfig.extensions),
+            filters = filterConfigs.map { it.filter },
+            problem = problemConfig.problem,
+            excludedNodeTypes = excludedNodeTypes,
+            storageCreator = storageCreatorConfig.getCreator(outputDir)
+        )
     }
+

@@ -2,6 +2,8 @@ package astminer.problem
 
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import java.io.File
 
 interface FileLevelProblem : Problem<ParseResult<out Node>>

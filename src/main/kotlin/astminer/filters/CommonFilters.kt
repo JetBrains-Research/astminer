@@ -4,6 +4,7 @@ import astminer.common.model.FunctionInfo
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
 import astminer.featureextraction.treeSize
+import kotlinx.serialization.Serializable
 
 abstract class TreeSizeFilter<T>(private val maxSize: Int) : Filter<T> {
     private fun isTreeFiltered(root: Node): Boolean {

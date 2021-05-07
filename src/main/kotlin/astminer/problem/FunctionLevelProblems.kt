@@ -4,6 +4,8 @@ import astminer.common.model.FunctionInfo
 import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.common.setTechnicalToken
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 interface FunctionLevelProblem : Problem<FunctionInfo<out Node>>
 

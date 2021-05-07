@@ -17,13 +17,14 @@ println(version)
 
 plugins {
     id("java")
-    kotlin("jvm") version "1.3.61" apply true
+    kotlin("jvm") version "1.4.32" apply true
     id("antlr")
     id("idea")
     id("application")
     id("tanvd.kosogor") version "1.0.6"
     id("org.jetbrains.dokka") version "0.9.18"
     id("me.champeau.gradle.jmh") version "0.5.0"
+    kotlin("plugin.serialization") version "1.4.32"
 }
 
 
@@ -57,6 +58,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
     implementation("org.slf4j", "slf4j-simple", "1.7.30")
     implementation("io.github.microutils:kotlin-logging:1.5.9")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.0")
 
     testImplementation("junit:junit:4.11")
     testImplementation(kotlin("test-junit"))
@@ -66,6 +68,7 @@ dependencies {
     jmhImplementation("org.jetbrains.kotlin:kotlin-reflect:1.3.61")
     jmhImplementation("org.openjdk.jmh:jmh-core:1.21")
     jmhImplementation("org.openjdk.jmh:jmh-generator-annprocess:1.21")
+
 }
 
 val shadowJar = shadowJar {

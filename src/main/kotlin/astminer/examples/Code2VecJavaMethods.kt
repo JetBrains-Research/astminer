@@ -1,8 +1,6 @@
 package astminer.examples
 
-import astminer.config.Code2VecPathStorageConfig
-import astminer.config.FunctionPipelineConfig
-import astminer.config.ParserConfig
+import astminer.config.*
 import astminer.pipeline.getFunctionPipeline
 import astminer.problem.FunctionNameProblem
 
@@ -14,15 +12,14 @@ fun code2vecJavaMethods() {
     val outputDir = "out_examples/code2vecPathMining"
 
     val pipelineConfig = FunctionPipelineConfig(
-        folder,
-        outputDir,
-        ParserConfig(
+        inputDir = folder,
+        outputDir = outputDir,
+        parserConfig = ParserConfig(
             "antlr",
             listOf("java")
         ),
-        emptyList(),
-        FunctionNameProblem,
-        Code2VecPathStorageConfig(
+        problemConfig = FunctionNamePredictionConfig,
+        storageCreatorConfig = Code2VecPathStorageCreatorConfig(
             maxPathLength = 5,
             maxPathWidth = 5
         )
