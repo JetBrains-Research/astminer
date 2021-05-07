@@ -5,7 +5,6 @@ import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.Vocabulary
 import org.antlr.v4.runtime.tree.ErrorNode
 import org.antlr.v4.runtime.tree.TerminalNode
-import java.util.concurrent.locks.Condition
 
 fun convertAntlrTree(tree: ParserRuleContext, ruleNames: Array<String>, vocabulary: Vocabulary): AntlrNode {
     return compressTree(convertRuleContext(tree, ruleNames, null, vocabulary))
