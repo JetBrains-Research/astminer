@@ -5,9 +5,9 @@ import astminer.common.model.HandlerFactory
 import astminer.common.model.LanguageHandler
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.java.JavaParser
-import astminer.parse.antlr.javascript.JavaScriptMethodSplitter
+import astminer.parse.antlr.javascript.JavaScriptFunctionSplitter
 import astminer.parse.antlr.javascript.JavaScriptParser
-import astminer.parse.antlr.python.PythonMethodSplitter
+import astminer.parse.antlr.python.PythonFunctionSplitter
 import astminer.parse.antlr.python.PythonParser
 import java.io.File
 
@@ -25,7 +25,7 @@ object AntlrPythonHandlerFactory : HandlerFactory {
 
     class AntlrPythonHandler(file: File) : LanguageHandler<AntlrNode>() {
         override val parseResult: ParseResult<AntlrNode> = PythonParser().parseFile(file)
-        override val splitter = PythonMethodSplitter()
+        override val splitter = PythonFunctionSplitter()
     }
 }
 
@@ -34,6 +34,6 @@ object AntlrJavascriptHandlerFactory : HandlerFactory {
 
     class AntlrJavascriptHandler(file: File) : LanguageHandler<AntlrNode>() {
         override val parseResult: ParseResult<AntlrNode> = JavaScriptParser().parseFile(file)
-        override val splitter = JavaScriptMethodSplitter()
+        override val splitter = JavaScriptFunctionSplitter()
     }
 }

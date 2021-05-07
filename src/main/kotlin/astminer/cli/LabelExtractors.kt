@@ -7,13 +7,13 @@ import astminer.common.preOrder
 import astminer.common.setTechnicalToken
 import astminer.parse.antlr.AntlrNode
 import astminer.parse.antlr.java.JavaMethodSplitter
-import astminer.parse.antlr.javascript.JavaScriptMethodSplitter
-import astminer.parse.antlr.python.PythonMethodSplitter
-import astminer.parse.fuzzy.cpp.FuzzyMethodSplitter
+import astminer.parse.antlr.javascript.JavaScriptFunctionSplitter
+import astminer.parse.antlr.python.PythonFunctionSplitter
+import astminer.parse.fuzzy.cpp.FuzzyFunctionSplitter
 import astminer.parse.fuzzy.cpp.FuzzyNode
 import astminer.parse.gumtree.GumTreeNode
 import astminer.parse.gumtree.java.GumTreeJavaMethodSplitter
-import astminer.parse.gumtree.python.GumTreePythonMethodSplitter
+import astminer.parse.gumtree.python.GumTreePythonFunctionSplitter
 import java.io.File
 
 
@@ -56,7 +56,7 @@ abstract class MethodLabelExtractor(
         val fileExtension = File(filePath).extension
         val methodInfos = when (fileExtension) {
             "c", "cpp" -> {
-                val methodSplitter = FuzzyMethodSplitter()
+                val methodSplitter = FuzzyFunctionSplitter()
                 methodSplitter.splitIntoMethods(root as FuzzyNode)
             }
             "java" -> {
@@ -77,11 +77,11 @@ abstract class MethodLabelExtractor(
             "py" -> {
                 when (pythonParser) {
                     "gumtree" -> {
-                        val methodSplitter = GumTreePythonMethodSplitter()
+                        val methodSplitter = GumTreePythonFunctionSplitter()
                         methodSplitter.splitIntoMethods(root as GumTreeNode)
                     }
                     "antlr" -> {
-                        val methodSplitter = PythonMethodSplitter()
+                        val methodSplitter = PythonFunctionSplitter()
                         methodSplitter.splitIntoMethods(root as AntlrNode)
                     }
                     else -> {
@@ -90,7 +90,7 @@ abstract class MethodLabelExtractor(
                 }
             }
             "js" -> {
-                val methodSplitter = JavaScriptMethodSplitter()
+                val methodSplitter = JavaScriptFunctionSplitter()
                 methodSplitter.splitIntoMethods(root as AntlrNode)
             }
             else -> throw UnsupportedOperationException("Unsupported extension $fileExtension")
