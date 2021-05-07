@@ -1,7 +1,6 @@
 package astminer.parse.gumtree.java
 
 import astminer.common.model.FunctionInfo
-import astminer.common.model.MethodInfo
 import astminer.parse.gumtree.GumTreeNode
 import org.junit.Test
 import java.io.File

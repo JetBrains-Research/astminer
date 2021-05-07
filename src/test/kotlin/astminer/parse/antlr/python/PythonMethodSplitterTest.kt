@@ -2,7 +2,6 @@ package astminer.parse.antlr.python
 
 import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
-import astminer.common.model.MethodInfo
 import astminer.parse.antlr.AntlrNode
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -14,7 +13,7 @@ import kotlin.test.assertNull
 class PythonMethodSplitterTest {
     companion object {
         const val N_FUNCTIONS = 17
-        val methodSplitter = PythonMethodSplitter()
+        val methodSplitter = PythonFunctionSplitter()
         val parser = PythonParser()
     }
 

@@ -3,7 +3,7 @@ package astminer.parse.fuzzy.cpp
 import astminer.common.*
 import astminer.common.model.*
 
-class FuzzyMethodSplitter : TreeMethodSplitter<FuzzyNode> {
+class FuzzyFunctionSplitter : TreeFunctionSplitter<FuzzyNode> {
     private val methodNode = "METHOD"
 
     override fun splitIntoMethods(root: FuzzyNode): Collection<FunctionInfo<FuzzyNode>> {

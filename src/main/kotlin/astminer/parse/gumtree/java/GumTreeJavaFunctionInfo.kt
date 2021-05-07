@@ -3,7 +3,7 @@ package astminer.parse.gumtree.java
 import astminer.common.model.EnclosingElement
 import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
-import astminer.common.model.MethodInfoParameter
+import astminer.common.model.FunctionInfoParameter
 import astminer.parse.gumtree.GumTreeNode
 
 class GumTreeJavaFunctionInfo(override val root: GumTreeNode) : FunctionInfo<GumTreeNode> {
@@ -16,7 +16,7 @@ class GumTreeJavaFunctionInfo(override val root: GumTreeNode) : FunctionInfo<Gum
     }
 
     override val nameNode: GumTreeNode? = root.getChildOfType(TypeLabels.simpleName)
-    override val parameters: List<MethodInfoParameter> = collectParameters()
+    override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val returnType: String? = root.getElementType()
     override val enclosingElement: EnclosingElement<GumTreeNode>? = collectEnclosingClass()
 
@@ -37,10 +37,10 @@ class GumTreeJavaFunctionInfo(override val root: GumTreeNode) : FunctionInfo<Gum
         return getEnclosingClassNode(node.getParent() as GumTreeNode?)
     }
 
-    private fun collectParameters(): List<MethodInfoParameter> {
+    private fun collectParameters(): List<FunctionInfoParameter> {
         val params = root.getChildrenOfType(TypeLabels.singleVariableDeclaration)
         return params.map { node ->
-            MethodInfoParameter(
+            FunctionInfoParameter(
                 name = node.getElementName(),
                 type = node.getElementType()
             )

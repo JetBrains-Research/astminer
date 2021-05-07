@@ -2,7 +2,7 @@ package astminer.examples
 
 import astminer.cli.LabeledResult
 import astminer.common.model.FunctionInfo
-import astminer.parse.gumtree.python.GumTreePythonMethodSplitter
+import astminer.parse.gumtree.python.GumTreePythonFunctionSplitter
 import astminer.parse.gumtree.GumTreeNode
 import astminer.parse.gumtree.python.GumTreePythonParser
 import astminer.storage.path.Code2VecPathStorage
@@ -27,7 +27,7 @@ fun allPythonMethods() {
         val fileNode = GumTreePythonParser().parseInputStream(file.inputStream()) ?: return@forFilesWithSuffix
 
         // extract method nodes
-        val methodNodes = GumTreePythonMethodSplitter().splitIntoMethods(fileNode)
+        val methodNodes = GumTreePythonFunctionSplitter().splitIntoMethods(fileNode)
 
         methodNodes.forEach { methodInfo ->
             // Retrieve a method identifier

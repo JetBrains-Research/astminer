@@ -48,7 +48,7 @@ abstract class AntlrJavaScriptElementInfo(override val root: AntlrNode) : Functi
         }
     }
 
-    protected fun collectParameters(): List<MethodInfoParameter> {
+    protected fun collectParameters(): List<FunctionInfoParameter> {
         val parametersRoot = getParametersRoot()
         return when {
             //No parameters found
@@ -56,13 +56,13 @@ abstract class AntlrJavaScriptElementInfo(override val root: AntlrNode) : Functi
 
             //Have only one parameter, which is indicated only by its name
             parametersRoot.hasLastLabel(PARAMETER_NAME_NODE) -> listOf(
-                MethodInfoParameter(name = parametersRoot.getToken(), type = null)
+                FunctionInfoParameter(name = parametersRoot.getToken(), type = null)
             )
 
             //Have many parameters or one indicated not only by it's name
             else -> parametersRoot.getItOrChildrenOfType(SINGLE_PARAMETER_NODE).map {
                 val nameNode = it.getChildOfType(PARAMETER_NAME_NODE) ?: it
-                MethodInfoParameter(name = nameNode.getToken(), type = null)
+                FunctionInfoParameter(name = nameNode.getToken(), type = null)
             }
         }
     }
@@ -78,7 +78,7 @@ class JavaScriptArrowInfo(override val root: AntlrNode) : AntlrJavaScriptElement
     }
 
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingElement()
-    override val parameters: List<MethodInfoParameter> = collectParameters()
+    override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val nameNode: AntlrNode? = root.getChildOfType(ARROW_NAME_NODE)
 
     override fun getParametersRoot(): AntlrNode? {
@@ -95,7 +95,7 @@ class JavaScriptMethodInfo(override val root: AntlrNode) : AntlrJavaScriptElemen
     }
 
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingElement()
-    override val parameters: List<MethodInfoParameter> = collectParameters()
+    override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val nameNode: AntlrNode? = collectNameNode()
 
     private fun collectNameNode(): AntlrNode? {
@@ -118,7 +118,7 @@ class JavaScriptFunctionInfo(override val root: AntlrNode) : AntlrJavaScriptElem
     }
 
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingElement()
-    override val parameters: List<MethodInfoParameter> = collectParameters()
+    override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val nameNode: AntlrNode? = root.getChildOfType(FUNCTION_NAME_NODE)
 
     override fun getParametersRoot(): AntlrNode? = root.getChildOfType(FUNCTION_PARAMETER_NODE)

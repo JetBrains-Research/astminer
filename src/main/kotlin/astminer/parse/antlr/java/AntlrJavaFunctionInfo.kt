@@ -6,7 +6,7 @@ import astminer.parse.findEnclosingElementBy
 
 class AntlrJavaFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNode> {
     override val nameNode: AntlrNode? = collectNameNode()
-    override val parameters: List<MethodInfoParameter> = collectParameters()
+    override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val returnType: String? = collectReturnType()
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingClass()
 
@@ -42,7 +42,7 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNo
         )
     }
 
-    private fun collectParameters(): List<MethodInfoParameter> {
+    private fun collectParameters(): List<FunctionInfoParameter> {
         val parametersRoot = root.getChildOfType(METHOD_PARAMETER_NODE)
         val innerParametersRoot = parametersRoot?.getChildOfType(METHOD_PARAMETER_INNER_NODE) ?: return emptyList()
 
@@ -55,14 +55,14 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNo
         }.map { singleParameter -> getParameterInfo(singleParameter) }
     }
 
-    private fun getParameterInfo(parameterNode: AntlrNode): MethodInfoParameter {
+    private fun getParameterInfo(parameterNode: AntlrNode): FunctionInfoParameter {
         val returnTypeNode = parameterNode.getChildOfType(PARAMETER_RETURN_TYPE_NODE)
         val returnTypeToken = returnTypeNode?.getTokensFromSubtree()
 
         val parameterName = parameterNode.getChildOfType(PARAMETER_NAME_NODE)?.getToken()
             ?: throw IllegalStateException("Parameter name wasn't found")
 
-        return MethodInfoParameter(parameterName, returnTypeToken)
+        return FunctionInfoParameter(parameterName, returnTypeToken)
     }
 }
 

@@ -3,7 +3,7 @@ package astminer.parse.fuzzy.cpp
 import astminer.common.model.EnclosingElement
 import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
-import astminer.common.model.MethodInfoParameter
+import astminer.common.model.FunctionInfoParameter
 import astminer.parse.findEnclosingElementBy
 
 class FuzzyCppFunctionInfo(override val root: FuzzyNode): FunctionInfo<FuzzyNode> {
@@ -22,7 +22,7 @@ class FuzzyCppFunctionInfo(override val root: FuzzyNode): FunctionInfo<FuzzyNode
 
     override val returnType: String? = collectReturnType()
     override val enclosingElement: EnclosingElement<FuzzyNode>? = collectEnclosingClass()
-    override val parameters: List<MethodInfoParameter> = collectParameters()
+    override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val nameNode: FuzzyNode? = collectNameNode()
 
     private fun collectNameNode(): FuzzyNode? {
@@ -51,12 +51,12 @@ class FuzzyCppFunctionInfo(override val root: FuzzyNode): FunctionInfo<FuzzyNode
         return enclosingClass.getChildOfType(CLASS_NAME_NODE)?.getToken()
     }
 
-    private fun collectParameters(): List<MethodInfoParameter> {
+    private fun collectParameters(): List<FunctionInfoParameter> {
         val parameters = root.getChildrenOfType(METHOD_PARAMETER_NODE)
         return parameters.map { param ->
             val type = param.getChildOfType(PARAMETER_TYPE_NODE)?.getToken()
             val name = param.getChildOfType(PARAMETER_NAME_NODE)?.getToken() ?: ""
-            MethodInfoParameter(name, type)
+            FunctionInfoParameter(name, type)
         }
     }
 }

@@ -4,7 +4,7 @@ import astminer.common.model.*
 import astminer.common.preOrder
 import astminer.parse.gumtree.GumTreeNode
 
-class GumTreePythonMethodSplitter : TreeMethodSplitter<GumTreeNode> {
+class GumTreePythonFunctionSplitter : TreeFunctionSplitter<GumTreeNode> {
     companion object {
         private object TypeLabels {
             const val functionDefinition = "FunctionDef"

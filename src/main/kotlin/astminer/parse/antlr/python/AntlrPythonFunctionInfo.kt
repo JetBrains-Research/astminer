@@ -6,7 +6,7 @@ import astminer.parse.findEnclosingElementBy
 
 class AntlrPythonFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNode> {
     override val nameNode: AntlrNode? = collectNameNode()
-    override val parameters: List<MethodInfoParameter> = collectParameters()
+    override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingElement()
 
     companion object {
@@ -33,7 +33,7 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode) : FunctionInfo<Antlr
         return root.getChildOfType(FUNCTION_NAME_NODE)
     }
 
-    private fun collectParameters(): List<MethodInfoParameter> {
+    private fun collectParameters(): List<FunctionInfoParameter> {
         val parametersRoot = root.getChildOfType(METHOD_PARAMETER_NODE)
         val innerParametersRoot = parametersRoot?.getChildOfType(METHOD_PARAMETER_INNER_NODE) ?: return emptyList()
 
@@ -48,7 +48,7 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode) : FunctionInfo<Antlr
         }
     }
 
-    private fun assembleMethodInfoParameter(parameterNode: AntlrNode): MethodInfoParameter {
+    private fun assembleMethodInfoParameter(parameterNode: AntlrNode): FunctionInfoParameter {
         val parameterHaveNoDefaultOrType = parameterNode.hasLastLabel(PARAMETER_NAME_NODE)
         val parameterName = if (parameterHaveNoDefaultOrType) {
             parameterNode.getToken()
@@ -59,7 +59,7 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode) : FunctionInfo<Antlr
 
         val parameterType = parameterNode.getChildOfType(PARAMETER_TYPE_NODE)?.getTokensFromSubtree()
 
-        return MethodInfoParameter(
+        return FunctionInfoParameter(
             name = parameterName,
             type = parameterType
         )

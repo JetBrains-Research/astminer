@@ -9,7 +9,7 @@ import astminer.parse.antlr.decompressTypeLabel
  * Get all methods (in JavaScript there are divided into functions, arrow functions and methods) and information
  * about their names, enclosing elements and parameters.
  */
-class JavaScriptMethodSplitter : TreeMethodSplitter<AntlrNode> {
+class JavaScriptFunctionSplitter : TreeFunctionSplitter<AntlrNode> {
     companion object {
         private const val METHOD_NODE = "methodDefinition"
         private const val ARROW_NODE = "ARROW"
