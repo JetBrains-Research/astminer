@@ -1,6 +1,7 @@
 package astminer.config
 
 import astminer.problem.*
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
@@ -10,13 +11,15 @@ sealed class FileProblemConfig {
 }
 
 @Serializable
-object FilePathExtractorConfig : FileProblemConfig() {
+@SerialName("filepath")
+class FilePathExtractorConfig : FileProblemConfig() {
     @Transient
     override val problem = FilePathExtractor
 }
 
 @Serializable
-object FolderNameExtractorConfig : FileProblemConfig() {
+@SerialName("foldername")
+class FolderNameExtractorConfig : FileProblemConfig() {
     @Transient
     override val problem = FolderExtractor
 }
@@ -27,7 +30,8 @@ sealed class FunctionProblemConfig {
 }
 
 @Serializable
-object FunctionNamePredictionConfig : FunctionProblemConfig() {
+@SerialName("function name prediction")
+class FunctionNamePredictionConfig : FunctionProblemConfig() {
     @Transient
     override val problem = FunctionNameProblem
 }

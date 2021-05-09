@@ -1,20 +1,33 @@
 package astminer
 
-//import astminer.cli.*
+import astminer.config.PipelineConfig
+import astminer.pipeline.getPipeline
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.types.file
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import java.io.File
 
-//fun main(args: Array<String>) {
-//    if (args.isEmpty()) {
-//        println("""
-//             You should specify the task as the first argument ("preprocess", "parse", "pathContexts", or "code2vec").
-//             For more information run `./cli.sh taskName --help`
-//        """.trimIndent())
-//    } else {
-//        return when (args[0]) {
-//            "preprocess" -> ProjectPreprocessor().main(args.sliceArray(1 until args.size))
-//            "parse" -> ProjectParser().main(args.sliceArray(1 until args.size))
-//            "pathContexts" -> PathContextsExtractor().main(args.sliceArray(1 until args.size))
-//            "code2vec" -> Code2VecExtractor().main(args.sliceArray(1 until args.size))
-//            else -> throw Exception("The first argument should be task's name: either 'preprocess', 'parse', 'pathContexts', or 'code2vec'")
-//        }
-//    }
-//}
+
+class PipelineRunner : CliktCommand(name = "") {
+    val config: File by argument("config", help = "Path to config").file(
+        exists = true,
+        folderOkay = false,
+        readable = true
+    )
+
+    override fun run() {
+        val config = try {
+            Json.decodeFromString<PipelineConfig>(config.readText())
+        } catch (e: SerializationException) {
+            // TODO: should log it also
+            println("Error: $e")
+            return
+        }
+        getPipeline(config).run()
+    }
+}
+
+fun main(args: Array<String>) = PipelineRunner().main(args)

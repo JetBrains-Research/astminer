@@ -13,7 +13,7 @@ sealed class StorageCreatorConfig {
 
 @Serializable
 @SerialName("csv ast")
-object CsvAstStorageCreatorConfig : StorageCreatorConfig() {
+class CsvAstStorageCreatorConfig : StorageCreatorConfig() {
     override fun getCreator(outputFolderPath: String) = CsvAstStorageCreator(outputFolderPath)
 }
 

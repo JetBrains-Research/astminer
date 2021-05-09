@@ -18,7 +18,7 @@ fun code2vecJavaMethods() {
             "antlr",
             listOf("java")
         ),
-        problemConfig = FunctionNamePredictionConfig,
+        problemConfig = FunctionNamePredictionConfig(),
         storageCreatorConfig = Code2VecPathStorageCreatorConfig(
             maxPathLength = 5,
             maxPathWidth = 5

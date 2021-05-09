@@ -3,6 +3,7 @@ package astminer.pipeline
 import astminer.common.getProjectFilesWithExtension
 import astminer.common.model.*
 import astminer.parse.getHandlerFactory
+import mu.KotlinLogging
 import java.io.File
 
 /**
@@ -26,6 +27,8 @@ interface PipelineFrontend<T> {
     fun getEntities(): Sequence<EntitiesFromFiles<T>>
 }
 
+private val logger = KotlinLogging.logger("PipelineFrontend")
+
 /**
  * Base class for several PipelineFrontend implementations.
  * Finds parsers of type [parserType] for all the given languages by [extensions].
@@ -41,6 +44,8 @@ abstract class CompositePipelineFrontend<T>(
 
     override fun getEntities(): Sequence<EntitiesFromFiles<T>> = sequence {
         val inputDirectory = File(inputDirectoryPath)
+
+        logger.info { "Reading ${inputDirectory.absolutePath}" }
 
         for (extension in extensions) {
             val handlerFactory = try {

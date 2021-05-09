@@ -1,0 +1,15 @@
+{
+  "type": "file granularity",
+  "inputDir": "src/test/resources/methodSplitting/",
+  "outputDir": "output",
+  "parserConfig": {
+      "type": "antlr",
+      "extensions": ["java"]
+  },
+  "problemConfig": {
+    "type": "filepath"
+  },
+  "storageCreatorConfig": {
+    "type": "csv ast"
+  }
+}

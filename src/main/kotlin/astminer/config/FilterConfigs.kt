@@ -33,7 +33,7 @@ data class AnnotationFilterConfig(val excludeAnnotations: List<String>) : Functi
 }
 
 @Serializable
-object ConstructorFilterConfig : FunctionFilterConfig() {
+class ConstructorFilterConfig : FunctionFilterConfig() {
     @Transient
     override val filter = ConstructorFilter
 }

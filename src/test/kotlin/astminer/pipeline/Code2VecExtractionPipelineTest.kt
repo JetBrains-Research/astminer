@@ -26,7 +26,7 @@ internal class Code2VecExtractionPipelineTest {
                 "gumtree",
                 languages
             ),
-            problemConfig = FilePathExtractorConfig,
+            problemConfig = FilePathExtractorConfig(),
             storageCreatorConfig = Code2VecPathStorageCreatorConfig(
                 maxPathLength = 8,
                 maxPathWidth = 3
