@@ -1,85 +1,63 @@
-import tanvd.kosogor.proxy.publishJar
 import tanvd.kosogor.proxy.shadowJar
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-group = "io.github.vovak.astminer"
-
-val branchName: String by project
-val ciVersion: String by project
-
-version = if (project.hasProperty("ciVersion")) {
-    ciVersion
-} else {
-    "0.6"
-}
-
-println(version)
+group = "io.github.vovak"
+version = "0.6.2"
 
 plugins {
     id("java")
-    kotlin("jvm") version "1.3.61" apply true
+    kotlin("jvm") version "1.4.32" apply true
     id("antlr")
     id("idea")
     id("application")
-    id("tanvd.kosogor") version "1.0.6"
     id("org.jetbrains.dokka") version "0.9.18"
     id("me.champeau.gradle.jmh") version "0.5.0"
-}
-
-
-application {
-    mainClassName = "astminer.MainKt"
+    id("maven-publish")
+    id("tanvd.kosogor") version "1.0.10" apply true
 }
 
 defaultTasks("run")
 
 repositories {
-    mavenLocal()
     mavenCentral()
-    jcenter()
 }
 
-
-val generatedSourcesPath = "src/main/generated"
-
 dependencies {
+    // ===== Parsers =====
     antlr("org.antlr:antlr4:4.7.1")
-    implementation(kotlin("stdlib"))
-
     // https://mvnrepository.com/artifact/com.github.gumtreediff
-    api("com.github.gumtreediff", "core", "2.1.2")
+    api("com.github.gumtreediff", "core", "2.1.0")
     api("com.github.gumtreediff", "client", "2.1.0")
     api("com.github.gumtreediff", "gen.jdt", "2.1.0")
-    api("com.github.gumtreediff", "gen.python", "2.1.2")
-
     // https://mvnrepository.com/artifact/io.shiftleft/fuzzyc2cpg
     api("io.shiftleft", "fuzzyc2cpg_2.13", "1.2.9")
-    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+
+    // ===== Main =====
+    implementation(kotlin("stdlib"))
+    implementation("com.github.ajalt", "clikt", "2.1.0")
+
+    // ===== Logging =====
     implementation("org.slf4j", "slf4j-simple", "1.7.30")
     implementation("io.github.microutils:kotlin-logging:1.5.9")
 
+    // ===== Test =====
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
     testImplementation("junit:junit:4.11")
     testImplementation(kotlin("test-junit"))
 
     implementation("com.github.ajalt", "clikt", "2.1.0")
 
+    // ===== JMH =====
     jmhImplementation("org.jetbrains.kotlin:kotlin-reflect:1.3.61")
     jmhImplementation("org.openjdk.jmh:jmh-core:1.21")
     jmhImplementation("org.openjdk.jmh:jmh-generator-annprocess:1.21")
 }
 
-val shadowJar = shadowJar {
-    jar {
-        archiveName = "lib-$version.jar"
-        mainClass = "astminer.MainKt"
-    }
-}.apply {
-    task.archiveClassifier.set("")
-}
-
+val generatedSourcesPath = "src/main/generated"
+sourceSets["main"].java.srcDir(file(generatedSourcesPath))
+idea.module.generatedSourceDirs.add(file(generatedSourcesPath))
 
 tasks.generateGrammarSource {
-    maxHeapSize = "64m"
+    // maxHeapSize = "64m"
     arguments = arguments + listOf("-package", "me.vovak.antlr.parser")
     // Keep a copy of generated sources
     doLast {
@@ -102,65 +80,17 @@ tasks.clean {
 
 tasks.compileKotlin {
     dependsOn(tasks.generateGrammarSource)
+    kotlinOptions.jvmTarget = "1.8"
 }
 tasks.compileJava {
     dependsOn(tasks.generateGrammarSource)
-}
-
-configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-}
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
-sourceSets["main"].java.srcDir(file(generatedSourcesPath))
-
-
-idea {
-    module {
-        generatedSourceDirs.add(file(generatedSourcesPath))
-    }
-}
-
-publishJar {
-    publication {
-        artifactId = if (project.hasProperty("branchName")) {
-            when(branchName) {
-                "master" -> "astminer"
-                "master-dev" -> "astminer-dev"
-                else -> ""
-            }
-        } else {
-            "astminer"
-        }
-    }
-
-    bintray {
-
-        // If username and secretKey not set, will be taken from System environment param `bintray_user`, 'bintray_key'
-        repository = "astminer"
-
-        info {
-            githubRepo = "JetBrains-Research/astminer"
-            vcsUrl = "https://github.com/JetBrains-Research/astminer"
-            labels.addAll(listOf("mining", "ast", "ml4se", "code2vec", "path-based representations"))
-            license = "MIT"
-            description = "Extract AST, AST-related metrics, and path-based representations from source code"
-        }
-    }
+    targetCompatibility = "1.8"
+    sourceCompatibility = "1.8"
 }
 
 tasks.dokka {
     outputFormat = "html"
     outputDirectory = "$buildDir/javadoc"
-}
-
-configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-}
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
 }
 
 jmh {
@@ -176,4 +106,50 @@ jmh {
     jvmArgs = listOf("-Xmx32g")
     benchmarkMode = listOf("AverageTime")
     resultsFile = file("build/reports/benchmarks.csv")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = project.group.toString()
+            artifactId = project.name
+            version = project.version.toString()
+            from(components["java"])
+        }
+    }
+    repositories {
+        maven {
+            url = uri("https://packages.jetbrains.team/maven/p/astminer/astminer")
+            credentials {
+                username = System.getenv("PUBLISH_USER")?.takeIf { it.isNotBlank() } ?: ""
+                password = System.getenv("PUBLISH_PASSWORD")?.takeIf { it.isNotBlank() } ?: ""
+            }
+        }
+    }
+}
+
+application.mainClassName = "astminer.MainKt"
+shadowJar {
+    jar {
+        archiveName = "astminer.jar"
+    }
+}.apply {
+    task.archiveClassifier.set("")
+}
+
+tasks.withType<Test> {
+    // Kotlin DSL workaround from https://github.com/gradle/kotlin-dsl-samples/issues/836#issuecomment-384206237
+    addTestListener(object : TestListener {
+        override fun beforeSuite(suite: TestDescriptor) {}
+        override fun beforeTest(testDescriptor: TestDescriptor) {}
+        override fun afterTest(testDescriptor: TestDescriptor, result: TestResult) {}
+        override fun afterSuite(suite: TestDescriptor, result: TestResult) {
+            if (suite.parent == null) {
+                println(
+                    "${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, " +
+                    "${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+                )
+            }
+        }
+    })
 }
