@@ -26,8 +26,8 @@ dependencies {
     antlr("org.antlr:antlr4:4.7.1")
     // https://mvnrepository.com/artifact/com.github.gumtreediff
     api("com.github.gumtreediff", "core", "2.1.2")
-    api("com.github.gumtreediff", "client", "2.1.0")
-    api("com.github.gumtreediff", "gen.jdt", "2.1.0")
+    api("com.github.gumtreediff", "client", "2.1.2")
+    api("com.github.gumtreediff", "gen.jdt", "2.1.2")
     api("com.github.gumtreediff", "gen.python", "2.1.2")
 
     // https://mvnrepository.com/artifact/io.shiftleft/fuzzyc2cpg

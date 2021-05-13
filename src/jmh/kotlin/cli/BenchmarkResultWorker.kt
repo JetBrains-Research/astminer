@@ -101,7 +101,7 @@ class BenchmarkResultWorker {
 }
 
 
-fun main(args: Array<String>) {
+fun main() {
     val benchmarkResultWorker = BenchmarkResultWorker()
     val results = benchmarkResultWorker.parseCsvFile("src/jmh/benchmarks.csv")
     benchmarkResultWorker.saveToMarkdown(results, "src/jmh/results.md")
