@@ -9,13 +9,16 @@ RUN apt-get update && apt-get install -y openjdk-8-jdk
 RUN apt-get update && apt-get install -y g++
 
 # Install PythonParser for GumTree
-RUN apt-get install -y --no-install-recommends -y python3.8 python3-pip git && \
-    git clone https://github.com/JetBrains-Research/pythonparser && \
-    pip3 install -r pythonparser/requirements.txt && \
-    mv pythonparser/src/main/python/pythonparser/pythonparser_3.py /tmp/pythonparser && \
-    chmod +x /tmp/pythonparser && \
-    rm -rf pythonparser
-ENV PATH="/tmp:${PATH}"
+ARG PYTHONPARSER_REPO=https://raw.githubusercontent.com/JetBrains-Research/pythonparser/master
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends -y python3.8 python3-pip git wget && \
+    mkdir pythonparser && \
+    cd pythonparser && \
+    wget $PYTHONPARSER_REPO/requirements.txt && \
+    wget $PYTHONPARSER_REPO/src/main/python/pythonparser/pythonparser_3.py -O pythonparser && \
+    pip3 install -r requirements.txt && \
+    chmod +x pythonparser
+ENV PATH="/pythonparser:${PATH}"
 
 # Copy astminer sources
 WORKDIR astminer

@@ -1,6 +1,8 @@
 package astminer.parse.gumtree.python
 
+import astminer.checkExecutable
 import org.junit.After
+import org.junit.Assume
 import org.junit.Before
 import org.junit.Test
 import java.io.File
@@ -16,6 +18,7 @@ class GumTreePythonParserTest {
 
     @Before
     fun mkdir() {
+        Assume.assumeTrue(checkExecutable("pythonparser"))
         testFolder.mkdirs()
         testFile.createNewFile()
     }
