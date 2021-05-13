@@ -1,13 +1,16 @@
 package astminer.parse.gumtree.python
 
+import astminer.checkExecutable
 import astminer.common.model.MethodInfo
 import astminer.parse.gumtree.GumTreeNode
+import org.junit.Assume
+import org.junit.Before
 import org.junit.Test
 import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-class GumTreeJavaMethodSplitterTest {
+class GumTreePythonMethodSplitterTest {
     private fun parse(filename: String): GumTreeNode? =
         GumTreePythonParser().parseInputStream(File(filename).inputStream())
 
@@ -16,6 +19,9 @@ class GumTreeJavaMethodSplitterTest {
     } ?: emptyList()
 
     private fun createPath(file: String) = "src/test/resources/gumTreeMethodSplitter/$file"
+
+    @Before
+    fun checkPythonParser() = Assume.assumeTrue(checkExecutable("pythonparser"))
 
     @Test
     fun methodsCountTest() {

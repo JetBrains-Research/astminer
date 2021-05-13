@@ -105,7 +105,7 @@ abstract class JavaScriptElement(private val element: AntlrNode) {
         return if (hasLastLabel(typeLabel)) {
             listOf(this)
         } else {
-            this.getChildrenOfType(typeLabel).mapNotNull { it as? AntlrNode }
+            this.getChildrenOfType(typeLabel).map { it }
         }
     }
 

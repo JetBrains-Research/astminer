@@ -9,3 +9,7 @@ src/main/generated/
 build/
 
 .DS_Store
+
+.github
+scripts/
+

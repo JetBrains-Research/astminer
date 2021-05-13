@@ -26,9 +26,10 @@ dependencies {
     antlr("org.antlr:antlr4:4.7.1")
     // https://mvnrepository.com/artifact/com.github.gumtreediff
     api("com.github.gumtreediff", "core", "2.1.2")
-    api("com.github.gumtreediff", "client", "2.1.0")
-    api("com.github.gumtreediff", "gen.jdt", "2.1.0")
+    api("com.github.gumtreediff", "client", "2.1.2")
+    api("com.github.gumtreediff", "gen.jdt", "2.1.2")
     api("com.github.gumtreediff", "gen.python", "2.1.2")
+
     // https://mvnrepository.com/artifact/io.shiftleft/fuzzyc2cpg
     api("io.shiftleft", "fuzzyc2cpg_2.13", "1.2.9")
 
@@ -45,10 +46,8 @@ dependencies {
     testImplementation("junit:junit:4.11")
     testImplementation(kotlin("test-junit"))
 
-    implementation("com.github.ajalt", "clikt", "2.1.0")
-
     // ===== JMH =====
-    jmhImplementation("org.jetbrains.kotlin:kotlin-reflect:1.3.61")
+    jmhImplementation("org.jetbrains.kotlin:kotlin-reflect:1.4.32")
     jmhImplementation("org.openjdk.jmh:jmh-core:1.21")
     jmhImplementation("org.openjdk.jmh:jmh-generator-annprocess:1.21")
 }
