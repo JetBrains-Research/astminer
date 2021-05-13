@@ -1,0 +1,15 @@
+name: Gradle Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    container: voudy/astminer
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build with Gradle # Building with gradle already include running tests
+        run: ./gradlew build --console=plain
