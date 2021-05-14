@@ -1,25 +1,21 @@
 package astminer.examples
 
-import astminer.common.model.LabeledPathContexts
+import astminer.cli.LabeledResult
 import astminer.parse.antlr.java.JavaMethodSplitter
 import astminer.parse.antlr.java.JavaParser
-import astminer.paths.PathMiner
-import astminer.paths.PathRetrievalSettings
-import astminer.paths.CsvPathStorage
-import astminer.paths.toPathContext
+import astminer.storage.path.Code2VecPathStorage
+import astminer.storage.path.PathBasedStorageConfig
 import java.io.File
 
 //Retrieve paths from Java files, using a generated parser.
 fun allJavaFiles() {
     val inputDir = "src/test/resources/examples/"
 
-    val miner = PathMiner(PathRetrievalSettings(5, 5))
     val outputDir = "out_examples/allJavaFilesAntlr"
-    val storage = CsvPathStorage(outputDir)
+    val storage = Code2VecPathStorage(outputDir, PathBasedStorageConfig(5, 5))
 
     File(inputDir).forFilesWithSuffix("11.java") { file ->
         val node = JavaParser().parseInputStream(file.inputStream()) ?: return@forFilesWithSuffix
-        val paths = miner.retrievePaths(node)
         node.prettyPrint()
         JavaMethodSplitter().splitIntoMethods(node).forEach {
             println(it.name())
@@ -29,7 +25,7 @@ fun allJavaFiles() {
                 println("${parameters.name()} ${parameters.returnType()}")
             }
         }
-        storage.store(LabeledPathContexts(file.path, paths.map { toPathContext(it) }))
+        storage.store(LabeledResult(node, file.path, file.path))
     }
 
     storage.close()

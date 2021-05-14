@@ -1,12 +1,20 @@
 package astminer.parse.cpp
 
+import astminer.checkExecutable
 import astminer.common.getProjectFilesWithExtension
 import astminer.examples.forFilesWithSuffix
+import astminer.parse.fuzzy.cpp.FuzzyCppParser
+import astminer.parse.fuzzy.cpp.FuzzyNode
 import org.junit.Assert
+import org.junit.Assume
+import org.junit.Before
 import org.junit.Test
 import java.io.File
 
 class FuzzyCppParserTest {
+
+    @Before
+    fun checkGPP() = Assume.assumeTrue(checkExecutable("g++"))
 
     @Test
     fun testNodeIsNotNull() {

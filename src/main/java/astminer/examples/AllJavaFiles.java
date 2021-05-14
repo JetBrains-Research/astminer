@@ -1,15 +1,16 @@
 package astminer.examples;
 
+import astminer.cli.LabeledResult;
 import astminer.common.model.*;
-import astminer.parse.java.GumTreeJavaParser;
-import astminer.paths.*;
-
+import astminer.parse.gumtree.java.GumTreeJavaParser;
+import astminer.storage.*;
+import astminer.storage.path.Code2VecPathStorage;
+import astminer.storage.path.PathBasedStorage;
+import astminer.storage.path.PathBasedStorageConfig;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 //Retrieve paths from Java files, using a GumTree parser.
 public class AllJavaFiles {
@@ -17,8 +18,8 @@ public class AllJavaFiles {
     private static final String OUTPUT_FOLDER = "out_examples/allJavaFiles_GumTree_java";
 
     public static void runExample() {
-        final PathMiner miner = new PathMiner(new PathRetrievalSettings(5,5));
-        final CountingPathStorage<String> pathStorage = new CsvPathStorage(OUTPUT_FOLDER, Long.MAX_VALUE, Long.MAX_VALUE);
+        final PathBasedStorageConfig config = new PathBasedStorageConfig(5, 5, null, null, null);
+        final PathBasedStorage pathStorage = new Code2VecPathStorage(OUTPUT_FOLDER, config, TokenProcessor.Normalize);
 
         final Path inputFolder = Paths.get(INPUT_FOLDER);
 
@@ -29,14 +30,9 @@ public class AllJavaFiles {
                 if (fileTree == null) {
                     return FileVisitResult.CONTINUE;
                 }
-                final Collection<ASTPath> paths = miner.retrievePaths(fileTree);
-                final Collection<PathContext> pathContexts = paths
-                        .stream()
-                        .map(node ->
-                                PathUtilKt.toPathContext(node, (Node::getToken))
-                        ).collect(Collectors.toList());
 
-                pathStorage.store(new LabeledPathContexts<>(file.toAbsolutePath().toString(), pathContexts));
+                String filePath = file.toAbsolutePath().toString();
+                pathStorage.store(new LabeledResult<>(fileTree, filePath, filePath));
 
                 return FileVisitResult.CONTINUE;
             }

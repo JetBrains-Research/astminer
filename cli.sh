@@ -12,6 +12,6 @@ if [[ "$(docker images -q $IMAGE_NAME 2> /dev/null)" == "" ]]; then
   java -jar $SHADOW_JAR_PATH "$@"
 else
   echo "Running astminer in docker"
-  docker run --rm voudy/astminer "$@"
+  docker run --rm $IMAGE_NAME "$@"
 fi
 

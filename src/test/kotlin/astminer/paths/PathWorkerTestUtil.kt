@@ -3,14 +3,14 @@ package astminer.paths
 import astminer.common.model.ASTPath
 import astminer.common.model.Node
 import astminer.common.postOrder
-import astminer.parse.antlr.SimpleNode
+import astminer.parse.antlr.AntlrNode
 import org.junit.Assert
 
-fun simpleNode(number: Int, parent: Node?): SimpleNode {
-    return SimpleNode("$number", parent, "node_$number")
+fun simpleNode(number: Int, parent: Node?): AntlrNode {
+    return AntlrNode("$number", parent, "node_$number")
 }
 
-fun simpleNodes(numbers: List<Int>, parent: Node?): List<SimpleNode> {
+fun simpleNodes(numbers: List<Int>, parent: Node?): List<AntlrNode> {
     return numbers.map { simpleNode(it, parent) }
 }
 

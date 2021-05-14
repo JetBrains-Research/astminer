@@ -6,14 +6,14 @@ import org.antlr.v4.runtime.Vocabulary
 import org.antlr.v4.runtime.tree.ErrorNode
 import org.antlr.v4.runtime.tree.TerminalNode
 
-fun convertAntlrTree(tree: ParserRuleContext, ruleNames: Array<String>, vocabulary: Vocabulary): SimpleNode {
+fun convertAntlrTree(tree: ParserRuleContext, ruleNames: Array<String>, vocabulary: Vocabulary): AntlrNode {
     return compressTree(convertRuleContext(tree, ruleNames, null, vocabulary))
 }
 
-private fun convertRuleContext(ruleContext: ParserRuleContext, ruleNames: Array<String>, parent: Node?, vocabulary: Vocabulary): SimpleNode {
+private fun convertRuleContext(ruleContext: ParserRuleContext, ruleNames: Array<String>, parent: Node?, vocabulary: Vocabulary): AntlrNode {
     val typeLabel = ruleNames[ruleContext.ruleIndex]
-    val currentNode = SimpleNode(typeLabel, parent, null)
-    val children: MutableList<Node> = ArrayList()
+    val currentNode = AntlrNode(typeLabel, parent, null)
+    val children: MutableList<AntlrNode> = ArrayList()
 
     ruleContext.children?.forEach {
         if (it is TerminalNode) {
@@ -31,22 +31,22 @@ private fun convertRuleContext(ruleContext: ParserRuleContext, ruleNames: Array<
     return currentNode
 }
 
-private fun convertTerminal(terminalNode: TerminalNode, parent: Node?, vocabulary: Vocabulary): SimpleNode {
-    return SimpleNode(vocabulary.getSymbolicName(terminalNode.symbol.type), parent, terminalNode.symbol.text)
+private fun convertTerminal(terminalNode: TerminalNode, parent: Node?, vocabulary: Vocabulary): AntlrNode {
+    return AntlrNode(vocabulary.getSymbolicName(terminalNode.symbol.type), parent, terminalNode.symbol.text)
 }
 
-private fun convertErrorNode(errorNode: ErrorNode, parent: Node?): SimpleNode {
-    return SimpleNode("Error", parent, errorNode.text)
+private fun convertErrorNode(errorNode: ErrorNode, parent: Node?): AntlrNode {
+    return AntlrNode("Error", parent, errorNode.text)
 }
 
 /**
  * Remove intermediate nodes that have a single child.
  */
-fun simplifyTree(tree: SimpleNode): SimpleNode {
+fun simplifyTree(tree: AntlrNode): AntlrNode {
     return if (tree.getChildren().size == 1) {
-        simplifyTree(tree.getChildren().first() as SimpleNode)
+        simplifyTree(tree.getChildren().first())
     } else {
-        tree.setChildren(tree.getChildren().map { simplifyTree(it as SimpleNode) }.toMutableList())
+        tree.setChildren(tree.getChildren().map { simplifyTree(it) }.toMutableList())
         tree
     }
 }
@@ -54,10 +54,10 @@ fun simplifyTree(tree: SimpleNode): SimpleNode {
 /**
  * Compress paths of intermediate nodes that have a single child into individual nodes.
  */
-fun compressTree(root: SimpleNode): SimpleNode {
+fun compressTree(root: AntlrNode): AntlrNode {
     return if (root.getChildren().size == 1) {
-        val child = compressTree(root.getChildren().first() as SimpleNode)
-        val compressedNode = SimpleNode(
+        val child = compressTree(root.getChildren().first())
+        val compressedNode = AntlrNode(
                 root.getTypeLabel() + "|" + child.getTypeLabel(),
                 root.getParent(),
                 child.getToken()
@@ -65,7 +65,7 @@ fun compressTree(root: SimpleNode): SimpleNode {
         compressedNode.setChildren(child.getChildren())
         compressedNode
     } else {
-        root.setChildren(root.getChildren().map { compressTree(it as SimpleNode) }.toMutableList())
+        root.setChildren(root.getChildren().map { compressTree(it) }.toMutableList())
         root
     }
 }

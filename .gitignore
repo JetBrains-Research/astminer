@@ -1,5 +1,6 @@
 *.iml
 *.csv
+asts/
 
 .idea/
 .gradle/

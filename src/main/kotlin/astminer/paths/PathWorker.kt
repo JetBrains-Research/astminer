@@ -12,12 +12,12 @@ class PathWorker {
         private const val PATH_PIECES_KEY = "path_pieces"
 
         private fun Node.setPathPieces(pathPieces: List<PathPiece>) {
-            this.setMetadata(PATH_PIECES_KEY, pathPieces)
+            this.metadata[PATH_PIECES_KEY] = pathPieces
         }
 
         // In runtime all generics upcast to upper bound, therefore it's impossible to check type inside List
         @Suppress("UNCHECKED_CAST")
-        private fun Node.getPathPieces(): List<PathPiece>? = this.getMetadata(PATH_PIECES_KEY) as List<PathPiece>?
+        private fun Node.getPathPieces(): List<PathPiece>? = this.metadata[PATH_PIECES_KEY] as List<PathPiece>?
     }
 
     fun retrievePaths(tree: Node) = retrievePaths(tree, null, null)

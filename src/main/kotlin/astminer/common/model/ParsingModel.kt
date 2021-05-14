@@ -1,5 +1,6 @@
 package astminer.common.model
 
+import astminer.cli.LabeledResult
 import java.io.File
 import java.io.InputStream
 
@@ -11,8 +12,7 @@ interface Node {
     fun getToken(): String
     fun isLeaf(): Boolean
 
-    fun getMetadata(key: String): Any?
-    fun setMetadata(key: String, value: Any)
+    val metadata: MutableMap<String, Any>
 
     fun prettyPrint(indent: Int = 0, indentSymbol: String = "--") {
         repeat(indent) { print(indentSymbol) }
@@ -42,7 +42,7 @@ interface Parser<T : Node> {
     /**
      * Parse file into an AST.
      * @param file file to parse
-     * @return ParseResult instance 
+     * @return ParseResult instance
      */
     fun parseFile(file: File) = ParseResult(parseInputStream(file.inputStream()), file.path)
 
@@ -51,9 +51,13 @@ interface Parser<T : Node> {
      * @param files files to parse
      * @param handleResult handler to invoke on each file parse result
      */
-    fun parseFiles(files: List<File>, handleResult: (ParseResult<T>) -> Any) {
+    fun parseFiles(files: List<File>, handleResult: (ParseResult<T>) -> Any?) {
         files.forEach { handleResult(parseFile(it)) }
     }
 }
 
-data class ParseResult<T : Node>(val root: T?, val filePath: String)
+data class ParseResult<T : Node>(val root: T?, val filePath: String) {
+    fun labeledWith(label: String): LabeledResult<T>? = root?.let { LabeledResult(it, label, filePath) }
+
+    fun labeledWithFilePath(): LabeledResult<T>? = labeledWith(filePath)
+}

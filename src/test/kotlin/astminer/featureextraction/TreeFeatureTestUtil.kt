@@ -5,7 +5,7 @@ import astminer.common.model.Node
 class PrettyNode(private val type: String, private val token: String) : Node {
     private var children: MutableList<PrettyNode> = ArrayList()
     private var parent: PrettyNode? = null
-    private val metadata: MutableMap<String, Any> = HashMap()
+    override val metadata: MutableMap<String, Any> = HashMap()
 
     override fun getChildren(): MutableList<PrettyNode> =  children
 
@@ -33,10 +33,6 @@ class PrettyNode(private val type: String, private val token: String) : Node {
     override fun getToken(): String =  token
 
     override fun isLeaf(): Boolean =  children.isEmpty()
-
-    override fun getMetadata(key: String): Any? = metadata[key]
-
-    override fun setMetadata(key: String, value: Any) = metadata.set(key, value)
 
     override fun getTypeLabel(): String = type
 

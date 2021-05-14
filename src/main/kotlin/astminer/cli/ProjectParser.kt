@@ -1,10 +1,11 @@
 package astminer.cli
 
-import astminer.ast.CsvAstStorage
-import astminer.ast.DotAstStorage
+import astminer.storage.ast.CsvAstStorage
+import astminer.storage.ast.DotAstStorage
 import astminer.common.getProjectFilesWithExtension
-import astminer.common.model.AstStorage
 import astminer.common.preOrder
+import astminer.storage.Storage
+import astminer.storage.TokenProcessor
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.int
@@ -94,15 +95,18 @@ class ProjectParser(private val customLabelExtractor: LabelExtractor? = null) : 
     ).int().default(-1)
 
     val folderLabel: Boolean by option(
-            "--folder-label",
-            help = "if passed with file-level granularity, the folder name is used to label paths"
+        "--folder-label",
+        help = "if passed with file-level granularity, the folder name is used to label paths"
     ).flag(default = false)
 
 
-    private fun getStorage(storageType: String, directoryPath: String): AstStorage {
+    private fun getStorage(storageType: String, directoryPath: String): Storage {
         return when (storageType) {
             "csv" -> CsvAstStorage(directoryPath)
-            "dot" -> DotAstStorage(directoryPath)
+            "dot" -> DotAstStorage(
+                directoryPath,
+                if (isTokenSplitted) TokenProcessor.Split else TokenProcessor.Normalize
+            )
             else -> {
                 throw UnsupportedOperationException("Unsupported AST storage $storageType")
             }
@@ -118,22 +122,19 @@ class ProjectParser(private val customLabelExtractor: LabelExtractor? = null) : 
             val storage = getStorage(astStorageType, outputDirForLanguage.path)
             // Choose type of parser
             val parser = getParser(
-                    extension,
-                    javaParser
+                extension,
+                javaParser
             )
             // Parse project
             val filesToParse = getProjectFilesWithExtension(File(projectRoot), extension)
             parser.parseFiles(filesToParse) { parseResult ->
-                normalizeParseResult(parseResult, isTokenSplitted)
                 val labeledParseResults = labelExtractor.toLabeledData(parseResult)
-                labeledParseResults.forEach { (root, label) ->
-                    root.preOrder().forEach { node ->
+                labeledParseResults.forEach { labeledParseResult ->
+                    labeledParseResult.root.preOrder().forEach { node ->
                         excludeNodes.forEach { node.removeChildrenOfType(it) }
                     }
-                    root.apply {
-                        // Save AST as it is or process it to extract features / path-based representations
-                        storage.store(root, label, parseResult.filePath)
-                    }
+                    // Save AST as it is or process it to extract features / path-based representations
+                    storage.store(labeledParseResult)
                 }
             }
             // Save stored data on disk
@@ -144,16 +145,16 @@ class ProjectParser(private val customLabelExtractor: LabelExtractor? = null) : 
 
     override fun run() {
         val labelExtractor = customLabelExtractor ?: getLabelExtractor(
-                granularityLevel,
-                javaParser,
-                isMethodNameHide,
-                excludeModifiers,
-                excludeAnnotations,
-                filterConstructors,
-                maxMethodNameLength,
-                maxTokenLength,
-                maxTreeSize,
-                folderLabel
+            granularityLevel,
+            javaParser,
+            isMethodNameHide,
+            excludeModifiers,
+            excludeAnnotations,
+            filterConstructors,
+            maxMethodNameLength,
+            maxTokenLength,
+            maxTreeSize,
+            folderLabel
         )
         parsing(labelExtractor)
     }

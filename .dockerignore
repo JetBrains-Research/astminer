@@ -1,0 +1,15 @@
+*.iml
+*.csv
+asts/
+
+.idea/
+.gradle/
+examples/out/
+src/main/generated/
+build/
+
+.DS_Store
+
+.github
+scripts/
+
