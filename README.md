@@ -1,4 +1,5 @@
 [![JetBrains Research](https://jb.gg/badges/research.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
+![astminer version](https://img.shields.io/badge/astminer-v0.6.3-blue)
 
 # `astminer`
 A library for mining of [path-based representations of code](https://arxiv.org/pdf/1803.09544.pdf) and more, supported by the [Machine Learning Methods for Software Engineering](https://research.jetbrains.org/groups/ml_methods) group at [JetBrains Research](https://research.jetbrains.org).
@@ -100,7 +101,7 @@ repositories {
 }
 
 dependencies {
-    compile 'io.github.vovak:astminer:0.6.0'
+    compile 'io.github.vovak:astminer:<VERSION>'
 }
 ```
 
@@ -111,7 +112,7 @@ repositories {
 }
 
 dependencies {
-    compile("io.github.vovak", "astminer", "0.6.0")
+    compile("io.github.vovak", "astminer", <VERSION>)
 }
 ```
 
@@ -160,7 +161,7 @@ See [JavaParser](src/main/kotlin/astminer/parse/antlr/java/JavaParser.kt) or [Py
 If the language has a parsing tool that is available as Java library:
 1. Add the library as a dependency in [build.gradle.kts](/build.gradle.kts);
 2. Implement a wrapper for the parsing tool.
-See [FuzzyCppParser](src/main/kotlin/astminer/parse/cpp/FuzzyCppParser.kt) for an example of a wrapper.
+See [FuzzyCppParser](src/main/kotlin/astminer/parse/fuzzy/cpp/FuzzyCppParser.kt) for an example of a wrapper.
 
 ## Contribution
 We believe that `astminer` could find use beyond our own mining tasks.
