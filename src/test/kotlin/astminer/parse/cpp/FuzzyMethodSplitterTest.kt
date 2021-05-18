@@ -1,13 +1,15 @@
 package astminer.parse.cpp
 
+import astminer.checkExecutable
 import astminer.common.model.FunctionInfo
 import astminer.parse.fuzzy.cpp.FuzzyCppParser
 import astminer.parse.fuzzy.cpp.FuzzyFunctionSplitter
 import astminer.parse.fuzzy.cpp.FuzzyNode
+import org.junit.Assume
+import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertEquals
 import java.io.File
-import kotlin.test.BeforeTest
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
@@ -21,8 +23,9 @@ class FuzzyMethodSplitterTest {
 
     var methodInfos: Collection<FunctionInfo<FuzzyNode>> = listOf()
 
-    @BeforeTest
+    @Before
     fun parseTree() {
+        Assume.assumeTrue(checkExecutable("g++"))
         val testTree =  parser.parseInputStream(File("src/test/resources/methodSplitting/testMethodSplitting.cpp").inputStream())
         assertNotNull(testTree)
         methodInfos = methodSplitter.splitIntoMethods(testTree)
