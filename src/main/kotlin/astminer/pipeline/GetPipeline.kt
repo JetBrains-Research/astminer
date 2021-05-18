@@ -25,7 +25,7 @@ fun getFilePipeline(filePipelineConfig: FilePipelineConfig): Pipeline<ParseResul
             filters = filterConfigs.map { it.filter },
             problem = problemConfig.problem,
             excludedNodeTypes = excludedNodeTypes,
-            storageCreator = storageCreatorConfig.getCreator(outputDir)
+            storageFactory = storageFactoryConfig.getCreator(outputDir)
         )
     }
 
@@ -36,7 +36,7 @@ fun getFunctionPipeline(functionPipelineConfig: FunctionPipelineConfig): Pipelin
             filters = filterConfigs.map { it.filter },
             problem = problemConfig.problem,
             excludedNodeTypes = excludedNodeTypes,
-            storageCreator = storageCreatorConfig.getCreator(outputDir)
+            storageFactory = storageFactoryConfig.getCreator(outputDir)
         )
     }
 

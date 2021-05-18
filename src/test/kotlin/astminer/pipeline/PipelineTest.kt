@@ -10,11 +10,11 @@ internal class PipelineTest {
         val extensionsToNodeNames = mapOf("a" to "A", "b" to "B")
     }
 
-    lateinit var storageCreator: DummyStorageCreator
+    lateinit var storageFactory: DummyStorageFactory
 
     @Before
     fun init() {
-        storageCreator = DummyStorageCreator()
+        storageFactory = DummyStorageFactory()
     }
 
     @Test
@@ -22,14 +22,14 @@ internal class PipelineTest {
         Pipeline(
             frontend = DummyPipelineFrontend(extensionsToNodeNames),
             problem = DummyLabelExtractor(),
-            storageCreator = storageCreator
+            storageFactory = storageFactory
         ).run()
 
         val expectedResults = mapOf(
             "a" to setOf("label A"),
             "b" to setOf("label B")
         )
-        assertEquals(expectedResults, storageCreator.results)
+        assertEquals(expectedResults, storageFactory.results)
     }
 
     @Test
@@ -38,14 +38,14 @@ internal class PipelineTest {
             frontend = DummyPipelineFrontend(extensionsToNodeNames),
             filters = listOf(DummyFilter("B")),
             problem = DummyLabelExtractor(),
-            storageCreator = storageCreator
+            storageFactory = storageFactory
         ).run()
 
         val expectedResults = mapOf(
             "a" to setOf("label A"),
             "b" to setOf()
         )
-        assertEquals(expectedResults, storageCreator.results)
+        assertEquals(expectedResults, storageFactory.results)
     }
 
     @Test
@@ -54,14 +54,14 @@ internal class PipelineTest {
             frontend = DummyPipelineFrontend(extensionsToNodeNames),
             filters = listOf(DummyFilter()),
             problem = DummyLabelExtractor("B"),
-            storageCreator = storageCreator
+            storageFactory = storageFactory
         ).run()
 
         val expectedResults = mapOf(
             "a" to setOf("label A"),
             "b" to setOf()
         )
-        assertEquals(expectedResults, storageCreator.results)
+        assertEquals(expectedResults, storageFactory.results)
     }
 
     @Test
@@ -70,14 +70,14 @@ internal class PipelineTest {
             frontend = DummyPipelineFrontend(extensionsToNodeNames),
             filters = listOf(DummyFilter("A")),
             problem = DummyLabelExtractor("B"),
-            storageCreator = storageCreator
+            storageFactory = storageFactory
         ).run()
 
         val expectedResults = mapOf(
             "a" to setOf<String>(),
             "b" to setOf<String>()
         )
-        assertEquals(expectedResults, storageCreator.results)
+        assertEquals(expectedResults, storageFactory.results)
     }
 
     @Test
@@ -87,13 +87,13 @@ internal class PipelineTest {
         Pipeline(
             frontend = SimplePipelineFrontend(listOf(node)),
             problem = BambooLabelExtractor(),
-            storageCreator = storageCreator
+            storageFactory = storageFactory
         ).run()
 
         val expectedResults = mapOf(
             "" to setOf("Root<Child<")
         )
-        assertEquals(expectedResults, storageCreator.results)
+        assertEquals(expectedResults, storageFactory.results)
     }
 
     @Test
@@ -104,12 +104,12 @@ internal class PipelineTest {
             frontend = SimplePipelineFrontend(listOf(node)),
             problem = BambooLabelExtractor(),
             excludedNodeTypes = listOf("Child"),
-            storageCreator = storageCreator
+            storageFactory = storageFactory
         ).run()
 
         val expectedResults = mapOf(
             "" to setOf("Root<")
         )
-        assertEquals(expectedResults, storageCreator.results)
+        assertEquals(expectedResults, storageFactory.results)
     }
 }

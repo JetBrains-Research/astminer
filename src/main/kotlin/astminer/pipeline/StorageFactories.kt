@@ -8,11 +8,11 @@ import astminer.storage.path.Code2VecPathStorage
 import astminer.storage.path.PathBasedStorageConfig
 import java.io.File
 
-interface StorageCreator {
+interface StorageFactory {
     fun createStorageAndOutputFolder(extension: String): Storage
 }
 
-abstract class AbstractStorageCreator(private val outputDirectoryPath: String) : StorageCreator {
+abstract class AbstractStorageFactory(private val outputDirectoryPath: String) : StorageFactory {
     private fun createOutputFolder(extension: String): File {
         val outputDirectoryForExtension = File(outputDirectoryPath).resolve(extension)
         outputDirectoryForExtension.mkdir()
@@ -28,26 +28,26 @@ abstract class AbstractStorageCreator(private val outputDirectoryPath: String) :
 /**
  * Creates CsvAstStorages
  */
-class CsvAstStorageCreator(outputDirectoryPath: String) : AbstractStorageCreator(outputDirectoryPath) {
+class CsvAstStorageFactory(outputDirectoryPath: String) : AbstractStorageFactory(outputDirectoryPath) {
     override fun initializeStorage(outputFolderPath: String) = CsvAstStorage(outputFolderPath)
 }
 
 /**
  * Creates DotAstStorages given [tokenProcessor]
  */
-class DotAstStorageCreator(outputDirectoryPath: String, private val tokenProcessor: TokenProcessor) :
-    AbstractStorageCreator(outputDirectoryPath) {
+class DotAstStorageFactory(outputDirectoryPath: String, private val tokenProcessor: TokenProcessor) :
+    AbstractStorageFactory(outputDirectoryPath) {
     override fun initializeStorage(outputFolderPath: String) = DotAstStorage(outputFolderPath, tokenProcessor)
 }
 
 /**
  * Creates Code2VecStorages given [config] and [tokenProcessor]
  */
-class Code2VecStorageCreator(
+class Code2VecStorageFactory(
     outputDirectoryPath: String,
     private val config: PathBasedStorageConfig,
     private val tokenProcessor: TokenProcessor
-) : AbstractStorageCreator(outputDirectoryPath) {
+) : AbstractStorageFactory(outputDirectoryPath) {
     override fun initializeStorage(outputFolderPath: String) =
         Code2VecPathStorage(outputFolderPath, config, tokenProcessor)
 }

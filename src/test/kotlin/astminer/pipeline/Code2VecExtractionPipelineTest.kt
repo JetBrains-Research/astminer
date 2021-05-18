@@ -1,11 +1,10 @@
 package astminer.pipeline
 
 import astminer.cli.util.verifyPathContextExtraction
-import astminer.config.Code2VecPathStorageCreatorConfig
+import astminer.config.Code2VecPathStorageFactoryConfig
 import astminer.config.FilePathExtractorConfig
 import astminer.config.FilePipelineConfig
 import astminer.config.ParserConfig
-import astminer.problem.FilePathExtractor
 import org.junit.Test
 import java.io.File
 import java.nio.file.Files.createTempDirectory
@@ -27,7 +26,7 @@ internal class Code2VecExtractionPipelineTest {
                 languages
             ),
             problemConfig = FilePathExtractorConfig(),
-            storageCreatorConfig = Code2VecPathStorageCreatorConfig(
+            storageFactoryConfig = Code2VecPathStorageFactoryConfig(
                 maxPathLength = 8,
                 maxPathWidth = 3
             )

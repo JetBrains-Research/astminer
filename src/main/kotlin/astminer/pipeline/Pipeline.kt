@@ -11,7 +11,7 @@ class Pipeline<T>(
     private val filters: List<Filter<T>> = emptyList(),
     private val problem: Problem<T>,
     private val excludedNodeTypes: List<String> = emptyList(),
-    private val storageCreator: StorageCreator
+    private val storageFactory: StorageFactory
 ) {
     private fun T.passesThroughFilters() = filters.all { filter -> filter.isFiltered(this) }
 
@@ -23,7 +23,7 @@ class Pipeline<T>(
 
     fun run() {
         for ((extension, entities) in frontend.getEntities()) {
-            storageCreator.createStorageAndOutputFolder(extension).use { storage ->
+            storageFactory.createStorageAndOutputFolder(extension).use { storage ->
                 val labeledResults = entities
                     .filter { functionInfo -> functionInfo.passesThroughFilters() }
                     .mapNotNull { problem.process(it) }

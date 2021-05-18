@@ -7,7 +7,7 @@ import java.io.File
 import java.nio.file.Files.createTempDirectory
 import kotlin.test.assertEquals
 
-internal class AbstractStorageCreatorTest {
+internal class AbstractStorageFactoryTest {
     lateinit var tempDir: File
 
     @Before
@@ -16,18 +16,18 @@ internal class AbstractStorageCreatorTest {
     }
 
     @Test
-    fun `test creating a StorageCreator should not alter the output directory`() {
-        AbstractStorageCreatorImpl(tempDir.path)
+    fun `test creating a StorageFactory should not alter the output directory`() {
+        AbstractStorageFactoryImpl(tempDir.path)
         assertEquals(0, tempDir.listFiles()?.size, "There should be no files in the directory")
     }
 
     @Test
-    fun `test StorageCreator's createStorageAndOutputFolder should create a subdirectory named after the file extension`() {
-        AbstractStorageCreatorImpl(tempDir.path).createStorageAndOutputFolder("file extension")
+    fun `test StorageFactory's createStorageAndOutputFolder should create a subdirectory named after the file extension`() {
+        AbstractStorageFactoryImpl(tempDir.path).createStorageAndOutputFolder("file extension")
         assertEquals(listOf("file extension"), tempDir.listFiles()?.map { it.name })
     }
 
-    class AbstractStorageCreatorImpl(outputFolderPath: String) : AbstractStorageCreator(outputFolderPath) {
+    class AbstractStorageFactoryImpl(outputFolderPath: String) : AbstractStorageFactory(outputFolderPath) {
         override fun initializeStorage(outputFolderPath: String): Storage = DummyStorage()
     }
 }

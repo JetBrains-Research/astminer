@@ -15,7 +15,7 @@ data class FilePipelineConfig(
     @SerialName("filters") val filterConfigs: List<FileFilterConfig> = emptyList(),
     @SerialName("problem") val problemConfig: FileProblemConfig,
     val excludedNodeTypes: List<String> = emptyList(),
-    @SerialName("storage") val storageCreatorConfig: StorageCreatorConfig
+    @SerialName("storage") val storageFactoryConfig: StorageFactoryConfig
 ) : PipelineConfig()
 
 @Serializable
@@ -27,7 +27,7 @@ data class FunctionPipelineConfig(
     @SerialName("filters") val filterConfigs: List<FunctionFilterConfig> = emptyList(),
     @SerialName("problem") val problemConfig: FunctionProblemConfig,
     val excludedNodeTypes: List<String> = emptyList(),
-    @SerialName("storage") val storageCreatorConfig: StorageCreatorConfig
+    @SerialName("storage") val storageFactoryConfig: StorageFactoryConfig
 ) : PipelineConfig()
 
 @Serializable

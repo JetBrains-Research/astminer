@@ -41,7 +41,7 @@ class BambooLabelExtractor : Problem<DummyNode> {
     override fun process(entity: DummyNode): LabeledResult<out Node> = entity.labeledWith(getLabel(entity))
 }
 
-class DummyStorageCreator : StorageCreator {
+class DummyStorageFactory : StorageFactory {
     private val storages = mutableMapOf<String, DummyStorage>()
 
     val results: Map<String, Set<String>>
