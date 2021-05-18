@@ -15,9 +15,7 @@ fun allJavaFilesGumTree() {
 
     val files = getProjectFilesWithExtension(File(inputDir), "java")
     GumTreeJavaParser().parseFiles(files) { parseResult ->
-        parseResult.labeledWithFilePath()?.let { labeledResult ->
-            storage.store(labeledResult)
-        }
+        storage.store(parseResult.labeledWithFilePath())
     }
 
     storage.close()

@@ -1,9 +1,13 @@
 package astminer.common.model
 
 import astminer.cli.LabeledResult
+import astminer.parse.ParsingException
+import mu.KotlinLogging
 import java.io.File
 import java.io.InputStream
 
+// TODO: later move this logger to Pipeline
+private val logger = KotlinLogging.logger("ParsingModel")
 
 interface Node {
     fun getTypeLabel(): String
@@ -37,7 +41,7 @@ interface Parser<T : Node> {
      * @param content input stream to parse
      * @return root of the AST
      */
-    fun parseInputStream(content: InputStream): T?
+    fun parseInputStream(content: InputStream): T
 
     /**
      * Parse file into an AST.
@@ -52,12 +56,18 @@ interface Parser<T : Node> {
      * @param handleResult handler to invoke on each file parse result
      */
     fun parseFiles(files: List<File>, handleResult: (ParseResult<T>) -> Any?) {
-        files.forEach { handleResult(parseFile(it)) }
+        for (file in files) {
+            try {
+                handleResult(parseFile(file))
+            } catch (parsingException: ParsingException) {
+                logger.error(parsingException) { "Failed to parse file ${file.path}" }
+            }
+        }
     }
 }
 
-data class ParseResult<T : Node>(val root: T?, val filePath: String) {
-    fun labeledWith(label: String): LabeledResult<T>? = root?.let { LabeledResult(it, label, filePath) }
+data class ParseResult<T : Node>(val root: T, val filePath: String) {
+    fun labeledWith(label: String): LabeledResult<T> = LabeledResult(root, label, filePath)
 
-    fun labeledWithFilePath(): LabeledResult<T>? = labeledWith(filePath)
+    fun labeledWithFilePath(): LabeledResult<T> = labeledWith(filePath)
 }

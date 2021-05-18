@@ -3,6 +3,7 @@ package astminer.parse.antlr.python
 import me.vovak.antlr.parser.Python3Lexer
 import me.vovak.antlr.parser.Python3Parser
 import astminer.common.model.Parser
+import astminer.parse.ParsingException
 import astminer.parse.antlr.AntlrNode
 import astminer.parse.antlr.convertAntlrTree
 import org.antlr.v4.runtime.CharStreams
@@ -11,7 +12,7 @@ import java.io.InputStream
 import java.lang.Exception
 
 class PythonParser : Parser<AntlrNode> {
-    override fun parseInputStream(content: InputStream): AntlrNode? {
+    override fun parseInputStream(content: InputStream): AntlrNode {
         return try {
             val lexer = Python3Lexer(CharStreams.fromStream(content))
             lexer.removeErrorListeners()
@@ -21,7 +22,7 @@ class PythonParser : Parser<AntlrNode> {
             val context = parser.file_input()
             convertAntlrTree(context, Python3Parser.ruleNames, Python3Parser.VOCABULARY)
         } catch (e: Exception) {
-            return null
+            throw ParsingException("ANTLR", "Python", e.message)
         }
     }
 }
