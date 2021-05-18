@@ -35,7 +35,7 @@ class GumTreePythonFunctionInfo(override val root: GumTreeNode) : FunctionInfo<G
     override val nameNode: GumTreeNode = root
     override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val enclosingElement: EnclosingElement<GumTreeNode>? = collectEnclosingClass()
-    override val returnType: String? = getElementType(root)?.getToken()
+    override val returnType: String? = getElementType(root)?.getTypeLabel()
 
     private fun getElementType(node: GumTreeNode): GumTreeNode? {
         if (node.getTypeLabel() == TypeLabels.arg) {
