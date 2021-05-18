@@ -2,12 +2,15 @@ package astminer
 
 import astminer.config.PipelineConfig
 import astminer.pipeline.getPipeline
+import com.charleskorn.kaml.PolymorphismStyle
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.types.file
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import com.charleskorn.kaml.Yaml
+import com.charleskorn.kaml.YamlConfiguration
 import java.io.File
 
 
@@ -18,9 +21,11 @@ class PipelineRunner : CliktCommand(name = "") {
         readable = true
     )
 
+    private val yaml = Yaml(configuration = YamlConfiguration(polymorphismStyle = PolymorphismStyle.Property))
+
     override fun run() {
         val config = try {
-            Json.decodeFromString<PipelineConfig>(config.readText())
+            yaml.decodeFromString<PipelineConfig>(config.readText())
         } catch (e: SerializationException) {
             // TODO: should log it also
             println("Error: $e")

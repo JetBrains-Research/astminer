@@ -69,6 +69,7 @@ dependencies {
     jmhImplementation("org.openjdk.jmh:jmh-core:1.21")
     jmhImplementation("org.openjdk.jmh:jmh-generator-annprocess:1.21")
 
+    implementation("com.charleskorn.kaml:kaml:0.33.0")
 }
 
 val shadowJar = shadowJar {
