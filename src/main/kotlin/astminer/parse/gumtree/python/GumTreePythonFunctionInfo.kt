@@ -69,7 +69,7 @@ class GumTreePythonFunctionInfo(override val root: GumTreeNode) : FunctionInfo<G
         val arguments = root.getChildrenOfType(TypeLabels.arguments).flatMap { it.getChildren() }
         val params = arguments.flatMap { node ->
             when (node.getTypeLabel()) {
-                in TypeLabels.funcArgsTypesNodes -> node.getChildren().flatMap { it.getChildren() }
+                in TypeLabels.funcArgsTypesNodes -> node.getChildren()
                     .filter { it.getTypeLabel() == TypeLabels.arg }
                 TypeLabels.vararg, TypeLabels.kwarg -> listOf(node)
                 else -> emptyList()
