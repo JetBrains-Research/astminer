@@ -1,0 +1,25 @@
+{
+  "type": "file granularity",
+
+  "inputDir": "src/test/resources/methodSplitting/",
+  "outputDir": "output",
+
+  "parser": {
+    "type": "antlr",
+    "extensions": ["java", "js"]
+  },
+  "filters": [
+    {
+      "type": "max tree size",
+      "maxTreeSize": 1000
+    }
+  ],
+  "problem": {
+    "type": "label with filepath"
+  },
+  "storage": {
+    "type": "code2vec paths",
+    "maxPathLength": 5,
+    "maxPathWidth": 5
+  }
+}

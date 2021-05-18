@@ -12,18 +12,24 @@ sealed class StorageCreatorConfig {
 }
 
 @Serializable
-@SerialName("csv ast")
-class CsvAstStorageCreatorConfig : StorageCreatorConfig() {
-    override fun getCreator(outputFolderPath: String) = CsvAstStorageCreator(outputFolderPath)
+enum class AstStorageFormat {
+    @SerialName("dot") Dot,
+    @SerialName("csv") Csv
 }
 
 @Serializable
-@SerialName("dot ast")
-data class DotAstStorageCreatorConfig(val tokenProcessor: TokenProcessor = TokenProcessor.Normalize) :
-    StorageCreatorConfig() {
-    override fun getCreator(outputFolderPath: String) = DotAstStorageCreator(outputFolderPath, tokenProcessor)
-}
+@SerialName("ast")
+data class AstStorageCreatorConfig(
+    val format: AstStorageFormat,
+    val splitTokens: Boolean = false
+) : StorageCreatorConfig() {
+    private val tokenProcessor = if (splitTokens) TokenProcessor.Split else TokenProcessor.Normalize
 
+    override fun getCreator(outputFolderPath: String): StorageCreator = when (format) {
+        AstStorageFormat.Csv -> CsvAstStorageCreator(outputFolderPath)
+        AstStorageFormat.Dot -> DotAstStorageCreator(outputFolderPath, tokenProcessor)
+    }
+}
 
 @Serializable
 @SerialName("code2vec paths")

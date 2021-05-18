@@ -11,14 +11,14 @@ sealed class FileProblemConfig {
 }
 
 @Serializable
-@SerialName("filepath")
+@SerialName("label with filepath")
 class FilePathExtractorConfig : FileProblemConfig() {
     @Transient
     override val problem = FilePathExtractor
 }
 
 @Serializable
-@SerialName("foldername")
+@SerialName("label with folder name")
 class FolderNameExtractorConfig : FileProblemConfig() {
     @Transient
     override val problem = FolderExtractor

@@ -11,11 +11,11 @@ sealed class PipelineConfig
 data class FilePipelineConfig(
     val inputDir: String,
     val outputDir: String,
-    val parserConfig: ParserConfig,
-    val filterConfigs: List<FileFilterConfig> = emptyList(),
-    val problemConfig: FileProblemConfig,
+    @SerialName("parser") val parserConfig: ParserConfig,
+    @SerialName("filters") val filterConfigs: List<FileFilterConfig> = emptyList(),
+    @SerialName("problem") val problemConfig: FileProblemConfig,
     val excludedNodeTypes: List<String> = emptyList(),
-    val storageCreatorConfig: StorageCreatorConfig
+    @SerialName("storage") val storageCreatorConfig: StorageCreatorConfig
 ) : PipelineConfig()
 
 @Serializable
@@ -23,11 +23,11 @@ data class FilePipelineConfig(
 data class FunctionPipelineConfig(
     val inputDir: String,
     val outputDir: String,
-    val parserConfig: ParserConfig,
-    val filterConfigs: List<FunctionFilterConfig> = emptyList(),
-    val problemConfig: FunctionProblemConfig,
+    @SerialName("parser") val parserConfig: ParserConfig,
+    @SerialName("filters") val filterConfigs: List<FunctionFilterConfig> = emptyList(),
+    @SerialName("problem") val problemConfig: FunctionProblemConfig,
     val excludedNodeTypes: List<String> = emptyList(),
-    val storageCreatorConfig: StorageCreatorConfig
+    @SerialName("storage") val storageCreatorConfig: StorageCreatorConfig
 ) : PipelineConfig()
 
 @Serializable
