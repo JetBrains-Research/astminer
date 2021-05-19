@@ -1,7 +1,7 @@
 package astminer.examples
 
 import astminer.config.*
-import astminer.pipeline.getFunctionPipeline
+import astminer.pipeline.Pipeline
 
 
 //Retrieve paths from all Java files, using a GumTree parser.
@@ -18,13 +18,11 @@ fun code2vecJavaMethods() {
             listOf("java")
         ),
         problemConfig = FunctionNamePredictionConfig(),
-        storageFactoryConfig = Code2VecPathStorageFactoryConfig(
+        storageConfig = Code2VecPathStorageConfig(
             maxPathLength = 5,
             maxPathWidth = 5
         )
     )
 
-    val pipeline = getFunctionPipeline(pipelineConfig)
-
-    pipeline.run()
+    Pipeline(pipelineConfig).run()
 }

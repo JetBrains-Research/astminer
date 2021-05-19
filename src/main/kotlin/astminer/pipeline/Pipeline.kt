@@ -1,37 +1,56 @@
 package astminer.pipeline
 
-import astminer.common.model.Node
-import astminer.common.preOrder
-import astminer.filters.Filter
-import astminer.problem.LabeledResult
-import astminer.problem.Problem
+import astminer.common.getProjectFilesWithExtension
+import astminer.config.*
+import astminer.parse.getHandlerFactory
+import astminer.storage.Storage
+import astminer.storage.TokenProcessor
+import astminer.storage.ast.CsvAstStorage
+import astminer.storage.ast.DotAstStorage
+import astminer.storage.path.Code2VecPathStorage
+import java.io.File
 
-class Pipeline<T>(
-    private val frontend: PipelineFrontend<T>,
-    private val filters: List<Filter<T>> = emptyList(),
-    private val problem: Problem<T>,
-    private val excludedNodeTypes: List<String> = emptyList(),
-    private val storageFactory: StorageFactory
-) {
-    private fun T.passesThroughFilters() = filters.all { filter -> filter.isFiltered(this) }
+class Pipeline(private val config: PipelineConfig) {
+    private val inputDirectory = File(config.inputDir)
+    private val outputDirectory = File(config.outputDir)
 
-    private fun LabeledResult<out Node>.excludeNodes() {
-        root.preOrder().forEach { node ->
-            excludedNodeTypes.forEach { node.removeChildrenOfType(it) }
+    private val branch = when (config) {
+        is FilePipelineConfig -> FilePipelineBranch(config)
+        is FunctionPipelineConfig -> FunctionPipelineBranch(config)
+    }
+
+    private fun createStorageDirectory(extension: String): File {
+        val outputDirectoryForExtension = outputDirectory.resolve(extension)
+        outputDirectoryForExtension.mkdir()
+        return outputDirectoryForExtension
+    }
+
+    private fun createStorage(extension: String): Storage = with(config.storageConfig) {
+        val storagePath = createStorageDirectory(extension).path
+
+        // TODO: I should remove this later, once storage constructors have no side effects, and implement it like filters and problems
+        when (this) {
+            is AstStorageConfig -> {
+                val tokenProcessor = if (splitTokens) TokenProcessor.Split else TokenProcessor.Normalize
+                when (format) {
+                    AstStorageFormat.Csv -> CsvAstStorage(storagePath)
+                    AstStorageFormat.Dot -> DotAstStorage(storagePath, tokenProcessor)
+                }
+            }
+            is Code2VecPathStorageConfig -> {
+                Code2VecPathStorage(storagePath, pathBasedStorageConfig)
+            }
         }
     }
 
     fun run() {
-        for ((extension, entities) in frontend.getEntities()) {
-            storageFactory.createStorageAndOutputFolder(extension).use { storage ->
-                val labeledResults = entities
-                    .filter { functionInfo -> functionInfo.passesThroughFilters() }
-                    .mapNotNull { problem.process(it) }
+        for (extension in config.parserConfig.extensions) {
+            val languageFactory = getHandlerFactory(extension, config.parserConfig.type)
 
-                for (labeledResult in labeledResults) {
-                    labeledResult.excludeNodes()
-                }
+            val files = getProjectFilesWithExtension(inputDirectory, extension).asSequence()
+            val labeledResults = files.map { languageFactory.createHandler(it) }.flatMap { branch.process(it) }
 
+            createStorage(extension).use { storage ->
                 storage.store(labeledResults.asIterable())
             }
         }

@@ -1,14 +1,13 @@
 package astminer
 
 import astminer.config.PipelineConfig
-import astminer.pipeline.getPipeline
+import astminer.pipeline.Pipeline
 import com.charleskorn.kaml.PolymorphismStyle
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.types.file
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import java.io.File
@@ -31,7 +30,7 @@ class PipelineRunner : CliktCommand(name = "") {
             println("Error: $e")
             return
         }
-        getPipeline(config).run()
+        Pipeline(config).run()
     }
 }
 
