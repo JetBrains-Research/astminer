@@ -4,10 +4,10 @@ import astminer.common.model.FunctionInfo
 import astminer.common.model.Node
 import astminer.common.preOrder
 import astminer.common.setTechnicalToken
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
-interface FunctionLevelProblem : Problem<FunctionInfo<out Node>>
+interface FunctionLevelProblem {
+    fun process(functionInfo: FunctionInfo<out Node>): LabeledResult<out Node>?
+}
 
 /**
  * Labels functions with their names.
@@ -17,14 +17,14 @@ object FunctionNameProblem : FunctionLevelProblem {
     const val TECHNICAL_METHOD_NAME = "METHOD_NAME"
     const val TECHNICAL_RECURSIVE_CALL = "SELF"
 
-    override fun process(entity: FunctionInfo<out Node>): LabeledResult<out Node>? {
-        val name = entity.name ?: return null
-        entity.root.preOrder().forEach { node ->
+    override fun process(functionInfo: FunctionInfo<out Node>): LabeledResult<out Node>? {
+        val name = functionInfo.name ?: return null
+        functionInfo.root.preOrder().forEach { node ->
             if (node.getToken() == name) {
                 node.setTechnicalToken(TECHNICAL_RECURSIVE_CALL)
             }
         }
-        entity.nameNode?.setTechnicalToken(TECHNICAL_METHOD_NAME)
-        return LabeledResult(entity.root, name, entity.filePath)
+        functionInfo.nameNode?.setTechnicalToken(TECHNICAL_METHOD_NAME)
+        return LabeledResult(functionInfo.root, name, functionInfo.filePath)
     }
 }

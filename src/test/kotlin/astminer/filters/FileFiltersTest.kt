@@ -8,14 +8,14 @@ import kotlin.test.assertTrue
 
 internal class FileFiltersTest {
     @Test
-    fun `test FileTreeSizeFilter for 100 should exclude bamboo of length 101`() {
+    fun `test TreeSizeFilter for 100 should exclude bamboo of length 101`() {
         val node = createBamboo(101).toParseResult()
-        assertFalse { FileTreeSizeFilter(100).isFiltered(node) }
+        assertFalse { TreeSizeFilter(100).test(node) }
     }
 
     @Test
-    fun `test FileTreeSizeFilter for 10 should not exclude bamboo of length 5`() {
+    fun `test TreeSizeFilter for 10 should not exclude bamboo of length 5`() {
         val node = createBamboo(5).toParseResult()
-        assertTrue { FileTreeSizeFilter(10).isFiltered(node) }
+        assertTrue { TreeSizeFilter(10).test(node) }
     }
 }

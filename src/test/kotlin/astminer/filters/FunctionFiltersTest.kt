@@ -15,7 +15,7 @@ class FunctionFiltersTest {
         val functionInfo = object : FunctionInfo<Node> {
             override val modifiers: List<String> = listOf("b", "c")
         }
-        assertFalse { ModifierFilter(excludedModifiers).isFiltered(functionInfo) }
+        assertFalse { ModifierFilter(excludedModifiers).test(functionInfo) }
     }
 
     @Test
@@ -24,7 +24,7 @@ class FunctionFiltersTest {
         val functionInfo = object : FunctionInfo<Node> {
             override val modifiers: List<String> = listOf("c", "d")
         }
-        assertTrue { ModifierFilter(excludedModifiers).isFiltered(functionInfo) }
+        assertTrue { ModifierFilter(excludedModifiers).test(functionInfo) }
     }
 
     @Test
@@ -33,7 +33,7 @@ class FunctionFiltersTest {
         val functionInfo = object : FunctionInfo<Node> {
             override val annotations: List<String> = listOf("a", "c")
         }
-        assertFalse { AnnotationFilter(excludedModifiers).isFiltered(functionInfo) }
+        assertFalse { AnnotationFilter(excludedModifiers).test(functionInfo) }
     }
 
     @Test
@@ -42,7 +42,7 @@ class FunctionFiltersTest {
         val functionInfo = object : FunctionInfo<Node> {
             override val annotations: List<String> = listOf("y", "x")
         }
-        assertTrue { AnnotationFilter(excludedModifiers).isFiltered(functionInfo) }
+        assertTrue { AnnotationFilter(excludedModifiers).test(functionInfo) }
     }
 
     @Test
@@ -50,7 +50,7 @@ class FunctionFiltersTest {
         val functionInfo = object : FunctionInfo<Node> {
             override val isConstructor = true
         }
-        assertFalse { ConstructorFilter.isFiltered(functionInfo) }
+        assertFalse { ConstructorFilter.test(functionInfo) }
     }
 
     @Test
@@ -58,7 +58,7 @@ class FunctionFiltersTest {
         val functionInfo = object : FunctionInfo<Node> {
             override val isConstructor = false
         }
-        assertTrue { ConstructorFilter.isFiltered(functionInfo) }
+        assertTrue { ConstructorFilter.test(functionInfo) }
     }
 
     @Test
@@ -66,7 +66,7 @@ class FunctionFiltersTest {
         val functionInfo = object : FunctionInfo<Node> {
             override val name = "Word".repeat(100)
         }
-        assertFalse { FunctionNameWordsNumberFilter(50).isFiltered(functionInfo) }
+        assertFalse { FunctionNameWordsNumberFilter(50).test(functionInfo) }
     }
 
     @Test
@@ -74,7 +74,7 @@ class FunctionFiltersTest {
         val functionInfo = object : FunctionInfo<Node> {
             override val name = "Word".repeat(100)
         }
-        assertTrue { FunctionNameWordsNumberFilter(101).isFiltered(functionInfo) }
+        assertTrue { FunctionNameWordsNumberFilter(101).test(functionInfo) }
     }
 
     @Test
@@ -82,7 +82,7 @@ class FunctionFiltersTest {
         val functionInfo = object : FunctionInfo<Node> {
             override val root = AntlrNode("", null,  "Word".repeat(100))
         }
-        assertFalse { FunctionAnyNodeWordsNumberFilter(50).isFiltered(functionInfo) }
+        assertFalse { FunctionAnyNodeWordsNumberFilter(50).test(functionInfo) }
     }
 
     @Test
@@ -91,7 +91,7 @@ class FunctionFiltersTest {
             override val name = "Word".repeat(100)
             override val root = createBamboo(1)
         }
-        assertTrue { FunctionAnyNodeWordsNumberFilter(101).isFiltered(functionInfo) }
+        assertTrue { FunctionAnyNodeWordsNumberFilter(101).test(functionInfo) }
     }
 
     @Test
@@ -103,22 +103,22 @@ class FunctionFiltersTest {
         val functionInfo = object : FunctionInfo<Node> {
             override val root = root
         }
-        assertFalse { FunctionAnyNodeWordsNumberFilter(2).isFiltered(functionInfo) }
+        assertFalse { FunctionAnyNodeWordsNumberFilter(2).test(functionInfo) }
     }
 
     @Test
-    fun `test FunctionTreeSizeFilter for 100 should exclude bamboo of length 101`() {
+    fun `test TreeSizeFilter for 100 should exclude bamboo of length 101`() {
         val functionInfo = object : FunctionInfo<Node> {
             override val root = createBamboo(101)
         }
-        assertFalse { FunctionTreeSizeFilter(100).isFiltered(functionInfo) }
+        assertFalse { TreeSizeFilter(100).test(functionInfo) }
     }
 
     @Test
-    fun `test FunctionTreeSizeFilter for 10 should not exclude bamboo of length 5`() {
+    fun `test TreeSizeFilter for 10 should not exclude bamboo of length 5`() {
         val functionInfo = object : FunctionInfo<Node> {
             override val root = createBamboo(5)
         }
-        assertTrue { FunctionTreeSizeFilter(10).isFiltered(functionInfo) }
+        assertTrue { TreeSizeFilter(10).test(functionInfo) }
     }
 }

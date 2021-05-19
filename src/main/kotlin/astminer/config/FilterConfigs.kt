@@ -14,12 +14,19 @@ sealed class FileFilterConfig {
 @SerialName("max tree size")
 data class FileTreeSizeFilterConfig(val maxTreeSize: Int) : FileFilterConfig() {
     @Transient
-    override val filter = FileTreeSizeFilter(maxTreeSize)
+    override val filter = TreeSizeFilter(maxTreeSize)
 }
 
 @Serializable
 sealed class FunctionFilterConfig {
     abstract val filter: FunctionFilter
+}
+
+@Serializable
+@SerialName("max tree size")
+data class FunctionTreeSizeFilterConfig(val maxTreeSize: Int) : FunctionFilterConfig() {
+    @Transient
+    override val filter = TreeSizeFilter(maxTreeSize)
 }
 
 @Serializable

@@ -2,25 +2,25 @@ package astminer.problem
 
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import java.io.File
 
-interface FileLevelProblem : Problem<ParseResult<out Node>>
+interface FileLevelProblem {
+    fun process(parseResult: ParseResult<out Node>): LabeledResult<out Node>?
+}
 
 /**
  * Labels files with folder names
  */
 object FilePathExtractor : FileLevelProblem {
-    override fun process(entity: ParseResult<out Node>): LabeledResult<out Node> = entity.labeledWithFilePath()
+    override fun process(parseResult: ParseResult<out Node>): LabeledResult<out Node> = parseResult.labeledWithFilePath()
 }
 
 /**
  * Labels files with folder names
  */
 object FolderExtractor : FileLevelProblem {
-    override fun process(entity: ParseResult<out Node>): LabeledResult<out Node>? {
-        val folderName = File(entity.filePath).parentFile?.name ?: return null
-        return entity.labeledWith(folderName)
+    override fun process(parseResult: ParseResult<out Node>): LabeledResult<out Node>? {
+        val folderName = File(parseResult.filePath).parentFile?.name ?: return null
+        return parseResult.labeledWith(folderName)
     }
 }

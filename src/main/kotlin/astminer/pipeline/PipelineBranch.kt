@@ -13,10 +13,10 @@ interface PipelineBranch {
 }
 
 class FilePipelineBranch(config: FilePipelineConfig) : PipelineBranch {
-    val filters = config.filterConfigs.map { it.filter }
-    val problem = config.problemConfig.problem
+    private val filters = config.filterConfigs.map { it.filter }
+    private val problem = config.problemConfig.problem
 
-    private fun ParseResult<out Node>.passesThroughFilters() = filters.all { filter -> filter.isFiltered(this) }
+    private fun ParseResult<out Node>.passesThroughFilters() = filters.all { filter -> filter.test(this) }
 
     override fun process(languageHandler: LanguageHandler<out Node>): Sequence<LabeledResult<out Node>> {
         val parseResult = languageHandler.parseResult
@@ -30,10 +30,10 @@ class FilePipelineBranch(config: FilePipelineConfig) : PipelineBranch {
 }
 
 class FunctionPipelineBranch(config: FunctionPipelineConfig) : PipelineBranch {
-    val filters = config.filterConfigs.map { it.filter }
-    val problem = config.problemConfig.problem
+    private val filters = config.filterConfigs.map { it.filter }
+    private val problem = config.problemConfig.problem
 
-    private fun FunctionInfo<out Node>.passesThroughFilters() = filters.all { filter -> filter.isFiltered(this) }
+    private fun FunctionInfo<out Node>.passesThroughFilters() = filters.all { filter -> filter.test(this) }
 
     override fun process(languageHandler: LanguageHandler<out Node>): Sequence<LabeledResult<out Node>> =
         languageHandler.splitIntoMethods().asSequence()
