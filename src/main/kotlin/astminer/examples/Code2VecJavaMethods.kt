@@ -1,8 +1,9 @@
 package astminer.examples
 
 import astminer.cli.LabeledResult
+import astminer.cli.MethodNameExtractor
 import astminer.common.*
-import astminer.parse.antlr.java.JavaMethodSplitter
+import astminer.parse.antlr.java.JavaFunctionSplitter
 import astminer.parse.antlr.java.JavaParser
 import astminer.storage.path.Code2VecPathStorage
 import astminer.storage.path.PathBasedStorageConfig
@@ -23,16 +24,14 @@ fun code2vecJavaMethods() {
         val fileNode = JavaParser().parseInputStream(file.inputStream())
 
         //extract method nodes
-        val methods = JavaMethodSplitter().splitIntoMethods(fileNode)
+        val functions = JavaFunctionSplitter().splitIntoFunctions(fileNode)
 
-        methods.forEach { methodInfo ->
-            val methodNameNode = methodInfo.method.nameNode ?: return@forEach
-            val methodRoot = methodInfo.method.root
-            val label = splitToSubtokens(methodNameNode.getToken()).joinToString("|")
-            methodNameNode.setTechnicalToken("METHOD_NAME")
+        val labelExtractor = MethodNameExtractor()
 
+        functions.forEach { functionInfo ->
+            val label = labelExtractor.extractLabel(functionInfo, file.absolutePath) ?: return@forEach
             // Retrieve paths from every node individually and store them
-            storage.store(LabeledResult(methodRoot, label, file.absolutePath))
+            storage.store(LabeledResult(functionInfo.root, label, file.absolutePath))
         }
     }
 

@@ -1,19 +1,20 @@
 package astminer.cli
 
-import astminer.common.model.MethodInfo
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
+import astminer.common.model.FunctionInfo
 import astminer.common.preOrder
 import astminer.common.setTechnicalToken
 import astminer.parse.antlr.AntlrNode
-import astminer.parse.antlr.java.JavaMethodSplitter
-import astminer.parse.antlr.javascript.JavaScriptMethodSplitter
-import astminer.parse.antlr.python.PythonMethodSplitter
-import astminer.parse.fuzzy.cpp.FuzzyMethodSplitter
+import astminer.parse.antlr.java.JavaFunctionSplitter
+import astminer.parse.antlr.javascript.JavaScriptFunctionSplitter
+import astminer.parse.antlr.python.PythonFunctionSplitter
+import astminer.parse.fuzzy.cpp.FuzzyFunctionSplitter
 import astminer.parse.fuzzy.cpp.FuzzyNode
 import astminer.parse.gumtree.GumTreeNode
-import astminer.parse.gumtree.java.GumTreeJavaMethodSplitter
-import astminer.parse.gumtree.python.GumTreePythonMethodSplitter
+import astminer.parse.gumtree.java.GumTreeJavaFunctionSplitter
+import astminer.parse.gumtree.python.GumTreePythonFunctionSplitter
+import astminer.storage.TokenProcessor
 import java.io.File
 
 
@@ -44,7 +45,7 @@ abstract class FileLabelExtractor : LabelExtractor {
 }
 
 abstract class MethodLabelExtractor(
-        open val filterPredicates: Collection<MethodFilterPredicate> = emptyList(),
+        open val filterPredicates: Collection<MethodFilter> = emptyList(),
         open val javaParser: String = "gumtree",
         open val pythonParser: String = "antlr"
 ) : LabelExtractor {
@@ -54,20 +55,20 @@ abstract class MethodLabelExtractor(
     ): List<LabeledResult<out Node>> {
         val (root, filePath) = parseResult
         val fileExtension = File(filePath).extension
-        val methodInfos = when (fileExtension) {
+        val functionInfos = when (fileExtension) {
             "c", "cpp" -> {
-                val methodSplitter = FuzzyMethodSplitter()
-                methodSplitter.splitIntoMethods(root as FuzzyNode)
+                val functionSplitter = FuzzyFunctionSplitter()
+                functionSplitter.splitIntoFunctions(root as FuzzyNode)
             }
             "java" -> {
                 when (javaParser) {
                     "gumtree" -> {
-                        val methodSplitter = GumTreeJavaMethodSplitter()
-                        methodSplitter.splitIntoMethods(root as GumTreeNode)
+                        val methodSplitter = GumTreeJavaFunctionSplitter()
+                        methodSplitter.splitIntoFunctions(root as GumTreeNode)
                     }
                     "antlr" -> {
-                        val methodSplitter = JavaMethodSplitter()
-                        methodSplitter.splitIntoMethods(root as AntlrNode)
+                        val methodSplitter = JavaFunctionSplitter()
+                        methodSplitter.splitIntoFunctions(root as AntlrNode)
                     }
                     else -> {
                         throw UnsupportedOperationException("Unsupported parser $javaParser")
@@ -77,12 +78,12 @@ abstract class MethodLabelExtractor(
             "py" -> {
                 when (pythonParser) {
                     "gumtree" -> {
-                        val methodSplitter = GumTreePythonMethodSplitter()
-                        methodSplitter.splitIntoMethods(root as GumTreeNode)
+                        val functionSplitter = GumTreePythonFunctionSplitter()
+                        functionSplitter.splitIntoFunctions(root as GumTreeNode)
                     }
                     "antlr" -> {
-                        val methodSplitter = PythonMethodSplitter()
-                        methodSplitter.splitIntoMethods(root as AntlrNode)
+                        val functionSplitter = PythonFunctionSplitter()
+                        functionSplitter.splitIntoFunctions(root as AntlrNode)
                     }
                     else -> {
                         throw UnsupportedOperationException("Unsupported parser $pythonParser")
@@ -90,22 +91,22 @@ abstract class MethodLabelExtractor(
                 }
             }
             "js" -> {
-                val methodSplitter = JavaScriptMethodSplitter()
-                methodSplitter.splitIntoMethods(root as AntlrNode)
+                val functionSplitter = JavaScriptFunctionSplitter()
+                functionSplitter.splitIntoFunctions(root as AntlrNode)
             }
             else -> throw UnsupportedOperationException("Unsupported extension $fileExtension")
-        }.filter { methodInfo ->
+        }.filter { functionInfo ->
             filterPredicates.all { predicate ->
-                predicate.isFiltered(methodInfo)
+                predicate.isFiltered(functionInfo)
             }
         }
-        return methodInfos.mapNotNull {
+        return functionInfos.mapNotNull {
             val label = extractLabel(it, filePath) ?: return@mapNotNull null
-            LabeledResult(it.method.root, label, filePath)
+            LabeledResult(it.root, label, filePath)
         }
     }
 
-    abstract fun <T : Node> extractLabel(methodInfo: MethodInfo<T>, filePath: String): String?
+    abstract fun <T : Node> extractLabel(functionInfo: FunctionInfo<T>, filePath: String): String?
 }
 
 class FilePathExtractor : FileLabelExtractor() {
@@ -121,25 +122,22 @@ class FolderExtractor : FileLabelExtractor() {
 }
 
 class MethodNameExtractor(
-        val hideMethodNames: Boolean = false,
-        override val filterPredicates: Collection<MethodFilterPredicate> = emptyList(),
+        override val filterPredicates: Collection<MethodFilter> = emptyList(),
         override val javaParser: String = "gumtree",
         override val pythonParser: String = "antlr"
 ) : MethodLabelExtractor(filterPredicates, javaParser, pythonParser) {
 
-    override fun <T : Node> extractLabel(methodInfo: MethodInfo<T>, filePath: String): String? {
-        val methodNameNode = methodInfo.method.nameNode ?: return null
-        val methodRoot = methodInfo.method.root
-        val methodName = methodInfo.name() ?: return null
+    override fun <T : Node> extractLabel(functionInfo: FunctionInfo<T>, filePath: String): String? {
+        // TODO: the normalization situation is getting out of control. It should be a separate step in the pipeline
+        val normalizedName = functionInfo.nameNode?.let { TokenProcessor.Normalize.getPresentableToken(it) }
+        val name = functionInfo.name ?: return null
 
-        if (hideMethodNames) {
-            methodRoot.preOrder().forEach { node ->
-                if (node.getToken() == methodName) {
-                    node.setTechnicalToken("SELF")
-                }
+        functionInfo.root.preOrder().forEach { node ->
+            if (node.getToken() == name) {
+                node.setTechnicalToken("SELF")
             }
-            methodNameNode.setTechnicalToken("METHOD_NAME")
         }
-        return methodName
+        functionInfo.nameNode?.setTechnicalToken("METHOD_NAME")
+        return normalizedName
     }
 }
