@@ -21,7 +21,7 @@ interface TreeFeature<out T> {
  */
 object Depth : TreeFeature<Int> {
     override fun compute(tree: Node): Int {
-        val max =  tree.getChildren().map { compute(it) }.max() ?: 0
+        val max =  tree.getChildren().map { compute(it) }.maxOrNull() ?: 0
         return max + 1
     }
 }
