@@ -147,7 +147,6 @@ class ProjectParser(private val customLabelExtractor: LabelExtractor? = null) : 
         val labelExtractor = customLabelExtractor ?: getLabelExtractor(
             granularityLevel,
             javaParser,
-            isMethodNameHide,
             excludeModifiers,
             excludeAnnotations,
             filterConstructors,

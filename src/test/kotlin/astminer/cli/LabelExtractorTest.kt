@@ -1,14 +1,11 @@
 package astminer.cli
 
 import astminer.common.getTechnicalToken
-import astminer.common.model.ElementNode
-import astminer.common.model.MethodInfo
-import astminer.common.model.MethodNode
-import astminer.common.model.ParseResult
+import astminer.common.model.*
 import astminer.parse.antlr.AntlrNode
+import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
 
 internal class LabelExtractorTest {
 
@@ -17,56 +14,57 @@ internal class LabelExtractorTest {
         private const val FOLDER = "folder"
         private const val FILENAME = "file.txt"
         private const val METHOD_NAME = "method"
-        private val DUMMY_ROOT = AntlrNode("", null, null)
+    }
+
+    private var dummyRoot = AntlrNode("", null, null)
+
+    private fun makeFunctionInfo(nameNode: AntlrNode) = object : FunctionInfo<AntlrNode> {
+        override val root: AntlrNode = dummyRoot
+        override val nameNode: AntlrNode = nameNode
+    }
+
+    @Before
+    fun setUp() {
+        dummyRoot = AntlrNode("", null, null)
     }
 
     @Test
     fun testNonEmptyFilePathExtractor() {
         val labelExtractor = FilePathExtractor()
-        val nonEmptyParseResult = ParseResult(DUMMY_ROOT, PATH_STRING)
+        val nonEmptyParseResult = ParseResult(dummyRoot, PATH_STRING)
         val labeledParseResults = labelExtractor.toLabeledData(nonEmptyParseResult)
         assertEquals(1, labeledParseResults.size)
         val (root, label) = labeledParseResults[0]
-        assertEquals(DUMMY_ROOT, root)
+        assertEquals(dummyRoot, root)
         assertEquals(PATH_STRING, label)
     }
 
     @Test
     fun testNonEmptyFolderExtractor() {
         val labelExtractor = FolderExtractor()
-        val nonEmptyParseResult = ParseResult(DUMMY_ROOT, PATH_STRING)
+        val nonEmptyParseResult = ParseResult(dummyRoot, PATH_STRING)
         val labeledParseResults = labelExtractor.toLabeledData(nonEmptyParseResult)
         assertEquals(1, labeledParseResults.size)
         val (root, label) = labeledParseResults[0]
-        assertEquals(DUMMY_ROOT, root)
+        assertEquals(dummyRoot, root)
         assertEquals(FOLDER, label)
     }
 
     @Test
-    fun testMethodNameExtractor() {
-        val nameNode = AntlrNode("", DUMMY_ROOT, METHOD_NAME)
-        val methodInfo = MethodInfo<AntlrNode>(
-                MethodNode(DUMMY_ROOT, null, nameNode),
-                ElementNode(null, null),
-                emptyList()
-        )
-        val methodNameExtractor = MethodNameExtractor(false)
-        val label = methodNameExtractor.extractLabel(methodInfo, PATH_STRING)
+    fun `test method name extractor extracts correct method name`() {
+        val nameNode = AntlrNode("", dummyRoot, METHOD_NAME)
+        val functionInfo = makeFunctionInfo(nameNode)
+        val methodNameExtractor = MethodNameExtractor()
+        val label = methodNameExtractor.extractLabel(functionInfo, PATH_STRING)
         assertEquals(METHOD_NAME, label)
-        assertNull(nameNode.getTechnicalToken())
     }
 
     @Test
-    fun testMethodNameExtractorHide() {
-        val nameNode = AntlrNode("", DUMMY_ROOT, METHOD_NAME)
-        val methodInfo = MethodInfo<AntlrNode>(
-                MethodNode(DUMMY_ROOT, null, nameNode),
-                ElementNode(null, null),
-                emptyList()
-        )
-        val methodNameExtractor = MethodNameExtractor(true)
-        val label = methodNameExtractor.extractLabel(methodInfo, PATH_STRING)
-        assertEquals(METHOD_NAME, label)
+    fun `test method name extractor hides method name with technical token`() {
+        val nameNode = AntlrNode("", dummyRoot, METHOD_NAME)
+        val functionInfo = makeFunctionInfo(nameNode)
+        val methodNameExtractor = MethodNameExtractor()
+        methodNameExtractor.extractLabel(functionInfo, PATH_STRING)
         assertEquals("METHOD_NAME", nameNode.getTechnicalToken())
     }
 }
