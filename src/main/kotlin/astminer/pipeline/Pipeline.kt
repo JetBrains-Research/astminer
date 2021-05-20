@@ -14,6 +14,10 @@ import java.io.File
 
 private val logger = KotlinLogging.logger("Pipeline")
 
+/**
+ * Pipeline runs all the steps needed to parse, process and save data.
+ * @param config The pipeline config that defines the pipeline
+ */
 class Pipeline(private val config: PipelineConfig) {
     private val inputDirectory = File(config.inputDir)
     private val outputDirectory = File(config.outputDir)
@@ -47,6 +51,9 @@ class Pipeline(private val config: PipelineConfig) {
         }
     }
 
+    /**
+     * Runs the pipeline that is defined in the [config]
+     */
     fun run() {
         for (extension in config.parser.extensions) {
             val languageFactory = getHandlerFactory(extension, config.parser.type)

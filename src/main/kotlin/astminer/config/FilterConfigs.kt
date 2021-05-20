@@ -5,11 +5,17 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
+/**
+ * A config for filter that tests files (ParseResult)
+ */
 @Serializable
 sealed class FileFilterConfig {
     abstract val filter: FileFilter
 }
 
+/**
+ * @see TreeSizeFilter
+ */
 @Serializable
 @SerialName("max tree size")
 data class FileTreeSizeFilterConfig(val maxTreeSize: Int) : FileFilterConfig() {
@@ -17,11 +23,17 @@ data class FileTreeSizeFilterConfig(val maxTreeSize: Int) : FileFilterConfig() {
     override val filter = TreeSizeFilter(maxTreeSize)
 }
 
+/**
+ * A config for filter that tests functions (FunctionInfo)
+ */
 @Serializable
 sealed class FunctionFilterConfig {
     abstract val filter: FunctionFilter
 }
 
+/**
+ * @see TreeSizeFilter
+ */
 @Serializable
 @SerialName("max tree size")
 data class FunctionTreeSizeFilterConfig(val maxTreeSize: Int) : FunctionFilterConfig() {
@@ -29,6 +41,9 @@ data class FunctionTreeSizeFilterConfig(val maxTreeSize: Int) : FunctionFilterCo
     override val filter = TreeSizeFilter(maxTreeSize)
 }
 
+/**
+ * @see ModifierFilter
+ */
 @Serializable
 @SerialName("exclude functions with modifiers")
 data class ModifierFilterConfig(val modifiers: List<String>) : FunctionFilterConfig() {
@@ -36,6 +51,9 @@ data class ModifierFilterConfig(val modifiers: List<String>) : FunctionFilterCon
     override val filter = ModifierFilter(modifiers)
 }
 
+/**
+ * @see AnnotationFilter
+ */
 @Serializable
 @SerialName("exclude functions with annotations")
 data class AnnotationFilterConfig(val annotations: List<String>) : FunctionFilterConfig() {
@@ -43,6 +61,9 @@ data class AnnotationFilterConfig(val annotations: List<String>) : FunctionFilte
     override val filter = AnnotationFilter(annotations)
 }
 
+/**
+ * @see ConstructorFilter
+ */
 @Serializable
 @SerialName("exclude constructors")
 class ConstructorFilterConfig : FunctionFilterConfig() {
@@ -50,6 +71,9 @@ class ConstructorFilterConfig : FunctionFilterConfig() {
     override val filter = ConstructorFilter
 }
 
+/**
+ * @see FunctionNameWordsNumberFilter
+ */
 @Serializable
 @SerialName("by function name length")
 data class FunctionNameWordsNumberFilterConfig(val maxWordsNumber: Int) : FunctionFilterConfig() {
@@ -57,6 +81,9 @@ data class FunctionNameWordsNumberFilterConfig(val maxWordsNumber: Int) : Functi
     override val filter = FunctionNameWordsNumberFilter(maxWordsNumber)
 }
 
+/**
+ * @see FunctionAnyNodeWordsNumberFilter
+ */
 @Serializable
 @SerialName("by length of any token")
 data class FunctionAnyNodeWordsNumberFilterConfig(val maxWordsNumber: Int) : FunctionFilterConfig() {

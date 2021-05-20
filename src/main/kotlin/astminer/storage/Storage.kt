@@ -4,6 +4,11 @@ import astminer.problem.LabeledResult
 import astminer.common.model.Node
 import java.io.Closeable
 
+/**
+ * Storage saved labeled results to disk in a specified format.
+ * Storage might extract any data from labeled result.
+ * For instance, it might extract paths from trees
+ */
 interface Storage : Closeable {
     val outputDirectoryPath: String
 
