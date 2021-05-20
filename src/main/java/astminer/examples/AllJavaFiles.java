@@ -8,7 +8,6 @@ import astminer.storage.path.Code2VecPathStorage;
 import astminer.storage.path.PathBasedStorage;
 import astminer.storage.path.PathBasedStorageConfig;
 import org.jetbrains.annotations.NotNull;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.*;
@@ -26,9 +25,8 @@ public class AllJavaFiles {
         final Path inputFolder = Paths.get(INPUT_FOLDER);
 
         FileVisitor<Path> fileVisitor = new SimpleFileVisitor<Path>() {
-            @NotNull
             @Override
-            public FileVisitResult visitFile(@NotNull Path file, BasicFileAttributes attributes) throws IOException {
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attributes) throws IOException {
                 Node fileTree = new GumTreeJavaParser().parseInputStream(new FileInputStream(file.toFile()));
 
                 String filePath = file.toAbsolutePath().toString();

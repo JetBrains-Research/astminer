@@ -6,9 +6,6 @@ import mu.KotlinLogging
 import java.io.File
 import java.io.InputStream
 
-// TODO: later move this logger to Pipeline
-private val logger = KotlinLogging.logger("ParsingModel")
-
 interface Node {
     fun getTypeLabel(): String
     fun getChildren(): List<Node>
@@ -55,13 +52,11 @@ interface Parser<T : Node> {
      * @param files files to parse
      * @param handleResult handler to invoke on each file parse result
      */
+    // TODO: this function should be removed. it is only used in tests and examples
+    @Deprecated("Use getHandlerFactory instead")
     fun parseFiles(files: List<File>, handleResult: (ParseResult<T>) -> Any?) {
         for (file in files) {
-            try {
-                handleResult(parseFile(file))
-            } catch (parsingException: ParsingException) {
-                logger.error(parsingException) { "Failed to parse file ${file.path}" }
-            }
+            handleResult(parseFile(file))
         }
     }
 }

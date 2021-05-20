@@ -55,8 +55,6 @@ dependencies {
     jmhImplementation("org.jetbrains.kotlin:kotlin-reflect:1.4.32")
     jmhImplementation("org.openjdk.jmh:jmh-core:1.21")
     jmhImplementation("org.openjdk.jmh:jmh-generator-annprocess:1.21")
-
-
 }
 
 val generatedSourcesPath = "src/main/generated"

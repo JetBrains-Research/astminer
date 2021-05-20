@@ -10,8 +10,10 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
+import mu.KotlinLogging
 import java.io.File
 
+private val logger = KotlinLogging.logger("Main")
 
 class PipelineRunner : CliktCommand(name = "") {
     val config: File by argument("config", help = "Path to config").file(
@@ -26,8 +28,8 @@ class PipelineRunner : CliktCommand(name = "") {
         val config = try {
             yaml.decodeFromString<PipelineConfig>(config.readText())
         } catch (e: SerializationException) {
-            // TODO: should log it also
-            println("Error: $e")
+            logger.error(e) { "Could not read config" }
+            println("Could not read config: $e")
             return
         }
         Pipeline(config).run()
