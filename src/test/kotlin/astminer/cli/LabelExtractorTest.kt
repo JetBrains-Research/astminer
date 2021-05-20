@@ -6,8 +6,6 @@ import astminer.parse.antlr.AntlrNode
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 internal class LabelExtractorTest {
 
@@ -20,7 +18,7 @@ internal class LabelExtractorTest {
 
     private var dummyRoot = AntlrNode("", null, null)
 
-    private fun makeMethodInfo(nameNode: AntlrNode) = object : FunctionInfo<AntlrNode> {
+    private fun makeFunctionInfo(nameNode: AntlrNode) = object : FunctionInfo<AntlrNode> {
         override val root: AntlrNode = dummyRoot
         override val nameNode: AntlrNode = nameNode
     }
@@ -55,28 +53,18 @@ internal class LabelExtractorTest {
     @Test
     fun `test method name extractor extracts correct method name`() {
         val nameNode = AntlrNode("", dummyRoot, METHOD_NAME)
-//        val methodInfo = MethodInfo<AntlrNode>(
-//                MethodNode(dummyRoot, null, nameNode),
-//                ElementNode(null, null),
-//                emptyList()
-//        )
-        val method = makeMethodInfo(nameNode)
+        val functionInfo = makeFunctionInfo(nameNode)
         val methodNameExtractor = MethodNameExtractor()
-        val label = methodNameExtractor.extractLabel(method, PATH_STRING)
+        val label = methodNameExtractor.extractLabel(functionInfo, PATH_STRING)
         assertEquals(METHOD_NAME, label)
     }
 
     @Test
     fun `test method name extractor hides method name with technical token`() {
         val nameNode = AntlrNode("", dummyRoot, METHOD_NAME)
-//        val methodInfo = MethodInfo<AntlrNode>(
-//            MethodNode(dummyRoot, null, nameNode),
-//            ElementNode(null, null),
-//            emptyList()
-//        )
-        val methodInfo = makeMethodInfo(nameNode)
+        val functionInfo = makeFunctionInfo(nameNode)
         val methodNameExtractor = MethodNameExtractor()
-        methodNameExtractor.extractLabel(methodInfo, PATH_STRING)
+        methodNameExtractor.extractLabel(functionInfo, PATH_STRING)
         assertEquals("METHOD_NAME", nameNode.getTechnicalToken())
     }
 }

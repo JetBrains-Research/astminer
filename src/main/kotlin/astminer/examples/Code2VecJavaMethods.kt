@@ -24,7 +24,7 @@ fun code2vecJavaMethods() {
         val fileNode = JavaParser().parseInputStream(file.inputStream())
 
         //extract method nodes
-        val methods = JavaMethodSplitter().splitIntoMethods(fileNode)
+        val methods = JavaMethodSplitter().splitIntoFunctions(fileNode)
 
         val labelExtractor = MethodNameExtractor()
 

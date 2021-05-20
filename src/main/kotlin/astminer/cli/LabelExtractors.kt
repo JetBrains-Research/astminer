@@ -54,20 +54,20 @@ abstract class MethodLabelExtractor(
     ): List<LabeledResult<out Node>> {
         val (root, filePath) = parseResult
         val fileExtension = File(filePath).extension
-        val methodInfos = when (fileExtension) {
+        val functionInfos = when (fileExtension) {
             "c", "cpp" -> {
-                val methodSplitter = FuzzyFunctionSplitter()
-                methodSplitter.splitIntoMethods(root as FuzzyNode)
+                val functionSplitter = FuzzyFunctionSplitter()
+                functionSplitter.splitIntoFunctions(root as FuzzyNode)
             }
             "java" -> {
                 when (javaParser) {
                     "gumtree" -> {
                         val methodSplitter = GumTreeJavaMethodSplitter()
-                        methodSplitter.splitIntoMethods(root as GumTreeNode)
+                        methodSplitter.splitIntoFunctions(root as GumTreeNode)
                     }
                     "antlr" -> {
                         val methodSplitter = JavaMethodSplitter()
-                        methodSplitter.splitIntoMethods(root as AntlrNode)
+                        methodSplitter.splitIntoFunctions(root as AntlrNode)
                     }
                     else -> {
                         throw UnsupportedOperationException("Unsupported parser $javaParser")
@@ -77,12 +77,12 @@ abstract class MethodLabelExtractor(
             "py" -> {
                 when (pythonParser) {
                     "gumtree" -> {
-                        val methodSplitter = GumTreePythonFunctionSplitter()
-                        methodSplitter.splitIntoMethods(root as GumTreeNode)
+                        val functionSplitter = GumTreePythonFunctionSplitter()
+                        functionSplitter.splitIntoFunctions(root as GumTreeNode)
                     }
                     "antlr" -> {
-                        val methodSplitter = PythonFunctionSplitter()
-                        methodSplitter.splitIntoMethods(root as AntlrNode)
+                        val functionSplitter = PythonFunctionSplitter()
+                        functionSplitter.splitIntoFunctions(root as AntlrNode)
                     }
                     else -> {
                         throw UnsupportedOperationException("Unsupported parser $pythonParser")
@@ -90,16 +90,16 @@ abstract class MethodLabelExtractor(
                 }
             }
             "js" -> {
-                val methodSplitter = JavaScriptFunctionSplitter()
-                methodSplitter.splitIntoMethods(root as AntlrNode)
+                val functionSplitter = JavaScriptFunctionSplitter()
+                functionSplitter.splitIntoFunctions(root as AntlrNode)
             }
             else -> throw UnsupportedOperationException("Unsupported extension $fileExtension")
-        }.filter { methodInfo ->
+        }.filter { functionInfo ->
             filterPredicates.all { predicate ->
-                predicate.isFiltered(methodInfo)
+                predicate.isFiltered(functionInfo)
             }
         }
-        return methodInfos.mapNotNull {
+        return functionInfos.mapNotNull {
             val label = extractLabel(it, filePath) ?: return@mapNotNull null
             LabeledResult(it.root, label, filePath)
         }

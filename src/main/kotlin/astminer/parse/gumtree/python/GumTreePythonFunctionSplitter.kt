@@ -13,8 +13,8 @@ class GumTreePythonFunctionSplitter : TreeFunctionSplitter<GumTreeNode> {
         }
     }
 
-    override fun splitIntoMethods(root: GumTreeNode): Collection<FunctionInfo<GumTreeNode>> {
-        val methodRoots = root.preOrder().filter { TypeLabels.methodDefinitions.contains(it.getTypeLabel()) }
-        return methodRoots.map { GumTreePythonFunctionInfo(it as GumTreeNode) }
+    override fun splitIntoFunctions(root: GumTreeNode): Collection<FunctionInfo<GumTreeNode>> {
+        val functionRoots = root.preOrder().filter { TypeLabels.methodDefinitions.contains(it.getTypeLabel()) }
+        return functionRoots.map { GumTreePythonFunctionInfo(it as GumTreeNode) }
     }
 }

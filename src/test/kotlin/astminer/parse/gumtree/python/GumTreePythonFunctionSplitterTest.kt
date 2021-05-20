@@ -10,12 +10,12 @@ import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-class GumTreePythonMethodSplitterTest {
+class GumTreePythonFunctionSplitterTest {
     private fun parse(filename: String): GumTreeNode =
         GumTreePythonParser().parseInputStream(File(filename).inputStream())
 
-    private fun splitMethods(filename: String): Collection<FunctionInfo<GumTreeNode>> =
-        GumTreePythonFunctionSplitter().splitIntoMethods(parse(filename))
+    private fun splitFunctions(filename: String): Collection<FunctionInfo<GumTreeNode>> =
+        GumTreePythonFunctionSplitter().splitIntoFunctions(parse(filename))
 
     private fun createPath(file: String) = "src/test/resources/gumTreeMethodSplitter/$file"
 
@@ -24,10 +24,10 @@ class GumTreePythonMethodSplitterTest {
 
     @Test
     fun methodsCountTest() {
-        assertEquals(7, splitMethods(createPath("1.py")).size)
-        assertEquals(9, splitMethods(createPath("2.py")).size)
-        assertEquals(3, splitMethods(createPath("3.py")).size)
-        assertEquals(5, splitMethods(createPath("4.py")).size)
+        assertEquals(7, splitFunctions(createPath("1.py")).size)
+        assertEquals(9, splitFunctions(createPath("2.py")).size)
+        assertEquals(3, splitFunctions(createPath("3.py")).size)
+        assertEquals(5, splitFunctions(createPath("4.py")).size)
     }
 
     @Test
@@ -37,17 +37,17 @@ class GumTreePythonMethodSplitterTest {
             "with_typed_return_no_args", "full_typed",
             "func_dif_args_typed_return", "complex_args_full_typed"
         )
-        val methodInfos = splitMethods(createPath("1.py"))
-        val parsedNames = methodInfos.map { it.name }.toSet()
+        val functionInfos = splitFunctions(createPath("1.py"))
+        val parsedNames = functionInfos.map { it.name }.toSet()
         assertEquals(realNames, parsedNames)
     }
 
     @Test
     fun methodInfoTest1TypedArgs() {
-        val methodInfos = splitMethods(createPath("1.py"))
-        val method = methodInfos.firstOrNull { it.name == "complex_args_full_typed" }
-        assertNotNull(method)
-        with(method) {
+        val functionInfos = splitFunctions(createPath("1.py"))
+        val functionInfo = functionInfos.firstOrNull { it.name == "complex_args_full_typed" }
+        assertNotNull(functionInfo)
+        with(functionInfo) {
             assertEquals("complex_args_full_typed", name)
             assertEquals(null, returnType)
             assertEquals(1, parameters.size)
@@ -58,10 +58,10 @@ class GumTreePythonMethodSplitterTest {
 
     @Test
     fun methodInfoTest2ManyArgs() {
-        val methodInfos = splitMethods(createPath("1.py"))
-        val method = methodInfos.firstOrNull { it.name == "func_dif_args_typed_return" }
-        assertNotNull(method)
-        with(method) {
+        val functionInfos = splitFunctions(createPath("1.py"))
+        val functionInfo = functionInfos.firstOrNull { it.name == "func_dif_args_typed_return" }
+        assertNotNull(functionInfo)
+        with(functionInfo) {
             assertEquals("func_dif_args_typed_return", name)
             assertEquals("Constant-int", returnType)
             assertEquals(6, parameters.size)
@@ -72,10 +72,10 @@ class GumTreePythonMethodSplitterTest {
 
     @Test
     fun methodInfoTest3EnclosingClass() {
-        val methodInfos = splitMethods(createPath("2.py"))
-        val method = methodInfos.firstOrNull { it.name == "foo_typed" }
-        assertNotNull(method)
-        with(method) {
+        val functionInfos = splitFunctions(createPath("2.py"))
+        val function = functionInfos.firstOrNull { it.name == "foo_typed" }
+        assertNotNull(function)
+        with(function) {
             assertEquals("foo_typed", name)
             assertEquals("A", enclosingElement?.name)
             assertEquals(null, returnType)
@@ -87,10 +87,10 @@ class GumTreePythonMethodSplitterTest {
 
     @Test
     fun methodInfoTest4EnclosingClass() {
-        val methodInfos = splitMethods(createPath("2.py"))
-        val method = methodInfos.firstOrNull { it.name == "bar_typed" }
-        assertNotNull(method)
-        with(method) {
+        val functionInfos = splitFunctions(createPath("2.py"))
+        val functionInfo = functionInfos.firstOrNull { it.name == "bar_typed" }
+        assertNotNull(functionInfo)
+        with(functionInfo) {
             assertEquals("bar_typed", name)
             assertEquals("C", enclosingElement?.name)
             assertEquals(null, returnType)
@@ -102,10 +102,10 @@ class GumTreePythonMethodSplitterTest {
 
     @Test
     fun methodInfoTest5AsyncDef() {
-        val methodInfos = splitMethods(createPath("3.py"))
-        val method = methodInfos.firstOrNull { it.name == "async_schrecklich_typed" }
-        assertNotNull(method)
-        with(method) {
+        val functionInfos = splitFunctions(createPath("3.py"))
+        val functionInfo = functionInfos.firstOrNull { it.name == "async_schrecklich_typed" }
+        assertNotNull(functionInfo)
+        with(functionInfo) {
             assertEquals("async_schrecklich_typed", name)
             assertEquals("AsyncFunctionDef", root.getTypeLabel())
             assertEquals(null, enclosingElement?.name)
@@ -118,10 +118,10 @@ class GumTreePythonMethodSplitterTest {
 
     @Test
     fun methodInfoTest6Doc() {
-        val methodInfos = splitMethods(createPath("3.py"))
-        val method = methodInfos.firstOrNull { it.name == "async_simple_no_typed" }
-        assertNotNull(method)
-        with(method) {
+        val functionInfos = splitFunctions(createPath("3.py"))
+        val functionInfo = functionInfos.firstOrNull { it.name == "async_simple_no_typed" }
+        assertNotNull(functionInfo)
+        with(functionInfo) {
             assertEquals("async_simple_no_typed", name)
             assertEquals("AsyncFunctionDef", root.getTypeLabel())
             assertEquals(null, enclosingElement?.name)
@@ -143,12 +143,12 @@ class GumTreePythonMethodSplitterTest {
 
     @Test
     fun methodInfoTest7InnerFunc() {
-        val methodInfos = splitMethods(createPath("4.py"))
-        val method = methodInfos.firstOrNull { it.name == "foo_2" }
-        assertNotNull(method)
-        with(method) {
+        val functionInfos = splitFunctions(createPath("4.py"))
+        val functionInfo = functionInfos.firstOrNull { it.name == "foo_2" }
+        assertNotNull(functionInfo)
+        with(functionInfo) {
             assertEquals("foo_2", name)
-            assertEquals("foo_1", method.root.parent?.wrappedNode?.parent?.label)
+            assertEquals("foo_1", functionInfo.root.parent?.wrappedNode?.parent?.label)
             assertEquals(null, enclosingElement?.name)
             assertEquals("Constant-NoneType", returnType)
             assertEquals(1, parameters.size)
@@ -159,12 +159,12 @@ class GumTreePythonMethodSplitterTest {
 
     @Test
     fun methodInfoTest8InnerFunc() {
-        val methodInfos = splitMethods(createPath("4.py"))
-        val method = methodInfos.firstOrNull { it.name == "bar_2" }
-        assertNotNull(method)
-        with(method) {
+        val functionInfos = splitFunctions(createPath("4.py"))
+        val functionInfo = functionInfos.firstOrNull { it.name == "bar_2" }
+        assertNotNull(functionInfo)
+        with(functionInfo) {
             assertEquals("bar_2", name)
-            assertEquals("bar_1", method.root.parent?.wrappedNode?.parent?.label)
+            assertEquals("bar_1", functionInfo.root.parent?.wrappedNode?.parent?.label)
             assertEquals(null, enclosingElement?.name)
             assertEquals("Constant-int", returnType)
             assertEquals(2, parameters.size)
