@@ -14,8 +14,8 @@ class AntrlUtilTest {
 
         val node = parser.parseInputStream(FileInputStream(file))
         var adoptedNodesSize = 0
-        node?.preOrder()?.forEach { node ->
-            adoptedNodesSize += node.children.filter { it.parent != node }.size
+        node?.preOrder()?.forEach { curNode ->
+            adoptedNodesSize += curNode.children.filter { it.parent != node }.size
         }
         Assert.assertEquals("There should be no children with different parent", 0, adoptedNodesSize)
     }

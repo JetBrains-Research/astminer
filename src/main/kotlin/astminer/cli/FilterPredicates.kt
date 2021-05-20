@@ -1,88 +1,54 @@
 package astminer.cli
 
-import astminer.common.model.MethodInfo
+import astminer.common.model.FunctionInfo
 import astminer.common.model.Node
 import astminer.common.splitToSubtokens
 
-abstract class MethodFilterPredicate {
-    open fun isFiltered(methodInfo: MethodInfo<out Node>): Boolean = false
-
-    fun typeBasedFilterPredicate(root: Node?, nodeType: String, excludeValues: List<String>): Boolean {
-        root?.getChildrenOfType(nodeType)?.forEach {
-            if (it.token in excludeValues) {
-                return false
-            }
-        }
-        return true
-    }
+interface MethodFilter {
+    fun isFiltered(functionInfo: FunctionInfo<out Node>): Boolean
 }
 
-class ModifierFilterPredicate(private val excludeModifiers: List<String>) :
-    MethodFilterPredicate() {
-
-    // TODO: add other parsers
-
-    private fun gumTreeModifierFilter(root: Node?) : Boolean =
-        typeBasedFilterPredicate(root, "Modifier", excludeModifiers)
-
-    override fun isFiltered(methodInfo: MethodInfo<out Node>): Boolean =
-        gumTreeModifierFilter(methodInfo.method.root)
+class ModifierFilterPredicate(private val excludeModifiers: List<String>) : MethodFilter {
+    override fun isFiltered(functionInfo: FunctionInfo<out Node>): Boolean =
+        !excludeModifiers.any { modifier -> modifier in functionInfo.modifiers }
 }
 
-class AnnotationFilterPredicate(private val excludeAnnotations: List<String>) :
-    MethodFilterPredicate() {
-
-    // TODO: add other parsers
-
-    private fun gumTreeAnnotationFilter(root: Node?) : Boolean =
-        typeBasedFilterPredicate(
-            root?.getChildOfType("MarkerAnnotation"), "SimpleName", excludeAnnotations
-        )
-
-    override fun isFiltered(methodInfo: MethodInfo<out Node>): Boolean =
-        gumTreeAnnotationFilter(methodInfo.method.root)
+class AnnotationFilterPredicate(private val excludeAnnotations: List<String>) : MethodFilter {
+    override fun isFiltered(functionInfo: FunctionInfo<out Node>): Boolean =
+        !excludeAnnotations.any { annotation -> annotation in functionInfo.annotations }
 }
 
-class ConstructorFilterPredicate : MethodFilterPredicate() {
-
-    override fun isFiltered(methodInfo: MethodInfo<out Node>): Boolean {
-        return methodInfo.name() != methodInfo.enclosingElementName()
-    }
+object ConstructorFilterPredicate : MethodFilter {
+    override fun isFiltered(functionInfo: FunctionInfo<out Node>) = !functionInfo.isConstructor
 }
 
-class MethodNameLengthFilterPredicate(private val maxLength: Int) : MethodFilterPredicate() {
-    override fun isFiltered(methodInfo: MethodInfo<out Node>): Boolean {
-        if (maxLength == -1) {
-            return true
-        }
-        val nameNode = methodInfo.method.nameNode
-        return if (nameNode != null) {
-            splitToSubtokens(nameNode.token).size <= maxLength
+class MethodNameWordsNumberFilter(private val maxWordsNumber: Int) : MethodFilter {
+    override fun isFiltered(functionInfo: FunctionInfo<out Node>): Boolean {
+        return if (maxWordsNumber == -1) {
+            true
         } else {
-            false
+            val name = functionInfo.name
+            name != null && splitToSubtokens(name).size <= maxWordsNumber
         }
     }
 }
 
-class TokenLengthFilterPredicate(private val maxLength: Int) : MethodFilterPredicate() {
-    override fun isFiltered(methodInfo: MethodInfo<out Node>): Boolean {
-        if (maxLength == -1) {
-            return true
+class MethodAnyNodeWordsNumberFilter(private val maxWordsNumber: Int) : MethodFilter {
+    override fun isFiltered(functionInfo: FunctionInfo<out Node>): Boolean {
+        return if (maxWordsNumber == -1) {
+            true
+        } else {
+            !functionInfo.root.preOrder().any { node -> splitToSubtokens(node.getToken()).size > maxWordsNumber }
         }
-        methodInfo.method.root.preOrder().forEach { node ->
-            if (splitToSubtokens(node.token).size > maxLength) {
-                return false
-            }
-        }
-        return true
     }
 }
 
-class TreeSizeFilterPredicate(private val maxSize: Int) : MethodFilterPredicate() {
-    override fun isFiltered(methodInfo: MethodInfo<out Node>): Boolean {
-        if (maxSize == -1) {
-            return true
+class TreeSizeFilterPredicate(private val maxSize: Int) : MethodFilter {
+    override fun isFiltered(functionInfo: FunctionInfo<out Node>): Boolean {
+        return if (maxSize == -1) {
+            true
+        } else {
+            functionInfo.root.preOrder().size <= maxSize
         }
-        return methodInfo.method.root.preOrder().size <= maxSize
     }
 }

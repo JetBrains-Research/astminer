@@ -13,18 +13,13 @@ class PrettyNode(override val typeLabel: String, override val token: String) : N
 
     fun addChild(node: PrettyNode) = children.add(node)
 
-    /*fun setParent(node: PrettyNode?) {
-        node?.addChild(this)
-        parent = node
-    }*/
-
     fun toPrettyString(indent: Int = 0, indentSymbol: String = "--") : String = with(StringBuilder()) {
         repeat(indent) { append(indentSymbol) }
         append(typeLabel)
         if (token.isNotEmpty()) {
-            appendln(" : $token")
+            appendLine(" : $token")
         } else {
-            appendln()
+            appendLine()
         }
         children.forEach { append(it.toPrettyString(indent + 1, indentSymbol)) }
         toString()
@@ -36,7 +31,7 @@ class PrettyNode(override val typeLabel: String, override val token: String) : N
 
 }
 
-fun restoreFromPrettyPrint(prettyPrintedTree: String, indentSymbol: String = "--") : PrettyNode? {
+fun restoreFromPrettyPrint(prettyPrintedTree: String, indentSymbol: String = "--") : PrettyNode {
     val lastNodeByIndent = HashMap<Int, PrettyNode>()
     val tree = prettyPrintedTree.lines().map { s ->
         val (node, indent) = restorePrintedNode(s, indentSymbol)

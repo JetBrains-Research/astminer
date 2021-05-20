@@ -20,7 +20,7 @@ interface TreeFeature<out T> {
  */
 object Depth : TreeFeature<Int> {
     override fun compute(tree: Node): Int {
-        val max =  tree.children.map { compute(it) }.max() ?: 0
+        val max =  tree.children.map { compute(it) }.maxOrNull() ?: 0
         return max + 1
     }
 }
@@ -47,7 +47,7 @@ object BranchingFactor : TreeFeature<Double> {
  */
 object NumberOfNodes : TreeFeature<Int> {
     override fun compute(tree: Node): Int {
-        return tree.children.map { compute(it) }.sum() + 1
+        return tree.children.sumOf { compute(it) } + 1
     }
 }
 

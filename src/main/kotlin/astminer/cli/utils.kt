@@ -36,7 +36,6 @@ fun getParser(
 fun getLabelExtractor(
     granularityLevel: String,
     javaParser: String,
-    hideMethodNames: Boolean,
     excludeModifiers: List<String>,
     excludeAnnotations: List<String>,
     filterConstructors: Boolean,
@@ -56,13 +55,13 @@ fun getLabelExtractor(
         "method" -> {
             val filterPredicates = mutableListOf(
                 ModifierFilterPredicate(excludeModifiers), AnnotationFilterPredicate(excludeAnnotations),
-                MethodNameLengthFilterPredicate(maxMethodNameLength), TokenLengthFilterPredicate(maxTokenLength),
+                MethodNameWordsNumberFilter(maxMethodNameLength), MethodAnyNodeWordsNumberFilter(maxTokenLength),
                 TreeSizeFilterPredicate(maxTreeSize)
             )
             if (filterConstructors) {
-                filterPredicates.add(ConstructorFilterPredicate())
+                filterPredicates.add(ConstructorFilterPredicate)
             }
-            return MethodNameExtractor(hideMethodNames, filterPredicates, javaParser)
+            return MethodNameExtractor(filterPredicates, javaParser)
         }
     }
     throw UnsupportedOperationException("Unsupported granularity level $granularityLevel")

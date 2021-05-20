@@ -15,6 +15,8 @@ class PathWorker {
             this.metadata[PATH_PIECES_KEY] = pathPieces
         }
 
+        // In runtime all generics upcast to upper bound, therefore it's impossible to check type inside List
+        @Suppress("UNCHECKED_CAST")
         private fun Node.getPathPieces(): List<PathPiece>? = this.metadata[PATH_PIECES_KEY] as List<PathPiece>?
     }
 

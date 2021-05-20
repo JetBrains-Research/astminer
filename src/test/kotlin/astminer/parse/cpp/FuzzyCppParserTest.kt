@@ -1,23 +1,20 @@
 package astminer.parse.cpp
 
+import astminer.checkExecutable
 import astminer.common.getProjectFilesWithExtension
 import astminer.examples.forFilesWithSuffix
 import astminer.parse.fuzzy.cpp.FuzzyCppParser
 import astminer.parse.fuzzy.cpp.FuzzyNode
 import org.junit.Assert
+import org.junit.Assume
+import org.junit.Before
 import org.junit.Test
 import java.io.File
 
 class FuzzyCppParserTest {
 
-    @Test
-    fun testNodeIsNotNull() {
-        val parser = FuzzyCppParser()
-        val file = File("src/test/resources/fuzzy/test.cpp")
-
-        val nodes = parser.parseFile(file)
-        Assert.assertTrue("Parse tree for a valid file should not be null", nodes.root != null)
-    }
+    @Before
+    fun checkGPP() = Assume.assumeTrue(checkExecutable("g++"))
 
     @Test
     fun testInputStreamParsing() {
@@ -27,7 +24,7 @@ class FuzzyCppParserTest {
         val parser = FuzzyCppParser()
         folder.forFilesWithSuffix(".cpp") { file ->
             n++
-            parser.parseInputStream(file.inputStream())?.let { nodes.add(it) }
+            parser.parseInputStream(file.inputStream()).let { nodes.add(it) }
         }
         Assert.assertEquals(n, nodes.size)
     }

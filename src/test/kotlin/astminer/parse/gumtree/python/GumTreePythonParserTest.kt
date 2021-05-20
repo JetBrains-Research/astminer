@@ -1,12 +1,14 @@
 package astminer.parse.gumtree.python
 
+import astminer.checkExecutable
+import astminer.parse.ParsingException
 import org.junit.After
+import org.junit.Assume
 import org.junit.Before
 import org.junit.Test
 import java.io.File
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class GumTreePythonParserTest {
@@ -16,6 +18,7 @@ class GumTreePythonParserTest {
 
     @Before
     fun mkdir() {
+        Assume.assumeTrue(checkExecutable("pythonparser"))
         testFolder.mkdirs()
         testFile.createNewFile()
     }
@@ -32,11 +35,10 @@ class GumTreePythonParserTest {
         assertTrue(node.wrappedNode.children.isEmpty())
     }
 
-    @Test(expected = Test.None::class)
+    @Test(expected = ParsingException::class)
     fun invalidCode() {
         testFile.writeText("INVALID PYTHON CODE")
-        val node = parser.parseInputStream(testFile.inputStream())
-        assertNull(node)
+        parser.parseInputStream(testFile.inputStream())
     }
 
     @Test(expected = Test.None::class)

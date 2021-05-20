@@ -1,6 +1,7 @@
 package astminer.parse.antlr.java
 
 import astminer.common.model.Parser
+import astminer.parse.ParsingException
 import astminer.parse.antlr.AntlrNode
 import astminer.parse.antlr.convertAntlrTree
 import org.antlr.v4.runtime.CommonTokenStream
@@ -11,7 +12,7 @@ import java.io.InputStream
 import java.lang.Exception
 
 class JavaParser : Parser<AntlrNode> {
-    override fun parseInputStream(content: InputStream): AntlrNode? {
+    override fun parseInputStream(content: InputStream): AntlrNode {
         return try {
             val lexer = Java8Lexer(CharStreams.fromStream(content))
             lexer.removeErrorListeners()
@@ -21,7 +22,7 @@ class JavaParser : Parser<AntlrNode> {
             val context = parser.compilationUnit()
             convertAntlrTree(context, Java8Parser.ruleNames, Java8Parser.VOCABULARY)
         } catch (e: Exception) {
-            null
+            throw ParsingException("ANTLR", "Java", e.message)
         }
     }
 }
