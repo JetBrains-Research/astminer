@@ -12,7 +12,7 @@ import astminer.parse.antlr.python.PythonFunctionSplitter
 import astminer.parse.fuzzy.cpp.FuzzyFunctionSplitter
 import astminer.parse.fuzzy.cpp.FuzzyNode
 import astminer.parse.gumtree.GumTreeNode
-import astminer.parse.gumtree.java.GumTreeJavaMethodSplitter
+import astminer.parse.gumtree.java.GumTreeJavaFunctionSplitter
 import astminer.parse.gumtree.python.GumTreePythonFunctionSplitter
 import java.io.File
 
@@ -62,7 +62,7 @@ abstract class MethodLabelExtractor(
             "java" -> {
                 when (javaParser) {
                     "gumtree" -> {
-                        val methodSplitter = GumTreeJavaMethodSplitter()
+                        val methodSplitter = GumTreeJavaFunctionSplitter()
                         methodSplitter.splitIntoFunctions(root as GumTreeNode)
                     }
                     "antlr" -> {

@@ -4,7 +4,7 @@ import astminer.common.model.*
 import astminer.common.preOrder
 import astminer.parse.gumtree.GumTreeNode
 
-class GumTreeJavaMethodSplitter : TreeFunctionSplitter<GumTreeNode> {
+class GumTreeJavaFunctionSplitter : TreeFunctionSplitter<GumTreeNode> {
     private val methodDeclaration = "MethodDeclaration"
 
     override fun splitIntoFunctions(root: GumTreeNode): Collection<FunctionInfo<GumTreeNode>> {

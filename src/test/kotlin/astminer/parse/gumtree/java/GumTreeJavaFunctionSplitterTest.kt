@@ -10,9 +10,9 @@ private fun createTree(filename: String): GumTreeNode =
     GumTreeJavaParser().parseInputStream(File(filename).inputStream())
 
 private fun createAndSplitTree(filename: String): Collection<FunctionInfo<GumTreeNode>> =
-    GumTreeJavaMethodSplitter().splitIntoFunctions(createTree(filename))
+    GumTreeJavaFunctionSplitter().splitIntoFunctions(createTree(filename))
 
-class GumTreeJavaMethodSplitterTest {
+class GumTreeJavaFunctionSplitterTest {
     @Test
     fun testMethodExtraction1() {
         val functionInfos = createAndSplitTree("src/test/resources/gumTreeMethodSplitter/1.java")
