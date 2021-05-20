@@ -13,10 +13,7 @@ fun code2vecJavaMethods() {
     val pipelineConfig = FunctionPipelineConfig(
         inputDir = folder,
         outputDir = outputDir,
-        parser = ParserConfig(
-            "antlr",
-            listOf("java")
-        ),
+        parser = ParserConfig(ParserType.Antlr, listOf(FileExtension.Java)),
         problem = FunctionNamePredictionConfig(),
         storage = Code2VecPathStorageConfig(
             maxPathLength = 5,

@@ -53,7 +53,7 @@ class FunctionPipelineBranch(config: FunctionPipelineConfig) : PipelineBranch {
     private fun FunctionInfo<out Node>.passesThroughFilters() = filters.all { filter -> filter.test(this) }
 
     override fun process(languageHandler: LanguageHandler<out Node>): Sequence<LabeledResult<out Node>> =
-        languageHandler.splitIntoMethods().asSequence()
+        languageHandler.splitIntoFunctions().asSequence()
             .filter { functionInfo -> functionInfo.passesThroughFilters() }
             .mapNotNull { functionInfo -> problem.process(functionInfo) }
 }

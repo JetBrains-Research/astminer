@@ -45,17 +45,3 @@ data class FunctionPipelineConfig(
     val problem: FunctionProblemConfig,
     override val storage: StorageConfig
 ) : PipelineConfig()
-
-/**
- * This config is used to select the parsers that should be used
- * If given type = "antlr" and extensions = ["py", "java"]
- * then 2 ANTLR parsers will be used (java antler parser and python antlr parser)
- * @param type Type of the parser (`antlr` or `gumtree` or `fuzzy` ...)
- * @param extensions File extensions that should be parsed
- */
-@Serializable
-data class ParserConfig(
-    val type: String, // TODO: should be an enum
-    val extensions: List<String>
-)
-

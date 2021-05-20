@@ -1,9 +1,6 @@
 package astminer.pipeline
 
-import astminer.config.Code2VecPathStorageConfig
-import astminer.config.FilePathExtractorConfig
-import astminer.config.FilePipelineConfig
-import astminer.config.ParserConfig
+import astminer.config.*
 import astminer.pipeline.util.verifyPathContextExtraction
 import org.junit.Test
 import java.io.File
@@ -17,17 +14,17 @@ internal class Code2VecExtractionTest {
     fun `test code2vec path extraction from files generates correct folders and files`() {
         val extractedDataDir = Files.createTempDirectory("extractedData")
 
-        val languages = listOf("java", "py")
+        val languages = listOf(FileExtension.Java, FileExtension.Python)
 
         val config = FilePipelineConfig(
             inputDir = testDataDir.path,
             outputDir = extractedDataDir.toAbsolutePath().toString(),
-            parser = ParserConfig("antlr", languages),
+            parser = ParserConfig(ParserType.Antlr, languages),
             problem = FilePathExtractorConfig(),
             storage = Code2VecPathStorageConfig(8, 3)
         )
         Pipeline(config).run()
 
-        verifyPathContextExtraction(extractedDataDir.toFile(), languages, false)
+        verifyPathContextExtraction(extractedDataDir.toFile(), languages.map { it.fileExtension }, false)
     }
 }

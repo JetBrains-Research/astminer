@@ -27,13 +27,13 @@ class Pipeline(private val config: PipelineConfig) {
         is FunctionPipelineConfig -> FunctionPipelineBranch(config)
     }
 
-    private fun createStorageDirectory(extension: String): File {
-        val outputDirectoryForExtension = outputDirectory.resolve(extension)
+    private fun createStorageDirectory(extension: FileExtension): File {
+        val outputDirectoryForExtension = outputDirectory.resolve(extension.fileExtension)
         outputDirectoryForExtension.mkdir()
         return outputDirectoryForExtension
     }
 
-    private fun createStorage(extension: String): Storage = with(config.storage) {
+    private fun createStorage(extension: FileExtension): Storage = with(config.storage) {
         val storagePath = createStorageDirectory(extension).path
 
         // TODO: should be removed this later and be implemented like filters and problems, once storage constructors have no side effects
@@ -58,7 +58,7 @@ class Pipeline(private val config: PipelineConfig) {
         for (extension in config.parser.extensions) {
             val languageFactory = getHandlerFactory(extension, config.parser.type)
 
-            val files = getProjectFilesWithExtension(inputDirectory, extension).asSequence()
+            val files = getProjectFilesWithExtension(inputDirectory, extension.fileExtension).asSequence()
             val labeledResults = files.mapNotNull { file ->
                 try {
                     languageFactory.createHandler(file)
