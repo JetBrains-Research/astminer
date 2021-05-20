@@ -6,7 +6,7 @@ import astminer.common.model.FunctionInfo
 import astminer.common.preOrder
 import astminer.common.setTechnicalToken
 import astminer.parse.antlr.AntlrNode
-import astminer.parse.antlr.java.JavaMethodSplitter
+import astminer.parse.antlr.java.JavaFunctionSplitter
 import astminer.parse.antlr.javascript.JavaScriptFunctionSplitter
 import astminer.parse.antlr.python.PythonFunctionSplitter
 import astminer.parse.fuzzy.cpp.FuzzyFunctionSplitter
@@ -66,7 +66,7 @@ abstract class MethodLabelExtractor(
                         methodSplitter.splitIntoFunctions(root as GumTreeNode)
                     }
                     "antlr" -> {
-                        val methodSplitter = JavaMethodSplitter()
+                        val methodSplitter = JavaFunctionSplitter()
                         methodSplitter.splitIntoFunctions(root as AntlrNode)
                     }
                     else -> {

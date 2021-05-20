@@ -36,7 +36,6 @@ fun getParser(
 fun getLabelExtractor(
     granularityLevel: String,
     javaParser: String,
-    hideMethodNames: Boolean,
     excludeModifiers: List<String>,
     excludeAnnotations: List<String>,
     filterConstructors: Boolean,

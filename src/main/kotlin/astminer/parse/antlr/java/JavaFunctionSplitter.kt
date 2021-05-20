@@ -5,7 +5,7 @@ import astminer.common.model.*
 import astminer.parse.antlr.AntlrNode
 import astminer.parse.antlr.hasLastLabel
 
-class JavaMethodSplitter : TreeFunctionSplitter<AntlrNode> {
+class JavaFunctionSplitter : TreeFunctionSplitter<AntlrNode> {
     private val methodNodeType = "methodDeclaration"
 
     override fun splitIntoFunctions(root: AntlrNode): Collection<FunctionInfo<AntlrNode>> {
