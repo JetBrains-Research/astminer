@@ -73,9 +73,9 @@ fun compressTree(root: AntlrNode): AntlrNode {
 
 fun decompressTypeLabel(typeLabel: String) = typeLabel.split("|")
 
-fun AntlrNode.lastLabel() = decompressTypeLabel(getTypeLabel()).last()
+fun AntlrNode.lastLabel() = decompressTypeLabel(typeLabel).last()
 
-fun AntlrNode.firstLabel() = decompressTypeLabel(getTypeLabel()).first()
+fun AntlrNode.firstLabel() = decompressTypeLabel(typeLabel).first()
 
 fun AntlrNode.hasLastLabel(label: String): Boolean = lastLabel() == label
 
@@ -87,9 +87,9 @@ fun AntlrNode.firstLabelIn(labels: List<String>): Boolean = labels.contains(firs
 
 fun Node.getTokensFromSubtree(): String {
     if (isLeaf()) {
-        return getToken()
+        return token
     }
-    return getChildren().joinToString(separator = "") { child ->
+    return children.joinToString(separator = "") { child ->
         child.getTokensFromSubtree()
     }
 }

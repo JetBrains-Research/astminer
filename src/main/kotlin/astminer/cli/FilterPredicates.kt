@@ -38,7 +38,7 @@ class MethodAnyNodeWordsNumberFilter(private val maxWordsNumber: Int) : MethodFi
         return if (maxWordsNumber == -1) {
             true
         } else {
-            !functionInfo.root.preOrder().any { node -> splitToSubtokens(node.getToken()).size > maxWordsNumber }
+            !functionInfo.root.preOrder().any { node -> splitToSubtokens(node.token).size > maxWordsNumber }
         }
     }
 }

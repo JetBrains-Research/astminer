@@ -35,17 +35,17 @@ class GumTreePythonFunctionInfo(override val root: GumTreeNode) : FunctionInfo<G
     override val nameNode: GumTreeNode = root
     override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val enclosingElement: EnclosingElement<GumTreeNode>? = collectEnclosingClass()
-    override val returnType: String? = getElementType(root)?.getTypeLabel()
+    override val returnType: String? = getElementType(root)?.typeLabel
 
     private fun getElementType(node: GumTreeNode): GumTreeNode? {
-        if (node.getTypeLabel() == TypeLabels.arg) {
+        if (node.typeLabel == TypeLabels.arg) {
             return node.getChildOfType(TypeLabels.nameLoad)
         }
         // if return statement has "Constant-`Type`" return value => function type is `Type`
-        if (TypeLabels.methodDefinitions.contains(node.getTypeLabel())) {
+        if (TypeLabels.methodDefinitions.contains(node.typeLabel)) {
             return node.getChildOfType(TypeLabels.body)?.getChildOfType(TypeLabels.returnTypeLabel)?.let {
-                it.getChildren().firstOrNull { child ->
-                    child.getTypeLabel().startsWith(TypeLabels.constantType)
+                it.children.firstOrNull { child ->
+                    child.typeLabel.startsWith(TypeLabels.constantType)
                 }
             }
         }
@@ -56,29 +56,29 @@ class GumTreePythonFunctionInfo(override val root: GumTreeNode) : FunctionInfo<G
         val enclosing = findEnclosingClass() ?: return null
         return EnclosingElement(
             type = EnclosingElementType.Class,
-            name = enclosing.getToken(),
+            name = enclosing.token,
             root = enclosing
         )
     }
 
     private fun findEnclosingClass(): GumTreeNode? {
-        return root.findEnclosingElementBy { it.getTypeLabel() == TypeLabels.classDefinition }
+        return root.findEnclosingElementBy { it.typeLabel == TypeLabels.classDefinition }
     }
 
     private fun collectParameters(): List<FunctionInfoParameter> {
-        val arguments = root.getChildrenOfType(TypeLabels.arguments).flatMap { it.getChildren() }
+        val arguments = root.getChildrenOfType(TypeLabels.arguments).flatMap { it.children }
         val params = arguments.flatMap { node ->
-            when (node.getTypeLabel()) {
-                in TypeLabels.funcArgsTypesNodes -> node.getChildren()
-                    .filter { it.getTypeLabel() == TypeLabels.arg }
+            when (node.typeLabel) {
+                in TypeLabels.funcArgsTypesNodes -> node.children
+                    .filter { it.typeLabel == TypeLabels.arg }
                 TypeLabels.vararg, TypeLabels.kwarg -> listOf(node)
                 else -> emptyList()
             }
         }
         return params.map { node->
             FunctionInfoParameter(
-                name = node.getToken(),
-                type = getElementType(node)?.getToken()
+                name = node.token,
+                type = getElementType(node)?.token
             )
         }
     }

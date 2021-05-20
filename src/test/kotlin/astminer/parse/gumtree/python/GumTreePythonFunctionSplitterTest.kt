@@ -107,7 +107,7 @@ class GumTreePythonFunctionSplitterTest {
         assertNotNull(functionInfo)
         with(functionInfo) {
             assertEquals("async_schrecklich_typed", name)
-            assertEquals("AsyncFunctionDef", root.getTypeLabel())
+            assertEquals("AsyncFunctionDef", root.typeLabel)
             assertEquals(null, enclosingElement?.name)
             assertEquals("Constant-int", returnType)
             assertEquals(4, parameters.size)
@@ -123,14 +123,14 @@ class GumTreePythonFunctionSplitterTest {
         assertNotNull(functionInfo)
         with(functionInfo) {
             assertEquals("async_simple_no_typed", name)
-            assertEquals("AsyncFunctionDef", root.getTypeLabel())
+            assertEquals("AsyncFunctionDef", root.typeLabel)
             assertEquals(null, enclosingElement?.name)
             assertEquals(
                 "\n    async doc\n    ",
                 root.getChildOfType("body")
                     ?.getChildOfType("Expr")
                     ?.getChildOfType("Constant-str")
-                    ?.getToken()
+                    ?.token
             )
             assertEquals(4, parameters.size)
             assertEquals(
