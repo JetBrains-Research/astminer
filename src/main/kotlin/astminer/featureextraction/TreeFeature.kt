@@ -48,7 +48,7 @@ object BranchingFactor : TreeFeature<Double> {
  */
 object NumberOfNodes : TreeFeature<Int> {
     override fun compute(tree: Node): Int {
-        return tree.getChildren().map { compute(it) }.sum() + 1
+        return tree.getChildren().sumOf { compute(it) } + 1
     }
 }
 

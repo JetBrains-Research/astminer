@@ -16,7 +16,7 @@ class JavaScriptFunctionSplitter : TreeFunctionSplitter<AntlrNode> {
         private const val FUNCTION_NODE = "Function"
     }
 
-    override fun splitIntoMethods(root: AntlrNode): Collection<FunctionInfo<AntlrNode>> {
+    override fun splitIntoFunctions(root: AntlrNode): Collection<FunctionInfo<AntlrNode>> {
         return root.preOrder().mapNotNull { node ->
             when {
                 node.isArrowElement() -> JavaScriptArrowInfo(node as AntlrNode)

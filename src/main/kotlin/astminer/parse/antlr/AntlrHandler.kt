@@ -3,7 +3,7 @@ package astminer.parse.antlr
 import astminer.common.model.ParseResult
 import astminer.common.model.HandlerFactory
 import astminer.common.model.LanguageHandler
-import astminer.parse.antlr.java.JavaMethodSplitter
+import astminer.parse.antlr.java.JavaFunctionSplitter
 import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.javascript.JavaScriptFunctionSplitter
 import astminer.parse.antlr.javascript.JavaScriptParser
@@ -16,7 +16,7 @@ object AntlrJavaHandlerFactory : HandlerFactory {
 
     class AntlrJavaHandler(file: File) : LanguageHandler<AntlrNode>() {
         override val parseResult: ParseResult<AntlrNode> = JavaParser().parseFile(file)
-        override val splitter = JavaMethodSplitter()
+        override val splitter = JavaFunctionSplitter()
     }
 }
 

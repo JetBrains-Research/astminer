@@ -10,11 +10,11 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 
-class JavaScriptMethodSplitterTest {
+class JavaScriptFunctionSplitterTest {
     companion object {
         const val N_METHODS = 47
         const val testFilePath = "src/test/resources/methodSplitting/testMethodSplitting.js"
-        val methodSplitter = JavaScriptFunctionSplitter()
+        val functionSplitter = JavaScriptFunctionSplitter()
         val parser = JavaScriptParser()
     }
 
@@ -24,7 +24,7 @@ class JavaScriptMethodSplitterTest {
     fun parseTree() {
         val testTree = parser.parseInputStream(File(testFilePath).inputStream())
         assertNotNull(testTree)
-        functionInfos = methodSplitter.splitIntoMethods(testTree)
+        functionInfos = functionSplitter.splitIntoFunctions(testTree)
     }
 
     @Test

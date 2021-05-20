@@ -7,7 +7,7 @@ import astminer.common.model.FunctionInfoParameter
 import astminer.parse.findEnclosingElementBy
 import astminer.parse.gumtree.GumTreeNode
 
-class GumTreeFunctionInfo(override val root: GumTreeNode) : FunctionInfo<GumTreeNode> {
+class GumTreePythonFunctionInfo(override val root: GumTreeNode) : FunctionInfo<GumTreeNode> {
     companion object {
         private object TypeLabels {
             const val classDefinition = "ClassDef"
@@ -35,11 +35,13 @@ class GumTreeFunctionInfo(override val root: GumTreeNode) : FunctionInfo<GumTree
     override val nameNode: GumTreeNode = root
     override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val enclosingElement: EnclosingElement<GumTreeNode>? = collectEnclosingClass()
+    override val returnType: String? = getElementType(root)?.getTypeLabel()
 
     private fun getElementType(node: GumTreeNode): GumTreeNode? {
         if (node.getTypeLabel() == TypeLabels.arg) {
             return node.getChildOfType(TypeLabels.nameLoad)
         }
+        // if return statement has "Constant-`Type`" return value => function type is `Type`
         if (TypeLabels.methodDefinitions.contains(node.getTypeLabel())) {
             return node.getChildOfType(TypeLabels.body)?.getChildOfType(TypeLabels.returnTypeLabel)?.let {
                 it.getChildren().firstOrNull { child ->
@@ -67,7 +69,7 @@ class GumTreeFunctionInfo(override val root: GumTreeNode) : FunctionInfo<GumTree
         val arguments = root.getChildrenOfType(TypeLabels.arguments).flatMap { it.getChildren() }
         val params = arguments.flatMap { node ->
             when (node.getTypeLabel()) {
-                in TypeLabels.funcArgsTypesNodes -> node.getChildren().flatMap { it.getChildren() }
+                in TypeLabels.funcArgsTypesNodes -> node.getChildren()
                     .filter { it.getTypeLabel() == TypeLabels.arg }
                 TypeLabels.vararg, TypeLabels.kwarg -> listOf(node)
                 else -> emptyList()

@@ -17,15 +17,6 @@ class FuzzyCppParserTest {
     fun checkGPP() = Assume.assumeTrue(checkExecutable("g++"))
 
     @Test
-    fun testNodeIsNotNull() {
-        val parser = FuzzyCppParser()
-        val file = File("src/test/resources/fuzzy/test.cpp")
-
-        val nodes = parser.parseFile(file)
-        Assert.assertTrue("Parse tree for a valid file should not be null", nodes.root != null)
-    }
-
-    @Test
     fun testInputStreamParsing() {
         val folder = File("src/test/resources/fuzzy/")
         val nodes = ArrayList<FuzzyNode>()
@@ -33,7 +24,7 @@ class FuzzyCppParserTest {
         val parser = FuzzyCppParser()
         folder.forFilesWithSuffix(".cpp") { file ->
             n++
-            parser.parseInputStream(file.inputStream())?.let { nodes.add(it) }
+            parser.parseInputStream(file.inputStream()).let { nodes.add(it) }
         }
         Assert.assertEquals(n, nodes.size)
     }
