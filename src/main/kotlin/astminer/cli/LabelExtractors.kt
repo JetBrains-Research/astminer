@@ -14,6 +14,7 @@ import astminer.parse.fuzzy.cpp.FuzzyNode
 import astminer.parse.gumtree.GumTreeNode
 import astminer.parse.gumtree.java.GumTreeJavaFunctionSplitter
 import astminer.parse.gumtree.python.GumTreePythonFunctionSplitter
+import astminer.storage.TokenProcessor
 import java.io.File
 
 
@@ -127,14 +128,16 @@ class MethodNameExtractor(
 ) : MethodLabelExtractor(filterPredicates, javaParser, pythonParser) {
 
     override fun <T : Node> extractLabel(functionInfo: FunctionInfo<T>, filePath: String): String? {
+        // TODO: the normalization situation is getting out of control. It should be a separate step in the pipeline
+        val normalizedName = functionInfo.nameNode?.let { TokenProcessor.Normalize.getPresentableToken(it) }
         val name = functionInfo.name ?: return null
+
         functionInfo.root.preOrder().forEach { node ->
             if (node.getToken() == name) {
                 node.setTechnicalToken("SELF")
             }
         }
         functionInfo.nameNode?.setTechnicalToken("METHOD_NAME")
-        // TODO: for some reason it is not normalized, check if something is wrong. Maybe storages normalize the label
-        return name
+        return normalizedName
     }
 }
