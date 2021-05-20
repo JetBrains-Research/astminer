@@ -101,5 +101,4 @@ class DotAstStorage(
         val fileObject = File(fullPath)
         return FilePath(fileObject.parentFile?.path ?: "", fileObject.name)
     }
-
 }

@@ -7,8 +7,8 @@ import kotlinx.serialization.Serializable
 sealed class PipelineConfig {
     abstract val inputDir: String
     abstract val outputDir: String
-    abstract val parserConfig: ParserConfig
-    abstract val storageConfig: StorageConfig
+    abstract val parser: ParserConfig
+    abstract val storage: StorageConfig
 }
 
 @Serializable
@@ -16,14 +16,10 @@ sealed class PipelineConfig {
 data class FilePipelineConfig(
     override val inputDir: String,
     override val outputDir: String,
-    @SerialName("parser")
-    override val parserConfig: ParserConfig,
-    @SerialName("filters")
-    val filterConfigs: List<FileFilterConfig> = emptyList(),
-    @SerialName("problem")
-    val problemConfig: FileProblemConfig,
-    @SerialName("storage")
-    override val storageConfig: StorageConfig
+    override val parser: ParserConfig,
+    val filters: List<FileFilterConfig> = emptyList(),
+    val problem: FileProblemConfig,
+    override val storage: StorageConfig
 ) : PipelineConfig()
 
 @Serializable
@@ -31,14 +27,10 @@ data class FilePipelineConfig(
 data class FunctionPipelineConfig(
     override val inputDir: String,
     override val outputDir: String,
-    @SerialName("parser")
-    override val parserConfig: ParserConfig,
-    @SerialName("filters")
-    val filterConfigs: List<FunctionFilterConfig> = emptyList(),
-    @SerialName("problem")
-    val problemConfig: FunctionProblemConfig,
-    @SerialName("storage")
-    override val storageConfig: StorageConfig
+    override val parser: ParserConfig,
+    val filters: List<FunctionFilterConfig> = emptyList(),
+    val problem: FunctionProblemConfig,
+    override val storage: StorageConfig
 ) : PipelineConfig()
 
 @Serializable

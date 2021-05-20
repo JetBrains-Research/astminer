@@ -9,5 +9,3 @@ import astminer.common.model.Node
  * @property filePath The path to the source file where the AST is from.
  */
 data class LabeledResult<T : Node>(val root: T, val label: String, val filePath: String)
-
-

@@ -25,10 +25,10 @@ class Pipeline(private val config: PipelineConfig) {
         return outputDirectoryForExtension
     }
 
-    private fun createStorage(extension: String): Storage = with(config.storageConfig) {
+    private fun createStorage(extension: String): Storage = with(config.storage) {
         val storagePath = createStorageDirectory(extension).path
 
-        // TODO: I should remove this later, once storage constructors have no side effects, and implement it like filters and problems
+        // TODO: should be removed this later and be implemented like filters and problems, once storage constructors have no side effects
         when (this) {
             is AstStorageConfig -> {
                 val tokenProcessor = if (splitTokens) TokenProcessor.Split else TokenProcessor.Normalize
@@ -44,8 +44,8 @@ class Pipeline(private val config: PipelineConfig) {
     }
 
     fun run() {
-        for (extension in config.parserConfig.extensions) {
-            val languageFactory = getHandlerFactory(extension, config.parserConfig.type)
+        for (extension in config.parser.extensions) {
+            val languageFactory = getHandlerFactory(extension, config.parser.type)
 
             val files = getProjectFilesWithExtension(inputDirectory, extension).asSequence()
             val labeledResults = files.map { languageFactory.createHandler(it) }.flatMap { branch.process(it) }

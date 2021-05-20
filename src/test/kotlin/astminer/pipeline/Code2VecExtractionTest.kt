@@ -22,9 +22,9 @@ internal class Code2VecExtractionTest {
         val config = FilePipelineConfig(
             inputDir = testDataDir.path,
             outputDir = extractedDataDir.toAbsolutePath().toString(),
-            parserConfig = ParserConfig("antlr", languages),
-            problemConfig = FilePathExtractorConfig(),
-            storageConfig = Code2VecPathStorageConfig(8, 3)
+            parser = ParserConfig("antlr", languages),
+            problem = FilePathExtractorConfig(),
+            storage = Code2VecPathStorageConfig(8, 3)
         )
         Pipeline(config).run()
 
