@@ -65,7 +65,7 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode) : FunctionInfo<Antlr
         )
     }
 
-    //TODO: refactor
+    // TODO: refactor remove nested whens
     private fun collectEnclosingElement(): EnclosingElement<AntlrNode>? {
         val enclosingNode = root.findEnclosingElementBy { it.lastLabelIn(POSSIBLE_ENCLOSING_ELEMENTS) } ?: return null
         val type = when {
