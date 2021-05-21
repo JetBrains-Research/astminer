@@ -10,31 +10,16 @@ fun Node.postOrderIterator(): Iterator<Node> {
     return postOrder().listIterator()
 }
 
-/*fun Node.preOrderIterator(): Iterator<Node> {
-    return preOrder().listIterator()
-}*/
-
 fun doTraversePostOrder(node: Node, resultList: MutableList<Node>) {
     node.children.forEach { doTraversePostOrder(it, resultList) }
     resultList.add(node)
 }
-
-/*fun doTraversePreOrder(node: Node, resultList: MutableList<Node>) {
-    resultList.add(node)
-    node.children.forEach { doTraversePreOrder(it, resultList) }
-}*/
 
 fun Node.postOrder(): List<Node> {
     val result: MutableList<Node> = ArrayList()
     doTraversePostOrder(this, result)
     return result
 }
-
-/*fun Node.preOrder(): List<Node> {
-    val result: MutableList<Node> = ArrayList()
-    doTraversePreOrder(this, result)
-    return result
-}*/
 
 const val DEFAULT_TOKEN = "EMPTY_TOKEN"
 const val TECHNICAL_TOKEN_KEY = "technical_token"
