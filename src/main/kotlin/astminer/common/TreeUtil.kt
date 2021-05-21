@@ -5,22 +5,6 @@ import astminer.storage.TokenProcessor
 import java.util.ArrayList
 
 
-fun Node.postOrderIterator(): Iterator<Node> {
-    //TODO implement properly
-    return postOrder().listIterator()
-}
-
-fun doTraversePostOrder(node: Node, resultList: MutableList<Node>) {
-    node.children.forEach { doTraversePostOrder(it, resultList) }
-    resultList.add(node)
-}
-
-fun Node.postOrder(): List<Node> {
-    val result: MutableList<Node> = ArrayList()
-    doTraversePostOrder(this, result)
-    return result
-}
-
 const val DEFAULT_TOKEN = "EMPTY_TOKEN"
 const val TECHNICAL_TOKEN_KEY = "technical_token"
 

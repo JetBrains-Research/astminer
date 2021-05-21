@@ -38,6 +38,9 @@ abstract class Node{
 
     fun preOrderIterator(): Iterator<Node> = PreOrderIterator(this)
     open fun preOrder(): List<Node> = PreOrderIterator(this).asSequence().toList()
+
+    fun postOrderIterator(): Iterator<Node> = PostOrderIterator(this)
+    open fun postOrder(): List<Node> = PostOrderIterator(this).asSequence().toList()
 }
 
 class PreOrderIterator(root: Node): Iterator<Node> {
@@ -59,15 +62,25 @@ class PreOrderIterator(root: Node): Iterator<Node> {
 }
 
 class PostOrderIterator(root: Node): Iterator<Node> {
+    private data class NodeWrapper(val node: Node, var isChecked: Boolean = false)
 
-    override fun hasNext(): Boolean {
-        TODO("Not yet implemented")
+    private val tree = mutableListOf(NodeWrapper(root))
+
+    private fun fillWithChildren(wrapper: NodeWrapper){
+        if (!wrapper.isChecked) {
+            tree.addAll(wrapper.node.children.asReversed().map { NodeWrapper(it) })
+            wrapper.isChecked = true
+        }
     }
+
+    override fun hasNext(): Boolean = tree.isNotEmpty()
 
     override fun next(): Node {
-        TODO("Not yet implemented")
+        while (!tree.last().isChecked) {
+            fillWithChildren(tree.last())
+        }
+        return tree.removeLast().node
     }
-
 }
 
 interface Parser<T : Node> {

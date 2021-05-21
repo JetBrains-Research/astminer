@@ -2,7 +2,6 @@ package astminer.paths
 
 import astminer.common.model.ASTPath
 import astminer.common.model.Node
-import astminer.common.postOrder
 import astminer.parse.antlr.AntlrNode
 import org.junit.Assert
 

@@ -3,7 +3,6 @@ package astminer.paths
 import astminer.common.model.ASTPath
 import astminer.common.model.Node
 import astminer.common.model.PathPiece
-import astminer.common.postOrderIterator
 import kotlin.math.min
 
 class PathWorker {
