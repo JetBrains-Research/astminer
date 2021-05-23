@@ -34,7 +34,8 @@ class FilePipelineBranch(config: FilePipelineConfig) : PipelineBranch {
     override fun process(languageHandler: LanguageHandler<out Node>): Sequence<LabeledResult<out Node>> {
         val parseResult = languageHandler.parseResult
         return if (parseResult.passesThroughFilters()) {
-            problem.process(parseResult)?.let { labeledResult ->  sequenceOf(labeledResult) } ?: emptySequence()
+            val labeledResult = problem.process(parseResult) ?: return emptySequence()
+            sequenceOf(labeledResult)
         } else {
             emptySequence()
         }
