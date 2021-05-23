@@ -3,7 +3,6 @@ package astminer.cli
 import astminer.storage.ast.CsvAstStorage
 import astminer.storage.ast.DotAstStorage
 import astminer.common.getProjectFilesWithExtension
-import astminer.common.preOrder
 import astminer.storage.Storage
 import astminer.storage.TokenProcessor
 import com.github.ajalt.clikt.core.CliktCommand

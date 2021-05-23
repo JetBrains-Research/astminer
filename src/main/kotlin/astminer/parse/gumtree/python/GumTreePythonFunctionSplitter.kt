@@ -1,7 +1,6 @@
 package astminer.parse.gumtree.python
 
 import astminer.common.model.*
-import astminer.common.preOrder
 import astminer.parse.gumtree.GumTreeNode
 
 class GumTreePythonFunctionSplitter : TreeFunctionSplitter<GumTreeNode> {
@@ -14,7 +13,7 @@ class GumTreePythonFunctionSplitter : TreeFunctionSplitter<GumTreeNode> {
     }
 
     override fun splitIntoFunctions(root: GumTreeNode): Collection<FunctionInfo<GumTreeNode>> {
-        val functionRoots = root.preOrder().filter { TypeLabels.methodDefinitions.contains(it.getTypeLabel()) }
-        return functionRoots.map { GumTreePythonFunctionInfo(it as GumTreeNode) }
+        val functionRoots = root.preOrder().filter { TypeLabels.methodDefinitions.contains(it.typeLabel) }
+        return functionRoots.map { GumTreePythonFunctionInfo(it) }
     }
 }

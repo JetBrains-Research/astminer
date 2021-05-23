@@ -21,8 +21,8 @@ class GumTreeJavaFunctionInfo(override val root: GumTreeNode) : FunctionInfo<Gum
     override val enclosingElement: EnclosingElement<GumTreeNode>? = collectEnclosingClass()
 
     private fun collectEnclosingClass(): EnclosingElement<GumTreeNode>? {
-        val enclosingClassNode = getEnclosingClassNode(root.getParent() as GumTreeNode?) ?: return null
-        val enclosingClassName = enclosingClassNode.getChildOfType(TypeLabels.simpleName)?.getToken()
+        val enclosingClassNode = getEnclosingClassNode(root.parent) ?: return null
+        val enclosingClassName = enclosingClassNode.getChildOfType(TypeLabels.simpleName)?.token
         return EnclosingElement(
             root = enclosingClassNode,
             type = EnclosingElementType.Class,
@@ -31,10 +31,10 @@ class GumTreeJavaFunctionInfo(override val root: GumTreeNode) : FunctionInfo<Gum
     }
 
     private fun getEnclosingClassNode(node: GumTreeNode?): GumTreeNode? {
-        if (node == null || node.getTypeLabel() == TypeLabels.typeDeclaration) {
+        if (node == null || node.typeLabel == TypeLabels.typeDeclaration) {
             return node
         }
-        return getEnclosingClassNode(node.getParent() as GumTreeNode?)
+        return getEnclosingClassNode(node.parent)
     }
 
     private fun collectParameters(): List<FunctionInfoParameter> {
@@ -48,13 +48,13 @@ class GumTreeJavaFunctionInfo(override val root: GumTreeNode) : FunctionInfo<Gum
     }
 
     private fun GumTreeNode.getElementName(): String {
-        return getChildOfType(TypeLabels.simpleName)?.getToken()
+        return getChildOfType(TypeLabels.simpleName)?.token
             ?: throw IllegalStateException("No name found for element")
     }
 
     private fun GumTreeNode.getElementType(): String? {
-        return getChildren().firstOrNull { it.isTypeNode() }?.getToken()
+        return children.firstOrNull { it.isTypeNode() }?.token
     }
 
-    private fun GumTreeNode.isTypeNode() = getTypeLabel().endsWith("Type")
+    private fun GumTreeNode.isTypeNode() = typeLabel.endsWith("Type")
 }

@@ -3,7 +3,6 @@ package astminer.cli
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
 import astminer.common.model.FunctionInfo
-import astminer.common.preOrder
 import astminer.common.setTechnicalToken
 import astminer.parse.antlr.AntlrNode
 import astminer.parse.antlr.java.JavaFunctionSplitter
@@ -133,7 +132,7 @@ class MethodNameExtractor(
         val name = functionInfo.name ?: return null
 
         functionInfo.root.preOrder().forEach { node ->
-            if (node.getToken() == name) {
+            if (node.token == name) {
                 node.setTechnicalToken("SELF")
             }
         }

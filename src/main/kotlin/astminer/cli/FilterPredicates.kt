@@ -2,7 +2,6 @@ package astminer.cli
 
 import astminer.common.model.FunctionInfo
 import astminer.common.model.Node
-import astminer.common.preOrder
 import astminer.common.splitToSubtokens
 
 interface MethodFilter {
@@ -39,7 +38,7 @@ class MethodAnyNodeWordsNumberFilter(private val maxWordsNumber: Int) : MethodFi
         return if (maxWordsNumber == -1) {
             true
         } else {
-            !functionInfo.root.preOrder().any { node -> splitToSubtokens(node.getToken()).size > maxWordsNumber }
+            !functionInfo.root.preOrder().any { node -> splitToSubtokens(node.token).size > maxWordsNumber }
         }
     }
 }
