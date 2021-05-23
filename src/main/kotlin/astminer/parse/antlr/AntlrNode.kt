@@ -1,12 +1,13 @@
 package astminer.parse.antlr
 
+import astminer.common.DEFAULT_TOKEN
 import astminer.common.model.Node
 
 class AntlrNode(override val typeLabel: String, override var parent: AntlrNode?, token: String?) : Node() {
 
     override val children: MutableList<AntlrNode> = mutableListOf()
 
-    override var token: String = token ?: "null"
+    override var token: String = token ?: DEFAULT_TOKEN
 
     fun replaceChildren(newChildren: List<AntlrNode>) {
         children.clear()

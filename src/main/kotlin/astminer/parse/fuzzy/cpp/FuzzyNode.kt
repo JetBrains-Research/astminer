@@ -1,5 +1,6 @@
 package astminer.parse.fuzzy.cpp
 
+import astminer.common.DEFAULT_TOKEN
 import astminer.common.model.Node
 import com.google.common.collect.TreeMultiset
 
@@ -20,7 +21,7 @@ class FuzzyNode(override val typeLabel: String,token: String?, order: Int?) : No
     override val children
     get() = childrenMultiset.toList()
 
-    override var token: String = token ?: "null"
+    override var token: String = token ?: DEFAULT_TOKEN
 
     fun addChild(node: FuzzyNode) {
         childrenMultiset.add(node)
