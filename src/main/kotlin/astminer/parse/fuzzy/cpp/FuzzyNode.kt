@@ -21,7 +21,7 @@ class FuzzyNode(override val typeLabel: String,token: String?, order: Int?) : No
     override val children
     get() = childrenMultiset.toList()
 
-    override var token: String = token ?: DEFAULT_TOKEN
+    override var originalToken: String = token ?: DEFAULT_TOKEN
 
     fun addChild(node: FuzzyNode) {
         childrenMultiset.add(node)

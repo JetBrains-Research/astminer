@@ -9,7 +9,7 @@ class DummyNode(override val typeLabel: String, override val children: MutableLi
     //TODO("not implemented")
     override val parent: Node? = null
 
-    override val token: String
+    override val originalToken: String
         get() = typeLabel
 
     override fun removeChildrenOfType(typeLabel: String) {

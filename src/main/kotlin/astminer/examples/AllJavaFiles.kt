@@ -1,6 +1,7 @@
 package astminer.examples
 
 import astminer.cli.LabeledResult
+import astminer.common.prettyPrint
 import astminer.parse.antlr.java.JavaFunctionSplitter
 import astminer.parse.antlr.java.JavaParser
 import astminer.storage.path.Code2VecPathStorage

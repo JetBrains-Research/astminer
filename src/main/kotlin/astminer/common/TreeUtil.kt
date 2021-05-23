@@ -58,3 +58,15 @@ fun splitToSubtokens(token: String) = token
         .map { s -> normalizeToken(s, "") }
         .filter { it.isNotEmpty() }
         .toList()
+
+
+fun Node.prettyPrint(indent: Int = 0, indentSymbol: String = "--") {
+    repeat(indent) { print(indentSymbol) }
+    print(typeLabel)
+    if (token.isNotEmpty()) {
+        println(" : $token")
+    } else {
+        println()
+    }
+    children.forEach { it.prettyPrint(indent + 1, indentSymbol) }
+}

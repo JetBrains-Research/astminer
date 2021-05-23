@@ -7,7 +7,7 @@ class AntlrNode(override val typeLabel: String, override var parent: AntlrNode?,
 
     override val children: MutableList<AntlrNode> = mutableListOf()
 
-    override var token: String = token ?: DEFAULT_TOKEN
+    override val originalToken: String = token ?: DEFAULT_TOKEN
 
     fun replaceChildren(newChildren: List<AntlrNode>) {
         children.clear()

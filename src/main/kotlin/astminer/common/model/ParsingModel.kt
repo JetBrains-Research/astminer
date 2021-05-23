@@ -1,6 +1,7 @@
 package astminer.common.model
 
 import astminer.cli.LabeledResult
+import astminer.common.DEFAULT_TOKEN
 import astminer.parse.ParsingException
 import mu.KotlinLogging
 import java.io.File
@@ -15,21 +16,17 @@ abstract class Node{
     abstract val typeLabel: String
     abstract val children: List<Node>
     abstract val parent: Node?
-    abstract val token: String
-
     val metadata: MutableMap<String, Any> = HashMap()
-    fun isLeaf() = children.isEmpty()
+    var technicalToken: String? = null
+    var normalizedToken: String? = null
+    abstract val originalToken: String
 
-    fun prettyPrint(indent: Int = 0, indentSymbol: String = "--") {
-        repeat(indent) { print(indentSymbol) }
-        print(typeLabel)
-        if (token.isNotEmpty()) {
-            println(" : $token")
-        } else {
-            println()
-        }
-        children.forEach { it.prettyPrint(indent + 1, indentSymbol) }
-    }
+    val token: String
+        get() = listOfNotNull(technicalToken, normalizedToken, originalToken)
+            .firstOrNull { it.isNotEmpty() }
+            ?: DEFAULT_TOKEN
+
+    fun isLeaf() = children.isEmpty()
 
     open fun getChildrenOfType(typeLabel: String) = children.filter { it.typeLabel == typeLabel }
     open fun getChildOfType(typeLabel: String) = getChildrenOfType(typeLabel).firstOrNull()
