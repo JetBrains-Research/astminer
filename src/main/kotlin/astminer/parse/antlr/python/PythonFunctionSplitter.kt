@@ -11,8 +11,8 @@ class PythonFunctionSplitter : TreeFunctionSplitter<AntlrNode> {
 
     override fun splitIntoFunctions(root: AntlrNode): Collection<FunctionInfo<AntlrNode>> {
         val methodRoots = root.preOrder().filter {
-            (it as AntlrNode).hasLastLabel(methodNode)
+            (it).hasLastLabel(methodNode)
         }
-        return methodRoots.map { AntlrPythonFunctionInfo(it as AntlrNode) }
+        return methodRoots.map { AntlrPythonFunctionInfo(it) }
     }
 }

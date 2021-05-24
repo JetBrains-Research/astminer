@@ -51,9 +51,9 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode) : FunctionInfo<Antlr
     private fun assembleMethodInfoParameter(parameterNode: AntlrNode): FunctionInfoParameter {
         val parameterHaveNoDefaultOrType = parameterNode.hasLastLabel(PARAMETER_NAME_NODE)
         val parameterName = if (parameterHaveNoDefaultOrType) {
-            parameterNode.getToken()
+            parameterNode.token
         } else {
-            parameterNode.getChildOfType(PARAMETER_NAME_NODE)?.getToken()
+            parameterNode.getChildOfType(PARAMETER_NAME_NODE)?.token
         }
         require(parameterName != null) { "Method name was not found" }
 
@@ -82,7 +82,7 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode) : FunctionInfo<Antlr
             EnclosingElementType.Class -> enclosingNode.getChildOfType(CLASS_NAME_NODE)
             EnclosingElementType.Method, EnclosingElementType.Function -> enclosingNode.getChildOfType(FUNCTION_NAME_NODE)
             else -> throw IllegalStateException("Enclosing node can only be function or class")
-        }?.getToken()
+        }?.token
         return EnclosingElement(
             type = type,
             name = name,
@@ -91,13 +91,13 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode) : FunctionInfo<Antlr
     }
 
     private fun Node.isMethod(): Boolean {
-        val outerBody = getParent()
-        if (outerBody?.getTypeLabel() != BODY) return false
+        val outerBody = parent
+        if (outerBody?.typeLabel != BODY) return false
 
-        val enclosingNode = outerBody.getParent()
+        val enclosingNode = outerBody.parent
         require(enclosingNode != null) { "Found body without enclosing element" }
 
-        val lastLabel = decompressTypeLabel(enclosingNode.getTypeLabel()).last()
+        val lastLabel = decompressTypeLabel(enclosingNode.typeLabel).last()
         return lastLabel == CLASS_DECLARATION_NODE
     }
 }

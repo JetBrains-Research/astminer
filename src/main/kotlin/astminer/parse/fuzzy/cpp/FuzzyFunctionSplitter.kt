@@ -7,7 +7,7 @@ class FuzzyFunctionSplitter : TreeFunctionSplitter<FuzzyNode> {
     private val methodNode = "METHOD"
 
     override fun splitIntoFunctions(root: FuzzyNode): Collection<FunctionInfo<FuzzyNode>> {
-        val methodRoots = root.preOrder().filter { it.getTypeLabel() == methodNode }
-        return methodRoots.map { FuzzyCppFunctionInfo(it as FuzzyNode) }
+        val methodRoots = root.preOrder().filter { it.typeLabel == methodNode }
+        return methodRoots.map { FuzzyCppFunctionInfo(it) }
     }
 }

@@ -5,31 +5,16 @@ import astminer.common.model.Node
 import astminer.common.model.ParseResult
 
 
-class DummyNode(val data: String, val childrenList: MutableList<DummyNode> = mutableListOf()) : Node {
-    override val metadata: MutableMap<String, Any> = hashMapOf()
+class DummyNode(override val typeLabel: String, override val children: MutableList<DummyNode>) : Node() {
 
-    override fun isLeaf(): Boolean {
-        return childrenList.isEmpty()
-    }
+    //TODO("not implemented")
+    override val parent: Node? = null
 
-    override fun getTypeLabel(): String {
-        return data
-    }
-
-    override fun getChildren(): List<Node> {
-        return childrenList
-    }
-
-    override fun getParent(): Node? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun getToken(): String {
-        return data
-    }
+    override val token: String
+        get() = typeLabel
 
     override fun removeChildrenOfType(typeLabel: String) {
-        childrenList.removeIf { it.getTypeLabel() == typeLabel }
+        children.removeIf { it.typeLabel == typeLabel }
     }
 }
 

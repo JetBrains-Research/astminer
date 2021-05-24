@@ -29,17 +29,17 @@ abstract class AntlrJavaScriptElementInfo(override val root: AntlrNode) : Functi
     }
 
     private fun AntlrNode.containsLabelIn(labels: List<String>): Boolean {
-        return decompressTypeLabel(getTypeLabel()).intersect(labels).isNotEmpty()
+        return decompressTypeLabel(typeLabel).intersect(labels).isNotEmpty()
     }
 
     private fun getEnclosingElementName(enclosingRoot: AntlrNode?): String? {
-        return enclosingRoot?.getChildren()?.firstOrNull {
+        return enclosingRoot?.children?.firstOrNull {
             it.hasLastLabel(ENCLOSING_ELEMENT_NAME_NODE)
-        }?.getToken()
+        }?.token
     }
 
     private fun getEnclosingElementType(enclosingRoot: AntlrNode): EnclosingElementType {
-        return when (decompressTypeLabel(enclosingRoot.getTypeLabel()).last()) {
+        return when (decompressTypeLabel(enclosingRoot.typeLabel).last()) {
             "functionDeclaration" -> EnclosingElementType.Function
             "classDeclaration" -> EnclosingElementType.Class
             "methodDefinition" -> EnclosingElementType.Method
@@ -56,13 +56,13 @@ abstract class AntlrJavaScriptElementInfo(override val root: AntlrNode) : Functi
 
             //Have only one parameter, which is indicated only by its name
             parametersRoot.hasLastLabel(PARAMETER_NAME_NODE) -> listOf(
-                FunctionInfoParameter(name = parametersRoot.getToken(), type = null)
+                FunctionInfoParameter(name = parametersRoot.token, type = null)
             )
 
             //Have many parameters or one indicated not only by it's name
             else -> parametersRoot.getItOrChildrenOfType(SINGLE_PARAMETER_NODE).map {
                 val nameNode = it.getChildOfType(PARAMETER_NAME_NODE) ?: it
-                FunctionInfoParameter(name = nameNode.getToken(), type = null)
+                FunctionInfoParameter(name = nameNode.token, type = null)
             }
         }
     }
@@ -99,12 +99,12 @@ class JavaScriptMethodInfo(override val root: AntlrNode) : AntlrJavaScriptElemen
     override val nameNode: AntlrNode? = collectNameNode()
 
     private fun collectNameNode(): AntlrNode? {
-        val methodNameParent = root.getChildren().firstOrNull {
-            METHOD_GETTERS_SETTERS.contains(it.getTypeLabel())
+        val methodNameParent = root.children.firstOrNull {
+            METHOD_GETTERS_SETTERS.contains(it.typeLabel)
         } ?: root
 
-        return methodNameParent.getChildren().firstOrNull {
-            decompressTypeLabel(it.getTypeLabel()).contains(METHOD_NAME_NODE)
+        return methodNameParent.children.firstOrNull {
+            decompressTypeLabel(it.typeLabel).contains(METHOD_NAME_NODE)
         }
     }
 

@@ -8,21 +8,21 @@ class SampleTreePathWorkerTest : PathWorkerTestBase() {
 
         val rootChildren = simpleNodes(listOf(2, 3), root)
         val (node2, node3) = rootChildren
-        root.setChildren(rootChildren)
+        root.replaceChildren(rootChildren)
 
         val node2Children = simpleNodes(listOf(4, 5), node2)
         val (_, node5) = node2Children
-        node2.setChildren(node2Children)
+        node2.replaceChildren(node2Children)
 
         val node3Children = simpleNodes(listOf(6, 7, 8), node3)
         val (_, node7, _) = node3Children
-        node3.setChildren(node3Children)
+        node3.replaceChildren(node3Children)
 
         val node5Children = simpleNodes(listOf(9, 10, 11), node5)
-        node5.setChildren(node5Children)
+        node5.replaceChildren(node5Children)
 
         val node7Children = simpleNodes(listOf(12, 13), node7)
-        node7.setChildren(node7Children)
+        node7.replaceChildren(node7Children)
 
         return root
     }

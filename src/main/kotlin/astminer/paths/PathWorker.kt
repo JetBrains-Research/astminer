@@ -3,7 +3,6 @@ package astminer.paths
 import astminer.common.model.ASTPath
 import astminer.common.model.Node
 import astminer.common.model.PathPiece
-import astminer.common.postOrderIterator
 import kotlin.math.min
 
 class PathWorker {
@@ -61,11 +60,11 @@ class PathWorker {
         val paths: MutableList<ASTPath> = ArrayList()
         iterator.forEach { currentNode ->
             if (currentNode.isLeaf()) {
-                if (currentNode.getToken().isNotEmpty()) {
+                if (currentNode.token.isNotEmpty()) {
                     currentNode.setPathPieces(listOf(listOf(currentNode)))
                 }
             } else {
-                val pathPiecesPerChild = currentNode.getChildren().map { it.getPathPieces() }
+                val pathPiecesPerChild = currentNode.children.map { it.getPathPieces() }
                 val currentNodePathPieces = updatePathPieces(currentNode, pathPiecesPerChild, maxLength)
                 val currentNodePaths = collapsePiecesToPaths(currentNode, pathPiecesPerChild, maxLength, maxWidth)
 
