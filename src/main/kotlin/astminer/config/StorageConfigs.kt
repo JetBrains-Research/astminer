@@ -30,7 +30,7 @@ object DotAstStorageConfig : StorageConfig()
  * Config for [astminer.storage.path.Code2VecPathStorage]
  */
 @Serializable
-@SerialName("code2vec paths")
+@SerialName("Code2vec")
 data class Code2VecPathStorageConfig(
     val maxPathLength: Int,
     val maxPathWidth: Int,
