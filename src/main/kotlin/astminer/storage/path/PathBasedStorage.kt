@@ -86,7 +86,7 @@ abstract class PathBasedStorage(
     private fun retrieveLabeledPathContexts(labeledResult: LabeledResult<out Node>): LabeledPathContexts<String> {
         val paths = retrievePaths(labeledResult.root)
         return LabeledPathContexts(labeledResult.label, paths.map { astPath ->
-            toPathContext(astPath) { it.token }
+            toPathContext(astPath) { it.token.replace("\n", "\\n") }
         })
     }
 
