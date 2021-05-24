@@ -1,7 +1,9 @@
 package astminer
 
+import astminer.common.model.FunctionInfoPropertyNotImplementedException
 import astminer.config.PipelineConfig
 import astminer.pipeline.Pipeline
+import astminer.pipeline.ProblemDefinitionException
 import com.charleskorn.kaml.PolymorphismStyle
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
@@ -25,14 +27,22 @@ class PipelineRunner : CliktCommand(name = "") {
     private val yaml = Yaml(configuration = YamlConfiguration(polymorphismStyle = PolymorphismStyle.Property))
 
     override fun run() {
-        val config = try {
-            yaml.decodeFromString<PipelineConfig>(config.readText())
+        try {
+            val config = yaml.decodeFromString<PipelineConfig>(config.readText())
+            Pipeline(config).run()
         } catch (e: SerializationException) {
-            logger.error(e) { "Could not read config" }
-            println("Could not read config: $e")
-            return
+            report("Could not read config", e)
+            println("\nBe sure to check types of filters and problems for misprints!")
+        } catch (e: ProblemDefinitionException) {
+            report("Problem is defined incorrectly", e)
+        } catch (e: FunctionInfoPropertyNotImplementedException) {
+            report("Currently astminer cannot fulfill your request", e)
         }
-        Pipeline(config).run()
+    }
+
+    private fun report(message: String, e: Exception) {
+        logger.error(e) { message }
+        println("$message:\n$e")
     }
 }
 

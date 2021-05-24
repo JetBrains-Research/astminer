@@ -1,5 +1,3 @@
-type: 'file granularity'
-
 inputDir: 'src/test/resources/methodSplitting/'
 outputDir: 'output'
 
@@ -8,12 +6,14 @@ parser:
   extensions: ['java', 'js']
 
 filters:
-  - type: 'max tree size'
+  - type: 'by tree size'
     maxTreeSize: 1000
+  - type: 'by words number'
+    maxTokenWordsNumber: 1000
+
 
 problem:
-  type: 'label with filepath'
+  type: 'file name'
 
 storage:
-  type: 'ast'
-  format: 'csv'
+  type: 'CsvAST'

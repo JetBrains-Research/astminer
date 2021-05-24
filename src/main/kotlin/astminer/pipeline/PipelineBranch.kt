@@ -7,6 +7,7 @@ import astminer.common.model.ParseResult
 import astminer.config.*
 import astminer.filters.*
 import astminer.problem.*
+import mu.KotlinLogging
 
 /**
  * PipelineBranch is a part of the pipeline that can be completely different depending on the granularity (pipeline type)
@@ -21,6 +22,8 @@ interface PipelineBranch {
     fun process(languageHandler: LanguageHandler<out Node>): Sequence<LabeledResult<out Node>>
 }
 
+private val logger = KotlinLogging.logger("PipelineBranch")
+
 /**
  * PipelineBranch for pipeline with file-level granularity (FilePipelineConfig).
  * Works with files as a whole. Tests parsed files with filters and extracts a label from them.
@@ -29,9 +32,10 @@ class FilePipelineBranch(config: PipelineConfig) : PipelineBranch {
     private val filters: List<FileFilter> = config.filters.mapNotNull { filterConfig ->
         when (filterConfig) {
             is TreeSizeFilterConfig -> TreeSizeFilter(filterConfig.maxTreeSize)
-            is WordsNumberFilterConfig -> WordsNumberFilter(filterConfig.maxWordsNumber)
+            is WordsNumberFilterConfig -> WordsNumberFilter(filterConfig.maxTokenWordsNumber)
             else -> {
-                println("Filter ${filterConfig.serialName} is not supported for this problem")
+                println("Filter `${filterConfig.serialName}` is not supported for this problem")
+                logger.info { "Filter `${filterConfig.serialName}` is not supported for this problem" }
                 null
             }
         }
@@ -40,7 +44,7 @@ class FilePipelineBranch(config: PipelineConfig) : PipelineBranch {
     private val problem: FileLevelProblem = when (config.problem) {
         is FileNameExtractorConfig -> FileNameExtractor
         is FolderNameExtractorConfig -> FolderNameExtractor
-        else -> throw ProblemNotFoundException(Granularity.File, "FilePipelineBranch")
+        else -> throw ProblemDefinitionException(Granularity.File, "FilePipelineBranch")
     }
 
     private fun passesThroughFilters(parseResult: ParseResult<out Node>) =
@@ -66,13 +70,14 @@ class FunctionPipelineBranch(config: PipelineConfig) : PipelineBranch {
     private val filters: List<FunctionFilter> = config.filters.mapNotNull { filterConfig ->
         when (filterConfig) {
             is TreeSizeFilterConfig -> TreeSizeFilter(filterConfig.maxTreeSize)
-            is WordsNumberFilterConfig -> WordsNumberFilter(filterConfig.maxWordsNumber)
+            is WordsNumberFilterConfig -> WordsNumberFilter(filterConfig.maxTokenWordsNumber)
             is ModifierFilterConfig -> ModifierFilter(filterConfig.modifiers)
             is AnnotationFilterConfig -> AnnotationFilter(filterConfig.annotations)
             is ConstructorFilterConfig -> ConstructorFilter
             is FunctionNameWordsNumberFilterConfig -> FunctionNameWordsNumberFilter(filterConfig.maxWordsNumber)
             else -> {
-                println("Filter ${filterConfig.serialName} is not supported for this problem")
+                println("Filter `${filterConfig.serialName}` is not supported for this problem")
+                logger.info { "Filter `${filterConfig.serialName}` is not supported for this problem" }
                 null
             }
         }
@@ -80,7 +85,7 @@ class FunctionPipelineBranch(config: PipelineConfig) : PipelineBranch {
 
     private val problem: FunctionLevelProblem = when (config.problem) {
         is FunctionNameProblemConfig -> FunctionNameProblem
-        else -> throw ProblemNotFoundException(Granularity.Function, "FunctionPipelineBranch")
+        else -> throw ProblemDefinitionException(Granularity.Function, "FunctionPipelineBranch")
     }
 
     private fun passesThroughFilters(functionInfo: FunctionInfo<out Node>) =
@@ -96,7 +101,7 @@ class FunctionPipelineBranch(config: PipelineConfig) : PipelineBranch {
  * This exception is thrown when problem granularity is implemented incorrectly or the problem is not specified
  * inside the correct pipeline branch.
  */
-class ProblemNotFoundException(granularity: Granularity, branchName: String) :
+class ProblemDefinitionException(granularity: Granularity, branchName: String) :
     IllegalStateException(
         "The specified problem with granularity $granularity is not implemented inside of branch $branchName. " +
                 "This should never happen!"

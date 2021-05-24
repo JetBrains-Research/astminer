@@ -1,5 +1,3 @@
-type: 'function granularity'
-
 inputDir: 'src/test/resources/methodSplitting/'
 outputDir: 'output'
 
@@ -10,12 +8,12 @@ parser:
 filters:
   - type: 'by function name length'
     maxWordsNumber: 10
-  - type: 'by length of any token'
-    maxWordsNumber: 100
+  - type: 'by words number'
+    maxTokenWordsNumber: 100
 
 problem:
-  type: 'function name prediction'
+  type: 'function name'
 
 storage:
-  type: 'ast'
+  type: 'CsvAST'
   format: 'csv'

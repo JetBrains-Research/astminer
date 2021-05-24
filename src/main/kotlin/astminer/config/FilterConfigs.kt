@@ -61,7 +61,7 @@ data class FunctionNameWordsNumberFilterConfig(val maxWordsNumber: Int) : Filter
  * @see WordsNumberFilter
  */
 @Serializable
-@SerialName("by length of any token")
-data class WordsNumberFilterConfig(val maxWordsNumber: Int) : FilterConfig() {
-    override val serialName = "by length of any token"
+@SerialName("by words number")
+data class WordsNumberFilterConfig(val maxTokenWordsNumber: Int) : FilterConfig() {
+    override val serialName = "by words number"
 }
