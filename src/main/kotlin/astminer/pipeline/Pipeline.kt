@@ -2,6 +2,8 @@ package astminer.pipeline
 
 import astminer.common.getProjectFilesWithExtension
 import astminer.config.*
+import astminer.filters.ModifierFilter
+import astminer.filters.TreeSizeFilter
 import astminer.parse.ParsingException
 import astminer.parse.getHandlerFactory
 import astminer.storage.Storage
@@ -22,9 +24,9 @@ class Pipeline(private val config: PipelineConfig) {
     private val inputDirectory = File(config.inputDir)
     private val outputDirectory = File(config.outputDir)
 
-    private val branch = when (config) {
-        is FilePipelineConfig -> FilePipelineBranch(config)
-        is FunctionPipelineConfig -> FunctionPipelineBranch(config)
+    private val branch = when (config.problem.granularity) {
+        Granularity.File -> FilePipelineBranch(config)
+        Granularity.Function -> FunctionPipelineBranch(config)
     }
 
     private fun createStorageDirectory(extension: FileExtension): File {
@@ -36,18 +38,10 @@ class Pipeline(private val config: PipelineConfig) {
     private fun createStorage(extension: FileExtension): Storage = with(config.storage) {
         val storagePath = createStorageDirectory(extension).path
 
-        // TODO: should be removed this later and be implemented like filters and problems, once storage constructors have no side effects
         when (this) {
-            is AstStorageConfig -> {
-                val tokenProcessor = if (splitTokens) TokenProcessor.Split else TokenProcessor.Normalize
-                when (format) {
-                    AstStorageFormat.Csv -> CsvAstStorage(storagePath)
-                    AstStorageFormat.Dot -> DotAstStorage(storagePath, tokenProcessor)
-                }
-            }
-            is Code2VecPathStorageConfig -> {
-                Code2VecPathStorage(storagePath, pathBasedStorageConfig)
-            }
+            is CsvAstStorageConfig -> CsvAstStorage(storagePath)
+            is DotAstStorageConfig -> DotAstStorage(storagePath, TokenProcessor.Split)
+            is Code2VecPathStorageConfig -> Code2VecPathStorage(storagePath, pathBasedStorageConfig)
         }
     }
 

@@ -3,72 +3,49 @@ package astminer.config
 import astminer.filters.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 
 /**
- * A config for filter that tests files (ParseResult)
+ * Base class for all filter configs. See below
  */
 @Serializable
-sealed class FileFilterConfig {
-    abstract val filter: FileFilter
+sealed class FilterConfig {
+    abstract val serialName: String
 }
 
 /**
  * @see TreeSizeFilter
  */
 @Serializable
-@SerialName("max tree size")
-data class FileTreeSizeFilterConfig(val maxTreeSize: Int) : FileFilterConfig() {
-    @Transient
-    override val filter = TreeSizeFilter(maxTreeSize)
-}
-
-/**
- * A config for filter that tests functions (FunctionInfo)
- */
-@Serializable
-sealed class FunctionFilterConfig {
-    abstract val filter: FunctionFilter
-}
-
-/**
- * @see TreeSizeFilter
- */
-@Serializable
-@SerialName("max tree size")
-data class FunctionTreeSizeFilterConfig(val maxTreeSize: Int) : FunctionFilterConfig() {
-    @Transient
-    override val filter = TreeSizeFilter(maxTreeSize)
+@SerialName("by tree size")
+data class TreeSizeFilterConfig(val maxTreeSize: Int) : FilterConfig() {
+    override val serialName = "by tree size"
 }
 
 /**
  * @see ModifierFilter
  */
 @Serializable
-@SerialName("exclude functions with modifiers")
-data class ModifierFilterConfig(val modifiers: List<String>) : FunctionFilterConfig() {
-    @Transient
-    override val filter = ModifierFilter(modifiers)
+@SerialName("by modifiers")
+data class ModifierFilterConfig(val modifiers: List<String>) : FilterConfig() {
+    override val serialName = "by modifiers"
 }
 
 /**
  * @see AnnotationFilter
  */
 @Serializable
-@SerialName("exclude functions with annotations")
-data class AnnotationFilterConfig(val annotations: List<String>) : FunctionFilterConfig() {
-    @Transient
-    override val filter = AnnotationFilter(annotations)
+@SerialName("by annotations")
+data class AnnotationFilterConfig(val annotations: List<String>) : FilterConfig() {
+    override val serialName = "by annotations"
 }
 
 /**
  * @see ConstructorFilter
  */
 @Serializable
-@SerialName("exclude constructors")
-class ConstructorFilterConfig : FunctionFilterConfig() {
-    @Transient
-    override val filter = ConstructorFilter
+@SerialName("no constructors")
+object ConstructorFilterConfig : FilterConfig() {
+    override val serialName = "no constructors"
 }
 
 /**
@@ -76,17 +53,15 @@ class ConstructorFilterConfig : FunctionFilterConfig() {
  */
 @Serializable
 @SerialName("by function name length")
-data class FunctionNameWordsNumberFilterConfig(val maxWordsNumber: Int) : FunctionFilterConfig() {
-    @Transient
-    override val filter = FunctionNameWordsNumberFilter(maxWordsNumber)
+data class FunctionNameWordsNumberFilterConfig(val maxWordsNumber: Int) : FilterConfig() {
+    override val serialName = "by function name length"
 }
 
 /**
- * @see FunctionAnyNodeWordsNumberFilter
+ * @see WordsNumberFilter
  */
 @Serializable
 @SerialName("by length of any token")
-data class FunctionAnyNodeWordsNumberFilterConfig(val maxWordsNumber: Int) : FunctionFilterConfig() {
-    @Transient
-    override val filter = FunctionAnyNodeWordsNumberFilter(maxWordsNumber)
+data class WordsNumberFilterConfig(val maxWordsNumber: Int) : FilterConfig() {
+    override val serialName = "by length of any token"
 }

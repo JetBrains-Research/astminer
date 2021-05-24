@@ -16,11 +16,11 @@ internal class Code2VecExtractionTest {
 
         val languages = listOf(FileExtension.Java, FileExtension.Python)
 
-        val config = FilePipelineConfig(
+        val config = PipelineConfig(
             inputDir = testDataDir.path,
             outputDir = extractedDataDir.toAbsolutePath().toString(),
             parser = ParserConfig(ParserType.Antlr, languages),
-            problem = FilePathExtractorConfig(),
+            problem = FileNameExtractorConfig,
             storage = Code2VecPathStorageConfig(8, 3)
         )
         Pipeline(config).run()

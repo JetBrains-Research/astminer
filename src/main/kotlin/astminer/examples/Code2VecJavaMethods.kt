@@ -10,11 +10,11 @@ fun code2vecJavaMethods() {
     val folder = "src/test/resources/code2vecPathMining"
     val outputDir = "out_examples/code2vecPathMining"
 
-    val pipelineConfig = FunctionPipelineConfig(
+    val pipelineConfig = PipelineConfig(
         inputDir = folder,
         outputDir = outputDir,
         parser = ParserConfig(ParserType.Antlr, listOf(FileExtension.Java)),
-        problem = FunctionNamePredictionConfig(),
+        problem = FunctionNameProblemConfig,
         storage = Code2VecPathStorageConfig(
             maxPathLength = 5,
             maxPathWidth = 5

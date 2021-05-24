@@ -16,7 +16,7 @@ class FolderNameExtractorTest {
     @Test
     fun `test folder extractor returns null when folder is empty or not found`() {
         val nonEmptyParseResult = ParseResult(dummyRoot, "")
-        val labeledParseResult = FolderExtractor.process(nonEmptyParseResult)
+        val labeledParseResult = FolderNameExtractor.process(nonEmptyParseResult)
 
         assertNull(labeledParseResult)
     }
@@ -24,7 +24,7 @@ class FolderNameExtractorTest {
     @Test
     fun `test folder extractor extracts folder when it is not empty`() {
         val nonEmptyParseResult = ParseResult(dummyRoot, PATH)
-        val labeledParseResult = FolderExtractor.process(nonEmptyParseResult)
+        val labeledParseResult = FolderNameExtractor.process(nonEmptyParseResult)
 
         assertEquals(LabeledResult(dummyRoot, FOLDER, PATH), labeledParseResult)
     }

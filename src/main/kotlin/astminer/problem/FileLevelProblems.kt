@@ -18,7 +18,7 @@ object FilePathExtractor : FileLevelProblem {
 /**
  * Labels files with folder names
  */
-object FolderExtractor : FileLevelProblem {
+object FolderNameExtractor : FileLevelProblem {
     override fun process(parseResult: ParseResult<out Node>): LabeledResult<out Node>? {
         val folderName = File(parseResult.filePath).parentFile?.name ?: return null
         return parseResult.labeledWith(folderName)

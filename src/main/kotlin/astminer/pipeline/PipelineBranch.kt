@@ -4,9 +4,10 @@ import astminer.common.model.FunctionInfo
 import astminer.common.model.LanguageHandler
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
-import astminer.config.FilePipelineConfig
-import astminer.config.FunctionPipelineConfig
-import astminer.problem.LabeledResult
+import astminer.config.*
+import astminer.filters.*
+import astminer.problem.*
+import mu.KotlinLogging
 
 /**
  * PipelineBranch is a part of the pipeline that can be completely different depending on the granularity (pipeline type)
@@ -25,15 +26,30 @@ interface PipelineBranch {
  * PipelineBranch for pipeline with file-level granularity (FilePipelineConfig).
  * Works with files as a whole. Tests parsed files with filters and extracts a label from them.
  */
-class FilePipelineBranch(config: FilePipelineConfig) : PipelineBranch {
-    private val filters = config.filters.map { it.filter }
-    private val problem = config.problem.problem
+class FilePipelineBranch(config: PipelineConfig) : PipelineBranch {
+    private val filters: List<FileFilter> = config.filters.mapNotNull { filterConfig ->
+        when (filterConfig) {
+            is TreeSizeFilterConfig -> TreeSizeFilter(filterConfig.maxTreeSize)
+            is WordsNumberFilterConfig -> WordsNumberFilter(filterConfig.maxWordsNumber)
+            else -> {
+                println("Filter ${filterConfig.serialName} is not supported for this problem")
+                null
+            }
+        }
+    }
 
-    private fun ParseResult<out Node>.passesThroughFilters() = filters.all { filter -> filter.test(this) }
+    private val problem: FileLevelProblem = when (config.problem) {
+        is FileNameExtractorConfig -> FilePathExtractor
+        is FolderNameExtractorConfig -> FolderNameExtractor
+        else -> throw ProblemNotFoundException(Granularity.File, "FilePipelineBranch")
+    }
+
+    private fun passesThroughFilters(parseResult: ParseResult<out Node>) =
+        filters.all { filter -> filter.validate(parseResult) }
 
     override fun process(languageHandler: LanguageHandler<out Node>): Sequence<LabeledResult<out Node>> {
         val parseResult = languageHandler.parseResult
-        return if (parseResult.passesThroughFilters()) {
+        return if (passesThroughFilters(parseResult)) {
             val labeledResult = problem.process(parseResult) ?: return emptySequence()
             sequenceOf(labeledResult)
         } else {
@@ -47,14 +63,43 @@ class FilePipelineBranch(config: FilePipelineConfig) : PipelineBranch {
  * Extracts functions from the parsed files.
  * Then tests functions with filters, processes them and extracts labels from each function.
  */
-class FunctionPipelineBranch(config: FunctionPipelineConfig) : PipelineBranch {
-    private val filters = config.filters.map { it.filter }
-    private val problem = config.problem.problem
+class FunctionPipelineBranch(config: PipelineConfig) :
+    PipelineBranch {
+    private val filters: List<FunctionFilter> = config.filters.mapNotNull { filterConfig ->
+        when (filterConfig) {
+            is TreeSizeFilterConfig -> TreeSizeFilter(filterConfig.maxTreeSize)
+            is WordsNumberFilterConfig -> WordsNumberFilter(filterConfig.maxWordsNumber)
+            is ModifierFilterConfig -> ModifierFilter(filterConfig.modifiers)
+            is AnnotationFilterConfig -> AnnotationFilter(filterConfig.annotations)
+            is ConstructorFilterConfig -> ConstructorFilter
+            is FunctionNameWordsNumberFilterConfig -> FunctionNameWordsNumberFilter(filterConfig.maxWordsNumber)
+            else -> {
+                println("Filter ${filterConfig.serialName} is not supported for this problem")
+                null
+            }
+        }
+    }
 
-    private fun FunctionInfo<out Node>.passesThroughFilters() = filters.all { filter -> filter.test(this) }
+    private val problem: FunctionLevelProblem = when (config.problem) {
+        is FunctionNameProblemConfig -> FunctionNameProblem
+        else -> throw ProblemNotFoundException(Granularity.Function, "FunctionPipelineBranch")
+    }
+
+    private fun passesThroughFilters(functionInfo: FunctionInfo<out Node>) =
+        filters.all { filter -> filter.validate(functionInfo) }
 
     override fun process(languageHandler: LanguageHandler<out Node>): Sequence<LabeledResult<out Node>> =
         languageHandler.splitIntoFunctions().asSequence()
-            .filter { functionInfo -> functionInfo.passesThroughFilters() }
+            .filter { functionInfo -> passesThroughFilters(functionInfo) }
             .mapNotNull { functionInfo -> problem.process(functionInfo) }
 }
+
+/**
+ * This exception is thrown when problem granularity is implemented incorrectly or the problem is not specified
+ * inside the correct pipeline branch.
+ */
+class ProblemNotFoundException(granularity: Granularity, branchName: String) :
+    IllegalStateException(
+        "The specified problem with granularity $granularity is not implemented inside of branch $branchName. " +
+                "This should never happen!"
+    )

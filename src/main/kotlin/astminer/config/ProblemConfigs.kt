@@ -3,50 +3,44 @@ package astminer.config
 import astminer.problem.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 
 /**
- * A config for problem that processes and extracts label from files
+ * Problems that have [File] granularity process and extract labels from *whole files*.
+ * Problems that have [Function] granularity process and extract labels from *functions* (that are collected from files).
  */
+enum class Granularity {
+    File,
+    Function
+}
+
 @Serializable
-sealed class FileProblemConfig {
-    abstract val problem: FileLevelProblem
+sealed class ProblemConfig {
+    abstract val granularity: Granularity
 }
 
 /**
  * @see FilePathExtractor
  */
 @Serializable
-@SerialName("label with filepath")
-class FilePathExtractorConfig : FileProblemConfig() {
-    @Transient
-    override val problem = FilePathExtractor
+@SerialName("file name")
+object FileNameExtractorConfig : ProblemConfig() {
+    override val granularity = Granularity.File
 }
 
 /**
- * @see FolderExtractor
+ * @see FolderNameExtractor
  */
 @Serializable
-@SerialName("label with folder name")
-class FolderNameExtractorConfig : FileProblemConfig() {
-    @Transient
-    override val problem = FolderExtractor
-}
-
-/**
- * A config for problem that processes and extracts label from functions
- */
-@Serializable
-sealed class FunctionProblemConfig {
-    abstract val problem: FunctionLevelProblem
+@SerialName("folder name")
+object FolderNameExtractorConfig : ProblemConfig() {
+    override val granularity = Granularity.File
 }
 
 /**
  * @see FunctionNameProblem
  */
 @Serializable
-@SerialName("function name prediction")
-class FunctionNamePredictionConfig : FunctionProblemConfig() {
-    @Transient
-    override val problem = FunctionNameProblem
+@SerialName("function name")
+object FunctionNameProblemConfig : ProblemConfig() {
+    override val granularity = Granularity.Function
 }

@@ -13,27 +13,18 @@ import kotlinx.serialization.Transient
 sealed class StorageConfig
 
 /**
- * Format in which the ASTs should be saved
- * [Dot] is for [astminer.storage.ast.DotAstStorage]
- * [Csv] is for [astminer.storage.ast.CsvAstStorage]
+ * @see astminer.storage.ast.CsvAstStorage
  */
 @Serializable
-enum class AstStorageFormat {
-    @SerialName("dot")
-    Dot,
-    @SerialName("csv")
-    Csv
-}
+@SerialName("CsvAST")
+object CsvAstStorageConfig : StorageConfig()
 
 /**
- * Config for [astminer.storage.ast.DotAstStorage] [astminer.storage.ast.CsvAstStorage]
+ * @see astminer.storage.ast.DotAstStorage
  */
 @Serializable
-@SerialName("ast")
-data class AstStorageConfig(
-    val format: AstStorageFormat,
-    val splitTokens: Boolean = false
-) : StorageConfig()
+@SerialName("DotAST")
+object DotAstStorageConfig : StorageConfig()
 
 /**
  * Config for [astminer.storage.path.Code2VecPathStorage]

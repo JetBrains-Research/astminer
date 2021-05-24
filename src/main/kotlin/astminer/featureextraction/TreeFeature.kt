@@ -52,8 +52,6 @@ object NumberOfNodes : TreeFeature<Int> {
     }
 }
 
-fun Node.treeSize() = NumberOfNodes.compute(this)
-
 /**
  * Tree feature for computing list of all node tokens from a given tree.
  */
