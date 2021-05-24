@@ -125,12 +125,11 @@ class MethodNameExtractor(
 ) : MethodLabelExtractor(filterPredicates, javaParser, pythonParser) {
 
     override fun <T : Node> extractLabel(functionInfo: FunctionInfo<T>, filePath: String): String? {
-        // TODO: the normalization situation is getting out of control. It should be a separate step in the pipeline
         val normalizedName = functionInfo.nameNode?.normalizedToken
-        val name = functionInfo.name ?: return null
+        functionInfo.name ?: return null
 
         functionInfo.root.preOrder().forEach { node ->
-            if (node.token == name) node.technicalToken = SELF_CALL_TOKEN
+            if (node.originalToken == functionInfo.nameNode?.originalToken) node.technicalToken = SELF_CALL_TOKEN
         }
         functionInfo.nameNode?.technicalToken = METHOD_NAME_TOKEN
         return normalizedName
