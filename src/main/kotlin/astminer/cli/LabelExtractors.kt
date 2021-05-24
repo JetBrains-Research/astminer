@@ -3,7 +3,6 @@ package astminer.cli
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
 import astminer.common.model.FunctionInfo
-import astminer.common.setTechnicalToken
 import astminer.parse.antlr.AntlrNode
 import astminer.parse.antlr.java.JavaFunctionSplitter
 import astminer.parse.antlr.javascript.JavaScriptFunctionSplitter
@@ -13,7 +12,6 @@ import astminer.parse.fuzzy.cpp.FuzzyNode
 import astminer.parse.gumtree.GumTreeNode
 import astminer.parse.gumtree.java.GumTreeJavaFunctionSplitter
 import astminer.parse.gumtree.python.GumTreePythonFunctionSplitter
-import astminer.storage.TokenProcessor
 import java.io.File
 
 
@@ -127,16 +125,18 @@ class MethodNameExtractor(
 ) : MethodLabelExtractor(filterPredicates, javaParser, pythonParser) {
 
     override fun <T : Node> extractLabel(functionInfo: FunctionInfo<T>, filePath: String): String? {
-        // TODO: the normalization situation is getting out of control. It should be a separate step in the pipeline
-        val normalizedName = functionInfo.nameNode?.let { TokenProcessor.Normalize.getPresentableToken(it) }
-        val name = functionInfo.name ?: return null
+        val normalizedName = functionInfo.nameNode?.normalizedToken
+        functionInfo.name ?: return null
 
         functionInfo.root.preOrder().forEach { node ->
-            if (node.token == name) {
-                node.setTechnicalToken("SELF")
-            }
+            if (node.originalToken == functionInfo.nameNode?.originalToken) node.technicalToken = SELF_CALL_TOKEN
         }
-        functionInfo.nameNode?.setTechnicalToken("METHOD_NAME")
+        functionInfo.nameNode?.technicalToken = METHOD_NAME_TOKEN
         return normalizedName
+    }
+
+    companion object {
+        const val METHOD_NAME_TOKEN = "METHOD_NAME"
+        const val SELF_CALL_TOKEN = "SELF"
     }
 }

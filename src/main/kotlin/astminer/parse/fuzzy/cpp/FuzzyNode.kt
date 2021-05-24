@@ -1,16 +1,19 @@
 package astminer.parse.fuzzy.cpp
 
-import astminer.common.DEFAULT_TOKEN
 import astminer.common.model.Node
 import com.google.common.collect.TreeMultiset
 
 /**
  * Node for AST, created by fuzzyc2cpg.
  * @param typeLabel - node's label
- * @param token - node's token
+ * @param originalToken - node's token
  * @param order - node's order, which used to express the ordering of children in the AST when it matters
  */
-class FuzzyNode(override val typeLabel: String,token: String?, order: Int?) : Node() {
+class FuzzyNode(
+    override val typeLabel: String,
+    override val originalToken: String?,
+    order: Int?
+) : Node() {
     private val order = order ?: -1
     override var parent: Node? = null
     private val childrenMultiset = TreeMultiset.create<FuzzyNode>(compareBy(
@@ -20,8 +23,6 @@ class FuzzyNode(override val typeLabel: String,token: String?, order: Int?) : No
 
     override val children
     get() = childrenMultiset.toList()
-
-    override var token: String = token ?: DEFAULT_TOKEN
 
     fun addChild(node: FuzzyNode) {
         childrenMultiset.add(node)

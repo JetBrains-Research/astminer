@@ -4,7 +4,6 @@ import astminer.storage.ast.CsvAstStorage
 import astminer.storage.ast.DotAstStorage
 import astminer.common.getProjectFilesWithExtension
 import astminer.storage.Storage
-import astminer.storage.TokenProcessor
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.int
@@ -102,10 +101,7 @@ class ProjectParser(private val customLabelExtractor: LabelExtractor? = null) : 
     private fun getStorage(storageType: String, directoryPath: String): Storage {
         return when (storageType) {
             "csv" -> CsvAstStorage(directoryPath)
-            "dot" -> DotAstStorage(
-                directoryPath,
-                if (isTokenSplitted) TokenProcessor.Split else TokenProcessor.Normalize
-            )
+            "dot" -> DotAstStorage(directoryPath)
             else -> {
                 throw UnsupportedOperationException("Unsupported AST storage $storageType")
             }

@@ -1,6 +1,5 @@
 package astminer.cli
 
-import astminer.common.getTechnicalToken
 import astminer.common.model.*
 import astminer.parse.antlr.AntlrNode
 import org.junit.Before
@@ -65,6 +64,6 @@ internal class LabelExtractorTest {
         val functionInfo = makeFunctionInfo(nameNode)
         val methodNameExtractor = MethodNameExtractor()
         methodNameExtractor.extractLabel(functionInfo, PATH_STRING)
-        assertEquals("METHOD_NAME", nameNode.getTechnicalToken())
+        assertEquals("METHOD_NAME", nameNode.technicalToken)
     }
 }

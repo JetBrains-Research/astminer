@@ -56,7 +56,7 @@ class GumTreePythonFunctionInfo(override val root: GumTreeNode) : FunctionInfo<G
         val enclosing = findEnclosingClass() ?: return null
         return EnclosingElement(
             type = EnclosingElementType.Class,
-            name = enclosing.token,
+            name = enclosing.originalToken,
             root = enclosing
         )
     }
@@ -77,8 +77,8 @@ class GumTreePythonFunctionInfo(override val root: GumTreeNode) : FunctionInfo<G
         }
         return params.map { node->
             FunctionInfoParameter(
-                name = node.token,
-                type = getElementType(node)?.token
+                name = node.originalToken,
+                type = getElementType(node)?.originalToken
             )
         }
     }

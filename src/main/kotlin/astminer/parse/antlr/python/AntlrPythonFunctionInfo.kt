@@ -50,11 +50,8 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode) : FunctionInfo<Antlr
 
     private fun assembleMethodInfoParameter(parameterNode: AntlrNode): FunctionInfoParameter {
         val parameterHaveNoDefaultOrType = parameterNode.hasLastLabel(PARAMETER_NAME_NODE)
-        val parameterName = if (parameterHaveNoDefaultOrType) {
-            parameterNode.token
-        } else {
-            parameterNode.getChildOfType(PARAMETER_NAME_NODE)?.token
-        }
+        val parameterName = if (parameterHaveNoDefaultOrType) parameterNode.originalToken
+                            else parameterNode.getChildOfType(PARAMETER_NAME_NODE)?.originalToken
         require(parameterName != null) { "Method name was not found" }
 
         val parameterType = parameterNode.getChildOfType(PARAMETER_TYPE_NODE)?.getTokensFromSubtree()
@@ -82,7 +79,7 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode) : FunctionInfo<Antlr
             EnclosingElementType.Class -> enclosingNode.getChildOfType(CLASS_NAME_NODE)
             EnclosingElementType.Method, EnclosingElementType.Function -> enclosingNode.getChildOfType(FUNCTION_NAME_NODE)
             else -> throw IllegalStateException("Enclosing node can only be function or class")
-        }?.token
+        }?.originalToken
         return EnclosingElement(
             type = type,
             name = name,

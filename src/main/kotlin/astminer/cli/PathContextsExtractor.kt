@@ -113,7 +113,7 @@ class PathContextsExtractor(private val customLabelExtractor: LabelExtractor? = 
             
             val outputDirForLanguage = outputDir.resolve(extension)
             outputDirForLanguage.mkdir()
-            val storage = Code2VecPathStorage(outputDirForLanguage.path, storageConfig, TokenProcessor.Split)
+            val storage = Code2VecPathStorage(outputDirForLanguage.path, storageConfig)
 
             val files = getProjectFilesWithExtension(File(projectRoot), extension)
             parser.parseFiles(files) { parseResult ->

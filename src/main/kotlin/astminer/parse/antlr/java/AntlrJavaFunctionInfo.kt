@@ -37,7 +37,7 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNo
         val enclosingClassNode = root.findEnclosingElementBy { it.hasLastLabel(CLASS_DECLARATION_NODE) } ?: return null
         return EnclosingElement(
             type = EnclosingElementType.Class,
-            name = enclosingClassNode.getChildOfType(CLASS_NAME_NODE)?.token,
+            name = enclosingClassNode.getChildOfType(CLASS_NAME_NODE)?.originalToken,
             root = enclosingClassNode
         )
     }
@@ -59,7 +59,7 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNo
         val returnTypeNode = parameterNode.getChildOfType(PARAMETER_RETURN_TYPE_NODE)
         val returnTypeToken = returnTypeNode?.getTokensFromSubtree()
 
-        val parameterName = parameterNode.getChildOfType(PARAMETER_NAME_NODE)?.token
+        val parameterName = parameterNode.getChildOfType(PARAMETER_NAME_NODE)?.originalToken
             ?: throw IllegalStateException("Parameter name wasn't found")
 
         return FunctionInfoParameter(parameterName, returnTypeToken)

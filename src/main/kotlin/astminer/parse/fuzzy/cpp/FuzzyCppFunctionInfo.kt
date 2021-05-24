@@ -30,7 +30,7 @@ class FuzzyCppFunctionInfo(override val root: FuzzyNode): FunctionInfo<FuzzyNode
     }
 
     private fun collectReturnType(): String? {
-        return root.getChildOfType(METHOD_RETURN_NODE)?.getChildOfType(METHOD_RETURN_TYPE_NODE)?.token
+        return root.getChildOfType(METHOD_RETURN_NODE)?.getChildOfType(METHOD_RETURN_TYPE_NODE)?.originalToken
     }
 
     private fun collectEnclosingClass(): EnclosingElement<FuzzyNode>? {
@@ -48,14 +48,14 @@ class FuzzyCppFunctionInfo(override val root: FuzzyNode): FunctionInfo<FuzzyNode
     }
 
     private fun findEnclosingClassName(enclosingClass: FuzzyNode): String? {
-        return enclosingClass.getChildOfType(CLASS_NAME_NODE)?.token
+        return enclosingClass.getChildOfType(CLASS_NAME_NODE)?.originalToken
     }
 
     private fun collectParameters(): List<FunctionInfoParameter> {
         val parameters = root.getChildrenOfType(METHOD_PARAMETER_NODE)
         return parameters.map { param ->
-            val type = param.getChildOfType(PARAMETER_TYPE_NODE)?.token
-            val name = param.getChildOfType(PARAMETER_NAME_NODE)?.token ?: ""
+            val type = param.getChildOfType(PARAMETER_TYPE_NODE)?.originalToken
+            val name = param.getChildOfType(PARAMETER_NAME_NODE)?.originalToken ?: ""
             FunctionInfoParameter(name, type)
         }
     }
