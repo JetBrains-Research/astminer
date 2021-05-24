@@ -46,23 +46,8 @@ interface Parser<T : Node> {
      * @return ParseResult instance
      */
     fun parseFile(file: File) = ParseResult(parseInputStream(file.inputStream()), file.path)
-
-    /**
-     * Parse list of files.
-     * @param files files to parse
-     * @param handleResult handler to invoke on each file parse result
-     */
-    // TODO: this function should be removed. it is only used in tests and examples
-    @Deprecated("Use getHandlerFactory instead")
-    fun parseFiles(files: List<File>, handleResult: (ParseResult<T>) -> Any?) {
-        for (file in files) {
-            handleResult(parseFile(file))
-        }
-    }
 }
 
 data class ParseResult<T : Node>(val root: T, val filePath: String) {
     fun labeledWith(label: String): LabeledResult<T> = LabeledResult(root, label, filePath)
-
-    fun labeledWithFilePath(): LabeledResult<T> = labeledWith(filePath)
 }

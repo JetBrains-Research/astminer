@@ -37,7 +37,6 @@ class Pipeline(private val config: PipelineConfig) {
 
     private fun createStorage(extension: FileExtension): Storage = with(config.storage) {
         val storagePath = createStorageDirectory(extension).path
-
         when (this) {
             is CsvAstStorageConfig -> CsvAstStorage(storagePath)
             is DotAstStorageConfig -> DotAstStorage(storagePath, TokenProcessor.Split)
