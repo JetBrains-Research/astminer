@@ -3,7 +3,6 @@ package astminer.cli
 import astminer.common.getProjectFilesWithExtension
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
-import astminer.storage.*
 import astminer.storage.path.Code2VecPathStorage
 import astminer.storage.path.PathBasedStorageConfig
 import com.github.ajalt.clikt.core.CliktCommand
@@ -139,14 +138,8 @@ class Code2VecExtractor(private val customLabelExtractor: LabelExtractor? = null
         for (extension in extensions) {
             val outputDirForLanguage = outputDir.resolve(extension)
             outputDirForLanguage.mkdir()
-            // Choose how to process tokens
-            val tokenProcessor = if (isTokenSplitted) {
-                TokenProcessor.Split
-            } else {
-                TokenProcessor.Normalize
-            }
             // Choose type of storage
-            val storage = Code2VecPathStorage(outputDirForLanguage.path, storageConfig, tokenProcessor)
+            val storage = Code2VecPathStorage(outputDirForLanguage.path, storageConfig)
             // Choose type of parser
             val parser = getParser(
                 extension,

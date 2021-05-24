@@ -7,7 +7,6 @@ import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
 import astminer.paths.toPathContext
 import astminer.storage.Storage
-import astminer.storage.TokenProcessor
 import java.io.File
 import java.io.PrintWriter
 
@@ -33,12 +32,10 @@ data class PathBasedStorageConfig(
  * Base class for all path storages. Extracts paths from given LabellingResult and stores it in a specified format.
  * @property outputDirectoryPath The path to the output directory.
  * @property config The config that contains hyperparameters for path extraction.
- * @property tokenProcessor The token processor that is used to extract tokens from nodes.
  */
 abstract class PathBasedStorage(
     final override val outputDirectoryPath: String,
     private val config: PathBasedStorageConfig,
-    private val tokenProcessor: TokenProcessor
 ) : Storage {
 
     private val pathMiner = PathMiner(PathRetrievalSettings(config.maxPathLength, config.maxPathWidth))
@@ -58,8 +55,6 @@ abstract class PathBasedStorage(
     }
 
     abstract fun pathContextIdsToString(pathContextIds: List<PathContextId>, label: String): String
-
-    private fun Node.getPresentableToken(): String = tokenProcessor.getPresentableToken(this)
 
     private fun dumpPathContexts(labeledPathContextIds: LabeledPathContextIds<String>) {
         val pathContextIdsString = labeledPathContextIds.pathContexts.filter {
@@ -91,7 +86,7 @@ abstract class PathBasedStorage(
     private fun retrieveLabeledPathContexts(labeledResult: LabeledResult<out Node>): LabeledPathContexts<String> {
         val paths = retrievePaths(labeledResult.root)
         return LabeledPathContexts(labeledResult.label, paths.map { astPath ->
-            toPathContext(astPath) { node -> node.getPresentableToken() }
+            toPathContext(astPath) { it.token }
         })
     }
 
@@ -121,7 +116,13 @@ abstract class PathBasedStorage(
             orientedNodeToCsvString,
             File("$outputDirectoryPath/node_types.csv")
         )
-        dumpIdStorageToCsv(pathsMap, "path", pathToCsvString, File("$outputDirectoryPath/paths.csv"), config.maxPaths)
+        dumpIdStorageToCsv(
+            pathsMap,
+            "path",
+            pathToCsvString,
+            File("$outputDirectoryPath/paths.csv"),
+            config.maxPaths
+        )
 
         labeledPathContextIdsWriter.close()
     }

@@ -25,7 +25,7 @@ fun allJavaMethods() {
     val inputDir = "src/test/resources/gumTreeMethodSplitter"
 
     val outputDir = "out_examples/allJavaMethods"
-    val storage = Code2VecPathStorage(outputDir, PathBasedStorageConfig(5, 5), TokenProcessor.Split)
+    val storage = Code2VecPathStorage(outputDir, PathBasedStorageConfig(5, 5))
 
     File(inputDir).forFilesWithSuffix(".java") { file ->
         //parse file

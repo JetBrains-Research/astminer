@@ -1,27 +1,6 @@
 package astminer.common
 
-import astminer.common.model.Node
-import astminer.storage.TokenProcessor
-import java.util.ArrayList
-
-
-const val DEFAULT_TOKEN = "EMPTY_TOKEN"
-const val TECHNICAL_TOKEN_KEY = "technical_token"
-
-/**
- * Sets a node's technical token.
- * Technical tokens do not have to represent original tokens.
- * @see TokenProcessor and how it treats technical tokens
- */
-fun Node.setTechnicalToken(token: String) {
-    metadata[TECHNICAL_TOKEN_KEY] = token
-}
-
-/**
- * Get a node's technical token.
- * @see setTechnicalToken for more
- */
-fun Node.getTechnicalToken(): String? = metadata[TECHNICAL_TOKEN_KEY]?.toString()
+const val DEFAULT_TOKEN = "EMPTY"
 
 /**
  * The function was adopted from the original code2vec implementation in order to match their behavior:
