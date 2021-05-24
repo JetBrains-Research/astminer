@@ -24,6 +24,11 @@ interface PipelineBranch {
 
 private val logger = KotlinLogging.logger("PipelineBranch")
 
+private fun filterNotSupported(filterConfig: FilterConfig) {
+    println("Filter `${filterConfig.serialName}` is not supported for this problem")
+    logger.info { "Filter `${filterConfig.serialName}` is not supported for this problem" }
+}
+
 /**
  * PipelineBranch for pipeline with file-level granularity (FilePipelineConfig).
  * Works with files as a whole. Tests parsed files with filters and extracts a label from them.
@@ -34,8 +39,7 @@ class FilePipelineBranch(config: PipelineConfig) : PipelineBranch {
             is TreeSizeFilterConfig -> TreeSizeFilter(filterConfig.maxTreeSize)
             is WordsNumberFilterConfig -> WordsNumberFilter(filterConfig.maxTokenWordsNumber)
             else -> {
-                println("Filter `${filterConfig.serialName}` is not supported for this problem")
-                logger.info { "Filter `${filterConfig.serialName}` is not supported for this problem" }
+                filterNotSupported(filterConfig)
                 null
             }
         }
@@ -76,8 +80,7 @@ class FunctionPipelineBranch(config: PipelineConfig) : PipelineBranch {
             is ConstructorFilterConfig -> ConstructorFilter
             is FunctionNameWordsNumberFilterConfig -> FunctionNameWordsNumberFilter(filterConfig.maxWordsNumber)
             else -> {
-                println("Filter `${filterConfig.serialName}` is not supported for this problem")
-                logger.info { "Filter `${filterConfig.serialName}` is not supported for this problem" }
+                filterNotSupported(filterConfig)
                 null
             }
         }
