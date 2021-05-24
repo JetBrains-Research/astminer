@@ -51,7 +51,7 @@ class FunctionNameProblemTest {
     @Test
     fun `test function name problem should hide recursive call tokens with SELF`() {
         FunctionNameProblem.process(functionInfo)
-        val recursiveCallNode = functionInfo.root.getChildren().firstOrNull()?.getChildren()?.firstOrNull()
+        val recursiveCallNode = functionInfo.root.children.firstOrNull()?.children?.firstOrNull()
         assertEquals("SELF", recursiveCallNode?.getTechnicalToken())
     }
 }

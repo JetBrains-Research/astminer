@@ -2,7 +2,6 @@ package astminer.problem
 
 import astminer.common.model.FunctionInfo
 import astminer.common.model.Node
-import astminer.common.preOrder
 import astminer.common.setTechnicalToken
 
 interface FunctionLevelProblem {
@@ -20,7 +19,7 @@ object FunctionNameProblem : FunctionLevelProblem {
     override fun process(functionInfo: FunctionInfo<out Node>): LabeledResult<out Node>? {
         val name = functionInfo.name ?: return null
         functionInfo.root.preOrder().forEach { node ->
-            if (node.getToken() == name) {
+            if (node.token == name) {
                 node.setTechnicalToken(TECHNICAL_RECURSIVE_CALL)
             }
         }

@@ -89,7 +89,7 @@ class FunctionFiltersTest {
     fun `test WordsNumberFilter for 2 should exclude function that has a child of 3 words`() {
         val root = AntlrNode("", null, "word")
         val child = AntlrNode("", root, "wordWordWord")
-        root.setChildren(listOf(child))
+        root.replaceChildren(listOf(child))
 
         val functionInfo = object : FunctionInfo<Node> {
             override val root = root

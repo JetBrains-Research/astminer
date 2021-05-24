@@ -5,7 +5,10 @@ import astminer.common.model.Node
 import astminer.common.model.ParseResult
 
 
-class DummyNode(override val typeLabel: String, override val children: MutableList<DummyNode>) : Node() {
+class DummyNode(
+    override val typeLabel: String,
+    override val children: MutableList<DummyNode> = mutableListOf()
+) : Node() {
 
     //TODO("not implemented")
     override val parent: Node? = null
