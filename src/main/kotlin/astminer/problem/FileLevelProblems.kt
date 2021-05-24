@@ -11,8 +11,10 @@ interface FileLevelProblem {
 /**
  * Labels files with folder names
  */
-object FilePathExtractor : FileLevelProblem {
-    override fun process(parseResult: ParseResult<out Node>): LabeledResult<out Node> = parseResult.labeledWithFilePath()
+object FileNameExtractor : FileLevelProblem {
+    override fun process(parseResult: ParseResult<out Node>): LabeledResult<out Node> =
+        parseResult.labeledWith(File(parseResult.filePath).name)
+
 }
 
 /**

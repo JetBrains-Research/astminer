@@ -7,7 +7,6 @@ import astminer.common.model.ParseResult
 import astminer.config.*
 import astminer.filters.*
 import astminer.problem.*
-import mu.KotlinLogging
 
 /**
  * PipelineBranch is a part of the pipeline that can be completely different depending on the granularity (pipeline type)
@@ -39,7 +38,7 @@ class FilePipelineBranch(config: PipelineConfig) : PipelineBranch {
     }
 
     private val problem: FileLevelProblem = when (config.problem) {
-        is FileNameExtractorConfig -> FilePathExtractor
+        is FileNameExtractorConfig -> FileNameExtractor
         is FolderNameExtractorConfig -> FolderNameExtractor
         else -> throw ProblemNotFoundException(Granularity.File, "FilePipelineBranch")
     }
@@ -63,8 +62,7 @@ class FilePipelineBranch(config: PipelineConfig) : PipelineBranch {
  * Extracts functions from the parsed files.
  * Then tests functions with filters, processes them and extracts labels from each function.
  */
-class FunctionPipelineBranch(config: PipelineConfig) :
-    PipelineBranch {
+class FunctionPipelineBranch(config: PipelineConfig) : PipelineBranch {
     private val filters: List<FunctionFilter> = config.filters.mapNotNull { filterConfig ->
         when (filterConfig) {
             is TreeSizeFilterConfig -> TreeSizeFilter(filterConfig.maxTreeSize)

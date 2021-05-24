@@ -19,7 +19,7 @@ sealed class ProblemConfig {
 }
 
 /**
- * @see FilePathExtractor
+ * @see FileNameExtractor
  */
 @Serializable
 @SerialName("file name")
