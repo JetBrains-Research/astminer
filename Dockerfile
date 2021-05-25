@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y g++
 # Install PythonParser for GumTree
 ARG PYTHONPARSER_REPO=https://raw.githubusercontent.com/JetBrains-Research/pythonparser/master
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends -y python3.8 python3-pip git wget && \
+    apt-get install -y python3.8 python3-pip git wget && \
     mkdir pythonparser && \
     cd pythonparser && \
     wget $PYTHONPARSER_REPO/requirements.txt && \
@@ -27,4 +27,4 @@ COPY . .
 # Prepare shadow jar
 RUN ./gradlew shadowJar
 
-CMD ["java", "-jar", "build/shadow/astminer.jar"]
+ENTRYPOINT ["java", "-jar", "build/shadow/astminer.jar"]
