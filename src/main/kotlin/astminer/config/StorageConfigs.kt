@@ -1,6 +1,5 @@
 package astminer.config
 
-import astminer.storage.TokenProcessor
 import astminer.storage.path.PathBasedStorageConfig
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -37,7 +36,6 @@ data class Code2VecPathStorageConfig(
     val maxTokens: Long? = null,
     val maxPaths: Long? = null,
     val maxPathContextsPerEntity: Int? = null,
-    val tokenProcessor: TokenProcessor = TokenProcessor.Normalize
 ) : StorageConfig() {
     @Transient
     val pathBasedStorageConfig =

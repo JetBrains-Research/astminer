@@ -2,7 +2,6 @@ package astminer.problem
 
 import astminer.common.model.FunctionInfo
 import astminer.common.model.Node
-import astminer.common.setTechnicalToken
 
 interface FunctionLevelProblem {
     fun process(functionInfo: FunctionInfo<out Node>): LabeledResult<out Node>?
@@ -13,17 +12,17 @@ interface FunctionLevelProblem {
  * Hides the name of the function in the subtree and also all in the recursive calls.
  */
 object FunctionNameProblem : FunctionLevelProblem {
-    const val TECHNICAL_METHOD_NAME = "METHOD_NAME"
-    const val TECHNICAL_RECURSIVE_CALL = "SELF"
+    const val HIDDEN_METHOD_NAME_TOKEN = "METHOD_NAME"
+    const val RECURSIVE_CALL_TOKEN = "SELF"
 
     override fun process(functionInfo: FunctionInfo<out Node>): LabeledResult<out Node>? {
-        val name = functionInfo.name ?: return null
+        val normalizedName = functionInfo.nameNode?.normalizedToken ?: return null
         functionInfo.root.preOrder().forEach { node ->
-            if (node.token == name) {
-                node.setTechnicalToken(TECHNICAL_RECURSIVE_CALL)
+            if (node.originalToken == functionInfo.name) {
+                node.technicalToken = RECURSIVE_CALL_TOKEN
             }
         }
-        functionInfo.nameNode?.setTechnicalToken(TECHNICAL_METHOD_NAME)
-        return LabeledResult(functionInfo.root, name, functionInfo.filePath)
+        functionInfo.nameNode?.technicalToken = HIDDEN_METHOD_NAME_TOKEN
+        return LabeledResult(functionInfo.root, normalizedName, functionInfo.filePath)
     }
 }

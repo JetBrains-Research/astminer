@@ -2,12 +2,9 @@ package astminer.pipeline
 
 import astminer.common.getProjectFilesWithExtension
 import astminer.config.*
-import astminer.filters.ModifierFilter
-import astminer.filters.TreeSizeFilter
 import astminer.parse.ParsingException
 import astminer.parse.getHandlerFactory
 import astminer.storage.Storage
-import astminer.storage.TokenProcessor
 import astminer.storage.ast.CsvAstStorage
 import astminer.storage.ast.DotAstStorage
 import astminer.storage.path.Code2VecPathStorage
@@ -39,7 +36,7 @@ class Pipeline(private val config: PipelineConfig) {
         val storagePath = createStorageDirectory(extension).path
         when (this) {
             is CsvAstStorageConfig -> CsvAstStorage(storagePath)
-            is DotAstStorageConfig -> DotAstStorage(storagePath, TokenProcessor.Split)
+            is DotAstStorageConfig -> DotAstStorage(storagePath)
             is Code2VecPathStorageConfig -> Code2VecPathStorage(storagePath, pathBasedStorageConfig)
         }
     }
