@@ -19,7 +19,7 @@ public class AllJavaFiles {
 
     public static void runExample() {
         final PathBasedStorageConfig config = new PathBasedStorageConfig(5, 5, null, null, null);
-        final PathBasedStorage pathStorage = new Code2VecPathStorage(OUTPUT_FOLDER, config, TokenProcessor.Normalize);
+        final PathBasedStorage pathStorage = new Code2VecPathStorage(OUTPUT_FOLDER, config);
 
         final Path inputFolder = Paths.get(INPUT_FOLDER);
 

@@ -1,28 +1,38 @@
 package astminer.common.model
 
 import astminer.problem.LabeledResult
+import astminer.common.DEFAULT_TOKEN
+import astminer.common.splitToSubtokens
 import java.io.File
 import java.io.InputStream
 import java.util.*
-import kotlin.collections.HashMap
 
-abstract class Node{
+
+abstract class Node {
     abstract val typeLabel: String
     abstract val children: List<Node>
     abstract val parent: Node?
-    abstract val token: String
+    abstract val originalToken: String?
+
+    val normalizedToken: String? by lazy {
+        originalToken?.let {
+            val subtokens = splitToSubtokens(it)
+            if (subtokens.isEmpty()) null
+            else subtokens.joinToString("|")
+        }
+    }
+    var technicalToken: String? = null
+
+    val token: String
+        get() = listOfNotNull(technicalToken, normalizedToken, originalToken).firstOrNull() ?: DEFAULT_TOKEN
 
     val metadata: MutableMap<String, Any> = HashMap()
     fun isLeaf() = children.isEmpty()
 
+    override fun toString(): String = "$typeLabel : $token"
     fun prettyPrint(indent: Int = 0, indentSymbol: String = "--") {
         repeat(indent) { print(indentSymbol) }
-        print(typeLabel)
-        if (token.isNotEmpty()) {
-            println(" : $token")
-        } else {
-            println()
-        }
+        println(this)
         children.forEach { it.prettyPrint(indent + 1, indentSymbol) }
     }
 

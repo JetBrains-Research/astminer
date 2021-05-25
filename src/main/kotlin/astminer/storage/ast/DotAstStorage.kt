@@ -4,7 +4,6 @@ import astminer.problem.LabeledResult
 import astminer.common.model.Node
 import astminer.common.storage.RankedIncrementalIdStorage
 import astminer.storage.Storage
-import astminer.storage.TokenProcessor
 import java.io.File
 import java.io.PrintWriter
 
@@ -12,10 +11,7 @@ import java.io.PrintWriter
  * Stores multiple ASTs in dot format (https://en.wikipedia.org/wiki/DOT_(graph_description_language))
  * Output consist of separate .dot files for each AST and one full description in .csv format
  */
-class DotAstStorage(
-    override val outputDirectoryPath: String,
-    val tokenProcessor: TokenProcessor = TokenProcessor.Normalize
-) : Storage {
+class DotAstStorage(override val outputDirectoryPath: String) : Storage {
 
     internal data class FilePath(val parentPath: String, val fileName: String)
 
@@ -34,8 +30,6 @@ class DotAstStorage(
         descriptionFileStream.write("dot_file,source_file,label,node_id,token,type\n")
     }
 
-    private fun Node.getPresentableToken(): String = tokenProcessor.getPresentableToken(this)
-
     override fun store(labeledResult: LabeledResult<out Node>) {
         // Use filename as a label for ast
         // TODO: save full signature for method
@@ -48,7 +42,7 @@ class DotAstStorage(
             descriptionFileStream.write(
                 nodeDescriptionFormat.format(
                     nodesMap.getId(node) - 1,
-                    node.getPresentableToken(),
+                    node.token,
                     node.typeLabel
                 ) + "\n"
             )

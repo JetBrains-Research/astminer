@@ -13,8 +13,7 @@ class DummyNode(
     //TODO("not implemented")
     override val parent: Node? = null
 
-    override val token: String
-        get() = typeLabel
+    override val originalToken: String = typeLabel
 
     override fun removeChildrenOfType(typeLabel: String) {
         children.removeIf { it.typeLabel == typeLabel }

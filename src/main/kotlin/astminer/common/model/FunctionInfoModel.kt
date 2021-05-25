@@ -16,7 +16,7 @@ interface FunctionInfo<T : Node> {
     val nameNode: T?
         get() = notImplemented("nameNode")
     val name: String?
-        get() = nameNode?.token
+        get() = nameNode?.originalToken
     val root: T
         get() = notImplemented("root")
     val filePath: String

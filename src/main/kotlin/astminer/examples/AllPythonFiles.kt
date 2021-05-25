@@ -5,7 +5,6 @@ import astminer.config.*
 import astminer.parse.antlr.python.PythonParser
 import astminer.pipeline.Pipeline
 import astminer.storage.path.PathBasedStorageConfig
-import astminer.storage.TokenProcessor
 import astminer.storage.path.Code2VecPathStorage
 import java.io.File
 

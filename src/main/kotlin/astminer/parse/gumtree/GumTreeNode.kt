@@ -11,8 +11,7 @@ class GumTreeNode(val wrappedNode: ITree, val context: TreeContext,override var 
     override val children: MutableList<GumTreeNode> by lazy {
         wrappedNode.children.map { GumTreeNode(it, context, this) }.toMutableList()
     }
-    override val token: String
-        get() = wrappedNode.label
+    override val originalToken: String = wrappedNode.label
 
     override fun removeChildrenOfType(typeLabel: String) {
         children.removeIf { it.typeLabel == typeLabel }
