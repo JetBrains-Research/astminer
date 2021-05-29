@@ -15,6 +15,8 @@ class PHPParser: Parser<AntlrNode> {
     override fun parseInputStream(content: InputStream): AntlrNode {
         return try {
             val stream = CharStreams.fromStream(content)
+            // Php keywords are case-insensitive, so case changing stream must be used
+            // Tokens won't be in lower case in resulting tree
             val lexer = PhpLexer(CaseChangingCharStream(stream, false))
             lexer.removeErrorListeners()
             val tokens = CommonTokenStream(lexer)
