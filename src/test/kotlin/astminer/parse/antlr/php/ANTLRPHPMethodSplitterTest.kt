@@ -10,7 +10,7 @@ import kotlin.test.assertNotNull
 
 internal class ANTLRPHPMethodSplitterTest {
     companion object {
-        const val N_METHODS = 4
+        const val N_METHODS = 18
         const val testFilePath = "src/test/resources/methodSplitting/testMethodSplitting.php"
         val functionSplitter = PHPMethodSplitter()
         val parser = PHPParser()
