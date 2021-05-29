@@ -2,6 +2,7 @@ package astminer.parse.antlr.javascript
 
 import astminer.common.model.*
 import astminer.parse.antlr.*
+import astminer.parse.antlr.java.AntlrJavaFunctionInfo
 import astminer.parse.findEnclosingElementBy
 
 /**
@@ -35,7 +36,7 @@ abstract class AntlrJavaScriptElementInfo(override val root: AntlrNode) : Functi
     private fun getEnclosingElementName(enclosingRoot: AntlrNode?): String? {
         return enclosingRoot?.children?.firstOrNull {
             it.hasLastLabel(ENCLOSING_ELEMENT_NAME_NODE)
-        }?.token
+        }?.originalToken
     }
 
     private fun getEnclosingElementType(enclosingRoot: AntlrNode): EnclosingElementType {
@@ -50,20 +51,21 @@ abstract class AntlrJavaScriptElementInfo(override val root: AntlrNode) : Functi
 
     protected fun collectParameters(): List<FunctionInfoParameter> {
         val parametersRoot = getParametersRoot()
-        return when {
-            //No parameters found
+        val parameterNameNodes = when {
+            // No parameters found
             parametersRoot == null -> emptyList()
 
-            //Have only one parameter, which is indicated only by its name
-            parametersRoot.hasLastLabel(PARAMETER_NAME_NODE) -> listOf(
-                FunctionInfoParameter(name = parametersRoot.token, type = null)
-            )
+            // Have only one parameter, which is indicated only by its name
+            parametersRoot.hasLastLabel(PARAMETER_NAME_NODE) -> listOf(parametersRoot)
 
-            //Have many parameters or one indicated not only by it's name
-            else -> parametersRoot.getItOrChildrenOfType(SINGLE_PARAMETER_NODE).map {
-                val nameNode = it.getChildOfType(PARAMETER_NAME_NODE) ?: it
-                FunctionInfoParameter(name = nameNode.token, type = null)
+            // Have many parameters or one indicated not only by it's name
+            else -> parametersRoot
+                .getItOrChildrenOfType(SINGLE_PARAMETER_NODE)
+                .map { it.getChildOfType(PARAMETER_NAME_NODE) ?: it }
             }
+        return parameterNameNodes.map {
+            val parameterName = it.originalToken ?: throw IllegalStateException("Parameter name wasn't found")
+            FunctionInfoParameter(name = parameterName, type = null)
         }
     }
 

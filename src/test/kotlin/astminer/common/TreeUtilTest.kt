@@ -20,7 +20,7 @@ class TreeUtilTest {
         Assert.assertArrayEquals(arrayOf("1", "2", "4", "5", "6", "3", "7", "8"), dataList.toList().toTypedArray())
     }
 
-    private val defaultToken = "EMPTY_TOKEN"
+    private val defaultToken = "EMPTY"
 
     @Test
     fun testNormalizeTokenCleaning() {
