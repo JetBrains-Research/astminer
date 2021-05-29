@@ -20,7 +20,16 @@ abstract class ANTLRPHPFunctionInfo(
     }
 
     private fun collectParameters(): List<FunctionInfoParameter> {
+        // No parameters
         val parameterList = root.getChildOfType(PARAMETERS) ?: return emptyList()
+
+        // Checking if function have only one parameter without
+        // type or ellipsis
+        if (parameterList.hasLastLabel(PARAMETER_NAME)) {
+            return listOf(assembleParameter(parameterList))
+        }
+
+        // Otherwise find all parameters
         return parameterList.getItOrChildrenOfType(ONE_PARAMETER).map {
             assembleParameter(it)
         }
@@ -36,6 +45,7 @@ abstract class ANTLRPHPFunctionInfo(
     private fun getParameterName(parameterNode: AntlrNode): String {
         if (parameterNode.hasLastLabel(PARAMETER_NAME))
             return parameterNode.originalToken ?: return DEFAULT_TOKEN
+
         return parameterNode.children
             .filter { !it.hasFirstLabel(TYPE) }
             .map { it.originalToken }
@@ -45,6 +55,8 @@ abstract class ANTLRPHPFunctionInfo(
     private fun getElementType(element: AntlrNode): String? {
         return element.getChildOfType(TYPE)?.originalToken
     }
+
+
 }
 
 class ArrowPhpFunctionInfo(root: AntlrNode) : ANTLRPHPFunctionInfo(root) {
