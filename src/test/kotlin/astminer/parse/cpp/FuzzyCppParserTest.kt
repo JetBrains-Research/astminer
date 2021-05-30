@@ -5,7 +5,7 @@ import astminer.common.getProjectFilesWithExtension
 import astminer.examples.forFilesWithSuffix
 import astminer.parse.fuzzy.cpp.FuzzyCppParser
 import astminer.parse.fuzzy.cpp.FuzzyNode
-import astminer.parse.parseFiles
+import astminer.parseFiles
 import org.junit.Assert
 import org.junit.Assume
 import org.junit.Before

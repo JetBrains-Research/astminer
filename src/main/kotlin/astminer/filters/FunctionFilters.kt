@@ -4,7 +4,7 @@ import astminer.common.model.FunctionInfo
 import astminer.common.model.Node
 import astminer.common.splitToSubtokens
 
-interface FunctionFilter {
+interface FunctionFilter : Filter {
     fun validate(functionInfo: FunctionInfo<out Node>): Boolean
 }
 

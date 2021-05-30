@@ -19,7 +19,7 @@ fun allCppFiles() {
         inputDir = preprocessedDir.path,
         outputDir = "out_examples/allCppFiles",
         parser = ParserConfig(ParserType.Fuzzy, listOf(FileExtension.Cpp)),
-        problem = FileNameExtractorConfig,
+        problem = FileNameExtractorConfig(),
         storage = Code2VecPathStorageConfig(5, 5)
     )
 

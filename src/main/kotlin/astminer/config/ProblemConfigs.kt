@@ -3,19 +3,16 @@ package astminer.config
 import astminer.problem.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-
-/**
- * Problems that have [File] granularity process and extract labels from *whole files*.
- * Problems that have [Function] granularity process and extract labels from *functions* (that are collected from files).
- */
-enum class Granularity {
-    File,
-    Function
-}
+import kotlinx.serialization.Transient
 
 @Serializable
 sealed class ProblemConfig {
-    abstract val granularity: Granularity
+    abstract val problemImplementation: Problem
+
+    val granularity: Granularity
+        get() = problemImplementation.granularity
+
+    abstract val serialName: String
 }
 
 /**
@@ -23,8 +20,11 @@ sealed class ProblemConfig {
  */
 @Serializable
 @SerialName("file name")
-object FileNameExtractorConfig : ProblemConfig() {
-    override val granularity = Granularity.File
+class FileNameExtractorConfig : ProblemConfig() {
+    @Transient
+    override val problemImplementation = FileNameExtractor
+    @Transient
+    override val serialName = "file name"
 }
 
 /**
@@ -32,8 +32,11 @@ object FileNameExtractorConfig : ProblemConfig() {
  */
 @Serializable
 @SerialName("folder name")
-object FolderNameExtractorConfig : ProblemConfig() {
-    override val granularity = Granularity.File
+class FolderNameExtractorConfig : ProblemConfig() {
+    @Transient
+    override val problemImplementation = FolderNameExtractor
+    @Transient
+    override val serialName = "folder name"
 }
 
 /**
@@ -41,6 +44,10 @@ object FolderNameExtractorConfig : ProblemConfig() {
  */
 @Serializable
 @SerialName("function name")
-object FunctionNameProblemConfig : ProblemConfig() {
-    override val granularity = Granularity.Function
+class FunctionNameProblemConfig : ProblemConfig() {
+    @Transient
+    override val problemImplementation = FunctionNameProblem
+
+    @Transient
+    override val serialName = "function name"
 }

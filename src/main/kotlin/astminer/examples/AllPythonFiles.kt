@@ -14,7 +14,7 @@ fun allPythonFiles() {
         inputDir = "src/test/resources/examples",
         outputDir = "out_examples/allPythonFiles",
         parser = ParserConfig(ParserType.Antlr, listOf(FileExtension.Python)),
-        problem = FileNameExtractorConfig,
+        problem = FileNameExtractorConfig(),
         storage = Code2VecPathStorageConfig(5, 5)
     )
 

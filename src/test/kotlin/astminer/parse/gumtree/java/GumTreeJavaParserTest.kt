@@ -1,7 +1,7 @@
 package astminer.parse.gumtree.java
 
 import astminer.common.getProjectFilesWithExtension
-import astminer.parse.parseFiles
+import astminer.parseFiles
 import org.junit.Assert
 import org.junit.Test
 import java.io.*

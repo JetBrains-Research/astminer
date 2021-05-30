@@ -14,7 +14,7 @@ fun allJavaFilesGumTree() {
         inputDir = "src/test/resources/gumTreeMethodSplitter/",
         outputDir = "out_examples/allJavaFilesGumTree",
         parser = ParserConfig(ParserType.GumTree, listOf(FileExtension.Java)),
-        problem = FileNameExtractorConfig,
+        problem = FileNameExtractorConfig(),
         storage = Code2VecPathStorageConfig(5, 5)
     )
     Pipeline(config).run()

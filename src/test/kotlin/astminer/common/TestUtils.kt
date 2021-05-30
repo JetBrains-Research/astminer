@@ -18,6 +18,10 @@ class DummyNode(
     override fun removeChildrenOfType(typeLabel: String) {
         children.removeIf { it.typeLabel == typeLabel }
     }
+
+    fun toParseResult() = ParseResult(this, "")
+
+    fun labeledWith(label: String) = LabeledResult(this, label, "")
 }
 
 /**
@@ -78,7 +82,3 @@ fun createBamboo(size: Int): DummyNode {
     }
     return root
 }
-
-fun <T : Node> T.toParseResult() = ParseResult(this, "")
-
-fun <T : Node> T.labeledWith(label: String) = LabeledResult(this, label, "")

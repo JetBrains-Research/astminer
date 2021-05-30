@@ -1,7 +1,6 @@
 package astminer.filters
 
 import astminer.common.createBamboo
-import astminer.common.toParseResult
 import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue

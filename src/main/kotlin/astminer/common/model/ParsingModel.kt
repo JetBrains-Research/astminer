@@ -3,6 +3,8 @@ package astminer.common.model
 import astminer.problem.LabeledResult
 import astminer.common.DEFAULT_TOKEN
 import astminer.common.splitToSubtokens
+import astminer.parse.ParsingException
+import mu.KotlinLogging
 import java.io.File
 import java.io.InputStream
 import java.util.*
@@ -18,7 +20,7 @@ abstract class Node {
         originalToken?.let {
             val subtokens = splitToSubtokens(it)
             if (subtokens.isEmpty()) null
-            else subtokens.joinToString("|")
+            else subtokens.joinToString(TOKEN_DELIMITER)
         }
     }
     var technicalToken: String? = null
@@ -46,6 +48,10 @@ abstract class Node {
 
     fun postOrderIterator(): Iterator<Node> = PostOrderIterator(this)
     open fun postOrder(): List<Node> = PostOrderIterator(this).asSequence().toList()
+
+    companion object {
+        const val TOKEN_DELIMITER = "|"
+    }
 }
 
 class PreOrderIterator(root: Node): Iterator<Node> {

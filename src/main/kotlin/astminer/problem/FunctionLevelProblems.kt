@@ -3,7 +3,10 @@ package astminer.problem
 import astminer.common.model.FunctionInfo
 import astminer.common.model.Node
 
-interface FunctionLevelProblem {
+interface FunctionLevelProblem : Problem {
+    override val granularity: Granularity
+        get() = Granularity.Function
+
     fun process(functionInfo: FunctionInfo<out Node>): LabeledResult<out Node>?
 }
 
@@ -18,7 +21,7 @@ object FunctionNameProblem : FunctionLevelProblem {
     override fun process(functionInfo: FunctionInfo<out Node>): LabeledResult<out Node>? {
         val normalizedName = functionInfo.nameNode?.normalizedToken ?: return null
         functionInfo.root.preOrder().forEach { node ->
-            if (node.originalToken == functionInfo.name) {
+            if (node.originalToken == functionInfo.nameNode?.originalToken) {
                 node.technicalToken = RECURSIVE_CALL_TOKEN
             }
         }

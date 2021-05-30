@@ -4,7 +4,10 @@ import astminer.common.model.Node
 import astminer.common.model.ParseResult
 import java.io.File
 
-interface FileLevelProblem {
+interface FileLevelProblem : Problem {
+    override val granularity: Granularity
+        get() = Granularity.File
+
     fun process(parseResult: ParseResult<out Node>): LabeledResult<out Node>?
 }
 

@@ -1,29 +1,40 @@
 package astminer.config
 
+import astminer.storage.Storage
+import astminer.storage.ast.CsvAstStorage
+import astminer.storage.ast.DotAstStorage
+import astminer.storage.path.Code2VecPathStorage
 import astminer.storage.path.PathBasedStorageConfig
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import java.io.File
 
 /**
  * Config for storage that saved the results on the disk
  */
 @Serializable
-sealed class StorageConfig
+sealed class StorageConfig {
+    abstract fun createStorage(outputDirectoryPath: String): Storage
+}
 
 /**
  * @see astminer.storage.ast.CsvAstStorage
  */
 @Serializable
 @SerialName("CsvAST")
-object CsvAstStorageConfig : StorageConfig()
+class CsvAstStorageConfig : StorageConfig() {
+    override fun createStorage(outputDirectoryPath: String) = CsvAstStorage(outputDirectoryPath)
+}
 
 /**
  * @see astminer.storage.ast.DotAstStorage
  */
 @Serializable
 @SerialName("DotAST")
-object DotAstStorageConfig : StorageConfig()
+class DotAstStorageConfig : StorageConfig() {
+    override fun createStorage(outputDirectoryPath: String) = DotAstStorage(outputDirectoryPath)
+}
 
 /**
  * Config for [astminer.storage.path.Code2VecPathStorage]
@@ -38,6 +49,9 @@ data class Code2VecPathStorageConfig(
     val maxPathContextsPerEntity: Int? = null,
 ) : StorageConfig() {
     @Transient
-    val pathBasedStorageConfig =
+    private val pathBasedStorageConfig =
         PathBasedStorageConfig(maxPathLength, maxPathWidth, maxTokens, maxPaths, maxPathContextsPerEntity)
+
+    override fun createStorage(outputDirectoryPath: String) =
+        Code2VecPathStorage(outputDirectoryPath, pathBasedStorageConfig)
 }

@@ -13,8 +13,8 @@ fun allJavaAsts() {
         inputDir = "src/test/resources/examples/",
         outputDir = "out_examples/allJavaAstsAntlr",
         parser = ParserConfig(ParserType.Antlr, listOf(FileExtension.Java)),
-        problem = FileNameExtractorConfig,
-        storage = CsvAstStorageConfig,
+        problem = FileNameExtractorConfig(),
+        storage = CsvAstStorageConfig(),
     )
 
     Pipeline(config).run()

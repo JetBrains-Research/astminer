@@ -2,17 +2,18 @@ inputDir: 'src/test/resources/methodSplitting/'
 outputDir: 'output'
 
 parser:
-  type: 'antlr'
+  name: 'antlr'
   extensions: ['java', 'js']
 
 filters:
-  - type: 'by tree size'
+  - name: 'by tree size'
     maxTreeSize: 1000
+  - name: 'by words number'
+    maxTokenWordsNumber: 1000
+
 
 problem:
-  type: 'file name'
+  name: 'file name'
 
 storage:
-  type: 'code2vec paths'
-  maxPathLength: 5
-  maxPathWidth: 5
+  name: 'CsvAST'
