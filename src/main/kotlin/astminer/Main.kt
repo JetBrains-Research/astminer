@@ -30,7 +30,7 @@ class PipelineRunner : CliktCommand(name = "") {
             val config = yaml.decodeFromString<PipelineConfig>(config.readText())
             Pipeline(config).run()
         } catch (e: SerializationException) {
-            report("Could not read config", e)
+            report("There was a problem in the config", e)
         } catch (e: ProblemDefinitionException) {
             report("Problem is defined incorrectly", e)
         } catch (e: IllegalFilterException) {
