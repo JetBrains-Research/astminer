@@ -45,17 +45,21 @@ internal class ANTLRPHPMethodSplitterTest {
         }
 
         fun FunctionInfo<AntlrNode>.getJsonInfo(): String {
-            return "info : {" +
-                    "name : ${name}, " +
-                    "args : ${parameters.joinToString(", ") { "${it.type} ${it.name}" }}, " +
-                    "enclosing element : ${enclosingElement?.type?.getEnclosingElementType()}, " +
+            return listOf(
+                    "info : {",
+                    "name: ${name}, ",
+                    "args: ${parameters.joinToString(", ") { "${it.type} ${it.name}" }}, ",
+                    "enclosing element: ${enclosingElement?.type?.getEnclosingElementType()}, ",
+                    "enclosing element name: ${enclosingElement?.name}, ",
+                    "return type: $returnType, ",
                     "}"
+            ).joinToString("")
         }
 
-        val actualJsonInfos = functionInfos.map { it.getJsonInfo() }.sorted()
+        val actualJsonInfos = functionInfos.map { it.getJsonInfo() + '\n' }.sorted()
 
-        val text = File(JavaScriptFunctionSplitterTest.testFilePath).readText()
-        val expectedJsonInfos = Regex("info : \\{.*\\}").findAll(text).toList().map { it.value }.sorted()
+        val text = File(testFilePath).readText()
+        val expectedJsonInfos = Regex("info : \\{.*\\}").findAll(text).toList().map { it.value + '\n' }.sorted()
 
         assertEquals(expectedJsonInfos, actualJsonInfos)
     }

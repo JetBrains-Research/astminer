@@ -2,7 +2,7 @@
 
 ////////////////// FUNCTIONS //////////////////
 
-// #1 info : {name: fun, args: ,enclosing element: null, enclosing element name: null, return type: null}
+// #1 info : {name: fun, args: , enclosing element: null, enclosing element name: null, return type: null}
 function fun() {
     return 5;
 }
