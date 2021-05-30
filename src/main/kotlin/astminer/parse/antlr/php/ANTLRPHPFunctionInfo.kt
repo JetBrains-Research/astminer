@@ -20,9 +20,7 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNod
         const val TYPE = "typeHint"
         const val PARAMETER_NAME = "VarName"
         const val CLASS_MEMBER = "classStatement"
-        const val FUNCTION = "functionDeclaration"
         const val FUNCTION_NAME = "identifier"
-        const val LAMBDA_DECLARATION = "lambdaFunctionExpr"
         const val CLASS_DECLARATION = "classDeclaration"
         const val VAR_DECLARATION = "variableInitializer"
         const val ELLIPSIS = "Ellipsis"
@@ -30,12 +28,13 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNod
         const val ASSIGN_OP = "assignmentOperator"
         const val LAMBDA_TOKEN = "LambdaFn"
         const val FUNCTION_TOKEN = "Function_"
-        val POSSIBLE_FUNCTION_TOKENS = listOf(LAMBDA_TOKEN, FUNCTION_TOKEN)
+        const val REFERENCE = "Ampersand"
     }
 
     private fun collectParameters(): List<FunctionInfoParameter> {
-        // Parameters in this grammar have following structure:
-        //formal parameter list -> formal parameter -> type hint
+        // Parameters in this grammar have following structure (children order may be wrong):
+        //formal parameter list -> formal parameter -> Ampersand
+        //                                        | -> type hint
         //                                        | -> ellipsis
         //                                        | -> var init -> var name
         //                                                    | -> equal
@@ -67,6 +66,8 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNod
         // "...$args" in php equivalent to *args in python
         val isSplattedArg = parameterNode.getChildOfType(ELLIPSIS) != null
 
+        val isPassedByReference = parameterNode.getChildOfType(REFERENCE) != null
+
         if (parameterNode.hasLastLabel(PARAMETER_NAME)) return parameterNode.originalToken
             ?: throw IllegalStateException("No name was found for a parameter")
 
@@ -75,7 +76,7 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNod
         val name = varInit.getItOrChildrenOfType(PARAMETER_NAME).first().originalToken
             ?: throw IllegalStateException("No name was found for a parameter")
 
-        return (if (isSplattedArg) "..." else "") + name
+        return (if (isPassedByReference) "&" else "") + (if (isSplattedArg) "..." else "") + name
     }
 
     private fun getElementType(element: AntlrNode): String? {
@@ -106,11 +107,11 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode) : FunctionInfo<AntlrNod
     }
 
     private fun getEnclosingElementName(enclosing: AntlrNode) : String?{
-        return enclosing.getChildOfType(FUNCTION_NAME)?.originalToken
-//        return when {
-//            enclosing.isMethod() || enclosing.isFunction() -> enclosing.getChildOfType(FUNCTION_NAME)?.originalToken
-//            else -> throw IllegalStateException("No type can be associated")
-//        }
+        return when {
+            enclosing.isFunction() || enclosing.isClass() -> enclosing.getChildOfType(FUNCTION_NAME)?.originalToken
+            enclosing.isAssignExpression() -> enclosing.children.find { it.hasLastLabel(PARAMETER_NAME) }?.originalToken
+            else -> throw IllegalStateException("No type can be associated")
+        }
     }
 
     // No check for method because method is a function

@@ -46,13 +46,13 @@ internal class ANTLRPHPMethodSplitterTest {
 
         fun FunctionInfo<AntlrNode>.getJsonInfo(): String {
             return listOf(
-                    "info : {",
-                    "name: ${name}, ",
-                    "args: ${parameters.joinToString(", ") { "${it.type ?: ""} ${it.name}" }}, ",
-                    "enclosing element: ${enclosingElement?.type?.getEnclosingElementType()}, ",
-                    "enclosing element name: ${enclosingElement?.name}, ",
-                    "return type: $returnType, ",
-                    "}"
+                "info : {",
+                "name: ${name}, ",
+                "args: ${parameters.joinToString(", ") { listOfNotNull(it.type, it.name).joinToString(" ") }}, ",
+                "enclosing element: ${enclosingElement?.type?.getEnclosingElementType()}, ",
+                "enclosing element name: ${enclosingElement?.name}, ",
+                "return type: $returnType",
+                "}"
             ).joinToString("")
         }
 

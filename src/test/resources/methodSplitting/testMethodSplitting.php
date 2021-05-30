@@ -70,7 +70,7 @@ class someClass {
         return 42;
     }
 
-    // #16 info : {name: funcWithParams, args: , enclosing element: class, enclosing element name: someClass, return type: null}
+    // #16 info : {name: funcWithParams, args: $a, $b, enclosing element: class, enclosing element name: someClass, return type: null}
     public function funcWithParams($a, $b) {
 
         // #17 info : {name: innerFunction, args: , enclosing element: method, enclosing element name: funcWithParams, return type: null}
