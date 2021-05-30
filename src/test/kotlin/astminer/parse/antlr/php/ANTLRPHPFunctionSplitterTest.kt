@@ -5,16 +5,15 @@ import org.junit.Test
 import kotlin.test.BeforeTest
 import astminer.common.model.FunctionInfo
 import astminer.parse.antlr.AntlrNode
-import astminer.parse.antlr.javascript.JavaScriptFunctionSplitterTest
 import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-internal class ANTLRPHPMethodSplitterTest {
+internal class ANTLRPHPFunctionSplitterTest {
     companion object {
         const val N_METHODS = 18
         const val testFilePath = "src/test/resources/methodSplitting/testMethodSplitting.php"
-        val functionSplitter = PHPMethodSplitter()
+        val functionSplitter = PHPFunctionSplitter()
         val parser = PHPParser()
     }
 
