@@ -50,33 +50,33 @@ $arrow1 = fn($x, $y) => $x + $y;
 // #10 info : {name: null, args: $y, enclosing element: function, enclosing element name: null, return type: null}
 $arrow2 = fn($x) => fn($y) => $x * $y;
 
-// #12 info : {name: null, args: $x, enclosing element: null, enclosing element name: null, return type: null}
+// #11 info : {name: null, args: $x, enclosing element: null, enclosing element name: null, return type: null}
 fn($x = 42) => $x;
 
-// #13 info : {name: null, args: &$x, enclosing element: null, enclosing element name: null, return type: null}
+// #12 info : {name: null, args: &$x, enclosing element: null, enclosing element name: null, return type: null}
 fn(&$x) => $x;
 
-// #14 info : {name: null, args: $x, enclosing element: null, enclosing element name: null, return type: null}
+// #13 info : {name: null, args: $x, enclosing element: null, enclosing element name: null, return type: null}
 fn&($x) => $x;
 
-// #15 info : {name: null, args: $x, ...$rest, enclosing element: null, enclosing element name: null, return type: null}
+// #14 info : {name: null, args: $x, ...$rest, enclosing element: null, enclosing element name: null, return type: null}
 fn($x, ...$rest) => $rest;
 
 ////////////////// METHOD FUNCTIONS //////////////////
 
 class someClass {
-    // #16 info : {name: someFunc, args: , enclosing element: class, enclosing element name: someClass, return type: null}
+    // #15 info : {name: someFunc, args: , enclosing element: class, enclosing element name: someClass, return type: null}
     public function someFunc() {
         return 42;
     }
 
-    // #17 info : {name: funcWithParams, args: , enclosing element: class, enclosing element name: someClass, return type: null}
+    // #16 info : {name: funcWithParams, args: , enclosing element: class, enclosing element name: someClass, return type: null}
     public function funcWithParams($a, $b) {
 
-        // #18 info : {name: innerFunction, args: , enclosing element: method, enclosing element name: funcWithParams, return type: null}
+        // #17 info : {name: innerFunction, args: , enclosing element: method, enclosing element name: funcWithParams, return type: null}
         function innerFunction() {
 
-            // #19 info : {name: superInnerFunction, args: , enclosing element: function, enclosing element name: innerFunction, return type: null}
+            // #18 info : {name: superInnerFunction, args: , enclosing element: function, enclosing element name: innerFunction, return type: null}
             function superInnerFunction() {
                 return 42;
             }
