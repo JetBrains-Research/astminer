@@ -1,12 +1,12 @@
 package astminer.parse.antlr
 
-import astminer.common.model.ParseResult
-import astminer.common.model.HandlerFactory
-import astminer.common.model.LanguageHandler
+import astminer.common.model.*
 import astminer.parse.antlr.java.JavaFunctionSplitter
 import astminer.parse.antlr.java.JavaParser
 import astminer.parse.antlr.javascript.JavaScriptFunctionSplitter
 import astminer.parse.antlr.javascript.JavaScriptParser
+import astminer.parse.antlr.php.PHPFunctionSplitter
+import astminer.parse.antlr.php.PHPParser
 import astminer.parse.antlr.python.PythonFunctionSplitter
 import astminer.parse.antlr.python.PythonParser
 import java.io.File
@@ -35,5 +35,14 @@ object AntlrJavascriptHandlerFactory : HandlerFactory {
     class AntlrJavascriptHandler(file: File) : LanguageHandler<AntlrNode>() {
         override val parseResult: ParseResult<AntlrNode> = JavaScriptParser().parseFile(file)
         override val splitter = JavaScriptFunctionSplitter()
+    }
+}
+
+object AntlrPHPHandlerFactory: HandlerFactory {
+    override fun createHandler(file: File): LanguageHandler<out Node> = AntlrPHPHandler(file)
+
+    class AntlrPHPHandler(file: File): LanguageHandler<AntlrNode>() {
+        override val parseResult: ParseResult<AntlrNode> = PHPParser().parseFile(file)
+        override val splitter: TreeFunctionSplitter<AntlrNode> = PHPFunctionSplitter()
     }
 }
