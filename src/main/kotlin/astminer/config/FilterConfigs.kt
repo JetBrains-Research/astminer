@@ -11,7 +11,7 @@ import kotlinx.serialization.Transient
 @Serializable
 sealed class FilterConfig {
     abstract val serialName: String
-    abstract val filterImplementation: Filter
+    abstract val filterImpl: Filter
 }
 
 /**
@@ -23,7 +23,7 @@ data class TreeSizeFilterConfig(val maxTreeSize: Int) : FilterConfig() {
     override val serialName = "by tree size"
 
     @Transient
-    override val filterImplementation = TreeSizeFilter(maxTreeSize)
+    override val filterImpl = TreeSizeFilter(maxTreeSize)
 }
 
 /**
@@ -35,7 +35,7 @@ data class ModifierFilterConfig(val modifiers: List<String>) : FilterConfig() {
     override val serialName = "by modifiers"
 
     @Transient
-    override val filterImplementation = ModifierFilter(modifiers)
+    override val filterImpl = ModifierFilter(modifiers)
 }
 
 /**
@@ -47,7 +47,7 @@ data class AnnotationFilterConfig(val annotations: List<String>) : FilterConfig(
     override val serialName = "by annotations"
 
     @Transient
-    override val filterImplementation = AnnotationFilter(annotations)
+    override val filterImpl = AnnotationFilter(annotations)
 }
 
 /**
@@ -59,7 +59,7 @@ object ConstructorFilterConfig : FilterConfig() {
     override val serialName = "no constructors"
 
     @Transient
-    override val filterImplementation = ConstructorFilter
+    override val filterImpl = ConstructorFilter
 }
 
 /**
@@ -71,7 +71,7 @@ data class FunctionNameWordsNumberFilterConfig(val maxWordsNumber: Int) : Filter
     override val serialName = "by function name length"
 
     @Transient
-    override val filterImplementation = FunctionNameWordsNumberFilter(maxWordsNumber)
+    override val filterImpl = FunctionNameWordsNumberFilter(maxWordsNumber)
 }
 
 /**
@@ -83,5 +83,5 @@ data class WordsNumberFilterConfig(val maxTokenWordsNumber: Int) : FilterConfig(
     override val serialName = "by words number"
 
     @Transient
-    override val filterImplementation = WordsNumberFilter(maxTokenWordsNumber)
+    override val filterImpl = WordsNumberFilter(maxTokenWordsNumber)
 }

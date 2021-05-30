@@ -9,10 +9,10 @@ filters:
   - name: 'by tree size'
     maxTreeSize: 1000
 
-problem:
+labelExtractor:
   name: 'file name'
 
 storage:
-  name: 'code2vec paths'
+  name: 'Code2vec'
   maxPathLength: 5
   maxPathWidth: 5

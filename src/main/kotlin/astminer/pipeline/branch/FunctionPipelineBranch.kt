@@ -15,12 +15,12 @@ import astminer.problem.*
  */
 class FunctionPipelineBranch(config: PipelineConfig) : PipelineBranch {
     private val filters: List<FunctionFilter> = config.filters.map { filterConfig ->
-        filterConfig.filterImplementation as? FunctionFilter
+        filterConfig.filterImpl as? FunctionFilter
             ?: throw IllegalFilterException(Granularity.Function, filterConfig.serialName)
     }
 
-    private val problem: FunctionLevelProblem = config.problem.problemImplementation as? FunctionLevelProblem
-        ?: throw ProblemDefinitionException(Granularity.Function, config.problem.serialName)
+    private val problem: FunctionLabelExtractor = config.labelExtractor.labelExtractorImpl as? FunctionLabelExtractor
+        ?: throw ProblemDefinitionException(Granularity.Function, config.labelExtractor.serialName)
 
     private fun passesThroughFilters(functionInfo: FunctionInfo<out Node>) =
         filters.all { filter -> filter.validate(functionInfo) }

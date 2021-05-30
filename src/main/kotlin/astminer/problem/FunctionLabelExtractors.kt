@@ -3,7 +3,7 @@ package astminer.problem
 import astminer.common.model.FunctionInfo
 import astminer.common.model.Node
 
-interface FunctionLevelProblem : Problem {
+interface FunctionLabelExtractor : LabelExtractor {
     override val granularity: Granularity
         get() = Granularity.Function
 
@@ -14,7 +14,7 @@ interface FunctionLevelProblem : Problem {
  * Labels functions with their names.
  * Hides the name of the function in the subtree and also all in the recursive calls.
  */
-object FunctionNameProblem : FunctionLevelProblem {
+object FunctionNameLabelExtractor : FunctionLabelExtractor {
     const val HIDDEN_METHOD_NAME_TOKEN = "METHOD_NAME"
     const val RECURSIVE_CALL_TOKEN = "SELF"
 

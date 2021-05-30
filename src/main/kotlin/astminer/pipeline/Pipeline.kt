@@ -7,9 +7,6 @@ import astminer.pipeline.branch.FilePipelineBranch
 import astminer.pipeline.branch.FunctionPipelineBranch
 import astminer.problem.Granularity
 import astminer.storage.Storage
-import astminer.storage.ast.CsvAstStorage
-import astminer.storage.ast.DotAstStorage
-import astminer.storage.path.Code2VecPathStorage
 import java.io.File
 
 /**
@@ -20,7 +17,7 @@ class Pipeline(private val config: PipelineConfig) {
     private val inputDirectory = File(config.inputDir)
     private val outputDirectory = File(config.outputDir)
 
-    private val branch = when (config.problem.granularity) {
+    private val branch = when (config.labelExtractor.granularity) {
         Granularity.File -> FilePipelineBranch(config)
         Granularity.Function -> FunctionPipelineBranch(config)
     }

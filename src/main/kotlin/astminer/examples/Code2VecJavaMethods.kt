@@ -14,7 +14,7 @@ fun code2vecJavaMethods() {
         inputDir = folder,
         outputDir = outputDir,
         parser = ParserConfig(ParserType.Antlr, listOf(FileExtension.Java)),
-        problem = FunctionNameProblemConfig(),
+        labelExtractor = FunctionNameExtractorConfig(),
         storage = Code2VecPathStorageConfig(
             maxPathLength = 5,
             maxPathWidth = 5

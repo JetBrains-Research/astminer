@@ -7,7 +7,7 @@ import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class FunctionNameProblemTest {
+class FunctionNameLabelExtractorTest {
     companion object {
         private const val PATH = "random/folder/file.txt"
         private const val FUNCTION_NAME = "method"
@@ -31,25 +31,25 @@ class FunctionNameProblemTest {
 
     @Test
     fun `test FunctionNameProblem extracts correct method name`() {
-        val labeledResult = FunctionNameProblem.process(functionInfo)
+        val labeledResult = FunctionNameLabelExtractor.process(functionInfo)
         assertEquals(LabeledResult(functionRoot, FUNCTION_NAME, PATH), labeledResult)
     }
 
     @Test
     fun `test FunctionNameProblem hides function name node token with METHOD_NAME`() {
-        FunctionNameProblem.process(functionInfo)
+        FunctionNameLabelExtractor.process(functionInfo)
         assertEquals("METHOD_NAME", functionInfo.nameNode?.token)
     }
 
     @Test
     fun `test FunctionNameProblem hides function root token with METHOD_NAME if it is the name node`() {
-        FunctionNameProblem.process(functionInfo)
+        FunctionNameLabelExtractor.process(functionInfo)
         assertEquals("METHOD_NAME", functionInfo.root.token)
     }
 
     @Test
     fun `test function name problem should hide recursive call tokens with SELF`() {
-        FunctionNameProblem.process(functionInfo)
+        FunctionNameLabelExtractor.process(functionInfo)
         val recursiveCallNode = functionInfo.root.children.firstOrNull()?.children?.firstOrNull()
         assertEquals("SELF", recursiveCallNode?.token)
     }

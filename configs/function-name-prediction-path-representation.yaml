@@ -11,7 +11,7 @@ filters:
   - name: 'by words number'
     maxTokenWordsNumber: 100
 
-problem:
+labelExtractor:
   name: 'function name'
 
 storage:

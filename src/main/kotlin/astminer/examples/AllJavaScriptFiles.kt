@@ -8,7 +8,7 @@ fun allJavaScriptFiles() {
         inputDir = "src/test/resources/examples",
         outputDir = "out_examples/allJavaScriptFilesAntlr",
         parser = ParserConfig(ParserType.Antlr, listOf(FileExtension.JavaScript)),
-        problem = FileNameExtractorConfig(),
+        labelExtractor = FileNameExtractorConfig(),
         storage = Code2VecPathStorageConfig(5, 5)
     )
 

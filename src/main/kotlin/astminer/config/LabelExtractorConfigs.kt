@@ -6,11 +6,11 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 @Serializable
-sealed class ProblemConfig {
-    abstract val problemImplementation: Problem
+sealed class LabelExtractorConfig {
+    abstract val labelExtractorImpl: LabelExtractor
 
     val granularity: Granularity
-        get() = problemImplementation.granularity
+        get() = labelExtractorImpl.granularity
 
     abstract val serialName: String
 }
@@ -20,9 +20,9 @@ sealed class ProblemConfig {
  */
 @Serializable
 @SerialName("file name")
-class FileNameExtractorConfig : ProblemConfig() {
+class FileNameExtractorConfig : LabelExtractorConfig() {
     @Transient
-    override val problemImplementation = FileNameExtractor
+    override val labelExtractorImpl = FileNameExtractor
     @Transient
     override val serialName = "file name"
 }
@@ -32,21 +32,21 @@ class FileNameExtractorConfig : ProblemConfig() {
  */
 @Serializable
 @SerialName("folder name")
-class FolderNameExtractorConfig : ProblemConfig() {
+class FolderNameExtractorConfig : LabelExtractorConfig() {
     @Transient
-    override val problemImplementation = FolderNameExtractor
+    override val labelExtractorImpl = FolderNameExtractor
     @Transient
     override val serialName = "folder name"
 }
 
 /**
- * @see FunctionNameProblem
+ * @see FunctionNameLabelExtractor
  */
 @Serializable
 @SerialName("function name")
-class FunctionNameProblemConfig : ProblemConfig() {
+class FunctionNameExtractorConfig : LabelExtractorConfig() {
     @Transient
-    override val problemImplementation = FunctionNameProblem
+    override val labelExtractorImpl = FunctionNameLabelExtractor
 
     @Transient
     override val serialName = "function name"

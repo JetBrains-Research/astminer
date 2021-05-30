@@ -12,7 +12,7 @@ filters:
     maxTokenWordsNumber: 1000
 
 
-problem:
+labelExtractor:
   name: 'file name'
 
 storage:

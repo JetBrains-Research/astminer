@@ -4,7 +4,7 @@ import astminer.common.model.Node
 import astminer.common.model.ParseResult
 import java.io.File
 
-interface FileLevelProblem : Problem {
+interface FileLabelExtractor : LabelExtractor {
     override val granularity: Granularity
         get() = Granularity.File
 
@@ -14,16 +14,15 @@ interface FileLevelProblem : Problem {
 /**
  * Labels files with folder names
  */
-object FileNameExtractor : FileLevelProblem {
+object FileNameExtractor : FileLabelExtractor {
     override fun process(parseResult: ParseResult<out Node>): LabeledResult<out Node> =
         parseResult.labeledWith(File(parseResult.filePath).name)
-
 }
 
 /**
  * Labels files with folder names
  */
-object FolderNameExtractor : FileLevelProblem {
+object FolderNameExtractor : FileLabelExtractor {
     override fun process(parseResult: ParseResult<out Node>): LabeledResult<out Node>? {
         val folderName = File(parseResult.filePath).parentFile?.name ?: return null
         return parseResult.labeledWith(folderName)

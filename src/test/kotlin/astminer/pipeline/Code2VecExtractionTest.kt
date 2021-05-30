@@ -19,7 +19,7 @@ internal class Code2VecExtractionTest {
             inputDir = testDataDir.path,
             outputDir = extractedDataDir.toAbsolutePath().toString(),
             parser = ParserConfig(ParserType.Antlr, languages),
-            problem = FileNameExtractorConfig(),
+            labelExtractor = FileNameExtractorConfig(),
             storage = Code2VecPathStorageConfig(8, 3)
         )
         Pipeline(config).run()

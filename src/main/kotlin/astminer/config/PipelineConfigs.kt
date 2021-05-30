@@ -12,6 +12,6 @@ data class PipelineConfig(
     val outputDir: String,
     val parser: ParserConfig,
     val filters: List<FilterConfig> = emptyList(),
-    val problem: ProblemConfig,
+    val labelExtractor: LabelExtractorConfig,
     val storage: StorageConfig
 )
