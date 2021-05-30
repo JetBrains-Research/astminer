@@ -48,7 +48,7 @@ internal class ANTLRPHPMethodSplitterTest {
             return listOf(
                     "info : {",
                     "name: ${name}, ",
-                    "args: ${parameters.joinToString(", ") { "${it.type} ${it.name}" }}, ",
+                    "args: ${parameters.joinToString(", ") { "${it.type ?: ""} ${it.name}" }}, ",
                     "enclosing element: ${enclosingElement?.type?.getEnclosingElementType()}, ",
                     "enclosing element name: ${enclosingElement?.name}, ",
                     "return type: $returnType, ",
