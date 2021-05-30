@@ -19,11 +19,11 @@ sealed class FilterConfig {
  */
 @Serializable
 @SerialName("by tree size")
-data class TreeSizeFilterConfig(val maxTreeSize: Int) : FilterConfig() {
+data class TreeSizeFilterConfig(val minTreeSize: Int = 0, val maxTreeSize: Int? = null) : FilterConfig() {
     override val serialName = "by tree size"
 
     @Transient
-    override val filterImpl = TreeSizeFilter(maxTreeSize)
+    override val filterImpl = TreeSizeFilter(minTreeSize, maxTreeSize)
 }
 
 /**
