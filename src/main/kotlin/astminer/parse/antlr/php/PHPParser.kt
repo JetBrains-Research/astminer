@@ -14,8 +14,8 @@ import java.io.InputStream
 // Be aware that this parser can have some troubles with
 // parsing function modifiers and string concatenation via dot
 // (AST just falls apart when class field contain dot concatenation)
-// More issues you can find here:
-// https://github.com/antlr/grammars-v4/issues
+// More details can be found in corresponding issues
+// https://github.com/antlr/grammars-v4/issues/1991
 class PHPParser: Parser<AntlrNode> {
     override fun parseInputStream(content: InputStream): AntlrNode {
         return try {
