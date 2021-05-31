@@ -3,6 +3,7 @@ package astminer.parse
 import astminer.common.model.HandlerFactory
 import astminer.parse.antlr.AntlrJavaHandlerFactory
 import astminer.parse.antlr.AntlrJavascriptHandlerFactory
+import astminer.parse.antlr.AntlrPHPHandlerFactory
 import astminer.parse.antlr.AntlrPythonHandlerFactory
 import astminer.parse.gumtree.GumtreeJavaHandlerFactory
 import astminer.parse.gumtree.GumtreePythonHandlerFactory
@@ -29,6 +30,7 @@ private fun getAntlrHandlerFactory(extension: String): HandlerFactory {
         "java" -> AntlrJavaHandlerFactory
         "javascript" -> AntlrJavascriptHandlerFactory
         "python" -> AntlrPythonHandlerFactory
+        "php" -> AntlrPHPHandlerFactory
         else -> throw UnsupportedOperationException()
     }
 }
