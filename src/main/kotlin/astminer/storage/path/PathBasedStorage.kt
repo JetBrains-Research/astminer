@@ -1,6 +1,6 @@
 package astminer.storage.path
 
-import astminer.problem.LabeledResult
+import astminer.labelextractor.LabeledResult
 import astminer.common.model.*
 import astminer.common.storage.*
 import astminer.paths.PathMiner

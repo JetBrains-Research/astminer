@@ -1,13 +1,11 @@
-package astminer.problem
+package astminer.labelextractor
 
+import astminer.common.model.LabelExtractor
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
 import java.io.File
 
 interface FileLabelExtractor : LabelExtractor {
-    override val granularity: Granularity
-        get() = Granularity.File
-
     fun process(parseResult: ParseResult<out Node>): LabeledResult<out Node>?
 }
 

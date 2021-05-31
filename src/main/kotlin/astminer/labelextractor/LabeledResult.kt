@@ -1,4 +1,4 @@
-package astminer.problem
+package astminer.labelextractor
 
 import astminer.common.model.Node
 

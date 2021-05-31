@@ -2,7 +2,7 @@ package astminer.pipeline.branch
 
 import astminer.common.model.LanguageHandler
 import astminer.common.model.Node
-import astminer.problem.LabeledResult
+import astminer.labelextractor.LabeledResult
 
 /**
  * PipelineBranch is a part of the pipeline that can be completely different depending on the granularity (pipeline type)
@@ -14,5 +14,5 @@ interface PipelineBranch {
      * May mutate the AST.
      * Should have no other side-effects
      */
-    fun process(languageHandler: LanguageHandler<out Node>): Sequence<LabeledResult<out Node>>
+    fun process(languageHandler: LanguageHandler<out Node>): List<LabeledResult<out Node>>
 }

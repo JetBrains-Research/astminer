@@ -1,11 +1,11 @@
 package astminer.pipeline.branch
 
+import astminer.common.model.Filter
 import astminer.common.model.FunctionInfo
 import astminer.common.model.LanguageHandler
 import astminer.common.model.Node
-import astminer.config.*
 import astminer.filters.*
-import astminer.problem.*
+import astminer.labelextractor.*
 
 
 /**
@@ -13,21 +13,22 @@ import astminer.problem.*
  * Extracts functions from the parsed files.
  * Then tests functions with filters, processes them and extracts labels from each function.
  */
-class FunctionPipelineBranch(config: PipelineConfig) : PipelineBranch {
-    private val filters: List<FunctionFilter> = config.filters.map { filterConfig ->
-        filterConfig.filterImpl as? FunctionFilter
-            ?: throw IllegalFilterException(Granularity.Function, filterConfig.serialName)
-    }
+class FunctionPipelineBranch(
+    filters: List<Filter>,
+    private val labelExtractor: FunctionLabelExtractor
+) : PipelineBranch {
 
-    private val problem: FunctionLabelExtractor = config.labelExtractor.labelExtractorImpl as? FunctionLabelExtractor
-        ?: throw ProblemDefinitionException(Granularity.Function, config.labelExtractor.serialName)
+    private val filters: List<FunctionFilter> = filters.map { filter ->
+        filter as? FunctionFilter
+            ?: throw IllegalFilterException("function", filter::class.simpleName)
+    }
 
     private fun passesThroughFilters(functionInfo: FunctionInfo<out Node>) =
         filters.all { filter -> filter.validate(functionInfo) }
 
-    override fun process(languageHandler: LanguageHandler<out Node>): Sequence<LabeledResult<out Node>> =
-        languageHandler.splitIntoFunctions().asSequence()
+    override fun process(languageHandler: LanguageHandler<out Node>): List<LabeledResult<out Node>> =
+        languageHandler.splitIntoFunctions()
             .filter { functionInfo -> passesThroughFilters(functionInfo) }
-            .mapNotNull { functionInfo -> problem.process(functionInfo) }
+            .mapNotNull { functionInfo -> labelExtractor.process(functionInfo) }
 }
 

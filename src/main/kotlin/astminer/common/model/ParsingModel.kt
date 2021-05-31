@@ -1,10 +1,8 @@
 package astminer.common.model
 
-import astminer.problem.LabeledResult
+import astminer.labelextractor.LabeledResult
 import astminer.common.DEFAULT_TOKEN
 import astminer.common.splitToSubtokens
-import astminer.parse.ParsingException
-import mu.KotlinLogging
 import java.io.File
 import java.io.InputStream
 import java.util.*

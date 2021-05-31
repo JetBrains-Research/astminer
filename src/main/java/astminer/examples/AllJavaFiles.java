@@ -1,9 +1,8 @@
 package astminer.examples;
 
-import astminer.problem.LabeledResult;
+import astminer.labelextractor.LabeledResult;
 import astminer.common.model.*;
 import astminer.parse.gumtree.java.GumTreeJavaParser;
-import astminer.storage.*;
 import astminer.storage.path.Code2VecPathStorage;
 import astminer.storage.path.PathBasedStorage;
 import astminer.storage.path.PathBasedStorageConfig;

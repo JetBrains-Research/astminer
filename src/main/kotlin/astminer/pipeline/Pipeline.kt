@@ -5,7 +5,9 @@ import astminer.config.*
 import astminer.parse.getHandlerFactory
 import astminer.pipeline.branch.FilePipelineBranch
 import astminer.pipeline.branch.FunctionPipelineBranch
-import astminer.problem.Granularity
+import astminer.pipeline.branch.IllegalLabelExtractorException
+import astminer.labelextractor.FileLabelExtractor
+import astminer.labelextractor.FunctionLabelExtractor
 import astminer.storage.Storage
 import java.io.File
 
@@ -17,9 +19,13 @@ class Pipeline(private val config: PipelineConfig) {
     private val inputDirectory = File(config.inputDir)
     private val outputDirectory = File(config.outputDir)
 
-    private val branch = when (config.labelExtractor.granularity) {
-        Granularity.File -> FilePipelineBranch(config)
-        Granularity.Function -> FunctionPipelineBranch(config)
+    private val filters = config.filters.map { it.filterImpl }
+    private val labelExtractor = config.labelExtractor.labelExtractorImpl
+
+    private val branch = when (labelExtractor) {
+        is FileLabelExtractor -> FilePipelineBranch(filters, labelExtractor)
+        is FunctionLabelExtractor -> FunctionPipelineBranch(filters, labelExtractor)
+        else -> throw IllegalLabelExtractorException(labelExtractor::class.simpleName)
     }
 
     private fun createStorageDirectory(extension: FileExtension): File {

@@ -1,5 +1,6 @@
 package astminer.filters
 
+import astminer.common.model.Filter
 import astminer.common.model.FunctionInfo
 import astminer.common.model.Node
 import astminer.common.splitToSubtokens

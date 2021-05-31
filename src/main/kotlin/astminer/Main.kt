@@ -4,7 +4,7 @@ import astminer.common.model.FunctionInfoPropertyNotImplementedException
 import astminer.config.PipelineConfig
 import astminer.pipeline.Pipeline
 import astminer.pipeline.branch.IllegalFilterException
-import astminer.pipeline.branch.ProblemDefinitionException
+import astminer.pipeline.branch.IllegalLabelExtractorException
 import com.charleskorn.kaml.PolymorphismStyle
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
@@ -31,8 +31,8 @@ class PipelineRunner : CliktCommand(name = "") {
             Pipeline(config).run()
         } catch (e: SerializationException) {
             report("There was a problem in the config", e)
-        } catch (e: ProblemDefinitionException) {
-            report("Problem is defined incorrectly", e)
+        } catch (e: IllegalLabelExtractorException) {
+            report("PipelineBranch for given label extractor not found", e)
         } catch (e: IllegalFilterException) {
             report("The chosen filter is not implemented for the chosen granularity", e)
         } catch (e: FunctionInfoPropertyNotImplementedException) {

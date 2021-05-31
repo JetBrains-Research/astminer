@@ -1,12 +1,10 @@
-package astminer.problem
+package astminer.labelextractor
 
 import astminer.common.model.FunctionInfo
+import astminer.common.model.LabelExtractor
 import astminer.common.model.Node
 
 interface FunctionLabelExtractor : LabelExtractor {
-    override val granularity: Granularity
-        get() = Granularity.Function
-
     fun process(functionInfo: FunctionInfo<out Node>): LabeledResult<out Node>?
 }
 

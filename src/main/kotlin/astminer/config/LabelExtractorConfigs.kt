@@ -1,6 +1,7 @@
 package astminer.config
 
-import astminer.problem.*
+import astminer.common.model.LabelExtractor
+import astminer.labelextractor.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -8,11 +9,6 @@ import kotlinx.serialization.Transient
 @Serializable
 sealed class LabelExtractorConfig {
     abstract val labelExtractorImpl: LabelExtractor
-
-    val granularity: Granularity
-        get() = labelExtractorImpl.granularity
-
-    abstract val serialName: String
 }
 
 /**
@@ -23,8 +19,6 @@ sealed class LabelExtractorConfig {
 class FileNameExtractorConfig : LabelExtractorConfig() {
     @Transient
     override val labelExtractorImpl = FileNameExtractor
-    @Transient
-    override val serialName = "file name"
 }
 
 /**
@@ -35,8 +29,6 @@ class FileNameExtractorConfig : LabelExtractorConfig() {
 class FolderNameExtractorConfig : LabelExtractorConfig() {
     @Transient
     override val labelExtractorImpl = FolderNameExtractor
-    @Transient
-    override val serialName = "folder name"
 }
 
 /**
@@ -47,7 +39,4 @@ class FolderNameExtractorConfig : LabelExtractorConfig() {
 class FunctionNameExtractorConfig : LabelExtractorConfig() {
     @Transient
     override val labelExtractorImpl = FunctionNameLabelExtractor
-
-    @Transient
-    override val serialName = "function name"
 }

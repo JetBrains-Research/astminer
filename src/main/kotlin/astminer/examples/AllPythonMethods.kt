@@ -1,6 +1,6 @@
 package astminer.examples
 
-import astminer.problem.LabeledResult
+import astminer.labelextractor.LabeledResult
 import astminer.common.model.FunctionInfo
 import astminer.parse.gumtree.python.GumTreePythonFunctionSplitter
 import astminer.parse.gumtree.GumTreeNode
