@@ -1,11 +1,10 @@
 package astminer.examples
 
-import astminer.cli.LabeledResult
+import astminer.common.model.LabeledResult
 import astminer.common.model.FunctionInfo
 import astminer.parse.gumtree.GumTreeNode
 import astminer.parse.gumtree.java.GumTreeJavaParser
 import astminer.parse.gumtree.java.GumTreeJavaFunctionSplitter
-import astminer.storage.*
 import astminer.storage.path.Code2VecPathStorage
 import astminer.storage.path.PathBasedStorageConfig
 import java.io.File
