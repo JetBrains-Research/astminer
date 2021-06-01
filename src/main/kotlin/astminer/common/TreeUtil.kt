@@ -7,23 +7,19 @@ const val DEFAULT_TOKEN = "EMPTY"
  * https://github.com/tech-srl/code2vec/blob/master/JavaExtractor/JPredict/src/main/java/JavaExtractor/Common/Common.java
  */
 fun normalizeToken(token: String, defaultToken: String): String {
-    val cleanToken = token.toLowerCase()
+    val cleanToken = token.lowercase()
             .replace("\\\\n".toRegex(), "") // escaped new line
             .replace("//s+".toRegex(), "") // whitespaces
-            .replace("[\"',]".toRegex(), "") // quotes, apostrophies, commas
+            .replace("[\"',]".toRegex(), "") // quotes, apostrophes, commas
             .replace("\\P{Print}".toRegex(), "") // unicode weird characters
 
     val stripped = cleanToken.replace("[^A-Za-z]".toRegex(), "")
 
-    return if (stripped.isEmpty()) {
+    return stripped.ifEmpty {
         val carefulStripped = cleanToken.replace(" ", "_")
-        if (carefulStripped.isEmpty()) {
+        carefulStripped.ifEmpty {
             defaultToken
-        } else {
-            carefulStripped
         }
-    } else {
-        stripped
     }
 }
 
