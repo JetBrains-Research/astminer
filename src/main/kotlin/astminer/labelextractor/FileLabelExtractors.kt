@@ -1,13 +1,10 @@
 package astminer.labelextractor
 
-import astminer.common.model.LabelExtractor
+import astminer.common.model.FileLabelExtractor
+import astminer.common.model.LabeledResult
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
 import java.io.File
-
-interface FileLabelExtractor : LabelExtractor {
-    fun process(parseResult: ParseResult<out Node>): LabeledResult<out Node>?
-}
 
 /**
  * Labels files with folder names

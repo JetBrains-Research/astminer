@@ -2,6 +2,7 @@ package astminer.labelextractor
 
 import astminer.common.DummyNode
 import astminer.common.model.FunctionInfo
+import astminer.common.model.LabeledResult
 import astminer.common.model.Node
 import org.junit.Before
 import org.junit.Test

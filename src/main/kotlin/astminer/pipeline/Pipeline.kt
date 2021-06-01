@@ -6,9 +6,9 @@ import astminer.parse.getHandlerFactory
 import astminer.pipeline.branch.FilePipelineBranch
 import astminer.pipeline.branch.FunctionPipelineBranch
 import astminer.pipeline.branch.IllegalLabelExtractorException
-import astminer.labelextractor.FileLabelExtractor
-import astminer.labelextractor.FunctionLabelExtractor
-import astminer.storage.Storage
+import astminer.common.model.FileLabelExtractor
+import astminer.common.model.FunctionLabelExtractor
+import astminer.common.model.Storage
 import java.io.File
 
 /**

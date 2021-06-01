@@ -1,6 +1,6 @@
 package astminer.common.model
 
-import astminer.labelextractor.LabeledResult
+import astminer.common.model.LabeledResult
 import astminer.common.DEFAULT_TOKEN
 import astminer.common.splitToSubtokens
 import java.io.File

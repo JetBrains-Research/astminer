@@ -1,9 +1,6 @@
 package astminer.filters
 
-import astminer.common.model.FunctionInfo
-import astminer.common.model.Node
-import astminer.common.model.ParseResult
-import astminer.common.splitToSubtokens
+import astminer.common.model.*
 import astminer.featureextraction.NumberOfNodes
 
 /**

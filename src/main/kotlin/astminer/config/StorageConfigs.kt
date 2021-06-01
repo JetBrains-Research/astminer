@@ -1,6 +1,6 @@
 package astminer.config
 
-import astminer.storage.Storage
+import astminer.common.model.Storage
 import astminer.storage.ast.CsvAstStorage
 import astminer.storage.ast.DotAstStorage
 import astminer.storage.path.Code2VecPathStorage

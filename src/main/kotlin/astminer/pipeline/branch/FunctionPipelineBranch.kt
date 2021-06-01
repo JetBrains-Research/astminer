@@ -1,10 +1,6 @@
 package astminer.pipeline.branch
 
-import astminer.common.model.Filter
-import astminer.common.model.FunctionInfo
-import astminer.common.model.LanguageHandler
-import astminer.common.model.Node
-import astminer.filters.*
+import astminer.common.model.*
 import astminer.labelextractor.*
 
 
@@ -31,4 +27,3 @@ class FunctionPipelineBranch(
             .filter { functionInfo -> passesThroughFilters(functionInfo) }
             .mapNotNull { functionInfo -> labelExtractor.process(functionInfo) }
 }
-

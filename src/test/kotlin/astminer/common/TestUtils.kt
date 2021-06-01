@@ -1,6 +1,6 @@
 package astminer.common
 
-import astminer.labelextractor.LabeledResult
+import astminer.common.model.LabeledResult
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
 

@@ -1,10 +1,7 @@
 package astminer.pipeline.branch
 
-import astminer.common.model.LanguageHandler
-import astminer.common.model.Node
-import astminer.common.model.ParseResult
-import astminer.filters.FileFilter
-import astminer.common.model.Filter
+import astminer.common.model.*
+import astminer.common.model.FileFilter
 import astminer.labelextractor.*
 
 /**
@@ -33,5 +30,4 @@ class FilePipelineBranch(
             emptyList()
         }
     }
-
 }

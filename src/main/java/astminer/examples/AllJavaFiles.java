@@ -1,6 +1,6 @@
 package astminer.examples;
 
-import astminer.labelextractor.LabeledResult;
+import astminer.common.model.LabeledResult;
 import astminer.common.model.*;
 import astminer.parse.gumtree.java.GumTreeJavaParser;
 import astminer.storage.path.Code2VecPathStorage;

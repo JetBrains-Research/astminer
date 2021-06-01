@@ -1,12 +1,9 @@
 package astminer.labelextractor
 
 import astminer.common.model.FunctionInfo
-import astminer.common.model.LabelExtractor
+import astminer.common.model.FunctionLabelExtractor
+import astminer.common.model.LabeledResult
 import astminer.common.model.Node
-
-interface FunctionLabelExtractor : LabelExtractor {
-    fun process(functionInfo: FunctionInfo<out Node>): LabeledResult<out Node>?
-}
 
 /**
  * Labels functions with their names.

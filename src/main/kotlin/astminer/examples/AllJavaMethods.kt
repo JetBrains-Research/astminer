@@ -1,6 +1,6 @@
 package astminer.examples
 
-import astminer.labelextractor.LabeledResult
+import astminer.common.model.LabeledResult
 import astminer.common.model.FunctionInfo
 import astminer.parse.gumtree.GumTreeNode
 import astminer.parse.gumtree.java.GumTreeJavaParser

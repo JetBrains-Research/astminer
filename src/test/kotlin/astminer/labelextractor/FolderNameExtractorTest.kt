@@ -1,5 +1,6 @@
 package astminer.labelextractor
 
+import astminer.common.model.LabeledResult
 import astminer.common.model.ParseResult
 import astminer.parse.antlr.AntlrNode
 import org.junit.Test
