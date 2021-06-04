@@ -17,7 +17,7 @@ fun allJavaFiles() {
     File(inputDir).forFilesWithSuffix("11.java") { file ->
         val node = JavaParser().parseInputStream(file.inputStream())
         node.prettyPrint()
-        JavaFunctionSplitter().splitIntoFunctions(node).forEach {
+        JavaFunctionSplitter().splitIntoFunctions(node, file.path).forEach {
             println(it.name)
             println(it.returnType)
             println(it.enclosingElement?.name)
