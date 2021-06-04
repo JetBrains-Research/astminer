@@ -3,6 +3,7 @@ package astminer.config
 import astminer.common.model.Storage
 import astminer.storage.ast.CsvAstStorage
 import astminer.storage.ast.DotAstStorage
+import astminer.storage.ast.JsonAstStorage
 import astminer.storage.path.Code2VecPathStorage
 import astminer.storage.path.PathBasedStorageConfig
 import kotlinx.serialization.SerialName
@@ -34,6 +35,15 @@ class CsvAstStorageConfig : StorageConfig() {
 @SerialName("DotAST")
 class DotAstStorageConfig : StorageConfig() {
     override fun createStorage(outputDirectoryPath: String) = DotAstStorage(outputDirectoryPath)
+}
+
+/**
+ * @see JsonAstStorage
+ */
+@Serializable
+@SerialName("JsonAST")
+class JsonAstStorageConfig : StorageConfig() {
+    override fun createStorage(outputDirectoryPath: String) = JsonAstStorage(outputDirectoryPath)
 }
 
 /**
