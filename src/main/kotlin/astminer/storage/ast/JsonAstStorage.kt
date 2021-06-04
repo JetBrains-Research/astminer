@@ -47,32 +47,39 @@ class JsonAstStorage(override val outputDirectoryPath: String) : Storage {
     override fun close() {
         writer.close()
     }
-}
-
-/**
- * Gives ids to all nodes in the tree
- */
-class TreeEnumerator {
-    private val result = mutableListOf<EnumeratedNode>()
 
     /**
-     * Node that has been given an Id.
-     * Also all his children have been given ids.
+     * Gives ids to all nodes in the tree
      */
-    data class EnumeratedNode(val id: Id, val node: Node, val children: List<EnumeratedNode>)
+    internal class TreeEnumerator {
+        /**
+         * Node that has been given an Id.
+         * Also all his children have been given ids.
+         */
+        data class EnumeratedNode(val id: Id, val node: Node, val children: List<EnumeratedNode>, val treeSize: Int)
 
-    private fun enumerateSubtree(node: Node): EnumeratedNode {
-        val children = node.children.map { enumerateSubtree(it) }
-        return EnumeratedNode(result.size, node, children).also { result.add(it) }
-    }
+        private fun enumerateTree(node: Node, currentId: Id = 0): EnumeratedNode {
+            var nChildren = 0
+            val children = node.children.map { child ->
+                val enumeratedChild = enumerateTree(child, currentId + nChildren + 1)
+                nChildren += enumeratedChild.treeSize
+                enumeratedChild
+            }
+            return EnumeratedNode(currentId, node, children, nChildren + 1)
+        }
 
-    /**
-     * Enumerates the given tree and returns the flattened tree.
-     * Enumerated node's id must be equal to its index in the returned list
-     */
-    fun enumerate(node: Node): List<EnumeratedNode> {
-        result.clear()
-        enumerateSubtree(node)
-        return result
+        private fun flattenTree(enumeratedNode: EnumeratedNode): List<EnumeratedNode> {
+            val result = mutableListOf(enumeratedNode)
+            for (child in enumeratedNode.children) {
+                result.addAll(flattenTree(child))
+            }
+            return result
+        }
+
+        /**
+         * Enumerates the given tree and returns the flattened tree.
+         * Enumerated node's id must be equal to its index in the returned list
+         */
+        fun enumerate(node: Node): List<EnumeratedNode> = flattenTree(enumerateTree(node))
     }
 }

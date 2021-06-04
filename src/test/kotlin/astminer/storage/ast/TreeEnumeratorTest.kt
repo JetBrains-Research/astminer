@@ -8,12 +8,12 @@ import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class TreeEnumeratorTest {
-    lateinit var treeEnumerator: TreeEnumerator
+internal class TreeEnumeratorTest {
+    private lateinit var treeEnumerator: JsonAstStorage.TreeEnumerator
 
     @Before
     fun init() {
-        treeEnumerator = TreeEnumerator()
+        treeEnumerator = JsonAstStorage.TreeEnumerator()
     }
 
     private data class EnumeratedResult(val id: Int, val typeLabel: String, val children: List<Int> = emptyList())
@@ -42,7 +42,7 @@ class TreeEnumeratorTest {
     fun `test on small bamboo`() {
         val bamboo = createBamboo(10)
         val expected = List(10) { i ->
-            EnumeratedResult(i, (10 - i).toString(), if (i == 0) emptyList() else listOf(i - 1))
+            EnumeratedResult(i, (i + 1).toString(), if (i == 9) emptyList() else listOf(i + 1))
         }
         assertEquals(expected, enumerate(bamboo))
     }
@@ -51,7 +51,7 @@ class TreeEnumeratorTest {
     fun `test on big bamboo`() {
         val bamboo = createBamboo(1000)
         val expected = List(1000) { i ->
-            EnumeratedResult(i, (1000 - i).toString(), if (i == 0) emptyList() else listOf(i - 1))
+            EnumeratedResult(i, (i + 1).toString(), if (i == 999) emptyList() else listOf(i + 1))
         }
         assertEquals(expected, enumerate(bamboo))
     }
@@ -60,10 +60,10 @@ class TreeEnumeratorTest {
     fun `test on very small dummy tree`() {
         val node = createSmallTree()
         val expected = listOf(
-            EnumeratedResult(0, "2"),
-            EnumeratedResult(1, "4"),
-            EnumeratedResult(2, "3", listOf(1)),
-            EnumeratedResult(3, "1", listOf(0, 2))
+            EnumeratedResult(0, "1", listOf(1, 2)),
+            EnumeratedResult(1, "2"),
+            EnumeratedResult(2, "3", listOf(3)),
+            EnumeratedResult(3, "4")
         )
         assertEquals(expected, enumerate(node))
     }
@@ -72,14 +72,14 @@ class TreeEnumeratorTest {
     fun `test on small dummy tree`() {
         val node = createDummyTree()
         val expected = listOf(
-            EnumeratedResult(0, "4"),
-            EnumeratedResult(1, "5"),
-            EnumeratedResult(2, "6"),
-            EnumeratedResult(3, "2", listOf(0, 1, 2)),
-            EnumeratedResult(4, "7"),
-            EnumeratedResult(5, "8"),
-            EnumeratedResult(6, "3", listOf(4, 5)),
-            EnumeratedResult(7, "1", listOf(3, 6))
+            EnumeratedResult(0, "1", listOf(1, 5)),
+            EnumeratedResult(1, "2", listOf(2, 3, 4)),
+            EnumeratedResult(2, "4"),
+            EnumeratedResult(3, "5"),
+            EnumeratedResult(4, "6"),
+            EnumeratedResult(5, "3", listOf(6, 7)),
+            EnumeratedResult(6, "7"),
+            EnumeratedResult(7, "8")
         )
         assertEquals(expected, enumerate(node))
     }
