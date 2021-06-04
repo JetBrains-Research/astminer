@@ -8,7 +8,7 @@ import astminer.parse.antlr.hasLastLabel
 class PythonFunctionSplitter : TreeFunctionSplitter<AntlrNode> {
     private val methodNode = "funcdef"
 
-    override fun splitIntoFunctions(root: AntlrNode, filePath: String): Collection<FunctionInfo<AntlrNode>> {
+    override fun collectFunctionInfo(root: AntlrNode, filePath: String): Collection<FunctionInfo<AntlrNode>> {
         val methodRoots = root.preOrder().filter {
             (it).hasLastLabel(methodNode)
         }

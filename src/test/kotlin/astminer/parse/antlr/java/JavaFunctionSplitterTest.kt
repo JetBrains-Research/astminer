@@ -22,7 +22,7 @@ class JavaFunctionSplitterTest {
     fun parseTree() {
         val testTree =  parser.parseInputStream(File(FILE_PATH).inputStream())
         assertNotNull(testTree)
-        functionInfos = functionSplitter.splitIntoFunctions(testTree, FILE_PATH)
+        functionInfos = functionSplitter.collectFunctionInfo(testTree, FILE_PATH)
     }
 
     @Test

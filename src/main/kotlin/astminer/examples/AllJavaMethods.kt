@@ -31,7 +31,7 @@ fun allJavaMethods() {
         val fileNode = GumTreeJavaParser().parseInputStream(file.inputStream())
 
         //extract method nodes
-        val methodNodes = GumTreeJavaFunctionSplitter().splitIntoFunctions(fileNode, file.path)
+        val methodNodes = GumTreeJavaFunctionSplitter().collectFunctionInfo(fileNode, file.path)
 
         methodNodes.forEach { methodInfo ->
             //Retrieve a method identifier
