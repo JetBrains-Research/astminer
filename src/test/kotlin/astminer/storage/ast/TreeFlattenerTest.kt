@@ -8,18 +8,18 @@ import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 
-internal class TreeEnumeratorTest {
-    private lateinit var treeEnumerator: JsonAstStorage.TreeEnumerator
+internal class TreeFlattenerTest {
+    private lateinit var treeFlattener: TreeFlattener
 
     @Before
     fun init() {
-        treeEnumerator = JsonAstStorage.TreeEnumerator()
+        treeFlattener = TreeFlattener()
     }
 
     private data class EnumeratedResult(val id: Int, val typeLabel: String, val children: List<Int> = emptyList())
 
     private fun enumerate(node: DummyNode): List<EnumeratedResult> {
-        val enumeratedNodes = treeEnumerator.enumerate(node)
+        val enumeratedNodes = treeFlattener.flatten(node)
         return enumeratedNodes.map { EnumeratedResult(it.id, it.node.typeLabel, it.children.map { child -> child.id }) }
     }
 
@@ -32,7 +32,7 @@ internal class TreeEnumeratorTest {
 
     @Test
     fun `test should be reusable`() {
-        treeEnumerator.enumerate(DummyNode("something previous"))
+        treeFlattener.flatten(DummyNode("something previous"))
         val node = DummyNode("a")
         val expected = listOf(EnumeratedResult(0, "a"))
         assertEquals(expected, enumerate(node))

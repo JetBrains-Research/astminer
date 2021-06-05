@@ -17,7 +17,7 @@ private typealias Id = Int
  * Each tree is flattened and represented as a list of nodes.
  */
 class JsonAstStorage(override val outputDirectoryPath: String) : Storage {
-    private val treeEnumerator = TreeEnumerator()
+    private val treeFlattener = TreeFlattener()
 
     private val writer: PrintWriter
 
@@ -35,11 +35,11 @@ class JsonAstStorage(override val outputDirectoryPath: String) : Storage {
     @Serializable
     private data class OutputNode(val token: String, val typeLabel: String, val children: List<Id>)
 
-    private fun TreeEnumerator.EnumeratedNode.toOutputNode() =
+    private fun TreeFlattener.EnumeratedNode.toOutputNode() =
         OutputNode(node.token, node.typeLabel, children.map { it.id })
 
     override fun store(labeledResult: LabeledResult<out Node>) {
-        val outputNodes = treeEnumerator.enumerate(labeledResult.root).map { it.toOutputNode() }
+        val outputNodes = treeFlattener.flatten(labeledResult.root).map { it.toOutputNode() }
         val labeledAst = LabeledAst(labeledResult.label, outputNodes)
         writer.println(Json.encodeToString(labeledAst))
     }
@@ -47,39 +47,42 @@ class JsonAstStorage(override val outputDirectoryPath: String) : Storage {
     override fun close() {
         writer.close()
     }
+}
+
+/**
+ * Gives ids to all nodes in the tree and flattens the tree
+ */
+class TreeFlattener {
+    private var currentId: Id = 0
 
     /**
-     * Gives ids to all nodes in the tree
+     * Node that has been given an Id.
+     * Also all his children have been given ids.
      */
-    internal class TreeEnumerator {
-        /**
-         * Node that has been given an Id.
-         * Also all his children have been given ids.
-         */
-        data class EnumeratedNode(val id: Id, val node: Node, val children: List<EnumeratedNode>, val treeSize: Int)
+    data class EnumeratedNode(val id: Id, val node: Node, val children: List<EnumeratedNode>)
 
-        private fun enumerateTree(node: Node, currentId: Id = 0): EnumeratedNode {
-            var nChildren = 0
-            val children = node.children.map { child ->
-                val enumeratedChild = enumerateTree(child, currentId + nChildren + 1)
-                nChildren += enumeratedChild.treeSize
-                enumeratedChild
-            }
-            return EnumeratedNode(currentId, node, children, nChildren + 1)
+    private fun enumerateTree(node: Node): EnumeratedNode {
+        val nodeId = currentId
+        currentId += 1
+        return EnumeratedNode(nodeId, node, node.children.map { enumerateTree(it) })
+    }
+
+    private fun putFlattenedTree(enumeratedNode: EnumeratedNode, flattenedTree: MutableList<EnumeratedNode>) {
+        flattenedTree.add(enumeratedNode)
+        for (child in enumeratedNode.children) {
+            putFlattenedTree(child, flattenedTree)
         }
+    }
 
-        private fun flattenTree(enumeratedNode: EnumeratedNode): List<EnumeratedNode> {
-            val result = mutableListOf(enumeratedNode)
-            for (child in enumeratedNode.children) {
-                result.addAll(flattenTree(child))
-            }
-            return result
-        }
-
-        /**
-         * Enumerates the given tree and returns the flattened tree.
-         * Enumerated node's id must be equal to its index in the returned list
-         */
-        fun enumerate(node: Node): List<EnumeratedNode> = flattenTree(enumerateTree(node))
+    /**
+     * Enumerates the given tree and returns the flattened tree.
+     * Enumerated node's id must be equal to its index in the returned list
+     */
+    fun flatten(node: Node): List<EnumeratedNode> {
+        currentId = 0
+        val enumeratedTree = enumerateTree(node)
+        val result = mutableListOf<EnumeratedNode>()
+        putFlattenedTree(enumeratedTree, result)
+        return result
     }
 }
