@@ -1,7 +1,7 @@
 package astminer.common.model
 
 interface TreeFunctionSplitter<T : Node> {
-    fun splitIntoFunctions(root: T): Collection<FunctionInfo<T>>
+    fun splitIntoFunctions(root: T, filePath: String): Collection<FunctionInfo<T>>
 }
 
 class FunctionInfoPropertyNotImplementedException(propertyName: String) :
