@@ -76,13 +76,13 @@ Run
 ./cli.sh path/to/config.yaml
 ```
 
-Where `path/to/config.yaml` is a path to a [configuration file](#configuration-file-reference) in a YAML format.
+Where `path/to/config.yaml` is a path to a [configuration file](#configuration-file) in YAML format.
 
-### Configuration file reference
+### Configuration file
 
 #### Examples
 
-Config examples can be found in the `configs/` folder.
+Config examples can be found in the [configs folder](configs).
 
 #### Input and output folders
 
@@ -113,7 +113,7 @@ parser:
 Filters can exclude irrelevant data from the output. The `filters` section is a list of filters, where each filter has
 a `name` and individual parameters.
 
-[List of supported filters](#supported-filters)
+[List of supported filters](#suppo)
 
 ```yaml
 filters:
@@ -218,7 +218,7 @@ id, end token id, separated with commas.
 If csv format is used, each line in `path_contexts.csv` contains label, then comma, then a sequence of `;`-separated
 triples. Each triple contains start token id, path id, end token id, separated with spaces.
 
-## Supported features
+## Supported data mining steps
 
 ### Supported parsers and programming languages
 
@@ -226,14 +226,14 @@ triples. Each triple contains start token id, path id, end token id, separated w
 * `gumtree`: `java`, `python`
 * `fuzzy`: `c`, `cpp`
 
-Parser config class is defined in `src/main/kotlin/astminer/config/ParserConfig.kt`.
+Parser config class is defined in [ParserConfig.kt](src/main/kotlin/astminer/config/ParserConfig.kt).
 
 ### Supported filters
 
 Each filter works only for certain levels of granularity which are stated in the brackets. For
 example, `no constructors (functions)` works only with function granularity.
 
-Filter config classes are defined in `src/main/kotlin/astminer/config/FilterConfigs.kt`.
+Filter config classes are defined in [FilterConfigs.kt](src/main/kotlin/astminer/config/FilterConfigs.kt).
 
 #### by tree size (files & functions)
 
@@ -293,7 +293,7 @@ modifiers: [ 'private' ]
 
 `labelExtractor` selects what granularity level will be used.
 
-Label extractor config classes are defined in `src/main/kotlin/astminer/config/LabelExtractorConfigs.kt`.
+Label extractor config classes are defined in [LabelExtractorConfigs.kt](src/main/kotlin/astminer/config/LabelExtractorConfigs.kt).
 
 #### file name (selects file granularity)
 
@@ -317,9 +317,9 @@ name: 'function name'
 
 ### Supported output formats (storages)
 
-All output formats are described in [output format](#output-format).
+All output formats are described in [the section above](#output-format).
 
-Storage config classes are defined in `src/main/kotlin/astminer/config/StorageConfigs.kt`.
+Storage config classes are defined in [StorageConfigs.kt](src/main/kotlin/astminer/config/StorageConfigs.kt).
 
 #### AST formats
 
