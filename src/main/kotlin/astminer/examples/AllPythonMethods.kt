@@ -27,7 +27,7 @@ fun allPythonMethods() {
         val fileNode = GumTreePythonParser().parseInputStream(file.inputStream())
 
         // extract method nodes
-        val methodNodes = GumTreePythonFunctionSplitter().collectFunctionInfo(fileNode, file.path)
+        val methodNodes = GumTreePythonFunctionSplitter().splitIntoFunctions(fileNode, file.path)
 
         methodNodes.forEach { methodInfo ->
             // Retrieve a method identifier

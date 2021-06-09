@@ -29,7 +29,7 @@ class FuzzyMethodSplitterTest {
         Assume.assumeTrue(checkExecutable("g++"))
         val testTree =  parser.parseInputStream(File("src/test/resources/methodSplitting/testMethodSplitting.cpp").inputStream())
         assertNotNull(testTree)
-        methodInfos = methodSplitter.collectFunctionInfo(testTree, FILE_PATH)
+        methodInfos = methodSplitter.splitIntoFunctions(testTree, FILE_PATH)
     }
 
     @Test
