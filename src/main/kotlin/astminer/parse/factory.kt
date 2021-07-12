@@ -8,6 +8,13 @@ import astminer.parse.antlr.AntlrPythonParsedFileFactory
 import astminer.parse.gumtree.GumtreeJavaParsedFileFactory
 import astminer.parse.gumtree.GumtreePythonParsedFileFactory
 
+/**
+ * Returns proper Parsed file factory for given language and parser
+ * @see ParsedFileFactory
+ *
+ * @param extension Target file extension ("py" or "java" for example)
+ * @param parserType Chosen parser
+ */
 fun getParsedFileFactory(extension: String, parserType: String): ParsedFileFactory {
     return when (parserType) {
         "gumtree" -> getGumTreeParsedFileFactory(extension)
@@ -20,7 +27,7 @@ fun getParsedFileFactory(extension: String, parserType: String): ParsedFileFacto
 private fun getGumTreeParsedFileFactory(extension: String): ParsedFileFactory {
     return when (extension) {
         "java" -> GumtreeJavaParsedFileFactory
-        "python" -> GumtreePythonParsedFileFactory
+        "py" -> GumtreePythonParsedFileFactory
         else -> throw UnsupportedParserOrLanguageException(extension, "GumTree")
     }
 }
@@ -28,8 +35,8 @@ private fun getGumTreeParsedFileFactory(extension: String): ParsedFileFactory {
 private fun getAntlrParsedFileFactory(extension: String): ParsedFileFactory {
     return when (extension) {
         "java" -> AntlrJavaParsedFileFactory
-        "javascript" -> AntlrJavascriptParsedFileFactory
-        "python" -> AntlrPythonParsedFileFactory
+        "js" -> AntlrJavascriptParsedFileFactory
+        "py" -> AntlrPythonParsedFileFactory
         "php" -> AntlrPHPParsedFileFactory
         else -> throw UnsupportedParserOrLanguageException(extension, "ANTLR")
     }
