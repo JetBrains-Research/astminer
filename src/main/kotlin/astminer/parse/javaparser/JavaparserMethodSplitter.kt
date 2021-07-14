@@ -7,6 +7,12 @@ class JavaparserMethodSplitter: TreeFunctionSplitter<JavaParserNode> {
     val METHOD_DECLARATION = "Mth"
 
     override fun splitIntoFunctions(root: JavaParserNode, filePath: String): Collection<FunctionInfo<JavaParserNode>> {
-        return root.preOrder().filter { it.typeLabel == METHOD_DECLARATION }.map { JavaparserFunctionInfo(it, filePath) }
+        val methods = mutableListOf<FunctionInfo<JavaParserNode>>()
+        for (methodRoot in root.preOrder().filter { it.typeLabel == METHOD_DECLARATION }) {
+            try {
+                methods.add(JavaparserFunctionInfo(methodRoot, filePath))
+            } catch (e: IllegalStateException) { }
+        }
+        return methods
     }
 }
