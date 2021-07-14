@@ -29,5 +29,6 @@ enum class FileExtension(val fileExtension: String) {
     @SerialName("java") Java("java"),
     @SerialName("js") JavaScript("js"),
     @SerialName("c") C("c"),
-    @SerialName("cpp") Cpp("cpp")
+    @SerialName("cpp") Cpp("cpp"),
+    @SerialName("php") PHP("php")
 }
