@@ -59,7 +59,7 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
         val returnTypeNode = parameterNode.getChildOfType(PARAMETER_RETURN_TYPE_NODE)
         val returnTypeToken = returnTypeNode?.getTokensFromSubtree()
 
-        val parameterName = parameterNode.getChildOfType(PARAMETER_NAME_NODE)?.originalToken
+        val parameterName = parameterNode.getChildOfType(PARAMETER_NAME_NODE)?.getTokensFromSubtree()
             ?: throw IllegalStateException("Parameter name wasn't found")
 
         return FunctionInfoParameter(parameterName, returnTypeToken)

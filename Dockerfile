@@ -2,8 +2,8 @@ FROM ubuntu:20.04
 
 LABEL desc="Docker container to run ASTMiner with all preinstalled requirements"
 
-# Instal OpenJDK8
-RUN apt-get update && apt-get install -y openjdk-8-jdk
+# Instal OpenJDK11
+RUN apt-get update && apt-get install -y openjdk-11-jdk
 
 # Install G++ (required for Fuzzy parser)
 RUN apt-get update && apt-get install -y g++
