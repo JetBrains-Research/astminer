@@ -11,7 +11,7 @@ internal class JavaparserMethodSplitterTest {
 
     companion object {
         const val FILE_PATH = "src/test/resources/methodSplitting/testMethodSplitting.java"
-        const val N_FUNCTIONS = 9
+        const val N_FUNCTIONS = 10
         val functionSplitter = JavaparserMethodSplitter()
         val parser = JavaParserParseWrapper()
     }
