@@ -8,7 +8,7 @@ import com.github.javaparser.ast.Node as JPNode
 
 /* Be aware that JPNode is just an alias for Node from javaparser*/
 class JavaParserNode(jpNode: JPNode, override val parent: Node?) : Node() {
-    override val children: MutableList<Node> = run {
+    override val children: MutableList<JavaParserNode> = run {
         jpNode.childNodes.map { subTree -> JavaParserNode(subTree, this) }.toMutableList()
     }
 
