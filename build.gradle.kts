@@ -5,11 +5,10 @@ version = "0.6.4"
 
 plugins {
     id("java")
-    kotlin("jvm") version "1.4.32" apply true
+    kotlin("jvm") version "1.5.10" apply true
     id("antlr")
-    id("idea")
     id("application")
-    id("org.jetbrains.dokka") version "0.9.18"
+    id("org.jetbrains.dokka") version "1.4.32"
     id("me.champeau.gradle.jmh") version "0.5.0"
     id("maven-publish")
     id("tanvd.kosogor") version "1.0.10" apply true
@@ -34,27 +33,26 @@ dependencies {
     implementation("com.github.javaparser:javaparser-symbol-solver-core:3.22.1")
 
     // https://mvnrepository.com/artifact/io.shiftleft/fuzzyc2cpg
-    api("io.shiftleft", "fuzzyc2cpg_2.13", "1.2.9")
+    api("io.shiftleft", "fuzzyc2cpg_2.13", "1.2.30")
 
     // ===== Main =====
     implementation(kotlin("stdlib"))
-    implementation("com.github.ajalt", "clikt", "2.1.0")
+    implementation("com.github.ajalt.clikt", "clikt", "3.2.0")
     implementation("com.charleskorn.kaml:kaml:0.33.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.0")
 
-
     // ===== Logging =====
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
     implementation("org.slf4j", "slf4j-simple", "1.7.30")
     implementation("io.github.microutils:kotlin-logging:1.5.9")
 
 
     // ===== Test =====
-    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-    testImplementation("junit:junit:4.11")
+    testImplementation("junit:junit:4.13.2")
     testImplementation(kotlin("test-junit"))
 
     // ===== JMH =====
-    jmhImplementation("org.jetbrains.kotlin:kotlin-reflect:1.4.32")
+    jmhImplementation("org.jetbrains.kotlin:kotlin-reflect:1.5.0")
     jmhImplementation("org.openjdk.jmh:jmh-core:1.21")
     jmhImplementation("org.openjdk.jmh:jmh-generator-annprocess:1.21")
 }
@@ -87,17 +85,16 @@ tasks.clean {
 
 tasks.compileKotlin {
     dependsOn(tasks.generateGrammarSource)
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "11"
 }
 tasks.compileJava {
     dependsOn(tasks.generateGrammarSource)
-    targetCompatibility = "1.8"
-    sourceCompatibility = "1.8"
+    targetCompatibility = "11"
+    sourceCompatibility = "11"
 }
 
-tasks.dokka {
-    outputFormat = "html"
-    outputDirectory = "$buildDir/javadoc"
+tasks.dokkaHtml.configure {
+    outputDirectory.set(buildDir.resolve("javadoc"))
 }
 
 jmh {

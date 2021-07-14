@@ -24,4 +24,6 @@ class Class1 {
     void functionWithOneParameter(int p1) {}
 
     void functionWithThreeParameters(Class p1, String[][] p2, int[]... p3) {}
+
+    void functionWithStrangeArrayParameter(int arr[]) {}
 }
