@@ -79,12 +79,12 @@ tasks.clean {
 
 tasks.compileKotlin {
     dependsOn(tasks.generateGrammarSource)
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "11"
 }
 tasks.compileJava {
     dependsOn(tasks.generateGrammarSource)
-    targetCompatibility = "1.8"
-    sourceCompatibility = "1.8"
+    targetCompatibility = "11"
+    sourceCompatibility = "11"
 }
 
 tasks.dokkaHtml.configure {
