@@ -28,14 +28,14 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
             .mapNotNull { try {assembleParameter(it)} catch (e: IllegalStateException) {null} }
 
     private fun assembleParameter(node: JavaParserNode): FunctionInfoParameter {
-        return FunctionInfoParameter(type = getType(node), name = getParameterName(node))
+        return FunctionInfoParameter(type = getParameterType(node), name = getParameterName(node))
     }
 
-    private fun getType(node: JavaParserNode): String {
+    private fun getParameterType(node: JavaParserNode): String {
         val possibleType = node.children.find { it.typeLabel != PARAMETER_NAME }
             ?: throw IllegalStateException("Can't find parameter type")
         return when (possibleType.typeLabel) {
-            ARRAY_TYPE -> getType(possibleType) + ARRAY_BRACKETS
+            ARRAY_TYPE -> getParameterType(possibleType) + ARRAY_BRACKETS
             PRIMITIVE_TYPE -> possibleType.originalToken
             CLASS_OR_INTERFACE_TYPE -> possibleType.getChildOfType(CLASS_NAME)?.originalToken
             else -> null
