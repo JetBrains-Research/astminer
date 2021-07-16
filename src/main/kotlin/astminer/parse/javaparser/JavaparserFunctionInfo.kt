@@ -1,7 +1,10 @@
 package astminer.parse.javaparser
 
+import astminer.common.model.EnclosingElement
+import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
 import astminer.common.model.FunctionInfoParameter
+import astminer.parse.findEnclosingElementBy
 
 class JavaparserFunctionInfo(override val root: JavaParserNode, override val filePath: String) :
     FunctionInfo<JavaParserNode> {
@@ -12,7 +15,8 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
         const val ARRAY_TYPE = "ArTy"
         const val ARRAY_BRACKETS = "[]"
         const val PRIMITIVE_TYPE = "Prim"
-        const val CLASS_OR_TYPE_DECLARATION = "Cls"
+        const val CLASS_OR_INTERFACE_TYPE = "Cls"
+        const val CLASS_OR_INTERFACE_DECLARATION = "ClsD"
         const val CLASS_NAME = "SimpleName"
     }
 
@@ -33,7 +37,7 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
         return when (possibleType.typeLabel) {
             ARRAY_TYPE -> getType(possibleType) + ARRAY_BRACKETS
             PRIMITIVE_TYPE -> possibleType.originalToken
-            CLASS_OR_TYPE_DECLARATION -> possibleType.getChildOfType(CLASS_NAME)?.originalToken
+            CLASS_OR_INTERFACE_TYPE -> possibleType.getChildOfType(CLASS_NAME)?.originalToken
             else -> null
         } ?: throw IllegalStateException("Can't find parameter type")
     }
@@ -41,5 +45,17 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
     private fun getParameterName(node: JavaParserNode): String {
         return node.getChildOfType(PARAMETER_NAME)?.originalToken
             ?: throw IllegalStateException("Can't find parameter name")
+    }
+
+    override val enclosingElement: EnclosingElement<JavaParserNode>?
+        = root.findEnclosingElementBy { it.typeLabel == CLASS_OR_INTERFACE_DECLARATION }?.assembleEnclosingClass()
+
+    private fun JavaParserNode.assembleEnclosingClass(): EnclosingElement<JavaParserNode> {
+        val name = this.getChildOfType(CLASS_NAME)?.originalToken
+        return EnclosingElement(
+            type = EnclosingElementType.Class,
+            name = name,
+            root = this
+        )
     }
 }

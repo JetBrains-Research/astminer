@@ -1,5 +1,6 @@
 package astminer.parse.javaparser
 
+import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
 import org.junit.Test
 import java.io.File
@@ -8,7 +9,6 @@ import kotlin.test.assertNotNull
 import kotlin.test.BeforeTest
 
 internal class JavaparserMethodSplitterTest {
-
     companion object {
         const val FILE_PATH = "src/test/resources/methodSplitting/testMethodSplitting.java"
         const val N_FUNCTIONS = 10
@@ -69,5 +69,21 @@ internal class JavaparserMethodSplitterTest {
         // TODO: consider how name and type should be extracted in this case
         assertEquals("arr[]", weirdParameter.name)
         assertEquals("int[]", weirdParameter.type)
+    }
+
+    @Test
+    fun testFunctionInClass() {
+        val methodClass = functionInfos.find { it.name == "functionInClass1"  }
+        assertNotNull(methodClass)
+        assertEquals(EnclosingElementType.Class, methodClass.enclosingElement?.type)
+        assertEquals( "Class1", methodClass.enclosingElement?.name)
+    }
+
+    @Test
+    fun testFunctionInNestedClass() {
+        val methodClass = functionInfos.find { it.name == "functionInClass2"  }
+        assertNotNull(methodClass)
+        assertEquals(EnclosingElementType.Class, methodClass.enclosingElement?.type)
+        assertEquals( "Class2", methodClass.enclosingElement?.name)
     }
 }
