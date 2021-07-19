@@ -1,4 +1,4 @@
-package astminer.parse.gumtree.java
+package astminer.parse.gumtree.java.JDT
 
 import astminer.common.model.FunctionInfo
 import astminer.parse.gumtree.GumTreeNode

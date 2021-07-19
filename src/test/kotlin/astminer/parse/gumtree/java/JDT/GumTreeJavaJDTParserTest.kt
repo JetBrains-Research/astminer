@@ -1,7 +1,6 @@
-package astminer.parse.gumtree.java
+package astminer.parse.gumtree.java.JDT
 
 import astminer.common.getProjectFilesWithExtension
-import astminer.parse.gumtree.java.JDT.GumTreeJavaJDTParser
 import astminer.parseFiles
 import org.junit.Assert
 import org.junit.Test
