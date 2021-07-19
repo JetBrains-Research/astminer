@@ -1,4 +1,4 @@
-package astminer.parse.gumtree.java
+package astminer.parse.gumtree.java.JDT
 
 import com.github.gumtreediff.client.Run
 import com.github.gumtreediff.gen.jdt.JdtTreeGenerator
@@ -8,7 +8,7 @@ import astminer.parse.gumtree.GumTreeNode
 import java.io.InputStream
 import java.io.InputStreamReader
 
-class GumTreeJavaParser : Parser<GumTreeNode> {
+class GumTreeJavaJDTParser : Parser<GumTreeNode> {
     init {
         Run.initGenerators()
     }
