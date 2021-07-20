@@ -20,6 +20,7 @@ data class ParserConfig(
 enum class ParserType {
     @SerialName("antlr") Antlr,
     @SerialName("gumtree") GumTree,
+    @SerialName("gumtree_srcML") GumTreeSrcml,
     @SerialName("fuzzy") Fuzzy
 }
 
