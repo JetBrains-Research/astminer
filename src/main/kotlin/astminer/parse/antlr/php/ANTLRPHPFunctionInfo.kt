@@ -17,6 +17,23 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: 
     override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingElement()
 
+    companion object {
+        const val PARAMETERS_LIST = "formalParameterList"
+        const val PARAMETER = "formalParameter"
+        const val TYPE = "typeHint"
+        const val PARAMETER_NAME = "VarName"
+        const val CLASS_MEMBER = "classStatement"
+        const val FUNCTION_NAME = "identifier"
+        const val CLASS_DECLARATION = "classDeclaration"
+        const val VAR_DECLARATION = "variableInitializer"
+        const val ELLIPSIS = "Ellipsis"
+        const val EXPRESSION = "expression"
+        const val ASSIGN_OP = "assignmentOperator"
+        const val LAMBDA_TOKEN = "LambdaFn"
+        const val FUNCTION_TOKEN = "Function_"
+        const val REFERENCE = "Ampersand"
+    }
+
     private fun collectParameters(): List<FunctionInfoParameter> {
         // Parameters in this grammar have following structure (children order may be wrong):
         //formal parameter list -> formal parameter -> Ampersand

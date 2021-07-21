@@ -21,7 +21,8 @@ private val logger = KotlinLogging.logger("Main")
 class PipelineRunner : CliktCommand(name = "") {
     val config: File by argument("config", help = "Path to config").file(
         mustExist = true,
-        canBeDir = false
+        canBeDir = false,
+        mustBeReadable = true
     )
 
     override fun run() {

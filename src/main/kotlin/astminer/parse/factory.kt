@@ -32,7 +32,7 @@ private fun getAntlrHandlerFactory(extension: FileExtension): HandlerFactory {
         FileExtension.Java -> AntlrJavaHandlerFactory
         FileExtension.JavaScript -> AntlrJavascriptHandlerFactory
         FileExtension.Python -> AntlrPythonHandlerFactory
-        FileExtension.Php -> AntlrPHPHandlerFactory
+        FileExtension.PHP -> AntlrPHPHandlerFactory
         else -> throw UnsupportedOperationException()
     }
 }
