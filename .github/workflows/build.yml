@@ -46,7 +46,7 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Build plugin
-        run: ./gradlew buildPlugin
+        run: ./gradlew build
 
   test:
     needs: build
