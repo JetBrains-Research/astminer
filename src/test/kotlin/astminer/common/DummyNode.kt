@@ -4,7 +4,6 @@ import astminer.common.model.LabeledResult
 import astminer.common.model.Node
 import astminer.common.model.ParseResult
 
-
 class DummyNode(
     override val typeLabel: String,
     override val children: MutableList<DummyNode> = mutableListOf()

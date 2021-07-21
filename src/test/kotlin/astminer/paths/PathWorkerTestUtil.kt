@@ -5,13 +5,11 @@ import astminer.common.model.Node
 import astminer.parse.antlr.AntlrNode
 import org.junit.Assert
 
-fun simpleNode(number: Int, parent: AntlrNode?): AntlrNode {
-    return AntlrNode("$number", parent, "node_$number")
-}
+fun simpleNode(number: Int, parent: AntlrNode?): AntlrNode =
+    AntlrNode("$number", parent, "node_$number")
 
-fun simpleNodes(numbers: List<Int>, parent: AntlrNode?): List<AntlrNode> {
-    return numbers.map { simpleNode(it, parent) }
-}
+fun simpleNodes(numbers: List<Int>, parent: AntlrNode?): List<AntlrNode> = numbers.map { simpleNode(it, parent) }
+
 
 fun getParentStack(node: Node): List<Node> = (node.parent?.let { getParentStack(it) } ?: emptyList()) + node
 

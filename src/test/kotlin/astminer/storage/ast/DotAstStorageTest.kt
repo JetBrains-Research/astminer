@@ -21,7 +21,7 @@ class DotAstStorageTest {
     private fun getBambooLines(size: Int): List<String> {
         val lines = mutableListOf<String>()
         lines.add("digraph entityId {")
-        for (i in 0..(size - 2)) {
+        for (i in 0..size - 2) {
             lines.add("$i -- {${i + 1}};")
         }
         lines.add("${size - 1} -- {};")

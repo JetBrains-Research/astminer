@@ -8,11 +8,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 class FolderNameExtractorTest {
-    companion object {
-        private const val PATH = "random/folder/file.txt"
-        private const val FOLDER = "folder"
-        private var dummyRoot = AntlrNode("", null, null)
-    }
 
     @Test
     fun `test folder extractor returns null when folder is empty or not found`() {
@@ -28,5 +23,11 @@ class FolderNameExtractorTest {
         val labeledParseResult = FolderNameExtractor.process(nonEmptyParseResult)
 
         assertEquals(LabeledResult(dummyRoot, FOLDER, PATH), labeledParseResult)
+    }
+
+    companion object {
+        private const val PATH = "random/folder/file.txt"
+        private const val FOLDER = "folder"
+        private var dummyRoot = AntlrNode("", null, null)
     }
 }

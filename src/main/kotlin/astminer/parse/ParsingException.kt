@@ -1,4 +1,4 @@
 package astminer.parse
 
-class ParsingException(parserType: String, language: String, message: String? = null) :
-    IllegalStateException("Parser $parserType had problems parsing $language: ${message ?: "Unknown error."}")
+class ParsingException(parserType: String, language: String, exc: Exception? = null) :
+    IllegalStateException("Parser $parserType had problems parsing $language: ${exc?.message ?: "Unknown error."}")

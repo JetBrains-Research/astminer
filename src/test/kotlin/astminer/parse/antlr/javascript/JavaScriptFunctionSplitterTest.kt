@@ -9,14 +9,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-
 class JavaScriptFunctionSplitterTest {
-    companion object {
-        const val N_METHODS = 47
-        const val testFilePath = "src/test/resources/methodSplitting/testMethodSplitting.js"
-        val functionSplitter = JavaScriptFunctionSplitter()
-        val parser = JavaScriptParser()
-    }
 
     var functionInfos: Collection<FunctionInfo<AntlrNode>> = listOf()
 
@@ -59,5 +52,12 @@ class JavaScriptFunctionSplitterTest {
         val expectedJsonInfos = Regex("info : \\{.*\\}").findAll(text).toList().map { it.value }.sorted()
 
         assertEquals(expectedJsonInfos, actualJsonInfos)
+    }
+
+    companion object {
+        const val N_METHODS = 47
+        const val testFilePath = "src/test/resources/methodSplitting/testMethodSplitting.js"
+        val functionSplitter = JavaScriptFunctionSplitter()
+        val parser = JavaScriptParser()
     }
 }

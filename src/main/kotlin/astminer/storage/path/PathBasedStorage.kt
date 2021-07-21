@@ -2,11 +2,11 @@ package astminer.storage.path
 
 import astminer.common.model.LabeledResult
 import astminer.common.model.*
-import astminer.common.storage.*
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
 import astminer.paths.toPathContext
 import astminer.common.model.Storage
+import astminer.common.storage.*
 import java.io.File
 import java.io.PrintWriter
 
@@ -17,7 +17,7 @@ import java.io.PrintWriter
  * @property maxPathWidth The maximum width of a single path (based on the formal math definition of path width)
  * @property maxTokens ??
  * @property maxPaths ??
- * @property maxPathContextsPerEntity The maximum number of path contexts that should be extracted from LabeledParseResult.
+ * @property maxPathContextsPerEntity The maximum number of path contexts that should be extracted from tree.
  * In other words, the maximum number of path contexts to save from each file/method (depending on granularity)
  */
 data class PathBasedStorageConfig(

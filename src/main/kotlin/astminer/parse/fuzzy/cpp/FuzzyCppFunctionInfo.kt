@@ -35,7 +35,7 @@ class FuzzyCppFunctionInfo(override val root: FuzzyNode, override val filePath: 
 
     private fun collectEnclosingClass(): EnclosingElement<FuzzyNode>? {
         val enclosingClass = findEnclosingClass() ?: return null
-        val enclosingClassName = findEnclosingClassName(enclosingClass) ?: return null
+        val enclosingClassName = findEnclosingClassName(enclosingClass)
         return EnclosingElement(
             root = enclosingClass,
             type = EnclosingElementType.Class,

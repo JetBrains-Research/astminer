@@ -4,13 +4,7 @@ import org.junit.Assert
 import org.junit.Test
 
 class TreeUtilTest {
-    @Test
-    fun testPostOrder() {
-        val root = createDummyTree()
-        val dataList = root.postOrderIterator().asSequence().map { it.typeLabel }
-
-        Assert.assertArrayEquals(arrayOf("4", "5", "6", "2", "7", "8", "3", "1"), dataList.toList().toTypedArray())
-    }
+    private val defaultToken = "EMPTY"
 
     @Test
     fun testPreOrder() {
@@ -20,7 +14,13 @@ class TreeUtilTest {
         Assert.assertArrayEquals(arrayOf("1", "2", "4", "5", "6", "3", "7", "8"), dataList.toList().toTypedArray())
     }
 
-    private val defaultToken = "EMPTY"
+    @Test
+    fun testPostOrder() {
+        val root = createDummyTree()
+        val dataList = root.postOrderIterator().asSequence().map { it.typeLabel }
+
+        Assert.assertArrayEquals(arrayOf("4", "5", "6", "2", "7", "8", "3", "1"), dataList.toList().toTypedArray())
+    }
 
     @Test
     fun testNormalizeTokenCleaning() {

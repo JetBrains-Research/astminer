@@ -19,7 +19,7 @@ abstract class PathWorkerTestBase {
         val nLeaves = tree.postOrder().count { it.isLeaf() }
 
         val allPaths = PathWorker().retrievePaths(tree)
-        val expectedCount = (nLeaves * (nLeaves - 1)) / 2
+        val expectedCount = nLeaves * (nLeaves - 1) / 2
 
         Assert.assertEquals("A tree with $nLeaves leaves contains $expectedCount paths, " +
                 "one per distinct ordered pair of leaves. Worker returned ${allPaths.size}",

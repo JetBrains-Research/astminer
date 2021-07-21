@@ -25,7 +25,6 @@ class GumTreeJavaFunctionSplitterTest {
             assertEquals(listOf("args", "param"), parameters.map { it.name })
             assertEquals(listOf("String[]", "int"), parameters.map { it.type })
         }
-
     }
 
     @Test
@@ -77,5 +76,5 @@ class GumTreeJavaFunctionSplitterTest {
         }
     }
 
-    //TODO: add more tests
+//     TODO: add more tests
 }

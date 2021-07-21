@@ -10,7 +10,8 @@ class FunctionInfoPropertyNotImplementedException(propertyName: String) :
                 "Consider implementing it."
     )
 
-private fun notImplemented(propertyName: String): Nothing = throw FunctionInfoPropertyNotImplementedException(propertyName)
+private fun notImplemented(propertyName: String): Nothing =
+    throw FunctionInfoPropertyNotImplementedException(propertyName)
 
 interface FunctionInfo<T : Node> {
     val nameNode: T?

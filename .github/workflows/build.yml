@@ -1,15 +1,90 @@
-name: Gradle Build
+name: Build with lint
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
-  build:
-
+  setup:
     runs-on: ubuntu-latest
-    container: voudy/astminer
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+  build:
+    needs: setup
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build with Gradle # Building with gradle already include running tests
-        run: ./gradlew build --console=plain
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build plugin
+        run: ./gradlew buildPlugin
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Run JUnit tests
+        run: ./gradlew test
+
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: test-report
+          path: build/reports/tests/**/*
+
+  code-style:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Run detekt
+        run: ./gradlew detekt
+
+      - name: Upload Report
+        uses: github/codeql-action/upload-sarif@v1
+        if: ${{ always() }}
+        with:
+          sarif_file: build/detekt.sarif

@@ -9,8 +9,8 @@ plugins {
     id("application")
     id("maven-publish")
     id("org.jetbrains.dokka") version "1.4.32"
-    id("me.champeau.gradle.jmh") version "0.5.0"
     id("tanvd.kosogor") version "1.0.10"
+    id("io.gitlab.arturbosch.detekt") version "1.17.1"
     kotlin("jvm") version "1.5.21" apply true
     kotlin("plugin.serialization") version "1.5.21"
 }
@@ -47,11 +47,6 @@ dependencies {
     // ===== Test =====
     testImplementation("junit:junit:4.13.2")
     testImplementation(kotlin("test-junit"))
-
-    // ===== JMH =====
-    jmhImplementation("org.jetbrains.kotlin:kotlin-reflect:1.5.0")
-    jmhImplementation("org.openjdk.jmh:jmh-core:1.21")
-    jmhImplementation("org.openjdk.jmh:jmh-generator-annprocess:1.21")
 }
 
 val generatedSourcesPath = "src/main/generated"
@@ -88,25 +83,6 @@ tasks.compileJava {
     dependsOn(tasks.generateGrammarSource)
     targetCompatibility = "11"
     sourceCompatibility = "11"
-}
-
-tasks.dokkaHtml.configure {
-    outputDirectory.set(buildDir.resolve("javadoc"))
-}
-
-jmh {
-    duplicateClassesStrategy = DuplicatesStrategy.WARN
-    profilers = listOf("gc")
-    resultFormat = "CSV"
-    isZip64 = true
-    failOnError = true
-    forceGC = true
-    warmupIterations = 1
-    iterations = 4
-    fork = 2
-    jvmArgs = listOf("-Xmx32g")
-    benchmarkMode = listOf("AverageTime")
-    resultsFile = file("build/reports/benchmarks.csv")
 }
 
 publishing {
@@ -153,4 +129,14 @@ tasks.withType<Test> {
             }
         }
     })
+}
+
+detekt {
+    allRules = true
+    buildUponDefaultConfig = true
+    config = files("detekt.yaml")
+}
+
+tasks.dokkaHtml.configure {
+    outputDirectory.set(buildDir.resolve("javadoc"))
 }

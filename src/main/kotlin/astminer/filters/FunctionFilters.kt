@@ -22,7 +22,7 @@ class AnnotationFilter(private val excludeAnnotations: List<String>) : FunctionF
 }
 
 /**
- * Filter that excludes constructors
+ * Filter that excludes constructors.
  */
 object ConstructorFilter : FunctionFilter {
     override fun validate(functionInfo: FunctionInfo<out Node>) = !functionInfo.isConstructor

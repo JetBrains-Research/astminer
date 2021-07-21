@@ -30,8 +30,7 @@ class PHPParser: Parser<AntlrNode> {
             val context = parser.htmlDocument()
             convertAntlrTree(context, PhpParser.ruleNames, PhpParser.VOCABULARY)
         } catch (e: Exception) {
-            throw ParsingException("ANTLR", "PHP", e.message)
+            throw ParsingException("ANTLR", "PHP", e)
         }
     }
-
 }

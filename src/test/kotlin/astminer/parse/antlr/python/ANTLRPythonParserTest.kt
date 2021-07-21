@@ -1,7 +1,6 @@
 package astminer.parse.antlr.python
 
 import astminer.common.getProjectFilesWithExtension
-import astminer.common.model.Node
 import astminer.parseFiles
 import org.junit.Assert
 import org.junit.Test

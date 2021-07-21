@@ -53,5 +53,4 @@ class CsvAstStorageTest {
         val expected = generateCorrectAstStringForBamboo(1, 100)
         Assert.assertEquals(expected, storage.astString(bamboo))
     }
-
 }

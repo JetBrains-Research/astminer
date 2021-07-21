@@ -64,5 +64,4 @@ class TreeFeatureTest {
         val expected = listOf("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l").sorted()
         Assert.assertEquals(expected, Tokens.compute(tree).sorted())
     }
-
 }

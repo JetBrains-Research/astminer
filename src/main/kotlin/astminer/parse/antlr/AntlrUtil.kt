@@ -7,25 +7,22 @@ import org.antlr.v4.runtime.Vocabulary
 import org.antlr.v4.runtime.tree.ErrorNode
 import org.antlr.v4.runtime.tree.TerminalNode
 
-fun convertAntlrTree(tree: ParserRuleContext, ruleNames: Array<String>, vocabulary: Vocabulary): AntlrNode {
-    return compressTree(convertRuleContext(tree, ruleNames, null, vocabulary))
-}
+fun convertAntlrTree(tree: ParserRuleContext, ruleNames: Array<String>, vocabulary: Vocabulary): AntlrNode =
+    compressTree(convertRuleContext(tree, ruleNames, null, vocabulary))
 
-private fun convertRuleContext(ruleContext: ParserRuleContext, ruleNames: Array<String>, parent: AntlrNode?, vocabulary: Vocabulary): AntlrNode {
+private fun convertRuleContext(
+    ruleContext: ParserRuleContext, ruleNames: Array<String>, parent: AntlrNode?, vocabulary: Vocabulary
+): AntlrNode {
     val typeLabel = ruleNames[ruleContext.ruleIndex]
     val currentNode = AntlrNode(typeLabel, parent, null)
     val children: MutableList<AntlrNode> = ArrayList()
 
     ruleContext.children?.forEach {
-        if (it is TerminalNode) {
-            children.add(convertTerminal(it, currentNode, vocabulary))
-            return@forEach
+        when (it) {
+            is TerminalNode -> children.add(convertTerminal(it, currentNode, vocabulary))
+            is ErrorNode -> children.add(convertErrorNode(it, currentNode))
+            else -> children.add(convertRuleContext(it as ParserRuleContext, ruleNames, currentNode, vocabulary))
         }
-        if (it is ErrorNode) {
-            children.add(convertErrorNode(it, currentNode))
-            return@forEach
-        }
-        children.add(convertRuleContext(it as ParserRuleContext, ruleNames, currentNode, vocabulary))
     }
     currentNode.replaceChildren(children)
 

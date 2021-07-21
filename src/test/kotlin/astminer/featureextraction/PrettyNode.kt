@@ -42,7 +42,6 @@ fun restoreFromPrettyPrint(prettyPrintedTree: String, indentSymbol: String = "--
     return tree.first()
 }
 
-
 fun restorePrintedNode(printedNode: String, indentSymbol: String = "--") : Pair<PrettyNode, Int> {
     val indents = Regex("^($indentSymbol)*").find(printedNode)?.value ?: ""
     val nodeString = printedNode.substringAfter(indents)

@@ -1,0 +1,36 @@
+complexity:
+  TooManyFunctions:
+    thresholdInClasses: 15
+    thresholdInFiles: 16
+  ComplexInterface:
+    threshold: 15
+  StringLiteralDuplication:
+    active: false
+  LabeledExpression:
+    active: false
+
+exceptions:
+  TooGenericExceptionCaught:
+    active: false
+
+style:
+  WildcardImport:
+    active: false
+  MagicNumber:
+    ignorePropertyDeclaration: true
+    ignoreAnnotation: true
+    ignoreEnums: true
+    ignoreNumbers: ['-1', '0', '1', '2', '60', '100', '1000']
+    excludes: ['**/test/**', '**/*Test.kt', '**/*Spec.kt', '**/examples/**']
+  ForbiddenComment:
+    allowedPatterns: 'TODO:'
+  ReturnCount:
+    max: 5
+
+output-reports:
+  active: true
+  exclude:
+    - 'TxtOutputReport'
+    - 'XmlOutputReport'
+    - 'HtmlOutputReport'
+

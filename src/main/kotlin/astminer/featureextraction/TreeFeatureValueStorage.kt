@@ -21,7 +21,8 @@ fun Any.className() : String {
 }
 
 /**
- * Class for store and save [tree features][astminer.featureextraction.TreeFeature] for [parsed trees][astminer.featureextraction.ParsedTree].
+ * Class for store and save [tree features][astminer.featureextraction.TreeFeature]
+ * for [parsed trees][astminer.featureextraction.ParsedTree].
  * @property separator separator which is used in resulting file to separate with tree features values
  */
 class TreeFeatureValueStorage(private val separator: String) {
@@ -32,10 +33,10 @@ class TreeFeatureValueStorage(private val separator: String) {
     private val idField = Field("Id") { parsedTrees.indexOf(it).toString() }
     private val parserField = Field("ParserName") { it.parserName }
     private val fileNameField = Field("FileName") { it.fileName }
-    private val NOLField = Field("NumberOfLines") { it.numberOfLines.toString() }
+    private val numOfLinesField = Field("NumberOfLines") { it.numberOfLines.toString() }
     private val fileName = "features.csv"
 
-    private val fields: List<Field> = listOf(idField, parserField, fileNameField, NOLField)
+    private val fields: List<Field> = listOf(idField, parserField, fileNameField, numOfLinesField)
 
     /**
      * Data class for additional fields that should be in resulting file with features.
@@ -70,7 +71,8 @@ class TreeFeatureValueStorage(private val separator: String) {
 
     /**
      * Computes all stored features for all stored parsed trees and saves them in a given directory.
-     * @param directoryPath path to directory where tree features is saved. If this directory does not exist the new one creates.
+     * @param directoryPath path to directory where tree features is saved.
+     * If this directory does not exist the new one creates.
      */
     fun save(directoryPath: String) {
         File(directoryPath).mkdirs()
@@ -95,5 +97,4 @@ class TreeFeatureValueStorage(private val separator: String) {
         }
         return a.toString()
     }
-
 }

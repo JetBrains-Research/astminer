@@ -9,10 +9,6 @@ import org.junit.Test
 import kotlin.test.assertEquals
 
 class FunctionNameLabelExtractorTest {
-    companion object {
-        private const val PATH = "random/folder/file.txt"
-        private const val FUNCTION_NAME = "method"
-    }
 
     lateinit var functionRoot: Node
 
@@ -53,5 +49,10 @@ class FunctionNameLabelExtractorTest {
         FunctionNameLabelExtractor.process(functionInfo)
         val recursiveCallNode = functionInfo.root.children.firstOrNull()?.children?.firstOrNull()
         assertEquals("SELF", recursiveCallNode?.token)
+    }
+
+    companion object {
+        private const val PATH = "random/folder/file.txt"
+        private const val FUNCTION_NAME = "method"
     }
 }

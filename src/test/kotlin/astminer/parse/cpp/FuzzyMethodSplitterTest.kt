@@ -15,19 +15,14 @@ import kotlin.test.assertNull
 
 class FuzzyMethodSplitterTest {
 
-    companion object {
-        const val FILE_PATH = "src/test/resources/methodSplitting/testMethodSplitting.cpp"
-        const val N_FUNCTIONS = 10
-        val methodSplitter = FuzzyFunctionSplitter()
-        val parser = FuzzyCppParser()
-    }
-
     var methodInfos: Collection<FunctionInfo<FuzzyNode>> = listOf()
 
     @Before
     fun parseTree() {
         Assume.assumeTrue(checkExecutable("g++"))
-        val testTree =  parser.parseInputStream(File("src/test/resources/methodSplitting/testMethodSplitting.cpp").inputStream())
+        val testTree = parser.parseInputStream(
+            File("src/test/resources/methodSplitting/testMethodSplitting.cpp").inputStream()
+        )
         assertNotNull(testTree)
         methodInfos = methodSplitter.splitIntoFunctions(testTree, FILE_PATH)
     }
@@ -113,5 +108,12 @@ class FuzzyMethodSplitterTest {
             assertEquals("p${i + 1}", parameter.name)
             assertEquals("int", parameter.type)
         }
+    }
+
+    companion object {
+        const val FILE_PATH = "src/test/resources/methodSplitting/testMethodSplitting.cpp"
+        const val N_FUNCTIONS = 10
+        val methodSplitter = FuzzyFunctionSplitter()
+        val parser = FuzzyCppParser()
     }
 }

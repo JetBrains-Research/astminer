@@ -6,6 +6,7 @@ import astminer.common.splitToSubtokens
 import java.io.File
 import java.io.InputStream
 import java.util.*
+import kotlin.NoSuchElementException
 
 
 abstract class Node {
@@ -64,9 +65,11 @@ class PreOrderIterator(root: Node): Iterator<Node> {
     }
 
     override fun next(): Node {
-        val currentNode = stack.pop()
-        currentNode.children.asReversed().forEach { stack.push(it) }
-        return currentNode
+        if (hasNext()) {
+            val currentNode = stack.pop()
+            currentNode.children.asReversed().forEach { stack.push(it) }
+            return currentNode
+        } else throw NoSuchElementException()
     }
 }
 
@@ -88,7 +91,8 @@ class PostOrderIterator(root: Node): Iterator<Node> {
         while (!tree.last().isChecked) {
             fillWithChildren(tree.last())
         }
-        return tree.removeLast().node
+        if (hasNext()) return tree.removeLast().node
+        else throw NoSuchElementException()
     }
 }
 

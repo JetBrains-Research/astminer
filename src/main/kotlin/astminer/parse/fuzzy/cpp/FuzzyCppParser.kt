@@ -25,40 +25,45 @@ class FuzzyCppParser : Parser<FuzzyNode> {
         private val supportedExtensions = listOf("c", "cpp")
 
         data class ExpandableNodeKey(
-                val key: String,
-                val supportedNodeLabels: List<String>,
-                val order: Int
+            val key: String,
+            val supportedNodeLabels: List<String>,
+            val order: Int
         )
 
         private val expandableNodeKeys = listOf(
-                ExpandableNodeKey("NAME", listOf(
-                        NodeTypes.TYPE, NodeTypes.TYPE_DECL, NodeTypes.TYPE_PARAMETER, NodeTypes.MEMBER, NodeTypes.TYPE_ARGUMENT,
-                        NodeTypes.METHOD, NodeTypes.METHOD_PARAMETER_IN, NodeTypes.LOCAL, NodeTypes.MODIFIER,
-                        NodeTypes.IDENTIFIER, NodeTypes.CALL,
-                        NodeTypes.UNKNOWN
-                ), 0),
-                ExpandableNodeKey("TYPE_FULL_NAME", listOf(
-                        NodeTypes.TYPE,
-                        NodeTypes.METHOD_RETURN, NodeTypes.METHOD_PARAMETER_IN, NodeTypes.LOCAL,
-                        NodeTypes.IDENTIFIER,
-                        NodeTypes.UNKNOWN
-                ), 0),
-                ExpandableNodeKey("ALIAS_TYPE_FULL_NAME", listOf(
-                        NodeTypes.TYPE_DECL,
-                        NodeTypes.UNKNOWN
-                ), 0)
+            ExpandableNodeKey(
+                "NAME", listOf(
+                    NodeTypes.TYPE, NodeTypes.TYPE_DECL, NodeTypes.TYPE_PARAMETER, NodeTypes.MEMBER,
+                    NodeTypes.TYPE_ARGUMENT, NodeTypes.METHOD, NodeTypes.METHOD_PARAMETER_IN, NodeTypes.LOCAL,
+                    NodeTypes.MODIFIER, NodeTypes.IDENTIFIER, NodeTypes.CALL, NodeTypes.UNKNOWN
+                ), 0
+            ),
+            ExpandableNodeKey(
+                "TYPE_FULL_NAME", listOf(
+                    NodeTypes.TYPE,
+                    NodeTypes.METHOD_RETURN, NodeTypes.METHOD_PARAMETER_IN, NodeTypes.LOCAL,
+                    NodeTypes.IDENTIFIER,
+                    NodeTypes.UNKNOWN
+                ), 0
+            ),
+            ExpandableNodeKey(
+                "ALIAS_TYPE_FULL_NAME", listOf(
+                    NodeTypes.TYPE_DECL,
+                    NodeTypes.UNKNOWN
+                ), 0
+            )
         )
 
         data class ReplaceableNodeKey(val key: String, val condition: (Node) -> Boolean)
 
         private val replaceableNodeKeys = listOf(
-                ReplaceableNodeKey("NAME") { v ->
-                    v.propertyKeys().contains("NAME") &&
-                            v.property("NAME").toString().startsWith("<operator>")
-                },
-                ReplaceableNodeKey("PARSER_TYPE_NAME") { v ->
-                    v.propertyKeys().contains("PARSER_TYPE_NAME")
-                }
+            ReplaceableNodeKey("NAME") { v ->
+                v.propertyKeys().contains("NAME") &&
+                        v.property("NAME").toString().startsWith("<operator>")
+            },
+            ReplaceableNodeKey("PARSER_TYPE_NAME") { v ->
+                v.propertyKeys().contains("PARSER_TYPE_NAME")
+            }
         )
     }
 
@@ -148,10 +153,10 @@ class FuzzyCppParser : Parser<FuzzyNode> {
      */
     fun preprocessProject(projectRoot: File, outputDir: File) {
         val files = projectRoot.walkTopDown()
-                .filter { file -> supportedExtensions.contains(file.extension) }
+            .filter { file -> supportedExtensions.contains(file.extension) }
         files.forEach { file ->
             val relativeFilePath = file.relativeTo(projectRoot)
-            val outputPath = if (relativeFilePath.parent != null){
+            val outputPath = if (relativeFilePath.parent != null) {
                 outputDir.resolve(relativeFilePath.parent)
             } else {
                 outputDir
@@ -192,7 +197,7 @@ class FuzzyCppParser : Parser<FuzzyNode> {
                     return@forEach
                 }
             }
-            node.metadata[k]= property
+            node.metadata[k] = property
         }
         return node
     }

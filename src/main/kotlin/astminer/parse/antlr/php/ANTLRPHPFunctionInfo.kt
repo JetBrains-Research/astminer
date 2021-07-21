@@ -6,6 +6,9 @@ import astminer.common.model.FunctionInfo
 import astminer.common.model.FunctionInfoParameter
 import astminer.parse.antlr.*
 import astminer.parse.findEnclosingElementBy
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger("ANTLR-PHP-function-info")
 
 class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: String) : FunctionInfo<AntlrNode> {
     override val returnType = getElementType(root)
@@ -13,23 +16,6 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: 
 
     override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingElement()
-
-    companion object {
-        const val PARAMETERS_LIST = "formalParameterList"
-        const val PARAMETER = "formalParameter"
-        const val TYPE = "typeHint"
-        const val PARAMETER_NAME = "VarName"
-        const val CLASS_MEMBER = "classStatement"
-        const val FUNCTION_NAME = "identifier"
-        const val CLASS_DECLARATION = "classDeclaration"
-        const val VAR_DECLARATION = "variableInitializer"
-        const val ELLIPSIS = "Ellipsis"
-        const val EXPRESSION = "expression"
-        const val ASSIGN_OP = "assignmentOperator"
-        const val LAMBDA_TOKEN = "LambdaFn"
-        const val FUNCTION_TOKEN = "Function_"
-        const val REFERENCE = "Ampersand"
-    }
 
     private fun collectParameters(): List<FunctionInfoParameter> {
         // Parameters in this grammar have following structure (children order may be wrong):
@@ -50,9 +36,16 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: 
         }
 
         // Otherwise find all parameters
-        return parameterList.getItOrChildrenOfType(PARAMETER).mapNotNull {
-            try { assembleParameter(it) } catch (e: IllegalStateException) { return@mapNotNull null }
-        }
+        return parameterList
+            .getItOrChildrenOfType(PARAMETER)
+            .mapNotNull {
+                try {
+                    assembleParameter(it)
+                } catch (e: IllegalStateException) {
+                    logger.warn { "Error during collecting parameters for $name in $filePath: ${e.message}" }
+                    null
+                }
+            }
     }
 
     private fun assembleParameter(parameterNode: AntlrNode): FunctionInfoParameter {
@@ -92,6 +85,7 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: 
                 type = getEnclosingType(enclosing)
             )
         } catch (e: IllegalStateException) {
+            logger.warn { "Error during collecting enclosing element for $name in $filePath: ${e.message}" }
             null
         }
     }
@@ -106,7 +100,7 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: 
         }
     }
 
-    private fun getEnclosingElementName(enclosing: AntlrNode) : String?{
+    private fun getEnclosingElementName(enclosing: AntlrNode): String? {
         return when {
             enclosing.isFunction() || enclosing.isClass() -> enclosing.getChildOfType(FUNCTION_NAME)?.originalToken
             enclosing.isAssignExpression() -> enclosing.children.find { it.hasLastLabel(PARAMETER_NAME) }?.originalToken
@@ -124,4 +118,21 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: 
     private fun AntlrNode.isAssignExpression() = hasFirstLabel(EXPRESSION) && (getChildOfType(ASSIGN_OP) != null)
 
     private fun AntlrNode.isClass(): Boolean = hasLastLabel(CLASS_DECLARATION)
+
+    companion object {
+        const val PARAMETERS_LIST = "formalParameterList"
+        const val PARAMETER = "formalParameter"
+        const val TYPE = "typeHint"
+        const val PARAMETER_NAME = "VarName"
+        const val CLASS_MEMBER = "classStatement"
+        const val FUNCTION_NAME = "identifier"
+        const val CLASS_DECLARATION = "classDeclaration"
+        const val VAR_DECLARATION = "variableInitializer"
+        const val ELLIPSIS = "Ellipsis"
+        const val EXPRESSION = "expression"
+        const val ASSIGN_OP = "assignmentOperator"
+        const val LAMBDA_TOKEN = "LambdaFn"
+        const val FUNCTION_TOKEN = "Function_"
+        const val REFERENCE = "Ampersand"
+    }
 }

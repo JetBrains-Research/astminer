@@ -5,7 +5,7 @@ import astminer.common.model.Node
 import astminer.common.model.LabeledResult
 
 /**
- * PipelineBranch is a part of the pipeline that can be completely different depending on the granularity (pipeline type)
+ * PipelineBranch is a part of the pipeline that encapsulate inside itself granularity based logic.
  * It accepts parsed files (LanguageHandler) and returns labeled results.
  */
 interface PipelineBranch {

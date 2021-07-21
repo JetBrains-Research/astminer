@@ -10,8 +10,8 @@ import astminer.common.model.Node
  * Hides the name of the function in the subtree and also all in the recursive calls.
  */
 object FunctionNameLabelExtractor : FunctionLabelExtractor {
-    const val HIDDEN_METHOD_NAME_TOKEN = "METHOD_NAME"
-    const val RECURSIVE_CALL_TOKEN = "SELF"
+    private const val HIDDEN_METHOD_NAME_TOKEN = "METHOD_NAME"
+    private const val RECURSIVE_CALL_TOKEN = "SELF"
 
     override fun process(functionInfo: FunctionInfo<out Node>): LabeledResult<out Node>? {
         val normalizedName = functionInfo.nameNode?.normalizedToken ?: return null

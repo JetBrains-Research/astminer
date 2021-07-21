@@ -11,12 +11,6 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 class PythonFunctionSplitterTest {
-    companion object {
-        const val FILE_PATH = "src/test/resources/methodSplitting/testMethodSplitting.py"
-        const val N_FUNCTIONS = 17
-        val functionSplitter = PythonFunctionSplitter()
-        val parser = PythonParser()
-    }
 
     var functionInfos: Collection<FunctionInfo<AntlrNode>> = listOf()
 
@@ -155,5 +149,12 @@ class PythonFunctionSplitterTest {
         assertNotNull(enclosingElement)
         assertEquals("second_function_inside_method", enclosingElement.name)
         assertEquals(EnclosingElementType.Function, enclosingElement.type)
+    }
+
+    companion object {
+        const val FILE_PATH = "src/test/resources/methodSplitting/testMethodSplitting.py"
+        const val N_FUNCTIONS = 17
+        val functionSplitter = PythonFunctionSplitter()
+        val parser = PythonParser()
     }
 }

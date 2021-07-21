@@ -9,12 +9,6 @@ import kotlin.test.BeforeTest
 import kotlin.test.assertNotNull
 
 class JavaFunctionSplitterTest {
-    companion object {
-        const val FILE_PATH = "src/test/resources/methodSplitting/testMethodSplitting.java"
-        const val N_FUNCTIONS = 10
-        val functionSplitter = JavaFunctionSplitter()
-        val parser = JavaParser()
-    }
 
     var functionInfos: Collection<FunctionInfo<AntlrNode>> = listOf()
 
@@ -110,5 +104,12 @@ class JavaFunctionSplitterTest {
         val weirdParameter = methodWeirdArrayParameter.parameters[0]
         assertEquals(weirdParameter.name, "arr[]")
         assertEquals(weirdParameter.type, "int")
+    }
+
+    companion object {
+        const val FILE_PATH = "src/test/resources/methodSplitting/testMethodSplitting.java"
+        const val N_FUNCTIONS = 10
+        val functionSplitter = JavaFunctionSplitter()
+        val parser = JavaParser()
     }
 }

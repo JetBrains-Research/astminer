@@ -7,6 +7,7 @@ import astminer.parse.antlr.AntlrJavaHandlerFactory
 import astminer.parse.antlr.AntlrJavascriptHandlerFactory
 import astminer.parse.antlr.AntlrPHPHandlerFactory
 import astminer.parse.antlr.AntlrPythonHandlerFactory
+import astminer.parse.fuzzy.cpp.FuzzyHandler
 import astminer.parse.gumtree.GumtreeJavaHandlerFactory
 import astminer.parse.gumtree.GumtreePythonHandlerFactory
 
@@ -38,7 +39,7 @@ private fun getAntlrHandlerFactory(extension: FileExtension): HandlerFactory {
 
 private fun getFuzzyHandlerFactory(extension: FileExtension): HandlerFactory {
     return when (extension) {
-        FileExtension.C, FileExtension.Cpp -> FuzzyCppHandler
+        FileExtension.C, FileExtension.Cpp -> FuzzyHandler
         else -> throw UnsupportedOperationException()
     }
 }

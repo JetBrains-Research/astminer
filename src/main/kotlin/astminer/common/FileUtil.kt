@@ -38,7 +38,7 @@ fun addClassWrapper(file: File, className: String) {
 }
 
 /**
- * Checks if java file has any syntax errors, that can be identified via [Java8Parser][me.vovak.antlr.parser.Java8Parser]
+ * Checks if java file has any syntax errors that can be identified via [Java8Parser][me.vovak.antlr.parser.Java8Parser]
  * @param javaFile file which is checked for correct syntax
  * @return true if there are syntax errors and false otherwise
  */
