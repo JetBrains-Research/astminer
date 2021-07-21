@@ -5,15 +5,15 @@ version = "0.6.4"
 
 plugins {
     id("java")
-    kotlin("jvm") version "1.4.32" apply true
     id("antlr")
     id("idea")
     id("application")
+    id("maven-publish")
     id("org.jetbrains.dokka") version "0.9.18"
     id("me.champeau.gradle.jmh") version "0.5.0"
-    id("maven-publish")
-    id("tanvd.kosogor") version "1.0.10" apply true
-    kotlin("plugin.serialization") version "1.4.32"
+    id("tanvd.kosogor") version "1.0.10"
+    kotlin("jvm") version "1.5.21" apply true
+    kotlin("plugin.serialization") version "1.5.21"
 }
 
 defaultTasks("run")
@@ -36,15 +36,13 @@ dependencies {
 
     // ===== Main =====
     implementation(kotlin("stdlib"))
-    implementation("com.github.ajalt", "clikt", "2.1.0")
+    implementation("com.github.ajalt.clikt:clikt:3.2.0")
     implementation("com.charleskorn.kaml:kaml:0.33.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.0")
-
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
 
     // ===== Logging =====
     implementation("org.slf4j", "slf4j-simple", "1.7.30")
     implementation("io.github.microutils:kotlin-logging:1.5.9")
-
 
     // ===== Test =====
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
@@ -63,7 +61,7 @@ idea.module.generatedSourceDirs.add(file(generatedSourcesPath))
 
 tasks.generateGrammarSource {
     // maxHeapSize = "64m"
-    arguments = arguments + listOf("-package", "me.vovak.antlr.parser")
+    arguments.addAll(listOf("-package", "me.vovak.antlr.parser"))
     // Keep a copy of generated sources
     doLast {
         println("Copying generated grammar lexer/parser files to main directory.")
