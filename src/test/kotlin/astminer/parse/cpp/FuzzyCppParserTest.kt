@@ -1,8 +1,8 @@
 package astminer.parse.cpp
 
 import astminer.checkExecutable
+import astminer.common.forFilesWithSuffix
 import astminer.common.getProjectFilesWithExtension
-import astminer.examples.forFilesWithSuffix
 import astminer.parse.fuzzy.cpp.FuzzyCppParser
 import astminer.parse.fuzzy.cpp.FuzzyNode
 import astminer.parseFiles

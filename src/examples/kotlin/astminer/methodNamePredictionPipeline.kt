@@ -1,16 +1,18 @@
-package astminer.examples
+package astminer
 
 import astminer.config.*
 import astminer.pipeline.Pipeline
 
-// Retrieve paths from all Java files, using a GumTree parser.
-// GumTreeMethodSplitter is used to extract individual method nodes from the compilation unit tree.
-fun code2vecJavaMethods() {
-    val folder = "src/test/resources/code2vecPathMining"
-    val outputDir = "out_examples/code2vecPathMining"
+/**
+ * Prepare data for training code2vec model for method name prediction task.
+ * Target language is Java, using ANTLR parser.
+ */
+fun methodNamePredictionPipeline() {
+    val inputDir = "src/test/resources/examples"
+    val outputDir = "examples_output/method_name_prediction_code2vec"
 
     val pipelineConfig = PipelineConfig(
-        inputDir = folder,
+        inputDir = inputDir,
         outputDir = outputDir,
         parser = ParserConfig(ParserType.Antlr, listOf(FileExtension.Java)),
         labelExtractor = FunctionNameExtractorConfig(),
@@ -21,4 +23,8 @@ fun code2vecJavaMethods() {
     )
 
     Pipeline(pipelineConfig).run()
+}
+
+fun main() {
+    methodNamePredictionPipeline()
 }

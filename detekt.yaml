@@ -21,7 +21,7 @@ style:
     ignoreAnnotation: true
     ignoreEnums: true
     ignoreNumbers: ['-1', '0', '1', '2', '60', '100', '1000']
-    excludes: ['**/test/**', '**/examples/**']
+    excludes: ['**/test/**']
   ReturnCount:
     max: 5
   WildcardImport:

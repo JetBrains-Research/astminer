@@ -1,5 +1,6 @@
-package astminer.examples
+package astminer
 
+import astminer.common.forFilesWithSuffix
 import astminer.common.model.FunctionInfo
 import astminer.common.model.LabeledResult
 import astminer.parse.gumtree.GumTreeNode
@@ -16,10 +17,13 @@ private fun getCsvFriendlyMethodId(functionInfo: FunctionInfo<GumTreeNode>): Str
     return "$className.$methodName($parameterTypes)"
 }
 
-fun allPythonMethods() {
+/**
+ * Retrieve paths from all Python methods in files using GumTree parser
+ */
+fun gumTreePythonMethodPaths() {
     val inputDir = "src/test/resources/gumTreeMethodSplitter"
+    val outputDir = "examples_output/gumtree_python_methods_paths"
 
-    val outputDir = "out_examples/allPythonMethods"
     val storage = Code2VecPathStorage(outputDir, PathBasedStorageConfig(5, 5))
 
     File(inputDir).forFilesWithSuffix(".py") { file ->
@@ -39,4 +43,8 @@ fun allPythonMethods() {
     }
 
     storage.close()
+}
+
+fun main() {
+    gumTreePythonMethodPaths()
 }

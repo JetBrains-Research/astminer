@@ -1,5 +1,6 @@
-package astminer.examples
+package astminer
 
+import astminer.common.forFilesWithSuffix
 import astminer.common.model.FunctionInfo
 import astminer.common.model.LabeledResult
 import astminer.parse.gumtree.GumTreeNode
@@ -16,12 +17,14 @@ private fun getCsvFriendlyMethodId(functionInfo: FunctionInfo<GumTreeNode>): Str
     return "$className.$methodName($parameterTypes)"
 }
 
-// Retrieve paths from all Java files, using a GumTree parser.
-// GumTreeMethodSplitter is used to extract individual method nodes from the compilation unit tree.
-fun allJavaMethods() {
-    val inputDir = "src/test/resources/gumTreeMethodSplitter"
+/**
+ * Retrieve paths from all Java files, using a GumTree parser.
+ * GumTreeMethodSplitter is used to extract individual method nodes from the compilation unit tree.
+ */
+fun gumTreeJavaMethodPaths() {
+    val inputDir = "src/test/resources/examples"
+    val outputDir = "examples_output/gumtree_java_method_paths"
 
-    val outputDir = "out_examples/allJavaMethods"
     val storage = Code2VecPathStorage(outputDir, PathBasedStorageConfig(5, 5))
 
     File(inputDir).forFilesWithSuffix(".java") { file ->
@@ -40,4 +43,8 @@ fun allJavaMethods() {
     }
 
     storage.close()
+}
+
+fun main() {
+    gumTreeJavaMethodPaths()
 }

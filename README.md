@@ -126,9 +126,9 @@ After that, add `mavenLocal()` into the `repositories` section in your gradle co
 
 #### Examples
 
-If you want to use `astminer` as a library in your Java/Kotlin based data mining tool, check the following examples:
+If you want to use `astminer` as a library in your Java/Kotlin based data mining tool, check the following astminer:
 
-* A few [simple usage examples](src/main/kotlin/astminer/examples) can be run with `./gradlew run`.
+* A few [simple usage astminer](src/main/kotlin/astminer/examples) can be run with `./gradlew run`.
 
 * A somewhat more verbose [example of usage in Java](src/main/kotlin/astminer/examples/AllJavaFiles.kt) is available as well. 
 

@@ -4,8 +4,9 @@
 
 src/main/generated/
 build/
-examples/out/
-asts/
+
+examples_output/
+output/
 *.csv
 log.txt
 

@@ -55,3 +55,11 @@ fun getProjectFiles(projectRoot: File, filter: (File) -> Boolean = { true }) = p
 
 fun getProjectFilesWithExtension(projectRoot: File, extension: String): List<File> =
     getProjectFiles(projectRoot) { it.isFile && it.extension == extension }
+
+fun iterateFiles(dir: File, condition: (File) -> Boolean, action: (File) -> Unit) {
+    dir.walkTopDown().filter { it.isFile && condition(it) }.forEach { action.invoke(it) }
+}
+
+fun File.forFilesWithSuffix(extension: String, action: (File) -> Unit) {
+    iterateFiles(this, { file: File -> file.path.endsWith(extension) }, action)
+}
