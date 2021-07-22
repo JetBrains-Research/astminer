@@ -3,6 +3,7 @@ package astminer.storage.ast
 import astminer.common.*
 import org.junit.Test
 import java.io.File
+import kotlin.test.AfterTest
 import kotlin.test.assertEquals
 
 class DotAstStorageTest {
@@ -29,10 +30,15 @@ class DotAstStorageTest {
         return lines
     }
 
+    @AfterTest
+    fun removeOutput() {
+        File(OUTPUT_FOLDER).deleteRecursively()
+    }
+
     @Test
     fun testDotStorageOnSmallTree() {
         val root = createSmallTree()
-        val storage = DotAstStorage("test_examples")
+        val storage = DotAstStorage(OUTPUT_FOLDER)
         storage.store(root.labeledWith("entityId"))
 
         storage.close()
@@ -45,10 +51,7 @@ class DotAstStorageTest {
             "3 -- {};",
             "}"
         )
-        val storageLines = File(File("test_examples", "asts"), "ast_0.dot").readLines()
-
-        File("test_examples").deleteRecursively()
-
+        val storageLines = File(File(OUTPUT_FOLDER, "asts"), "ast_0.dot").readLines()
         assertEquals(trueLines, storageLines)
     }
 
@@ -83,7 +86,7 @@ class DotAstStorageTest {
     @Test
     fun testLabelNormalization() {
         val label = "some/kind/of/random/path"
-        val storage = DotAstStorage(".")
+        val storage = DotAstStorage(OUTPUT_FOLDER)
         val normalizedLabel = storage.normalizeAstLabel(label)
 
         assertEquals("some_kind_of_random_path", normalizedLabel)
@@ -92,7 +95,7 @@ class DotAstStorageTest {
     @Test
     fun testBindingNormalization() {
         val label = "\$supposeToBeListener"
-        val storage = DotAstStorage(".")
+        val storage = DotAstStorage(OUTPUT_FOLDER)
         val normalizedLabel = storage.normalizeAstLabel(label)
 
         assertEquals("_supposeToBeListener", normalizedLabel)
@@ -101,7 +104,7 @@ class DotAstStorageTest {
     @Test
     fun testLabelWithCommaNormalization() {
         val labelWithComma = "some,bad,label"
-        val storage = DotAstStorage(".")
+        val storage = DotAstStorage(OUTPUT_FOLDER)
         val normalizedLabel = storage.normalizeAstLabel(labelWithComma)
 
         assertEquals("some_bad_label", normalizedLabel)
@@ -110,7 +113,7 @@ class DotAstStorageTest {
     @Test
     fun testSplittingFullPath() {
         val fullPath = "/path1/path2/path_3/path.4/file.name"
-        val storage = DotAstStorage(".")
+        val storage = DotAstStorage(OUTPUT_FOLDER)
         val (path, fileName) = storage.splitFullPath(fullPath)
 
         assertEquals("/path1/path2/path_3/path.4", path)
@@ -120,7 +123,7 @@ class DotAstStorageTest {
     @Test
     fun testSplittingFileName() {
         val fullPath = "file.name"
-        val storage = DotAstStorage(".")
+        val storage = DotAstStorage(OUTPUT_FOLDER)
         val (path, fileName) = storage.splitFullPath(fullPath)
 
         assertEquals("", path)
@@ -131,9 +134,13 @@ class DotAstStorageTest {
     fun testFilepathNormalization() {
         // real life example
         val badFilepath = "interviews/Leet-Code/binary-search/pow(x,n).java"
-        val storage = DotAstStorage(".")
+        val storage = DotAstStorage(OUTPUT_FOLDER)
         val normalizedFilepath = storage.normalizeFilepath(badFilepath)
 
         assertEquals("interviews/Leet-Code/binary-search/pow_x_n_.java", normalizedFilepath)
+    }
+
+    companion object {
+        private const val OUTPUT_FOLDER = "test_output"
     }
 }
