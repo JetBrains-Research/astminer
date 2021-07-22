@@ -1,9 +1,6 @@
 package astminer.labelextractor
 
-import astminer.common.model.FileLabelExtractor
-import astminer.common.model.LabeledResult
-import astminer.common.model.Node
-import astminer.common.model.ParseResult
+import astminer.common.model.*
 import java.io.File
 
 /**

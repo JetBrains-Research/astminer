@@ -22,7 +22,7 @@ class ANTLRPythonParserTest {
         val parser = PythonParser()
         val projectRoot = File("src/test/resources/examples")
         val trees = parser.parseFiles(getProjectFilesWithExtension(projectRoot, "py"))
-        Assert.assertEquals("There is only 1 file with .py extension in 'testData/examples' folder",1, trees.size)
+        Assert.assertEquals("There is only 1 file with .py extension in 'testData/examples' folder", 1, trees.size)
         trees.forEach { Assert.assertNotNull("Parse tree for a valid file should not be null", it) }
     }
 }

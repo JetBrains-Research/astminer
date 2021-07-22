@@ -1,8 +1,8 @@
 package astminer.pipeline.branch
 
+import astminer.common.model.LabeledResult
 import astminer.common.model.LanguageHandler
 import astminer.common.model.Node
-import astminer.common.model.LabeledResult
 
 /**
  * PipelineBranch is a part of the pipeline that encapsulate inside itself granularity based logic.

@@ -7,5 +7,5 @@ fun iterateFiles(dir: File, condition: (File) -> Boolean, action: (File) -> Unit
 }
 
 fun File.forFilesWithSuffix(extension: String, action: (File) -> Unit) {
-    iterateFiles(this, ({ file: File -> file.path.endsWith(extension) }), action)
+    iterateFiles(this, { file: File -> file.path.endsWith(extension) }, action)
 }

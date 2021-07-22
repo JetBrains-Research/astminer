@@ -9,5 +9,5 @@ class IllegalLabelExtractorException(problemName: String?) :
 /**
  * This exception is thrown when the given filter is not implemented for the given granularity.
  */
-class IllegalFilterException(granularity: String, filterName: String?):
-        IllegalStateException("Unknown filter `${filterName ?: "anonymous"}` for $granularity granularity")
+class IllegalFilterException(granularity: String, filterName: String?) :
+    IllegalStateException("Unknown filter `${filterName ?: "anonymous"}` for $granularity granularity")

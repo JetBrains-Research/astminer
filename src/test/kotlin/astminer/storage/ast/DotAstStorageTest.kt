@@ -38,12 +38,12 @@ class DotAstStorageTest {
         storage.close()
 
         val trueLines = listOf(
-                "digraph entityId {",
-                "0 -- {1 2};",
-                "1 -- {};",
-                "2 -- {3};",
-                "3 -- {};",
-                "}"
+            "digraph entityId {",
+            "0 -- {1 2};",
+            "1 -- {};",
+            "2 -- {3};",
+            "3 -- {};",
+            "}"
         )
         val storageLines = File(File("test_examples", "asts"), "ast_0.dot").readLines()
 

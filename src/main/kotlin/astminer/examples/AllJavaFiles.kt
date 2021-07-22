@@ -7,7 +7,7 @@ import astminer.storage.path.Code2VecPathStorage
 import astminer.storage.path.PathBasedStorageConfig
 import java.io.File
 
-//Retrieve paths from Java files, using a generated parser.
+// Retrieve paths from Java files, using a generated parser.
 fun allJavaFiles() {
     val inputDir = "src/test/resources/examples/"
 

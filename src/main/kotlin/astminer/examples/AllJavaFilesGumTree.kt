@@ -3,7 +3,7 @@ package astminer.examples
 import astminer.config.*
 import astminer.pipeline.Pipeline
 
-//Retrieve paths from Java files, using a GumTree parser.
+// Retrieve paths from Java files, using a GumTree parser.
 fun allJavaFilesGumTree() {
     val config = PipelineConfig(
         inputDir = "src/test/resources/gumTreeMethodSplitter/",

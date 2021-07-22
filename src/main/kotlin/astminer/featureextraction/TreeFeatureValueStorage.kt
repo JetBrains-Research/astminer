@@ -11,14 +11,12 @@ import java.io.File
  * @property fileName name of parsed file
  * @property numberOfLines number of lines in parsed file
  */
-data class ParsedTree(val parserName : String, val tree: Node, val fileName : String, val numberOfLines: Int)
+data class ParsedTree(val parserName: String, val tree: Node, val fileName: String, val numberOfLines: Int)
 
 /**
  * Gets simple name of Any.
  */
-fun Any.className() : String {
-    return this::class.java.simpleName
-}
+fun Any.className(): String = this::class.java.simpleName
 
 /**
  * Class for store and save [tree features][astminer.featureextraction.TreeFeature]
@@ -49,7 +47,7 @@ class TreeFeatureValueStorage(private val separator: String) {
      * Stores new tree feature to compute for stored parsed trees.
      * @param feature feature to store
      */
-    fun storeFeature(feature : TreeFeature<Any>) {
+    fun storeFeature(feature: TreeFeature<Any>) {
         features.add(feature)
     }
 
@@ -81,17 +79,17 @@ class TreeFeatureValueStorage(private val separator: String) {
         val lines = ArrayList<String>()
 
         val csvHeaders = fields.joinToString(separator = separator) { it.header }
-        lines.add(features.map { it.className() }.fold(csvHeaders) { c, f -> "$c$separator$f" } )
+        lines.add(features.map { it.className() }.fold(csvHeaders) { c, f -> "$c$separator$f" })
 
         parsedTrees.forEach { t ->
             val csvFields = fields.joinToString(separator = separator) { it.value(t) }
-            lines.add(features.map { toCsvString(it.compute(t.tree)) }.fold(csvFields) { c, f -> "$c$separator$f" } )
+            lines.add(features.map { toCsvString(it.compute(t.tree)) }.fold(csvFields) { c, f -> "$c$separator$f" })
         }
 
         writeLinesToFile(lines, file)
     }
 
-    private fun toCsvString(a : Any?) : String {
+    private fun toCsvString(a: Any?): String {
         if (a is List<*>) {
             return "\"${a.joinToString { toCsvString(it) }.replace("\"","\"\"")}\""
         }

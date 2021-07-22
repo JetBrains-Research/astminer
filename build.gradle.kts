@@ -29,7 +29,6 @@ dependencies {
     api("com.github.gumtreediff", "client", "2.1.2")
     api("com.github.gumtreediff", "gen.jdt", "2.1.2")
     api("com.github.gumtreediff", "gen.python", "2.1.2")
-
     // https://mvnrepository.com/artifact/io.shiftleft/fuzzyc2cpg
     api("io.shiftleft", "fuzzyc2cpg_2.13", "1.2.30")
 
@@ -47,6 +46,9 @@ dependencies {
     // ===== Test =====
     testImplementation("junit:junit:4.13.2")
     testImplementation(kotlin("test-junit"))
+
+    // ===== Detekt =====
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.17.1")
 }
 
 val generatedSourcesPath = "src/main/generated"
@@ -133,7 +135,8 @@ tasks.withType<Test> {
 
 detekt {
     allRules = true
-    buildUponDefaultConfig = true
+    autoCorrect = true
+    parallel = true
     config = files("detekt.yaml")
 }
 

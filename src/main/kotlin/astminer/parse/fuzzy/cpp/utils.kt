@@ -5,11 +5,11 @@ import java.util.concurrent.TimeUnit
 
 fun String.runCommand(workingDir: File) {
     ProcessBuilder("/bin/sh", "-c", this)
-            .directory(workingDir)
-            .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-            .redirectError(ProcessBuilder.Redirect.INHERIT)
-            .start()
-            .waitFor(60, TimeUnit.MINUTES)
+        .directory(workingDir)
+        .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+        .redirectError(ProcessBuilder.Redirect.INHERIT)
+        .start()
+        .waitFor(60, TimeUnit.MINUTES)
 }
 
 fun preprocessCppCode(file: File, outputDir: File, preprocessCommand: String) = """

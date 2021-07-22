@@ -11,9 +11,7 @@ import java.io.File
  * @param file file in which the number of lines is counted
  * @return number of lines in a given file
  */
-fun numberOfLines(file: File): Int {
-    return file.readLines().filter { it != "" }.size
-}
+fun numberOfLines(file: File): Int = file.readLines().filter { it != "" }.size
 
 /**
  * Changes extension of a given file to the new one.

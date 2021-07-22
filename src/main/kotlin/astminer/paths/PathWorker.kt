@@ -7,24 +7,12 @@ import kotlin.math.min
 
 class PathWorker {
 
-    companion object {
-        private const val PATH_PIECES_KEY = "path_pieces"
-
-        private fun Node.setPathPieces(pathPieces: List<PathPiece>) {
-            this.metadata[PATH_PIECES_KEY] = pathPieces
-        }
-
-        // In runtime all generics upcast to upper bound, therefore it's impossible to check type inside List
-        @Suppress("UNCHECKED_CAST")
-        private fun Node.getPathPieces(): List<PathPiece>? = this.metadata[PATH_PIECES_KEY] as List<PathPiece>?
-    }
-
     fun retrievePaths(tree: Node) = retrievePaths(tree, null, null)
 
-    fun updatePathPieces(
-            currentNode: Node,
-            pathPiecesPerChild: List<List<PathPiece>?>,
-            maxLength: Int?
+    private fun updatePathPieces(
+        currentNode: Node,
+        pathPiecesPerChild: List<List<PathPiece>?>,
+        maxLength: Int?
     ) = pathPiecesPerChild.filterNotNull().flatMap { childPieces ->
         childPieces.filter { pathPiece ->
             maxLength == null || pathPiece.size <= maxLength
@@ -33,10 +21,11 @@ class PathWorker {
         }
     }
 
-    fun collapsePiecesToPaths(
-            currentNode: Node,
-            pathPiecesPerChild: List<List<PathPiece>?>,
-            maxLength: Int?, maxWidth: Int?
+    private fun collapsePiecesToPaths(
+        currentNode: Node,
+        pathPiecesPerChild: List<List<PathPiece>?>,
+        maxLength: Int?,
+        maxWidth: Int?
     ): Collection<ASTPath> {
         val paths: MutableCollection<ASTPath> = ArrayList()
         val childrenCount = pathPiecesPerChild.size
@@ -73,5 +62,17 @@ class PathWorker {
             }
         }
         return paths
+    }
+
+    companion object {
+        private const val PATH_PIECES_KEY = "path_pieces"
+
+        private fun Node.setPathPieces(pathPieces: List<PathPiece>) {
+            this.metadata[PATH_PIECES_KEY] = pathPieces
+        }
+
+        // In runtime all generics upcast to upper bound, therefore it's impossible to check type inside List
+        @Suppress("UNCHECKED_CAST")
+        private fun Node.getPathPieces(): List<PathPiece>? = this.metadata[PATH_PIECES_KEY] as? List<PathPiece>
     }
 }

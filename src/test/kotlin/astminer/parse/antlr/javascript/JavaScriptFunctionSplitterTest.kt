@@ -39,17 +39,17 @@ class JavaScriptFunctionSplitterTest {
 
         fun FunctionInfo<AntlrNode>.getJsonInfo(): String {
             return "info : {" +
-                    "name : ${name}, " +
-                    "args : ${parameters.joinToString(", ") { it.name }}, " +
-                    "enclosing element : ${enclosingElement?.type?.getEnclosingElementType()}, " +
-                    "enclosing element name : ${enclosingElement?.name}" +
-                    "}"
+                "name : $name, " +
+                "args : ${parameters.joinToString(", ") { it.name }}, " +
+                "enclosing element : ${enclosingElement?.type?.getEnclosingElementType()}, " +
+                "enclosing element name : ${enclosingElement?.name}" +
+                "}"
         }
 
         val actualJsonInfos = functionInfos.map { it.getJsonInfo() }.sorted()
 
         val text = File(testFilePath).readText()
-        val expectedJsonInfos = Regex("info : \\{.*\\}").findAll(text).toList().map { it.value }.sorted()
+        val expectedJsonInfos = Regex("info : \\{.*}").findAll(text).toList().map { it.value }.sorted()
 
         assertEquals(expectedJsonInfos, actualJsonInfos)
     }

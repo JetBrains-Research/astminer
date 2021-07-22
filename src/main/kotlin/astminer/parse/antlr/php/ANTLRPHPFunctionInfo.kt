@@ -19,7 +19,7 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: 
 
     private fun collectParameters(): List<FunctionInfoParameter> {
         // Parameters in this grammar have following structure (children order may be wrong):
-        //formal parameter list -> formal parameter -> Ampersand
+        // formal parameter list -> formal parameter -> Ampersand
         //                                        | -> type hint
         //                                        | -> ellipsis
         //                                        | -> var init -> var name
@@ -61,20 +61,19 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: 
 
         val isPassedByReference = parameterNode.getChildOfType(REFERENCE) != null
 
-        if (parameterNode.hasLastLabel(PARAMETER_NAME)) return parameterNode.originalToken
-            ?: throw IllegalStateException("No name was found for a parameter")
+        if (parameterNode.hasLastLabel(PARAMETER_NAME)) {
+            return parameterNode.originalToken ?: error("No name was found for a parameter")
+        }
 
         val varInit = parameterNode.getItOrChildrenOfType(VAR_DECLARATION).first()
 
         val name = varInit.getItOrChildrenOfType(PARAMETER_NAME).first().originalToken
-            ?: throw IllegalStateException("No name was found for a parameter")
+            ?: error("No name was found for a parameter")
 
         return (if (isPassedByReference) "&" else "") + (if (isSplattedArg) "..." else "") + name
     }
 
-    private fun getElementType(element: AntlrNode): String? {
-        return element.getChildOfType(TYPE)?.originalToken
-    }
+    private fun getElementType(element: AntlrNode): String? = element.getChildOfType(TYPE)?.originalToken
 
     private fun collectEnclosingElement(): EnclosingElement<AntlrNode>? {
         val enclosing = root.findEnclosingElementBy { it.isPossibleEnclosing() } ?: return null
@@ -96,7 +95,7 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: 
             enclosing.isFunction() -> EnclosingElementType.Function
             enclosing.isClass() -> EnclosingElementType.Class
             enclosing.isAssignExpression() -> EnclosingElementType.VariableDeclaration
-            else -> throw IllegalStateException("No type can be associated")
+            else -> error("No type can be associated")
         }
     }
 
@@ -104,18 +103,18 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: 
         return when {
             enclosing.isFunction() || enclosing.isClass() -> enclosing.getChildOfType(FUNCTION_NAME)?.originalToken
             enclosing.isAssignExpression() -> enclosing.children.find { it.hasLastLabel(PARAMETER_NAME) }?.originalToken
-            else -> throw IllegalStateException("No type can be associated")
+            else -> error("No type can be associated")
         }
     }
 
     // No check for method because method is a function
     private fun AntlrNode.isPossibleEnclosing() = isFunction() || isClass() || isAssignExpression()
 
-    private fun AntlrNode.isMethod() = isFunction() && (hasFirstLabel(CLASS_MEMBER))
+    private fun AntlrNode.isMethod() = isFunction() && hasFirstLabel(CLASS_MEMBER)
 
     private fun AntlrNode.isFunction() = getChildOfType(LAMBDA_TOKEN) != null || getChildOfType(FUNCTION_TOKEN) != null
 
-    private fun AntlrNode.isAssignExpression() = hasFirstLabel(EXPRESSION) && (getChildOfType(ASSIGN_OP) != null)
+    private fun AntlrNode.isAssignExpression() = hasFirstLabel(EXPRESSION) && getChildOfType(ASSIGN_OP) != null
 
     private fun AntlrNode.isClass(): Boolean = hasLastLabel(CLASS_DECLARATION)
 

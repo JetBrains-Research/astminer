@@ -21,9 +21,12 @@ abstract class PathWorkerTestBase {
         val allPaths = PathWorker().retrievePaths(tree)
         val expectedCount = nLeaves * (nLeaves - 1) / 2
 
-        Assert.assertEquals("A tree with $nLeaves leaves contains $expectedCount paths, " +
+        Assert.assertEquals(
+            "A tree with $nLeaves leaves contains $expectedCount paths, " +
                 "one per distinct ordered pair of leaves. Worker returned ${allPaths.size}",
-                expectedCount, allPaths.size)
+            expectedCount,
+            allPaths.size
+        )
     }
 
     @Test
@@ -48,9 +51,9 @@ abstract class PathWorkerTestBase {
             for (maxWidth in 1..leavesCount) {
                 val paths = PathWorker().retrievePaths(tree, maxLength, maxWidth)
                 Assert.assertEquals(
-                        "Unexpected paths count with length $maxLength and width $maxWidth",
-                        allPathCharacteristics.count { (w, len) -> w <= maxWidth && len <= maxLength },
-                        paths.size
+                    "Unexpected paths count with length $maxLength and width $maxWidth",
+                    allPathCharacteristics.count { (w, len) -> w <= maxWidth && len <= maxLength },
+                    paths.size
                 )
             }
         }

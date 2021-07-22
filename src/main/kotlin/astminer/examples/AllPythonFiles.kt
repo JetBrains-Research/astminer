@@ -3,7 +3,6 @@ package astminer.examples
 import astminer.config.*
 import astminer.pipeline.Pipeline
 
-
 fun allPythonFiles() {
     val config = PipelineConfig(
         inputDir = "src/test/resources/examples",

@@ -16,13 +16,12 @@ class FuzzyNode(
 ) : Node() {
     private val order = order ?: -1
     override var parent: Node? = null
-    private val childrenMultiset = TreeMultiset.create<FuzzyNode>(compareBy(
-        { it.order },
-        { System.identityHashCode(it) }
-    ))
+    private val childrenMultiset = TreeMultiset.create<FuzzyNode>(
+        compareBy({ it.order }, { System.identityHashCode(it) })
+    )
 
     override val children
-    get() = childrenMultiset.toList()
+        get() = childrenMultiset.toList()
 
     fun addChild(node: FuzzyNode) {
         childrenMultiset.add(node)

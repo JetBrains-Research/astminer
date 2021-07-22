@@ -6,15 +6,10 @@ import astminer.common.model.FunctionInfo
 import astminer.common.model.FunctionInfoParameter
 import astminer.parse.gumtree.GumTreeNode
 
-class GumTreeJavaFunctionInfo(override val root: GumTreeNode, override val filePath: String) :
-    FunctionInfo<GumTreeNode> {
-    companion object {
-        private object TypeLabels {
-            const val simpleName = "SimpleName"
-            const val typeDeclaration = "TypeDeclaration"
-            const val singleVariableDeclaration = "SingleVariableDeclaration"
-        }
-    }
+class GumTreeJavaFunctionInfo(
+    override val root: GumTreeNode,
+    override val filePath: String
+) : FunctionInfo<GumTreeNode> {
 
     override val nameNode: GumTreeNode? = root.getChildOfType(TypeLabels.simpleName)
     override val parameters: List<FunctionInfoParameter> = collectParameters()
@@ -41,21 +36,22 @@ class GumTreeJavaFunctionInfo(override val root: GumTreeNode, override val fileP
     private fun collectParameters(): List<FunctionInfoParameter> {
         val params = root.getChildrenOfType(TypeLabels.singleVariableDeclaration)
         return params.map { node ->
-            FunctionInfoParameter(
-                name = node.getElementName(),
-                type = node.getElementType()
-            )
+            FunctionInfoParameter(node.getElementName(), node.getElementType())
         }
     }
 
-    private fun GumTreeNode.getElementName(): String {
-        return getChildOfType(TypeLabels.simpleName)?.originalToken
-            ?: throw IllegalStateException("No name found for element")
-    }
+    private fun GumTreeNode.getElementName(): String =
+        getChildOfType(TypeLabels.simpleName)?.originalToken ?: error("No name found for element")
 
-    private fun GumTreeNode.getElementType(): String? {
-        return children.firstOrNull { it.isTypeNode() }?.originalToken
-    }
+    private fun GumTreeNode.getElementType(): String? = children.firstOrNull { it.isTypeNode() }?.originalToken
 
     private fun GumTreeNode.isTypeNode() = typeLabel.endsWith("Type")
+
+    companion object {
+        private object TypeLabels {
+            const val simpleName = "SimpleName"
+            const val typeDeclaration = "TypeDeclaration"
+            const val singleVariableDeclaration = "SingleVariableDeclaration"
+        }
+    }
 }

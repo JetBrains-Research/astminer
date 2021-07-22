@@ -18,17 +18,33 @@ data class ParserConfig(
 
 @Serializable
 enum class ParserType {
-    @SerialName("antlr") Antlr,
-    @SerialName("gumtree") GumTree,
-    @SerialName("fuzzy") Fuzzy
+    @SerialName("antlr")
+    Antlr,
+
+    @SerialName("gumtree")
+    GumTree,
+
+    @SerialName("fuzzy")
+    Fuzzy
 }
 
 @Serializable
 enum class FileExtension(val fileExtension: String) {
-    @SerialName("py") Python("py"),
-    @SerialName("java") Java("java"),
-    @SerialName("js") JavaScript("js"),
-    @SerialName("c") C("c"),
-    @SerialName("cpp") Cpp("cpp"),
-    @SerialName("php") PHP("php")
+    @SerialName("py")
+    Python("py"),
+
+    @SerialName("java")
+    Java("java"),
+
+    @SerialName("js")
+    JavaScript("js"),
+
+    @SerialName("c")
+    C("c"),
+
+    @SerialName("cpp")
+    Cpp("cpp"),
+
+    @SerialName("php")
+    PHP("php")
 }

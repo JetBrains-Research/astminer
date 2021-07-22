@@ -1,9 +1,9 @@
 package astminer.examples
 
-import astminer.common.model.LabeledResult
 import astminer.common.model.FunctionInfo
-import astminer.parse.gumtree.python.GumTreePythonFunctionSplitter
+import astminer.common.model.LabeledResult
 import astminer.parse.gumtree.GumTreeNode
+import astminer.parse.gumtree.python.GumTreePythonFunctionSplitter
 import astminer.parse.gumtree.python.GumTreePythonParser
 import astminer.storage.path.Code2VecPathStorage
 import astminer.storage.path.PathBasedStorageConfig

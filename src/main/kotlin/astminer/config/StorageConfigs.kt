@@ -9,7 +9,6 @@ import astminer.storage.path.PathBasedStorageConfig
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import java.io.File
 
 /**
  * Config for storage that saved the results on the disk

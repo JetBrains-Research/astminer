@@ -27,9 +27,9 @@ class TreeUtilTest {
         val token = "   Token THAT  \n contains Whi\"t,es''pace characters!!!and pu.n.c.t.u.a.tion  \n"
         val expectedToken = "token" + "that" + "contains" + "whitespace" + "characters" + "and" + "punctuation"
         Assert.assertEquals(
-                "All whitespace characters and punctuation should be removed, keeping only letters",
-                expectedToken,
-                normalizeToken(token, defaultToken)
+            "All whitespace characters and punctuation should be removed, keeping only letters",
+            expectedToken,
+            normalizeToken(token, defaultToken)
         )
     }
 
@@ -38,20 +38,20 @@ class TreeUtilTest {
         val token = "* *\n"
         val expectedToken = "*_*"
         Assert.assertEquals(
-                "Token without letters have whitespaces replaced with underscores",
-                expectedToken,
-                normalizeToken(token, defaultToken)
+            "Token without letters have whitespaces replaced with underscores",
+            expectedToken,
+            normalizeToken(token, defaultToken)
         )
     }
 
     @Test
     fun testNormalizeEmptyToken() {
         val token = "\n\n"
-        val expectedToken = DEFAULT_TOKEN
+        val expectedToken = EMPTY_TOKEN
         Assert.assertEquals(
-                "Token without letters have whitespaces replaced with underscores",
-                expectedToken,
-                normalizeToken(token, defaultToken)
+            "Token without letters have whitespaces replaced with underscores",
+            expectedToken,
+            normalizeToken(token, defaultToken)
         )
     }
 
@@ -60,9 +60,9 @@ class TreeUtilTest {
         val token = "fun_withReallyLong_And_ComplicatedName"
         val expectedToken = listOf("fun", "with", "really", "long", "and", "complicated", "name")
         Assert.assertEquals(
-                "Token with snake, camel and combined case should be split into list of its parts",
-                expectedToken,
-                splitToSubtokens(token)
+            "Token with snake, camel and combined case should be split into list of its parts",
+            expectedToken,
+            splitToSubtokens(token)
         )
     }
 }

@@ -36,9 +36,9 @@ class FuzzyCppParserTest {
         val parser = FuzzyCppParser()
         val nodes = parser.parseFiles(getProjectFilesWithExtension(folder, "cpp"))
         Assert.assertEquals(
-                "There is only 3 file with .cpp extension in 'testData/examples' folder",
-                3,
-                nodes.size
+            "There is only 3 file with .cpp extension in 'testData/examples' folder",
+            3,
+            nodes.size
         )
     }
 
@@ -53,9 +53,9 @@ class FuzzyCppParserTest {
         parser.preprocessFile(folder.resolve(defineFileName), preprocessedFolder)
 
         Assert.assertEquals(
-                "'define' directives should be replaced",
-                "for (int i = (0); i < (10); ++i) { }",
-                preprocessedFolder.resolve(defineFileName).readInOneLine()
+            "'define' directives should be replaced",
+            "for (int i = (0); i < (10); ++i) { }",
+            preprocessedFolder.resolve(defineFileName).readInOneLine()
         )
         preprocessedFolder.deleteRecursively()
     }
@@ -71,9 +71,9 @@ class FuzzyCppParserTest {
         parser.preprocessFile(folder.resolve(includeFileName), preprocessedFolder)
 
         Assert.assertEquals(
-                "'include' directives should not be replaced",
-                folder.resolve(includeFileName).readInOneLine(),
-                preprocessedFolder.resolve(includeFileName).readInOneLine()
+            "'include' directives should not be replaced",
+            folder.resolve(includeFileName).readInOneLine(),
+            preprocessedFolder.resolve(includeFileName).readInOneLine()
         )
         preprocessedFolder.deleteRecursively()
     }
@@ -89,9 +89,9 @@ class FuzzyCppParserTest {
         val nodes = parser.parseFiles(getProjectFilesWithExtension(projectRoot, "cpp"))
 
         Assert.assertEquals(
-                "Parse tree for a valid file should not be null. There are 5 files in example project.",
-                5,
-                nodes.size
+            "Parse tree for a valid file should not be null. There are 5 files in example project.",
+            5,
+            nodes.size
         )
         preprocessedRoot.deleteRecursively()
     }

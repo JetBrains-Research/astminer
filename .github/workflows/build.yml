@@ -67,7 +67,7 @@ jobs:
         if: ${{ always() }}
         with:
           name: test-report
-          path: build/reports/tests/**/*
+          path: build/astminer/reports/tests/**/*
 
   code-style:
     needs: build
@@ -87,4 +87,4 @@ jobs:
         uses: github/codeql-action/upload-sarif@v1
         if: ${{ always() }}
         with:
-          sarif_file: build/detekt.sarif
+          sarif_file: build/astminer/reports/detekt/detekt.sarif

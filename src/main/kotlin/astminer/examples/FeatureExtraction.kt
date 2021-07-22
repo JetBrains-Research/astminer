@@ -7,7 +7,7 @@ import java.io.File
 
 fun parseAndCollectFeatures() {
     val parser = GumTreeJavaParser()
-    val features : List<TreeFeature<Any>> =
+    val features: List<TreeFeature<Any>> =
         listOf(Depth, NumberOfNodes, BranchingFactor, CompressiblePathLengths, Tokens, NodeTypes)
 
     val folderInput = "./testData/featureextraction"

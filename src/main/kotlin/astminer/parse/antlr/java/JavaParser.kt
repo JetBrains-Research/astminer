@@ -4,10 +4,10 @@ import astminer.common.model.Parser
 import astminer.parse.ParsingException
 import astminer.parse.antlr.AntlrNode
 import astminer.parse.antlr.convertAntlrTree
-import org.antlr.v4.runtime.CommonTokenStream
 import me.vovak.antlr.parser.Java8Lexer
 import me.vovak.antlr.parser.Java8Parser
 import org.antlr.v4.runtime.CharStreams
+import org.antlr.v4.runtime.CommonTokenStream
 import java.io.InputStream
 import java.lang.Exception
 

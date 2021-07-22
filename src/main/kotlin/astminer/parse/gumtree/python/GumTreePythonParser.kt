@@ -22,6 +22,4 @@ class GumTreePythonParser : Parser<GumTreeNode> {
     }
 }
 
-fun wrapGumTreeNode(treeContext: TreeContext): GumTreeNode {
-    return GumTreeNode(treeContext.root, treeContext, null)
-}
+fun wrapGumTreeNode(treeContext: TreeContext): GumTreeNode = GumTreeNode(treeContext.root, treeContext, null)

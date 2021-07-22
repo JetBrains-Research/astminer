@@ -38,10 +38,10 @@ object AntlrJavascriptHandlerFactory : HandlerFactory {
     }
 }
 
-object AntlrPHPHandlerFactory: HandlerFactory {
+object AntlrPHPHandlerFactory : HandlerFactory {
     override fun createHandler(file: File): LanguageHandler<out Node> = AntlrPHPHandler(file)
 
-    class AntlrPHPHandler(file: File): LanguageHandler<AntlrNode>() {
+    class AntlrPHPHandler(file: File) : LanguageHandler<AntlrNode>() {
         override val parseResult: ParseResult<AntlrNode> = PHPParser().parseFile(file)
         override val splitter: TreeFunctionSplitter<AntlrNode> = PHPFunctionSplitter()
     }

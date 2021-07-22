@@ -1,15 +1,15 @@
 package astminer.pipeline
 
 import astminer.common.getProjectFilesWithExtension
-import astminer.parse.getHandlerFactory
-import astminer.pipeline.branch.FilePipelineBranch
-import astminer.pipeline.branch.FunctionPipelineBranch
-import astminer.pipeline.branch.IllegalLabelExtractorException
 import astminer.common.model.FileLabelExtractor
 import astminer.common.model.FunctionLabelExtractor
 import astminer.common.model.Storage
 import astminer.config.FileExtension
 import astminer.config.PipelineConfig
+import astminer.parse.getHandlerFactory
+import astminer.pipeline.branch.FilePipelineBranch
+import astminer.pipeline.branch.FunctionPipelineBranch
+import astminer.pipeline.branch.IllegalLabelExtractorException
 import java.io.File
 
 /**

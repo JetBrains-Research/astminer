@@ -14,18 +14,28 @@ exceptions:
     active: false
 
 style:
-  WildcardImport:
-    active: false
+  ForbiddenComment:
+    allowedPatterns: 'TODO:'
   MagicNumber:
     ignorePropertyDeclaration: true
     ignoreAnnotation: true
     ignoreEnums: true
     ignoreNumbers: ['-1', '0', '1', '2', '60', '100', '1000']
-    excludes: ['**/test/**', '**/*Test.kt', '**/*Spec.kt', '**/examples/**']
-  ForbiddenComment:
-    allowedPatterns: 'TODO:'
+    excludes: ['**/test/**', '**/examples/**']
   ReturnCount:
     max: 5
+  WildcardImport:
+    active: false
+
+formatting:
+  autoCorrect: true
+  NoConsecutiveBlankLines:
+    active: true
+  NoWildcardImports:
+    active: false
+
+comments:
+  active: false
 
 output-reports:
   active: true

@@ -1,11 +1,11 @@
 package astminer.parse.antlr.python
 
-import me.vovak.antlr.parser.Python3Lexer
-import me.vovak.antlr.parser.Python3Parser
 import astminer.common.model.Parser
 import astminer.parse.ParsingException
 import astminer.parse.antlr.AntlrNode
 import astminer.parse.antlr.convertAntlrTree
+import me.vovak.antlr.parser.Python3Lexer
+import me.vovak.antlr.parser.Python3Parser
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import java.io.InputStream

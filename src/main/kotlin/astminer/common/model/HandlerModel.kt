@@ -24,7 +24,6 @@ abstract class LanguageHandler<T : Node> {
     abstract val parseResult: ParseResult<T>
     protected abstract val splitter: TreeFunctionSplitter<T>
 
-    fun splitIntoFunctions(): Collection<FunctionInfo<out Node>> {
-        return splitter.splitIntoFunctions(parseResult.root, parseResult.filePath)
-    }
+    fun splitIntoFunctions(): Collection<FunctionInfo<out Node>> =
+        splitter.splitIntoFunctions(parseResult.root, parseResult.filePath)
 }

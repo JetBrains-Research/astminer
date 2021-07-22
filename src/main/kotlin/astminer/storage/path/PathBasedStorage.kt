@@ -1,12 +1,12 @@
 package astminer.storage.path
 
-import astminer.common.model.LabeledResult
 import astminer.common.model.*
+import astminer.common.model.LabeledResult
+import astminer.common.model.Storage
+import astminer.common.storage.*
 import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
 import astminer.paths.toPathContext
-import astminer.common.model.Storage
-import astminer.common.storage.*
 import java.io.File
 import java.io.PrintWriter
 
@@ -59,8 +59,8 @@ abstract class PathBasedStorage(
     private fun dumpPathContexts(labeledPathContextIds: LabeledPathContextIds<String>) {
         val pathContextIdsString = labeledPathContextIds.pathContexts.filter {
             val isNumberOfTokensValid = config.maxTokens == null ||
-                    tokensMap.getIdRank(it.startTokenId) <= config.maxTokens &&
-                    tokensMap.getIdRank(it.endTokenId) <= config.maxTokens
+                tokensMap.getIdRank(it.startTokenId) <= config.maxTokens &&
+                tokensMap.getIdRank(it.endTokenId) <= config.maxTokens
             val isNumberOfPathsValid = config.maxPaths == null || pathsMap.getIdRank(it.pathId) <= config.maxPaths
 
             isNumberOfTokensValid && isNumberOfPathsValid
@@ -85,9 +85,12 @@ abstract class PathBasedStorage(
 
     private fun retrieveLabeledPathContexts(labeledResult: LabeledResult<out Node>): LabeledPathContexts<String> {
         val paths = retrievePaths(labeledResult.root)
-        return LabeledPathContexts(labeledResult.label, paths.map { astPath ->
-            toPathContext(astPath) { it.token.replace("\n", "\\n") }
-        })
+        return LabeledPathContexts(
+            labeledResult.label,
+            paths.map { astPath ->
+                toPathContext(astPath) { it.token.replace("\n", "\\n") }
+            }
+        )
     }
 
     /**

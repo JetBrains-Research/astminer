@@ -3,7 +3,6 @@ package astminer.pipeline.branch
 import astminer.common.model.*
 import astminer.labelextractor.*
 
-
 /**
  * PipelineBranch for pipeline with function-level granularity (FunctionPipelineConfig).
  * Extracts functions from the parsed files.

@@ -7,7 +7,7 @@ interface TreeFunctionSplitter<T : Node> {
 class FunctionInfoPropertyNotImplementedException(propertyName: String) :
     UnsupportedOperationException(
         "The property `$propertyName` of FunctionInfo for this language and parser type is not implemented yet. " +
-                "Consider implementing it."
+            "Consider implementing it."
     )
 
 private fun notImplemented(propertyName: String): Nothing =

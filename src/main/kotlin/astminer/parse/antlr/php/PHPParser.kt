@@ -16,7 +16,7 @@ import java.io.InputStream
 // (AST just falls apart when class field contain dot concatenation)
 // More details can be found in corresponding issues
 // https://github.com/antlr/grammars-v4/issues/1991
-class PHPParser: Parser<AntlrNode> {
+class PHPParser : Parser<AntlrNode> {
     override fun parseInputStream(content: InputStream): AntlrNode {
         return try {
             val stream = CharStreams.fromStream(content)

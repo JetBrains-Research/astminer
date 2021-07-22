@@ -9,7 +9,7 @@ class DummyNode(
     override val children: MutableList<DummyNode> = mutableListOf()
 ) : Node() {
 
-    //TODO("not implemented")
+    // TODO("not implemented")
     override val parent: Node? = null
 
     override val originalToken: String = typeLabel
