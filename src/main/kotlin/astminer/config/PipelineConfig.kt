@@ -1,5 +1,6 @@
 package astminer.config
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
@@ -12,6 +13,6 @@ data class PipelineConfig(
     val outputDir: String,
     val parser: ParserConfig,
     val filters: List<FilterConfig> = emptyList(),
-    val labelExtractor: LabelExtractorConfig,
+    @SerialName("label") val labelExtractor: LabelExtractorConfig,
     val storage: StorageConfig
 )

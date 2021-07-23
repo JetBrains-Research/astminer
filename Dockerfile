@@ -20,11 +20,8 @@ RUN apt-get update && \
     chmod +x pythonparser
 ENV PATH="/pythonparser:${PATH}"
 
-# Copy astminer sources
+# Copy astminer shadow jar
 WORKDIR astminer
-COPY . .
+COPY ./build/shadow/astminer.jar .
 
-# Prepare shadow jar
-RUN ./gradlew shadowJar
-
-ENTRYPOINT ["java", "-jar", "build/shadow/astminer.jar"]
+ENTRYPOINT ["java", "-jar", "astminer.jar"]

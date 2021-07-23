@@ -5,15 +5,15 @@ import kotlinx.serialization.Serializable
 
 /**
  * This config is used to select the parsers that should be used
- * If given type = "antlr" and extensions = ["py", "java"]
+ * If given type = "antlr" and languages = ["py", "java"]
  * then 2 ANTLR parsers will be used (java antler parser and python antlr parser)
  * @param name Type of the parser
- * @param extensions File extensions that should be parsed
+ * @param languages File extensions that should be parsed
  */
 @Serializable
 data class ParserConfig(
     val name: ParserType,
-    val extensions: List<FileExtension>
+    val languages: List<FileExtension>
 )
 
 @Serializable

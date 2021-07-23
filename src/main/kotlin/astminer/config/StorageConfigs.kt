@@ -22,7 +22,7 @@ sealed class StorageConfig {
  * @see astminer.storage.ast.CsvAstStorage
  */
 @Serializable
-@SerialName("CsvAST")
+@SerialName("csv AST")
 class CsvAstStorageConfig : StorageConfig() {
     override fun createStorage(outputDirectoryPath: String) = CsvAstStorage(outputDirectoryPath)
 }
@@ -31,7 +31,7 @@ class CsvAstStorageConfig : StorageConfig() {
  * @see astminer.storage.ast.DotAstStorage
  */
 @Serializable
-@SerialName("DotAST")
+@SerialName("dot AST")
 class DotAstStorageConfig : StorageConfig() {
     override fun createStorage(outputDirectoryPath: String) = DotAstStorage(outputDirectoryPath)
 }
@@ -40,7 +40,7 @@ class DotAstStorageConfig : StorageConfig() {
  * @see JsonAstStorage
  */
 @Serializable
-@SerialName("JsonAST")
+@SerialName("json AST")
 class JsonAstStorageConfig : StorageConfig() {
     override fun createStorage(outputDirectoryPath: String) = JsonAstStorage(outputDirectoryPath)
 }
@@ -49,7 +49,7 @@ class JsonAstStorageConfig : StorageConfig() {
  * Config for [astminer.storage.path.Code2VecPathStorage]
  */
 @Serializable
-@SerialName("Code2vec")
+@SerialName("code2vec")
 data class Code2VecPathStorageConfig(
     val maxPathLength: Int,
     val maxPathWidth: Int,

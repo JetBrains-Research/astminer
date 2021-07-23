@@ -44,12 +44,12 @@ class Pipeline(private val config: PipelineConfig) {
      * Runs the pipeline that is defined in the [config].
      */
     fun run() {
-        for (extension in config.parser.extensions) {
-            val languageFactory = getHandlerFactory(extension, config.parser.name)
+        for (language in config.parser.languages) {
+            val languageFactory = getHandlerFactory(language, config.parser.name)
 
-            val files = getProjectFilesWithExtension(inputDirectory, extension.fileExtension)
+            val files = getProjectFilesWithExtension(inputDirectory, language.fileExtension)
 
-            createStorage(extension).use { storage ->
+            createStorage(language).use { storage ->
                 languageFactory.createHandlers(files) { languageHandler ->
                     for (labeledResult in branch.process(languageHandler)) {
                         storage.store(labeledResult)
