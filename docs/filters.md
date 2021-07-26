@@ -12,7 +12,7 @@ Therefore some languages or parsers may not support needed filter
 To handle this user should manually add specific logic of parsing AST to get info about function or code at 
 all. 
 
-Filter config classes are defined in [FilterConfigs.kt](src/main/kotlin/astminer/config/FilterConfigs.kt).
+Filter config classes are defined in [FilterConfigs.kt](../src/main/kotlin/astminer/config/FilterConfigs.kt).
 
 ## by tree size
 **granularity**: files, functions
@@ -61,7 +61,7 @@ Exclude functions that have certain annotations (e.g. `@Override`)
 
  ```yaml
  name: by annotations
- annotations: [ Override ]
+ annotations: [ override ]
  ```
 
 ## by modifiers

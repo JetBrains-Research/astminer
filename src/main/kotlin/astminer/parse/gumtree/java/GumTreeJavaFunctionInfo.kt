@@ -16,6 +16,13 @@ class GumTreeJavaFunctionInfo(
     override val returnType: String? = root.getElementType()
     override val enclosingElement: EnclosingElement<GumTreeNode>? = collectEnclosingClass()
 
+    override val modifiers: List<String> = root.children.filter { it.typeLabel == "Modifier" }.map { it.originalToken }
+    override val annotations: List<String> = root
+        .children
+        .filter { it.typeLabel == "MarkerAnnotation" }
+        .map { it.children.first().originalToken }
+    override val isConstructor: Boolean = root.typeLabel == "Initializer"
+
     private fun collectEnclosingClass(): EnclosingElement<GumTreeNode>? {
         val enclosingClassNode = getEnclosingClassNode(root.parent) ?: return null
         val enclosingClassName = enclosingClassNode.getChildOfType(TypeLabels.simpleName)?.originalToken

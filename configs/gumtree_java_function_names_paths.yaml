@@ -13,6 +13,8 @@ filters:
     maxWordsNumber: 10
   - name: by words number
     maxTokenWordsNumber: 100
+  - name: by annotations
+    annotations: [override]
 
 # use function name as labels
 # this selects the function level granularity

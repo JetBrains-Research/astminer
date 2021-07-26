@@ -36,6 +36,9 @@ fun gumTreeJavaMethodPaths() {
 
         methodNodes.forEach { methodInfo ->
             // Retrieve a method identifier
+            println("Method name: ${methodInfo.name}, " +
+                    "modifiers: ${methodInfo.modifiers}, " +
+                    "annotations: ${methodInfo.annotations}")
             val entityId = "${file.path}::${getCsvFriendlyMethodId(methodInfo)}"
             val labelingResult = LabeledResult(fileNode, entityId, file.path)
             storage.store(labelingResult)
