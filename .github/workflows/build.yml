@@ -88,3 +88,29 @@ jobs:
         if: ${{ always() }}
         with:
           sarif_file: build/astminer/reports/detekt/detekt.sarif
+
+  run-on-configs:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Prepare shadowJar
+        run: ./gradlew shadowJar
+
+      - name: Run antlr_java_js_ast.yaml
+        run: java -jar build/shadow/astminer.jar antlr_java_js_ast.yaml
+
+      - name: Run antlr_python_paths.yaml
+        run: java -jar build/shadow/astminer.jar antlr_python_paths.yaml
+
+      - name: Run gumtree_java_ast.yaml
+        run: java -jar build/shadow/astminer.jar gumtree_java_ast.yaml
+
+      - name: Run gumtree_java_function_names_paths.yaml
+        run: java -jar build/shadow/astminer.jar gumtree_java_function_names_paths.yaml

@@ -3,7 +3,7 @@
 Storages defines how ASTs should be saved on a disk.
 For now, `astminer` support saving in tree and path-based formats.
 
-Storage config classes are defined in [StorageConfigs.kt](src/main/kotlin/astminer/config/StorageConfigs.kt).
+Storage config classes are defined in [StorageConfigs.kt](../src/main/kotlin/astminer/config/StorageConfigs.kt).
 
 ## Tree formats
 
@@ -46,9 +46,9 @@ Extract paths from each AST. Output is 4 files:
 1. `node_types.csv` contains numeric ids and corresponding node types with directions (up/down, as described in [paper](https://arxiv.org/pdf/1803.09544.pdf));
 2. `tokens.csv` contains numeric ids and corresponding tokens;
 3. `paths.csv` contains numeric ids and AST paths in form of space-separated sequences of node type ids;
-4. `path_contexts.csv` contains labels and sequences of path contexts (triples of two tokens and a path between them).
+4. `path_contexts.c2s` contains labels and sequences of path contexts (triples of two tokens and a path between them).
 
-Each line in `path_contexts.csv` starts with a label,
+Each line in `path_contexts.c2s` starts with a label,
 then it contains a sequence of space-separated triples. Each triple contains start token id, path id, end token id, separated with commas.
 
  ```yaml
@@ -58,4 +58,23 @@ then it contains a sequence of space-separated triples. Each triple contains sta
  maxTokens: 1000 # can be omitted
  maxPaths: 1000 # can be omitted
  maxPathContextsPerEntity: 200 # can be omitted
+ ```
+
+
+### Code2seq
+
+Extract paths from each AST and save in code2seq format.
+Output is `path_context.c2s` file,
+each line in it starts with a label, then it contains a sequence of space-separated triples.
+Each triple contains start token, path node types, end token id, separated with commas.
+
+To reduce memory usage you can enable `nodesToNumber` option.
+If it is `true` then all types are converted into numbers and `node_types.csv` would be added to output files.
+
+ ```yaml
+ name: code2seq
+ maxPathLength: 10
+ maxPathWidth: 2
+ maxPathContextsPerEntity: 200 # can be omitted
+ nodeToNumber: true # can be omitted
  ```

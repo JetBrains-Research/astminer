@@ -19,6 +19,8 @@ filters:
 label:
   name: function name
 
-# save to disk ASTs in the JSON format
+# save to disk ASTs in the code2seq format
 storage:
-  name: json AST
+  name: code2seq
+  length: 9
+  width: 2

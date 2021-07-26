@@ -4,6 +4,7 @@ import astminer.common.model.Storage
 import astminer.storage.ast.CsvAstStorage
 import astminer.storage.ast.DotAstStorage
 import astminer.storage.ast.JsonAstStorage
+import astminer.storage.path.Code2SeqPathStorage
 import astminer.storage.path.Code2VecPathStorage
 import astminer.storage.path.PathBasedStorageConfig
 import kotlinx.serialization.SerialName
@@ -63,4 +64,20 @@ data class Code2VecPathStorageConfig(
 
     override fun createStorage(outputDirectoryPath: String) =
         Code2VecPathStorage(outputDirectoryPath, pathBasedStorageConfig)
+}
+
+@Serializable
+@SerialName("code2seq")
+data class Code2SeqPathStorageConfig(
+    @SerialName("length") val maxPathLength: Int,
+    @SerialName("width") val maxPathWidth: Int,
+    val maxPathContextsPerEntity: Int? = null,
+    val nodesToNumber: Boolean = true
+) : StorageConfig() {
+    @Transient
+    private val pathBasedStorageConfig =
+        PathBasedStorageConfig(maxPathLength, maxPathWidth, maxPathContextsPerEntity = maxPathContextsPerEntity)
+
+    override fun createStorage(outputDirectoryPath: String) =
+        Code2SeqPathStorage(outputDirectoryPath, pathBasedStorageConfig, nodesToNumber)
 }

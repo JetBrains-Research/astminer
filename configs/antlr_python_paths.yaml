@@ -20,6 +20,6 @@ label:
 # extract from each tree paths with length 9 and width 2
 # save paths in code2vec format
 storage:
-  name: code2vec
+  name: code2seq
   maxPathLength: 9
   maxPathWidth: 2

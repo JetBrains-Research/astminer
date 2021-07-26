@@ -12,16 +12,16 @@ abstract class Node {
     abstract val parent: Node?
     abstract val originalToken: String?
 
-    val normalizedToken: String? by lazy {
+    val normalizedToken: String by lazy {
         originalToken?.let {
             val subtokens = splitToSubtokens(it)
-            if (subtokens.isEmpty()) null else subtokens.joinToString(TOKEN_DELIMITER)
-        }
+            if (subtokens.isEmpty()) EMPTY_TOKEN else subtokens.joinToString(TOKEN_DELIMITER)
+        } ?: EMPTY_TOKEN
     }
     var technicalToken: String? = null
 
     val token: String
-        get() = listOfNotNull(technicalToken, normalizedToken, originalToken).firstOrNull() ?: EMPTY_TOKEN
+        get() = technicalToken ?: normalizedToken
 
     val metadata: MutableMap<String, Any> = HashMap()
     fun isLeaf() = children.isEmpty()
