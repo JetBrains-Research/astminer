@@ -9,10 +9,14 @@ class DummyNode(
     override val children: MutableList<DummyNode> = mutableListOf()
 ) : Node() {
 
-    // TODO("not implemented")
     override val parent: Node? = null
 
     override val originalToken: String = typeLabel
+
+    init {
+        // Tokens may change after normalization, for tests we want tokens to be unchanged
+        technicalToken = typeLabel
+    }
 
     override fun removeChildrenOfType(typeLabel: String) {
         children.removeIf { it.typeLabel == typeLabel }
