@@ -1,8 +1,8 @@
 package astminer.parse.fuzzy.cpp
 
-import astminer.common.model.ParseResult
 import astminer.common.model.Parser
 import astminer.parse.ParsingException
+import astminer.parse.fuzzy.FuzzyNode
 import io.shiftleft.codepropertygraph.Cpg
 import io.shiftleft.codepropertygraph.generated.EdgeTypes
 import io.shiftleft.codepropertygraph.generated.NodeKeys
@@ -34,15 +34,15 @@ class FuzzyCppParser : Parser<FuzzyNode> {
         file.outputStream().use {
             content.copyTo(it)
         }
-        return parseFile(file).root
+        return parseFile(file)
     }
 
     /**
      * Parse a single file and create an AST.
      * @param file to parse
-     * @return [ParseResult] with root of an AST (null if parsing failed) and file path
+     * @return root of an AST (null if parsing failed)
      */
-    override fun parseFile(file: File): ParseResult<FuzzyNode> {
+    override fun parseFile(file: File): FuzzyNode {
         // We need some tweaks to create Scala sets from Kotlin code
         val pathSetScalaBuilder = Set.newBuilder<String>()
         pathSetScalaBuilder.addOne(file.path)
@@ -60,13 +60,13 @@ class FuzzyCppParser : Parser<FuzzyNode> {
 
     /**
      * Convert [cpg][io.shiftleft.codepropertygraph.Cpg] created by fuzzyc2cpg
-     * to list of [FuzzyNode][astminer.parse.fuzzy.cpp.FuzzyNode].
+     * to list of [FuzzyNode][astminer.parse.fuzzy.FuzzyNode].
      * Cpg may contain graphs for several files, in that case several ASTs will be created.
      * @param cpg to be converted
      * @param filePath to the parsed file that will be used if parsing failed
      * @return list of AST roots
      */
-    private fun cpg2Nodes(cpg: Cpg, filePath: String): ParseResult<FuzzyNode> {
+    private fun cpg2Nodes(cpg: Cpg, filePath: String): FuzzyNode {
         val g = cpg.graph()
         val vertexToNode = mutableMapOf<Node, FuzzyNode>()
         g.E().forEach {
@@ -80,8 +80,7 @@ class FuzzyCppParser : Parser<FuzzyNode> {
                 if (File(actualFilePath).absolutePath != File(filePath).absolutePath) {
                     println("While parsing $filePath, actually parsed $actualFilePath")
                 }
-                val node = vertexToNode[it] ?: throw ParsingException("Fuzzy", "C++")
-                return ParseResult(node, actualFilePath)
+                return vertexToNode[it] ?: throw ParsingException("Fuzzy", "C++")
             }
         }
         throw ParsingException("Fuzzy", "C++")

@@ -6,7 +6,7 @@ import astminer.common.model.FunctionLabelExtractor
 import astminer.common.model.Storage
 import astminer.config.FileExtension
 import astminer.config.PipelineConfig
-import astminer.parse.getHandlerFactory
+import astminer.parse.getParsingResultFactory
 import astminer.pipeline.branch.FilePipelineBranch
 import astminer.pipeline.branch.FunctionPipelineBranch
 import astminer.pipeline.branch.IllegalLabelExtractorException
@@ -45,12 +45,12 @@ class Pipeline(private val config: PipelineConfig) {
      */
     fun run() {
         for (language in config.parser.languages) {
-            val languageFactory = getHandlerFactory(language, config.parser.name)
+            val parsingResultFactory = getParsingResultFactory(language, config.parser.name)
 
             val files = getProjectFilesWithExtension(inputDirectory, language.fileExtension)
 
             createStorage(language).use { storage ->
-                languageFactory.createHandlers(files) { languageHandler ->
+                parsingResultFactory.parseFiles(files) { languageHandler ->
                     for (labeledResult in branch.process(languageHandler)) {
                         storage.store(labeledResult)
                     }

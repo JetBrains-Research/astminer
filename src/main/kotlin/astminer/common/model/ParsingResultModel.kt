@@ -6,13 +6,13 @@ import java.io.File
 
 private val logger = KotlinLogging.logger("HandlerFactory")
 
-interface HandlerFactory {
-    fun createHandler(file: File): LanguageHandler<out Node>
+interface ParsingResultFactory {
+    fun parse(file: File): ParsingResult<out Node>
 
-    fun createHandlers(files: List<File>, action: (LanguageHandler<out Node>) -> Unit) {
+    fun parseFiles(files: List<File>, action: (ParsingResult<out Node>) -> Unit) {
         for (file in files) {
             try {
-                action(createHandler(file))
+                action(parse(file))
             } catch (parsingException: ParsingException) {
                 logger.error(parsingException) { "Failed to parse file ${file.path}" }
             }
@@ -20,10 +20,10 @@ interface HandlerFactory {
     }
 }
 
-abstract class LanguageHandler<T : Node> {
-    abstract val parseResult: ParseResult<T>
+abstract class ParsingResult<T : Node>(internal val file: File) {
+    abstract val root: T
     protected abstract val splitter: TreeFunctionSplitter<T>
 
     fun splitIntoFunctions(): Collection<FunctionInfo<out Node>> =
-        splitter.splitIntoFunctions(parseResult.root, parseResult.filePath)
+        splitter.splitIntoFunctions(root, file.path)
 }

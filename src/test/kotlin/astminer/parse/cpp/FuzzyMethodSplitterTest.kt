@@ -2,9 +2,9 @@ package astminer.parse.cpp
 
 import astminer.checkExecutable
 import astminer.common.model.FunctionInfo
+import astminer.parse.fuzzy.FuzzyNode
 import astminer.parse.fuzzy.cpp.FuzzyCppParser
 import astminer.parse.fuzzy.cpp.FuzzyFunctionSplitter
-import astminer.parse.fuzzy.cpp.FuzzyNode
 import org.junit.Assume
 import org.junit.Before
 import org.junit.Test

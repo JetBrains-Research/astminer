@@ -5,6 +5,7 @@ import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
 import astminer.common.model.FunctionInfoParameter
 import astminer.parse.findEnclosingElementBy
+import astminer.parse.fuzzy.FuzzyNode
 
 class FuzzyCppFunctionInfo(override val root: FuzzyNode, override val filePath: String) : FunctionInfo<FuzzyNode> {
 

@@ -16,7 +16,7 @@ class TreeSizeFilter(private val minSize: Int = 0, private val maxSize: Int? = n
 
     override fun validate(functionInfo: FunctionInfo<out Node>): Boolean = validateTree(functionInfo.root)
 
-    override fun validate(parseResult: ParseResult<out Node>): Boolean = validateTree(parseResult.root)
+    override fun validate(parseResult: ParsingResult<out Node>): Boolean = validateTree(parseResult.root)
 }
 
 /**
@@ -28,5 +28,5 @@ class WordsNumberFilter(private val maxWordsNumber: Int) : FunctionFilter, FileF
 
     override fun validate(functionInfo: FunctionInfo<out Node>) = validateTree(functionInfo.root)
 
-    override fun validate(parseResult: ParseResult<out Node>) = validateTree(parseResult.root)
+    override fun validate(parseResult: ParsingResult<out Node>) = validateTree(parseResult.root)
 }

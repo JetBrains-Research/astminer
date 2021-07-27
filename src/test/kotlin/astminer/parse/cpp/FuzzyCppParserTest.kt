@@ -3,8 +3,8 @@ package astminer.parse.cpp
 import astminer.checkExecutable
 import astminer.common.forFilesWithSuffix
 import astminer.common.getProjectFilesWithExtension
+import astminer.parse.fuzzy.FuzzyNode
 import astminer.parse.fuzzy.cpp.FuzzyCppParser
-import astminer.parse.fuzzy.cpp.FuzzyNode
 import astminer.parseFiles
 import org.junit.Assert
 import org.junit.Assume

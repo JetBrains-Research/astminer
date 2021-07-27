@@ -1,8 +1,8 @@
 package astminer.pipeline.branch
 
 import astminer.common.model.LabeledResult
-import astminer.common.model.LanguageHandler
 import astminer.common.model.Node
+import astminer.common.model.ParsingResult
 
 /**
  * PipelineBranch is a part of the pipeline that encapsulate inside itself granularity based logic.
@@ -14,5 +14,5 @@ interface PipelineBranch {
      * May mutate the AST.
      * Should have no other side-effects
      */
-    fun process(languageHandler: LanguageHandler<out Node>): List<LabeledResult<out Node>>
+    fun process(parsingResult: ParsingResult<out Node>): List<LabeledResult<out Node>>
 }

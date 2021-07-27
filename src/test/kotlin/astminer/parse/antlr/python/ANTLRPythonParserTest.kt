@@ -13,7 +13,7 @@ class ANTLRPythonParserTest {
         val parser = PythonParser()
         val file = File("src/test/resources/examples/1.py")
 
-        val node = parser.parseFile(file).root
+        val node = parser.parseFile(file)
         Assert.assertNotNull("Parse tree for a valid file should not be null", node)
     }
 

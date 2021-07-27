@@ -70,7 +70,5 @@ interface Parser<T : Node> {
      * @param file file to parse
      * @return ParseResult instance
      */
-    fun parseFile(file: File) = ParseResult(parseInputStream(file.inputStream()), file.path)
+    fun parseFile(file: File) = parseInputStream(file.inputStream())
 }
-
-data class ParseResult<T : Node>(val root: T, val filePath: String)

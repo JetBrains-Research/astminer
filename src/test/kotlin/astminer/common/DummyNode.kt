@@ -1,8 +1,7 @@
 package astminer.common
 
-import astminer.common.model.LabeledResult
-import astminer.common.model.Node
-import astminer.common.model.ParseResult
+import astminer.common.model.*
+import java.io.File
 
 class DummyNode(
     override val typeLabel: String,
@@ -22,9 +21,15 @@ class DummyNode(
         children.removeIf { it.typeLabel == typeLabel }
     }
 
-    fun toParseResult() = ParseResult(this, "")
+    fun toParseResult() = DummyParsingResult(File("."), this)
 
     fun labeledWith(label: String) = LabeledResult(this, label, "")
+}
+
+class DummyParsingResult(file: File, override val root: DummyNode) : ParsingResult<DummyNode>(file) {
+    override val splitter: TreeFunctionSplitter<DummyNode> = object : TreeFunctionSplitter<DummyNode> {
+        override fun splitIntoFunctions(root: DummyNode, filePath: String) = listOf<FunctionInfo<DummyNode>>()
+    }
 }
 
 /**

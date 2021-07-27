@@ -1,22 +1,21 @@
 package astminer.labelextractor
 
 import astminer.common.model.*
-import java.io.File
 
 /**
  * Labels files with folder names
  */
 object FileNameExtractor : FileLabelExtractor {
-    override fun process(parseResult: ParseResult<out Node>): LabeledResult<out Node> =
-        parseResult.labeledWith(File(parseResult.filePath).name)
+    override fun process(parseResult: ParsingResult<out Node>): LabeledResult<out Node> =
+        parseResult.labeledWith(parseResult.file.name)
 }
 
 /**
  * Labels files with folder names
  */
 object FolderNameExtractor : FileLabelExtractor {
-    override fun process(parseResult: ParseResult<out Node>): LabeledResult<out Node>? {
-        val folderName = File(parseResult.filePath).parentFile?.name ?: return null
+    override fun process(parseResult: ParsingResult<out Node>): LabeledResult<out Node>? {
+        val folderName = parseResult.file.parentFile?.name ?: return null
         return parseResult.labeledWith(folderName)
     }
 }
