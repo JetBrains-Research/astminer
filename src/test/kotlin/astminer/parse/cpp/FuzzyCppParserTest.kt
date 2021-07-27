@@ -4,6 +4,7 @@ import astminer.checkExecutable
 import astminer.common.forFilesWithSuffix
 import astminer.common.getProjectFilesWithExtension
 import astminer.parse.fuzzy.FuzzyNode
+import astminer.parse.fuzzy.FuzzyParsingResultFactory
 import astminer.parse.fuzzy.cpp.FuzzyCppParser
 import astminer.parseFiles
 import org.junit.Assert
@@ -45,54 +46,48 @@ class FuzzyCppParserTest {
     @Test
     fun testPreprocessingDefine() {
         val folder = File("src/test/resources/fuzzy")
-        val preprocessedFolder = folder.resolve("preprocessed")
-        preprocessedFolder.mkdir()
         val defineFileName = "preprocDefineTest.cpp"
-        val parser = FuzzyCppParser()
+        val preprocessedFileName = "preprocDefineTest_preprocessed.cpp"
 
-        parser.preprocessFile(folder.resolve(defineFileName), preprocessedFolder)
+        FuzzyParsingResultFactory.preprocess(folder.resolve(defineFileName))
 
         Assert.assertEquals(
             "'define' directives should be replaced",
             "for (int i = (0); i < (10); ++i) { }",
-            preprocessedFolder.resolve(defineFileName).readInOneLine()
+            folder.resolve(preprocessedFileName).readInOneLine()
         )
-        preprocessedFolder.deleteRecursively()
+        folder.resolve(preprocessedFileName).delete()
     }
 
     @Test
     fun testPreprocessingInclude() {
         val folder = File("src/test/resources/fuzzy")
-        val preprocessedFolder = folder.resolve("preprocessed")
-        preprocessedFolder.mkdir()
         val includeFileName = "preprocIncludeTest.cpp"
-        val parser = FuzzyCppParser()
+        val preprocessedFileName = "preprocIncludeTest_preprocessed.cpp"
 
-        parser.preprocessFile(folder.resolve(includeFileName), preprocessedFolder)
+        FuzzyParsingResultFactory.preprocess(folder.resolve(includeFileName))
 
         Assert.assertEquals(
             "'include' directives should not be replaced",
             folder.resolve(includeFileName).readInOneLine(),
-            preprocessedFolder.resolve(includeFileName).readInOneLine()
+            folder.resolve(preprocessedFileName).readInOneLine()
         )
-        preprocessedFolder.deleteRecursively()
+        folder.resolve(preprocessedFileName).delete()
     }
 
     @Test
     fun testPreprocessingProject() {
         val projectRoot = File("src/test/resources/examples/cpp")
-        val preprocessedRoot = File("src/test/resources/examples/preprocessed")
-        preprocessedRoot.mkdir()
-        val parser = FuzzyCppParser()
 
-        parser.preprocessProject(projectRoot, preprocessedRoot)
-        val nodes = parser.parseFiles(getProjectFilesWithExtension(projectRoot, "cpp"))
+        val files = getProjectFilesWithExtension(projectRoot, "cpp")
+        val nodes = FuzzyParsingResultFactory.parseFiles(files) { it.root }.filterNotNull()
 
         Assert.assertEquals(
             "Parse tree for a valid file should not be null. There are 5 files in example project.",
             5,
             nodes.size
         )
-        preprocessedRoot.deleteRecursively()
+        files.map { "${it.nameWithoutExtension}_preprocessed.${it.extension}" }
+            .forEach { projectRoot.resolve(it).delete() }
     }
 }

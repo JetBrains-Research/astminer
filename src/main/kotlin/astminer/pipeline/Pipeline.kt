@@ -50,8 +50,8 @@ class Pipeline(private val config: PipelineConfig) {
             val files = getProjectFilesWithExtension(inputDirectory, language.fileExtension)
 
             createStorage(language).use { storage ->
-                parsingResultFactory.parseFiles(files) { languageHandler ->
-                    for (labeledResult in branch.process(languageHandler)) {
+                parsingResultFactory.parseFiles(files) { parseResult ->
+                    for (labeledResult in branch.process(parseResult)) {
                         storage.store(labeledResult)
                     }
                 }

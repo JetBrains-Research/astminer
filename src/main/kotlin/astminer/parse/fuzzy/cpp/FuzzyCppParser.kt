@@ -86,39 +86,6 @@ class FuzzyCppParser : Parser<FuzzyNode> {
         throw ParsingException("Fuzzy", "C++")
     }
 
-    /**
-     * Run g++ preprocessor (if [preprocessCommand] is set) on a given file excluding 'include' directives.
-     * The result of preprocessing is stored in created directory [outputDir]
-     * @param file file to preprocess
-     * @param outputDir directory where the preprocessed file will be stored
-     * @param preprocessCommand bash command that runs preprocessing, "g++ -E" by default
-     */
-    fun preprocessFile(file: File, outputDir: File, preprocessCommand: String = "g++ -E") {
-        outputDir.mkdirs()
-        preprocessCppCode(file, outputDir, preprocessCommand).runCommand(file.absoluteFile.parentFile)
-    }
-
-    /**
-     * Run preprocessing for all .c and .cpp files in the [project][projectRoot].
-     * The preprocessed files will be stored in [outputDir], replicating file hierarchy of the original project.
-     * @param projectRoot root of the project that should be preprocessed
-     * @param outputDir directory where the preprocessed files will be stored
-     */
-    fun preprocessProject(projectRoot: File, outputDir: File) {
-        val files = projectRoot.walkTopDown()
-            .filter { file -> supportedExtensions.contains(file.extension) }
-        files.forEach { file ->
-            val relativeFilePath = file.relativeTo(projectRoot)
-            val outputPath = if (relativeFilePath.parent != null) {
-                outputDir.resolve(relativeFilePath.parent)
-            } else {
-                outputDir
-            }
-            outputPath.mkdirs()
-            preprocessFile(file, outputPath)
-        }
-    }
-
     private fun addNodesFromEdge(e: Edge, map: MutableMap<Node, FuzzyNode>) {
         val parentNode = map.getOrPut(e.outNode()) { createNodeFromVertex(e.outNode()) }
         val childNode = map.getOrPut(e.inNode()) { createNodeFromVertex(e.inNode()) }
@@ -156,8 +123,6 @@ class FuzzyCppParser : Parser<FuzzyNode> {
     }
 
     companion object {
-        private val supportedExtensions = listOf("c", "cpp")
-
         data class ExpandableNodeKey(
             val key: String,
             val supportedNodeLabels: List<String>,

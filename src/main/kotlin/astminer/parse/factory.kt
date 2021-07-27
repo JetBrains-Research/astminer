@@ -7,7 +7,7 @@ import astminer.parse.antlr.AntlrJavaParsingResultFactory
 import astminer.parse.antlr.AntlrJavascriptParsingResultFactory
 import astminer.parse.antlr.AntlrPHPParsingResultFactory
 import astminer.parse.antlr.AntlrPythonParsingResultFactory
-import astminer.parse.fuzzy.FuzzyParsingResult
+import astminer.parse.fuzzy.FuzzyParsingResultFactory
 import astminer.parse.gumtree.GumtreeJavaParsingResultFactory
 import astminer.parse.gumtree.GumtreePythonParsingResultFactory
 
@@ -39,7 +39,7 @@ private fun getAntlrParsingResultFactory(extension: FileExtension): ParsingResul
 
 private fun getFuzzyParsingResultFactory(extension: FileExtension): ParsingResultFactory {
     return when (extension) {
-        FileExtension.C, FileExtension.Cpp -> FuzzyParsingResult
+        FileExtension.C, FileExtension.Cpp -> FuzzyParsingResultFactory
         else -> throw UnsupportedOperationException()
     }
 }
