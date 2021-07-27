@@ -1,16 +1,10 @@
 package astminer.common.model
 
-import astminer.cli.LabeledResult
-import astminer.common.DEFAULT_TOKEN
+import astminer.common.EMPTY_TOKEN
 import astminer.common.splitToSubtokens
-import astminer.parse.ParsingException
-import mu.KotlinLogging
 import java.io.File
 import java.io.InputStream
 import java.util.*
-
-// TODO: later move this logger to Pipeline
-private val logger = KotlinLogging.logger("ParsingModel")
 
 abstract class Node {
     abstract val typeLabel: String
@@ -18,17 +12,16 @@ abstract class Node {
     abstract val parent: Node?
     abstract val originalToken: String?
 
-    val normalizedToken: String? by lazy {
+    val normalizedToken: String by lazy {
         originalToken?.let {
             val subtokens = splitToSubtokens(it)
-            if (subtokens.isEmpty()) null
-            else subtokens.joinToString("|")
-        }
+            if (subtokens.isEmpty()) EMPTY_TOKEN else subtokens.joinToString(TOKEN_DELIMITER)
+        } ?: EMPTY_TOKEN
     }
     var technicalToken: String? = null
 
     val token: String
-        get() = listOfNotNull(technicalToken, normalizedToken, originalToken).firstOrNull() ?: DEFAULT_TOKEN
+        get() = technicalToken ?: normalizedToken
 
     val metadata: MutableMap<String, Any> = HashMap()
     fun isLeaf() = children.isEmpty()
@@ -45,50 +38,22 @@ abstract class Node {
 
     abstract fun removeChildrenOfType(typeLabel: String)
 
-    fun preOrderIterator(): Iterator<Node> = PreOrderIterator(this)
-    open fun preOrder(): List<Node> = PreOrderIterator(this).asSequence().toList()
-
-    fun postOrderIterator(): Iterator<Node> = PostOrderIterator(this)
-    open fun postOrder(): List<Node> = PostOrderIterator(this).asSequence().toList()
-}
-
-class PreOrderIterator(root: Node): Iterator<Node> {
-    private val stack = ArrayDeque<Node>()
-
-    init {
-        stack.push(root)
+    private fun doTraversePreOrder(resultList: MutableList<Node>) {
+        resultList.add(this)
+        children.forEach { it.doTraversePreOrder(resultList) }
     }
+    fun preOrderIterator(): Iterator<Node> = preOrder().listIterator()
+    open fun preOrder(): List<Node> = mutableListOf<Node>().also { doTraversePreOrder(it) }
 
-    override fun hasNext(): Boolean {
-        return stack.isNotEmpty()
+    private fun doTraversePostOrder(resultList: MutableList<Node>) {
+        children.forEach { it.doTraversePostOrder(resultList) }
+        resultList.add(this)
     }
+    fun postOrderIterator(): Iterator<Node> = postOrder().listIterator()
+    open fun postOrder(): List<Node> = mutableListOf<Node>().also { doTraversePostOrder(it) }
 
-    override fun next(): Node {
-        val currentNode = stack.pop()
-        currentNode.children.asReversed().forEach { stack.push(it) }
-        return currentNode
-    }
-}
-
-class PostOrderIterator(root: Node): Iterator<Node> {
-    private data class NodeWrapper(val node: Node, var isChecked: Boolean = false)
-
-    private val tree = mutableListOf(NodeWrapper(root))
-
-    private fun fillWithChildren(wrapper: NodeWrapper){
-        if (!wrapper.isChecked) {
-            tree.addAll(wrapper.node.children.asReversed().map { NodeWrapper(it) })
-            wrapper.isChecked = true
-        }
-    }
-
-    override fun hasNext(): Boolean = tree.isNotEmpty()
-
-    override fun next(): Node {
-        while (!tree.last().isChecked) {
-            fillWithChildren(tree.last())
-        }
-        return tree.removeLast().node
+    companion object {
+        const val TOKEN_DELIMITER = "|"
     }
 }
 
@@ -105,26 +70,5 @@ interface Parser<T : Node> {
      * @param file file to parse
      * @return ParseResult instance
      */
-    fun parseFile(file: File) = ParseResult(parseInputStream(file.inputStream()), file.path)
-
-    /**
-     * Parse list of files.
-     * @param files files to parse
-     * @param handleResult handler to invoke on each file parse result
-     */
-    fun parseFiles(files: List<File>, handleResult: (ParseResult<T>) -> Any?) {
-        for (file in files) {
-            try {
-                handleResult(parseFile(file))
-            } catch (parsingException: ParsingException) {
-                logger.error(parsingException) { "Failed to parse file ${file.path}" }
-            }
-        }
-    }
-}
-
-data class ParseResult<T : Node>(val root: T, val filePath: String) {
-    fun labeledWith(label: String): LabeledResult<T> = LabeledResult(root, label, filePath)
-
-    fun labeledWithFilePath(): LabeledResult<T> = labeledWith(filePath)
+    fun parseFile(file: File) = parseInputStream(file.inputStream())
 }

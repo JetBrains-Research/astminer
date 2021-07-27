@@ -10,7 +10,7 @@ private fun createTree(filename: String): GumTreeNode =
     GumTreeJavaParser().parseInputStream(File(filename).inputStream())
 
 private fun createAndSplitTree(filename: String): Collection<FunctionInfo<GumTreeNode>> =
-    GumTreeJavaFunctionSplitter().splitIntoFunctions(createTree(filename))
+    GumTreeJavaFunctionSplitter().splitIntoFunctions(createTree(filename), filename)
 
 class GumTreeJavaFunctionSplitterTest {
     @Test
@@ -25,7 +25,6 @@ class GumTreeJavaFunctionSplitterTest {
             assertEquals(listOf("args", "param"), parameters.map { it.name })
             assertEquals(listOf("String[]", "int"), parameters.map { it.type })
         }
-
     }
 
     @Test
@@ -77,5 +76,5 @@ class GumTreeJavaFunctionSplitterTest {
         }
     }
 
-    //TODO: add more tests
+//     TODO: add more tests
 }

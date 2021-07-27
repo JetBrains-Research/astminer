@@ -1,9 +1,9 @@
 package astminer.storage.ast
 
-import astminer.cli.LabeledResult
+import astminer.common.model.LabeledResult
 import astminer.common.model.Node
+import astminer.common.model.Storage
 import astminer.common.storage.RankedIncrementalIdStorage
-import astminer.storage.Storage
 import java.io.File
 import java.io.PrintWriter
 
@@ -40,11 +40,7 @@ class DotAstStorage(override val outputDirectoryPath: String) : Storage {
         val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$normalizedFilepath,$normalizedLabel,%d,%s,%s"
         for (node in labeledResult.root.preOrder()) {
             descriptionFileStream.write(
-                nodeDescriptionFormat.format(
-                    nodesMap.getId(node) - 1,
-                    node.token,
-                    node.typeLabel
-                ) + "\n"
+                nodeDescriptionFormat.format(nodesMap.getId(node) - 1, node.token, node.typeLabel) + "\n"
             )
         }
         ++index
@@ -64,9 +60,7 @@ class DotAstStorage(override val outputDirectoryPath: String) : Storage {
             for (node in root.preOrder()) {
                 val rootId = nodesMap.record(node) - 1
                 val childrenIds = node.children.map { nodesMap.record(it) - 1 }
-                out.println(
-                    "$rootId -- {${childrenIds.joinToString(" ") { it.toString() }}};"
-                )
+                out.println("$rootId -- {${childrenIds.joinToString(" ") { it.toString() }}};")
             }
 
             out.println("}")
@@ -76,14 +70,14 @@ class DotAstStorage(override val outputDirectoryPath: String) : Storage {
 
     // Label should contain only latin letters, numbers and underscores, other symbols replace with an underscore
     internal fun normalizeAstLabel(label: String): String =
-        label.replace("[^A-z^0-9^_]".toRegex(), "_")
+        label.replace("[^A-z0-9_]".toRegex(), "_")
 
     /**
      * Filepath should contain only latin letters, numbers, underscores, hyphens, backslashes and dots
      * Underscore replace other symbols
      */
     internal fun normalizeFilepath(filepath: String): String =
-        filepath.replace("[^A-z^0-9^_^\\-^.^/]".toRegex(), "_")
+        filepath.replace("[^A-z0-9_\\-./]".toRegex(), "_")
 
     /**
      * Split the full path to specified file into the parent's path, and the file name
@@ -94,5 +88,4 @@ class DotAstStorage(override val outputDirectoryPath: String) : Storage {
         val fileObject = File(fullPath)
         return FilePath(fileObject.parentFile?.path ?: "", fileObject.name)
     }
-
 }

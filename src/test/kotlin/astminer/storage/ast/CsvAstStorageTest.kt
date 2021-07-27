@@ -3,10 +3,10 @@ package astminer.storage.ast
 import astminer.common.createBamboo
 import astminer.common.createDummyTree
 import astminer.common.createSmallTree
-import astminer.common.labeledWith
-import astminer.storage.ast.CsvAstStorage
 import org.junit.Assert
 import org.junit.Test
+import java.io.File
+import kotlin.test.AfterTest
 
 class CsvAstStorageTest {
     private fun generateCorrectAstStringForBamboo(from: Int, to: Int): String {
@@ -17,10 +17,15 @@ class CsvAstStorageTest {
         return "$from $from{$child}"
     }
 
+    @AfterTest
+    fun removeTestOutput() {
+        File(OUTPUT_FOLDER).deleteRecursively()
+    }
+
     @Test
     fun testAstString() {
         val root = createSmallTree()
-        val storage = CsvAstStorage(".")
+        val storage = CsvAstStorage(OUTPUT_FOLDER)
         storage.store(root.labeledWith("entityId"))
 
         Assert.assertEquals(storage.astString(root), "1 1{2 2{}3 3{4 4{}}}")
@@ -29,7 +34,7 @@ class CsvAstStorageTest {
     @Test
     fun `test ast string for bigger tree`() {
         val root = createDummyTree()
-        val storage = CsvAstStorage(".")
+        val storage = CsvAstStorage(OUTPUT_FOLDER)
         storage.store(root.labeledWith("entityId"))
 
         val expected = "1 1{2 2{3 3{}4 4{}5 5{}}6 6{7 7{}8 8{}}}"
@@ -39,7 +44,7 @@ class CsvAstStorageTest {
     @Test
     fun `test ast string for small bamboo`() {
         val bamboo = createBamboo(10)
-        val storage = CsvAstStorage(".")
+        val storage = CsvAstStorage(OUTPUT_FOLDER)
         storage.store(bamboo.labeledWith("entityId"))
 
         val expected = generateCorrectAstStringForBamboo(1, 10)
@@ -49,11 +54,14 @@ class CsvAstStorageTest {
     @Test
     fun `test ast string for big bamboo`() {
         val bamboo = createBamboo(100)
-        val storage = CsvAstStorage(".")
+        val storage = CsvAstStorage(OUTPUT_FOLDER)
         storage.store(bamboo.labeledWith("entityId"))
 
         val expected = generateCorrectAstStringForBamboo(1, 100)
         Assert.assertEquals(expected, storage.astString(bamboo))
     }
 
+    companion object {
+        private const val OUTPUT_FOLDER = "test_output"
+    }
 }

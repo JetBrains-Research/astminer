@@ -12,7 +12,7 @@ interface TreeFeature<out T> {
      * @param tree tree for which this feature is computed
      * @return computed feature
      */
-    fun compute(tree: Node) : T
+    fun compute(tree: Node): T
 }
 
 /**
@@ -20,7 +20,7 @@ interface TreeFeature<out T> {
  */
 object Depth : TreeFeature<Int> {
     override fun compute(tree: Node): Int {
-        val max =  tree.children.map { compute(it) }.maxOrNull() ?: 0
+        val max = tree.children.map { compute(it) }.maxOrNull() ?: 0
         return max + 1
     }
 }
@@ -46,18 +46,14 @@ object BranchingFactor : TreeFeature<Double> {
  * Tree feature for computing the number of nodes in a given tree.
  */
 object NumberOfNodes : TreeFeature<Int> {
-    override fun compute(tree: Node): Int {
-        return tree.children.sumOf { compute(it) } + 1
-    }
+    override fun compute(tree: Node): Int = tree.children.sumOf { compute(it) } + 1
 }
 
 /**
  * Tree feature for computing list of all node tokens from a given tree.
  */
 object Tokens : TreeFeature<List<String>> {
-    override fun compute(tree: Node): List<String> {
-        return findTokens(tree, ArrayList())
-    }
+    override fun compute(tree: Node): List<String> = findTokens(tree, ArrayList())
 
     private fun findTokens(node: Node, tokensList: MutableList<String>): List<String> {
         node.children.forEach { findTokens(it, tokensList) }
@@ -70,9 +66,7 @@ object Tokens : TreeFeature<List<String>> {
  * Tree feature for computing list of all node types from a given tree.
  */
 object NodeTypes : TreeFeature<List<String>> {
-    override fun compute(tree: Node): List<String> {
-        return findNodeTypes(tree, ArrayList())
-    }
+    override fun compute(tree: Node): List<String> = findNodeTypes(tree, ArrayList())
 
     private fun findNodeTypes(node: Node, nodeTypesList: MutableList<String>): List<String> {
         node.children.forEach { findNodeTypes(it, nodeTypesList) }
@@ -92,13 +86,11 @@ object CompressiblePathLengths : TreeFeature<List<Int>> {
         return pathLengths
     }
 
-    private fun Node.isStartingNode() : Boolean {
-        return this.hasOneChild() && !(this.parent?.hasOneChild() ?: false)
-    }
+    private fun Node.isStartingNode(): Boolean = this.hasOneChild() && !(this.parent?.hasOneChild() ?: false)
 
-    private fun Node.hasOneChild() : Boolean = children.size == 1
+    private fun Node.hasOneChild(): Boolean = children.size == 1
 
-    private fun findPathLengthFromStartingNode(node: Node) : Int {
+    private fun findPathLengthFromStartingNode(node: Node): Int {
         var length = 1
         var next = node.children.first()
 

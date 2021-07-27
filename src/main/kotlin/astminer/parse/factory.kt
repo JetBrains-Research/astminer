@@ -1,43 +1,45 @@
 package astminer.parse
 
-import astminer.common.model.HandlerFactory
-import astminer.parse.antlr.AntlrJavaHandlerFactory
-import astminer.parse.antlr.AntlrJavascriptHandlerFactory
-import astminer.parse.antlr.AntlrPHPHandlerFactory
-import astminer.parse.antlr.AntlrPythonHandlerFactory
-import astminer.parse.gumtree.GumtreeJavaHandlerFactory
-import astminer.parse.gumtree.GumtreePythonHandlerFactory
+import astminer.common.model.ParsingResultFactory
+import astminer.config.FileExtension
+import astminer.config.ParserType
+import astminer.parse.antlr.AntlrJavaParsingResultFactory
+import astminer.parse.antlr.AntlrJavascriptParsingResultFactory
+import astminer.parse.antlr.AntlrPHPParsingResultFactory
+import astminer.parse.antlr.AntlrPythonParsingResultFactory
+import astminer.parse.fuzzy.FuzzyParsingResultFactory
+import astminer.parse.gumtree.GumtreeJavaParsingResultFactory
+import astminer.parse.gumtree.GumtreePythonParsingResultFactory
 
-fun getHandlerFactory(extension: String, parserType: String): HandlerFactory {
+fun getParsingResultFactory(extension: FileExtension, parserType: ParserType): ParsingResultFactory {
     return when (parserType) {
-        "gumtree" -> getGumtreeHandlerFactory(extension)
-        "antlr" -> getAntlrHandlerFactory(extension)
-        "fuzzy" -> getFuzzyHandlerFactory(extension)
+        ParserType.GumTree -> getGumtreeParsingResultFactory(extension)
+        ParserType.Antlr -> getAntlrParsingResultFactory(extension)
+        ParserType.Fuzzy -> getFuzzyParsingResultFactory(extension)
+    }
+}
+
+private fun getGumtreeParsingResultFactory(extension: FileExtension): ParsingResultFactory {
+    return when (extension) {
+        FileExtension.Java -> GumtreeJavaParsingResultFactory
+        FileExtension.Python -> GumtreePythonParsingResultFactory
         else -> throw UnsupportedOperationException()
     }
 }
 
-private fun getGumtreeHandlerFactory(extension: String): HandlerFactory {
+private fun getAntlrParsingResultFactory(extension: FileExtension): ParsingResultFactory {
     return when (extension) {
-        "java" -> GumtreeJavaHandlerFactory
-        "python" -> GumtreePythonHandlerFactory
+        FileExtension.Java -> AntlrJavaParsingResultFactory
+        FileExtension.JavaScript -> AntlrJavascriptParsingResultFactory
+        FileExtension.Python -> AntlrPythonParsingResultFactory
+        FileExtension.PHP -> AntlrPHPParsingResultFactory
         else -> throw UnsupportedOperationException()
     }
 }
 
-private fun getAntlrHandlerFactory(extension: String): HandlerFactory {
+private fun getFuzzyParsingResultFactory(extension: FileExtension): ParsingResultFactory {
     return when (extension) {
-        "java" -> AntlrJavaHandlerFactory
-        "javascript" -> AntlrJavascriptHandlerFactory
-        "python" -> AntlrPythonHandlerFactory
-        "php" -> AntlrPHPHandlerFactory
-        else -> throw UnsupportedOperationException()
-    }
-}
-
-private fun getFuzzyHandlerFactory(extension: String): HandlerFactory {
-    return when (extension) {
-        "c", "cpp" -> FuzzyCppHandler
+        FileExtension.C, FileExtension.Cpp -> FuzzyParsingResultFactory
         else -> throw UnsupportedOperationException()
     }
 }

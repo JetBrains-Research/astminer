@@ -7,30 +7,10 @@ import astminer.common.model.FunctionInfoParameter
 import astminer.parse.findEnclosingElementBy
 import astminer.parse.gumtree.GumTreeNode
 
-class GumTreePythonFunctionInfo(override val root: GumTreeNode) : FunctionInfo<GumTreeNode> {
-    companion object {
-        private object TypeLabels {
-            const val classDefinition = "ClassDef"
-            const val functionDefinition = "FunctionDef"
-            const val asyncFunctionDefinition = "AsyncFunctionDef"
-            const val nameLoad = "Name_Load"
-            const val posOnlyArgs = "posonlyargs"
-            const val kwOnlyArgs = "kwonlyargs"
-            const val arguments = "arguments"
-            const val vararg = "vararg"
-            const val kwarg = "kwarg"
-            const val args = "args"
-            const val arg = "arg"
-
-            const val body = "body"
-            const val returnTypeLabel = "Return"
-            const val passTypeLabel = "Pass"
-            const val constantType = "Constant-"
-
-            val methodDefinitions = listOf(functionDefinition, asyncFunctionDefinition)
-            val funcArgsTypesNodes = listOf(args, posOnlyArgs, kwOnlyArgs)
-        }
-    }
+class GumTreePythonFunctionInfo(
+    override val root: GumTreeNode,
+    override val filePath: String
+) : FunctionInfo<GumTreeNode> {
 
     override val nameNode: GumTreeNode = root
     override val parameters: List<FunctionInfoParameter> = collectParameters()
@@ -61,25 +41,44 @@ class GumTreePythonFunctionInfo(override val root: GumTreeNode) : FunctionInfo<G
         )
     }
 
-    private fun findEnclosingClass(): GumTreeNode? {
-        return root.findEnclosingElementBy { it.typeLabel == TypeLabels.classDefinition }
-    }
+    private fun findEnclosingClass(): GumTreeNode? =
+        root.findEnclosingElementBy { it.typeLabel == TypeLabels.classDefinition }
 
     private fun collectParameters(): List<FunctionInfoParameter> {
         val arguments = root.getChildrenOfType(TypeLabels.arguments).flatMap { it.children }
         val params = arguments.flatMap { node ->
             when (node.typeLabel) {
-                in TypeLabels.funcArgsTypesNodes -> node.children
-                    .filter { it.typeLabel == TypeLabels.arg }
+                in TypeLabels.funcArgsTypesNodes ->
+                    node.children
+                        .filter { it.typeLabel == TypeLabels.arg }
                 TypeLabels.vararg, TypeLabels.kwarg -> listOf(node)
                 else -> emptyList()
             }
         }
-        return params.map { node->
-            FunctionInfoParameter(
-                name = node.originalToken,
-                type = getElementType(node)?.originalToken
-            )
+        return params.map { FunctionInfoParameter(it.originalToken, getElementType(it)?.originalToken) }
+    }
+
+    companion object {
+        private object TypeLabels {
+            const val classDefinition = "ClassDef"
+            const val functionDefinition = "FunctionDef"
+            const val asyncFunctionDefinition = "AsyncFunctionDef"
+            const val nameLoad = "Name_Load"
+            const val posOnlyArgs = "posonlyargs"
+            const val kwOnlyArgs = "kwonlyargs"
+            const val arguments = "arguments"
+            const val vararg = "vararg"
+            const val kwarg = "kwarg"
+            const val args = "args"
+            const val arg = "arg"
+
+            const val body = "body"
+            const val returnTypeLabel = "Return"
+            const val passTypeLabel = "Pass"
+            const val constantType = "Constant-"
+
+            val methodDefinitions = listOf(functionDefinition, asyncFunctionDefinition)
+            val funcArgsTypesNodes = listOf(args, posOnlyArgs, kwOnlyArgs)
         }
     }
 }

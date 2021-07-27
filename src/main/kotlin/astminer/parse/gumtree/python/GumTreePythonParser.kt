@@ -18,10 +18,8 @@ class GumTreePythonParser : Parser<GumTreeNode> {
         val context = PythonTreeGenerator().generate(InputStreamReader(content))
         wrapGumTreeNode(context)
     } catch (e: Exception) {
-        throw ParsingException("GumTree", "Python", e.message)
+        throw ParsingException("GumTree", "Python", e)
     }
 }
 
-fun wrapGumTreeNode(treeContext: TreeContext): GumTreeNode {
-    return GumTreeNode(treeContext.root, treeContext, null)
-}
+fun wrapGumTreeNode(treeContext: TreeContext): GumTreeNode = GumTreeNode(treeContext.root, treeContext, null)

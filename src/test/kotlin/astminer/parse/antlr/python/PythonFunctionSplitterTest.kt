@@ -4,26 +4,21 @@ import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
 import astminer.parse.antlr.AntlrNode
 import org.junit.Test
-import kotlin.test.assertEquals
 import java.io.File
 import kotlin.test.BeforeTest
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 class PythonFunctionSplitterTest {
-    companion object {
-        const val N_FUNCTIONS = 17
-        val functionSplitter = PythonFunctionSplitter()
-        val parser = PythonParser()
-    }
 
     var functionInfos: Collection<FunctionInfo<AntlrNode>> = listOf()
 
     @BeforeTest
     fun parseTree() {
-        val testTree =  parser.parseInputStream(File("src/test/resources/methodSplitting/testMethodSplitting.py").inputStream())
+        val testTree = parser.parseInputStream(File(FILE_PATH).inputStream())
         assertNotNull(testTree)
-        functionInfos = functionSplitter.splitIntoFunctions(testTree)
+        functionInfos = functionSplitter.splitIntoFunctions(testTree, FILE_PATH)
     }
 
     @Test
@@ -33,37 +28,37 @@ class PythonFunctionSplitterTest {
 
     @Test
     fun testFunctionNotInClass() {
-        val functionClass = functionInfos.find { it.name == "fun_with_no_class"  }
+        val functionClass = functionInfos.find { it.name == "fun_with_no_class" }
         assertNotNull(functionClass)
         assertNull(functionClass.enclosingElement)
     }
 
     @Test
     fun testFunctionInClass() {
-        val functionClass = functionInfos.find { it.name == "fun_in_class1"  }
+        val functionClass = functionInfos.find { it.name == "fun_in_class1" }
         assertNotNull(functionClass)
         assertEquals(EnclosingElementType.Class, functionClass.enclosingElement?.type)
-        assertEquals( "Class1", functionClass.enclosingElement?.name)
+        assertEquals("Class1", functionClass.enclosingElement?.name)
     }
 
     @Test
     fun testFunctionInNestedClass() {
-        val functionClass = functionInfos.find { it.name == "fun_in_class2"  }
+        val functionClass = functionInfos.find { it.name == "fun_in_class2" }
         assertNotNull(functionClass)
         assertEquals(EnclosingElementType.Class, functionClass.enclosingElement?.type)
-        assertEquals( "Class2", functionClass.enclosingElement?.name)
+        assertEquals("Class2", functionClass.enclosingElement?.name)
     }
 
     @Test
     fun testNoParameters() {
-        val functionNoParameters = functionInfos.find { it.name == "function_with_no_parameters"  }
+        val functionNoParameters = functionInfos.find { it.name == "function_with_no_parameters" }
         assertNotNull(functionNoParameters)
         assertEquals(0, functionNoParameters.parameters.size)
     }
 
     @Test
     fun testOneParameter() {
-        val functionOneParameter = functionInfos.find { it.name == "function_with_one_parameter"  }
+        val functionOneParameter = functionInfos.find { it.name == "function_with_one_parameter" }
         assertNotNull(functionOneParameter)
         assertEquals(1, functionOneParameter.parameters.size)
         val parameter = functionOneParameter.parameters[0]
@@ -92,7 +87,7 @@ class PythonFunctionSplitterTest {
 
     @Test
     fun testThreeParameters() {
-        val functionThreeParameters = functionInfos.find { it.name == "function_with_three_parameters"  }
+        val functionThreeParameters = functionInfos.find { it.name == "function_with_three_parameters" }
         assertNotNull(functionThreeParameters)
         assertEquals(3, functionThreeParameters.parameters.size)
         val parameters = functionThreeParameters.parameters
@@ -106,7 +101,7 @@ class PythonFunctionSplitterTest {
 
     @Test
     fun testParameterInClass() {
-        val functionOneParameter = functionInfos.find { it.name == "fun_with_parameter_in_class"  }
+        val functionOneParameter = functionInfos.find { it.name == "fun_with_parameter_in_class" }
         assertNotNull(functionOneParameter)
         assertEquals(2, functionOneParameter.parameters.size)
         val parameter = functionOneParameter.parameters[1]
@@ -136,7 +131,7 @@ class PythonFunctionSplitterTest {
 
     @Test
     fun testEnclosingMethod() {
-        val functionInsideMethod =  functionInfos.find { it.name == "function_inside_method" }
+        val functionInsideMethod = functionInfos.find { it.name == "function_inside_method" }
         assertNotNull(functionInsideMethod)
         val enclosingElement = functionInsideMethod.enclosingElement
 
@@ -147,12 +142,19 @@ class PythonFunctionSplitterTest {
 
     @Test
     fun testEnclosingFunctionInsideMethod() {
-        val funInsideFunInsideMethod =  functionInfos.find { it.name == "fun_inside_fun_inside_method" }
+        val funInsideFunInsideMethod = functionInfos.find { it.name == "fun_inside_fun_inside_method" }
         assertNotNull(funInsideFunInsideMethod)
         val enclosingElement = funInsideFunInsideMethod.enclosingElement
 
         assertNotNull(enclosingElement)
         assertEquals("second_function_inside_method", enclosingElement.name)
         assertEquals(EnclosingElementType.Function, enclosingElement.type)
+    }
+
+    companion object {
+        const val FILE_PATH = "src/test/resources/methodSplitting/testMethodSplitting.py"
+        const val N_FUNCTIONS = 17
+        val functionSplitter = PythonFunctionSplitter()
+        val parser = PythonParser()
     }
 }
