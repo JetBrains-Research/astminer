@@ -8,7 +8,7 @@ import com.github.gumtreediff.gen.srcml.SrcmlJavaTreeGenerator
 import java.io.InputStream
 import java.io.InputStreamReader
 
-class GumTreeJavaSrcmlParser: Parser<GumTreeNode> {
+class GumTreeJavaSrcmlParser : Parser<GumTreeNode> {
     init {
         Run.initGenerators()
     }

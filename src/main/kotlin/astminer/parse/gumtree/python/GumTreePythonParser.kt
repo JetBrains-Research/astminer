@@ -6,7 +6,6 @@ import astminer.parse.gumtree.GumTreeNode
 import astminer.parse.gumtree.wrapGumTreeNode
 import com.github.gumtreediff.client.Run
 import com.github.gumtreediff.gen.python.PythonTreeGenerator
-import com.github.gumtreediff.tree.TreeContext
 import java.io.InputStream
 import java.io.InputStreamReader
 

@@ -30,9 +30,10 @@ private fun getGumtreeParsingResultFactory(extension: FileExtension): ParsingRes
 }
 
 private fun getGumTreeSrcmlFactory(extension: FileExtension): ParsingResultFactory {
-    return when (extension) {
-        FileExtension.Java -> GumtreeJavaSrcmlParsingResultFactory
-        else -> throw UnsupportedOperationException()
+    if (extension == FileExtension.Java) {
+        return GumtreeJavaSrcmlParsingResultFactory
+    } else {
+        throw UnsupportedOperationException()
     }
 }
 

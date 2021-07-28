@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
 
 internal class GumTreeJavaSrcmlFunctionSplitterTest {
     private fun createTree(filename: String): GumTreeNode =
-       GumTreeJavaSrcmlParser().parseFile(File(filename))
+        GumTreeJavaSrcmlParser().parseFile(File(filename))
 
     private fun createAndSplitTree(filename: String): Collection<FunctionInfo<GumTreeNode>> =
         GumTreeJavaSrcmlFunctionSplitter().splitIntoFunctions(createTree(filename), filename)
