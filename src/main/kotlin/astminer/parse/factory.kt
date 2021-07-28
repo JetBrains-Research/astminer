@@ -10,12 +10,14 @@ import astminer.parse.antlr.AntlrPythonParsingResultFactory
 import astminer.parse.fuzzy.FuzzyParsingResultFactory
 import astminer.parse.gumtree.GumtreeJavaParsingResultFactory
 import astminer.parse.gumtree.GumtreePythonParsingResultFactory
+import astminer.parse.javaparser.JavaParserParsedFileFactory
 
 fun getParsingResultFactory(extension: FileExtension, parserType: ParserType): ParsingResultFactory {
     return when (parserType) {
         ParserType.GumTree -> getGumtreeParsingResultFactory(extension)
         ParserType.Antlr -> getAntlrParsingResultFactory(extension)
         ParserType.Fuzzy -> getFuzzyParsingResultFactory(extension)
+        ParserType.JavaParser -> getJavaParserParsingResultFactory(extension)
     }
 }
 
