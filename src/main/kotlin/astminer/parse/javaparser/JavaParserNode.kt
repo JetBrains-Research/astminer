@@ -12,13 +12,6 @@ class JavaParserNode(jpNode: JPNode, override val parent: Node?) : Node() {
         jpNode.childNodes.map { subTree -> JavaParserNode(subTree, this) }.toMutableList()
     }
 
-    override fun removeChildrenOfType(typeLabel: String) {
-        children.removeIf { it.typeLabel == typeLabel }
-    }
-
-    override fun preOrder(): List<JavaParserNode> = super.preOrder().map { it as JavaParserNode }
-    override fun postOrder(): List<JavaParserNode> = super.postOrder().map { it as JavaParserNode }
-
     /* For some reason code2seq JavaExtractor also checks for boxed type
        and sets its type to PrimitiveType
        which is not necessary since javaclass.simpleName
@@ -27,6 +20,8 @@ class JavaParserNode(jpNode: JPNode, override val parent: Node?) : Node() {
         val rawType = getRawType(jpNode)
         SHORTEN_VALUES.getOrDefault(rawType, rawType)
     }
+
+    override val originalToken: String? = getValue(jpNode)
 
     private fun getRawType(jpNode: JPNode): String {
         val type = jpNode.javaClass.simpleName
@@ -38,9 +33,6 @@ class JavaParserNode(jpNode: JPNode, override val parent: Node?) : Node() {
         }
         return type + operator
     }
-
-    override val originalToken: String? = getValue(jpNode)
-
     private fun getValue(jpNode: JPNode): String? {
         return if (jpNode.childNodes.size == 0) {
             jpNode.tokenRange.get().toString()
@@ -49,9 +41,16 @@ class JavaParserNode(jpNode: JPNode, override val parent: Node?) : Node() {
         }
     }
 
+    override fun preOrder(): List<JavaParserNode> = super.preOrder().map { it as JavaParserNode }
+    override fun postOrder(): List<JavaParserNode> = super.postOrder().map { it as JavaParserNode }
+
+    override fun removeChildrenOfType(typeLabel: String) {
+        children.removeIf { it.typeLabel == typeLabel }
+    }
+
     override fun getChildrenOfType(typeLabel: String): List<JavaParserNode> =
         super.getChildrenOfType(typeLabel).map { it as JavaParserNode }
 
     override fun getChildOfType(typeLabel: String): JavaParserNode? =
-        super.getChildOfType(typeLabel) as JavaParserNode?
+        super.getChildOfType(typeLabel) as? JavaParserNode
 }

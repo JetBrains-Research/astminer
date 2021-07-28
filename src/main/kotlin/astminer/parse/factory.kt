@@ -17,7 +17,7 @@ fun getParsingResultFactory(extension: FileExtension, parserType: ParserType): P
         ParserType.GumTree -> getGumtreeParsingResultFactory(extension)
         ParserType.Antlr -> getAntlrParsingResultFactory(extension)
         ParserType.Fuzzy -> getFuzzyParsingResultFactory(extension)
-        ParserType.JavaParser -> getJavaParserParsingResultFactory(extension)
+        ParserType.JavaParser -> getJavaParserParsingFactory(extension)
     }
 }
 
@@ -46,7 +46,10 @@ private fun getFuzzyParsingResultFactory(extension: FileExtension): ParsingResul
     }
 }
 
-private fun getJavaParserParsingResultFactory(extension: FileExtension) : ParsingResultFactory {
-    return if (extension == FileExtension.Java) JavaParserParsedFileFactory
-    else throw UnsupportedOperationException()
+private fun getJavaParserParsingFactory(extension: FileExtension): ParsingResultFactory {
+    if (extension == FileExtension.Java) {
+        return JavaParserParsedFileFactory
+    } else {
+        throw UnsupportedOperationException()
+    }
 }
