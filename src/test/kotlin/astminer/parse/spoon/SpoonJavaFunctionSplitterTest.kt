@@ -7,11 +7,11 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.BeforeTest
 
-internal class SpoonJavaMethodSplitterTest {
+internal class SpoonJavaFunctionSplitterTest {
     companion object {
         const val FILE_PATH = "src/test/resources/methodSplitting/testMethodSplitting.java"
         const val N_FUNCTIONS =10
-        val functionSplitter = SpoonJavaMethodSplitter()
+        val functionSplitter = SpoonJavaFunctionSplitter()
         val parser = SpoonJavaParser()
     }
 

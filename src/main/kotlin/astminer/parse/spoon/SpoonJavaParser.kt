@@ -1,6 +1,5 @@
 package astminer.parse.spoon
 
-import astminer.common.model.ParseResult
 import astminer.common.model.Parser
 import org.apache.commons.io.FileUtils.copyInputStreamToFile
 import spoon.Launcher
@@ -32,10 +31,10 @@ class SpoonJavaParser : Parser<SpoonNode> {
         return SpoonNode(model.unnamedModule, null)
     }
 
-    override fun parseFile(file: File): ParseResult<SpoonNode> {
+    override fun parseFile(file: File): SpoonNode {
         val launcher = Launcher()
         launcher.addInputResource(file.path)
         val model = launcher.buildModel()
-        return ParseResult(SpoonNode(model.unnamedModule, null), file.path)
+        return SpoonNode(model.unnamedModule, null)
     }
 }

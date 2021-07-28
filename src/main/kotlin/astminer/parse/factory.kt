@@ -10,12 +10,15 @@ import astminer.parse.antlr.AntlrPythonParsingResultFactory
 import astminer.parse.fuzzy.FuzzyParsingResultFactory
 import astminer.parse.gumtree.GumtreeJavaParsingResultFactory
 import astminer.parse.gumtree.GumtreePythonParsingResultFactory
+import astminer.parse.spoon.SpoonParsingResult
+import astminer.parse.spoon.SpoonParsingResultFactory
 
 fun getParsingResultFactory(extension: FileExtension, parserType: ParserType): ParsingResultFactory {
     return when (parserType) {
         ParserType.GumTree -> getGumtreeParsingResultFactory(extension)
         ParserType.Antlr -> getAntlrParsingResultFactory(extension)
         ParserType.Fuzzy -> getFuzzyParsingResultFactory(extension)
+        ParserType.Spoon -> getSpoonParsingResultFactory(extension)
     }
 }
 
@@ -44,9 +47,9 @@ private fun getFuzzyParsingResultFactory(extension: FileExtension): ParsingResul
     }
 }
 
-private fun getSpoonHandlerFactory(extension: FileExtension): HandlerFactory {
+private fun getSpoonParsingResultFactory(extension: FileExtension): ParsingResultFactory {
     return when(extension) {
-        FileExtension.Java -> SpoonHandlerFactory()
+        FileExtension.Java -> SpoonParsingResultFactory()
         else -> throw UnsupportedOperationException()
     }
 }
