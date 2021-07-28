@@ -8,13 +8,13 @@ import spoon.reflect.declaration.CtElement
 import spoon.reflect.declaration.CtNamedElement
 import spoon.reflect.reference.CtReference
 
-class SpoonNode(el: CtElement,override val parent: SpoonNode?): Node() {
-    val roleInParent : String? = el.roleInParent?.toString()
+class SpoonNode(el: CtElement, override val parent: SpoonNode?) : Node() {
+    val roleInParent: String? = el.roleInParent?.toString()
 
     // Turning Ct<Something> -> <Something>
     override val typeLabel = el.javaClass.simpleName.substring(startIndex = 2)
 
-    override val children = run {el.directChildren.map { SpoonNode(it, this) }}.toMutableList()
+    override val children = run { el.directChildren.map { SpoonNode(it, this) } }.toMutableList()
 
     override val originalToken = getValue(el)
 
@@ -31,12 +31,12 @@ class SpoonNode(el: CtElement,override val parent: SpoonNode?): Node() {
     }
 
     override fun removeChildrenOfType(typeLabel: String) {
-        children.removeIf {it.typeLabel == typeLabel}
+        children.removeIf { it.typeLabel == typeLabel }
     }
 
     override fun preOrder(): List<SpoonNode> = super.preOrder().map { it as SpoonNode }
     override fun postOrder(): List<SpoonNode> = super.postOrder().map { it as SpoonNode }
 
-    fun getChildWithRole(role: String) : SpoonNode? = children.find { it.roleInParent == role }
-    fun getChildrenWithRole(role: String) : List<SpoonNode> = children.filter { it.roleInParent == role }
+    fun getChildWithRole(role: String): SpoonNode? = children.find { it.roleInParent == role }
+    fun getChildrenWithRole(role: String): List<SpoonNode> = children.filter { it.roleInParent == role }
 }
