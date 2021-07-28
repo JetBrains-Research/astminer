@@ -12,7 +12,7 @@ internal class GumTreeJavaSrcmlParserTest {
         val parser = GumTreeJavaSrcmlParser()
         val file = File("src/test/resources/examples/1.java")
 
-        val node = parser.parseFile(file).root
+        val node = parser.parseFile(file)
         Assert.assertNotNull("Parse tree for a valid file should not be null", node)
     }
 

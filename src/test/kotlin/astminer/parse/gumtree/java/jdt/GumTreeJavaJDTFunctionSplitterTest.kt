@@ -1,13 +1,17 @@
-package astminer.parse.gumtree.java
+package astminer.parse.gumtree.java.jdt
 
 import astminer.common.model.FunctionInfo
 import astminer.parse.gumtree.GumTreeNode
 import org.junit.Test
+import java.io.File
 import kotlin.test.assertEquals
 
-interface GumTreeJavaTest {
-    fun createTree(filename: String): GumTreeNode
-    fun createAndSplitTree(filename: String): Collection<FunctionInfo<GumTreeNode>>
+class GumTreeJavaJDTFunctionSplitterTest {
+    private fun createTree(filename: String): GumTreeNode =
+        GumTreeJavaJDTParser().parseInputStream(File(filename).inputStream())
+
+    private fun createAndSplitTree(filename: String): Collection<FunctionInfo<GumTreeNode>> =
+        GumTreeJavaJDTFunctionSplitter().splitIntoFunctions(createTree(filename), filename)
 
     @Test
     fun testMethodExtraction1() {

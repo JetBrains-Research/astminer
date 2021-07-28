@@ -1,4 +1,4 @@
-package astminer.parse.gumtree.java.JDT
+package astminer.parse.gumtree.java.jdt
 
 import astminer.common.model.EnclosingElement
 import astminer.common.model.EnclosingElementType

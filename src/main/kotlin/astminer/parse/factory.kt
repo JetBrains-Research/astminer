@@ -8,7 +8,8 @@ import astminer.parse.antlr.AntlrJavascriptParsingResultFactory
 import astminer.parse.antlr.AntlrPHPParsingResultFactory
 import astminer.parse.antlr.AntlrPythonParsingResultFactory
 import astminer.parse.fuzzy.FuzzyParsingResultFactory
-import astminer.parse.gumtree.GumtreeJavaParsingResultFactory
+import astminer.parse.gumtree.GumtreeJavaJDTParsingResultFactory
+import astminer.parse.gumtree.GumtreeJavaSrcmlParsingResultFactory
 import astminer.parse.gumtree.GumtreePythonParsingResultFactory
 
 fun getParsingResultFactory(extension: FileExtension, parserType: ParserType): ParsingResultFactory {
@@ -16,20 +17,21 @@ fun getParsingResultFactory(extension: FileExtension, parserType: ParserType): P
         ParserType.GumTree -> getGumtreeParsingResultFactory(extension)
         ParserType.Antlr -> getAntlrParsingResultFactory(extension)
         ParserType.Fuzzy -> getFuzzyParsingResultFactory(extension)
+        ParserType.GumTreeSrcml -> getGumTreeSrcmlFactory(extension)
     }
 }
 
 private fun getGumtreeParsingResultFactory(extension: FileExtension): ParsingResultFactory {
     return when (extension) {
-        FileExtension.Java -> GumtreeJavaParsingResultFactory
+        FileExtension.Java -> GumtreeJavaJDTParsingResultFactory
         FileExtension.Python -> GumtreePythonParsingResultFactory
         else -> throw UnsupportedOperationException()
     }
 }
 
-private fun getGumTreeSrcmlHandlerFactory(extension: FileExtension): HandlerFactory {
+private fun getGumTreeSrcmlFactory(extension: FileExtension): ParsingResultFactory {
     return when (extension) {
-        FileExtension.Java -> GumTreeJavaSrcmlHandlerFactory
+        FileExtension.Java -> GumtreeJavaSrcmlParsingResultFactory
         else -> throw UnsupportedOperationException()
     }
 }

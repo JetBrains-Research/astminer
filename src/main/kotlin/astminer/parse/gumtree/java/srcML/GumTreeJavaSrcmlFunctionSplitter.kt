@@ -4,7 +4,7 @@ import astminer.common.model.FunctionInfo
 import astminer.common.model.TreeFunctionSplitter
 import astminer.parse.gumtree.GumTreeNode
 
-class GumTreeSrcmlFunctionSplitter : TreeFunctionSplitter<GumTreeNode> {
+class GumTreeJavaSrcmlFunctionSplitter : TreeFunctionSplitter<GumTreeNode> {
     val FUNCTION_TYPE = "function"
 
     override fun splitIntoFunctions(root: GumTreeNode, filePath: String): Collection<FunctionInfo<GumTreeNode>> {
