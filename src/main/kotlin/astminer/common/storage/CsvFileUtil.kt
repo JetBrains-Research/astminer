@@ -3,11 +3,13 @@ package astminer.common.storage
 import astminer.common.model.OrientedNodeType
 import java.io.File
 
-fun <T> dumpIdStorageToCsv(storage: RankedIncrementalIdStorage<T>,
-                           typeHeader: String,
-                           csvSerializer: (T) -> String,
-                           file: File,
-                           limit: Long? = null) {
+fun <T> dumpIdStorageToCsv(
+    storage: RankedIncrementalIdStorage<T>,
+    typeHeader: String,
+    csvSerializer: (T) -> String,
+    file: File,
+    limit: Long? = null
+) {
     file.printWriter().use { out ->
         out.println("id,$typeHeader")
         storage.idPerItem.forEach {

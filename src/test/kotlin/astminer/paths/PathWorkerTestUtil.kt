@@ -5,13 +5,10 @@ import astminer.common.model.Node
 import astminer.parse.antlr.AntlrNode
 import org.junit.Assert
 
-fun simpleNode(number: Int, parent: AntlrNode?): AntlrNode {
-    return AntlrNode("$number", parent, "node_$number")
-}
+fun simpleNode(number: Int, parent: AntlrNode?): AntlrNode =
+    AntlrNode("$number", parent, "node_$number")
 
-fun simpleNodes(numbers: List<Int>, parent: AntlrNode?): List<AntlrNode> {
-    return numbers.map { simpleNode(it, parent) }
-}
+fun simpleNodes(numbers: List<Int>, parent: AntlrNode?): List<AntlrNode> = numbers.map { simpleNode(it, parent) }
 
 fun getParentStack(node: Node): List<Node> = (node.parent?.let { getParentStack(it) } ?: emptyList()) + node
 
@@ -42,14 +39,14 @@ fun getAllPathCharacteristics(root: Node): Collection<Pair<Int, Int>> {
 }
 
 fun ASTPath.allNodesAreDistinct(): Boolean {
-    return this.upwardNodes.size == this.upwardNodes.toSet().size
-            && this.downwardNodes.size == this.downwardNodes.toSet().size
+    return this.upwardNodes.size == this.upwardNodes.toSet().size &&
+        this.downwardNodes.size == this.downwardNodes.toSet().size
 }
 
 fun ASTPath.isSimple(): Boolean {
-    return this.upwardNodes.toSet().intersect(this.downwardNodes.toSet()).isEmpty()
-            && !this.upwardNodes.contains(this.topNode)
-            && !this.downwardNodes.contains(this.topNode)
+    return this.upwardNodes.toSet().intersect(this.downwardNodes.toSet()).isEmpty() &&
+        !this.upwardNodes.contains(this.topNode) &&
+        !this.downwardNodes.contains(this.topNode)
 }
 
 fun ASTPath.piecesMatch(): Boolean = this.upwardNodes.last() === this.downwardNodes.first()
@@ -57,7 +54,7 @@ fun ASTPath.piecesMatch(): Boolean = this.upwardNodes.last() === this.downwardNo
 fun assertPathIsValid(path: ASTPath) {
     Assert.assertTrue("Nodes in each of the path pieces should be distinct", path.allNodesAreDistinct())
     Assert.assertTrue(
-            "Path should be simple: upward and downward pieces should not intersect or contain top node",
-            path.isSimple()
+        "Path should be simple: upward and downward pieces should not intersect or contain top node",
+        path.isSimple()
     )
 }

@@ -46,9 +46,7 @@ class RankedIncrementalIdStorage<T> {
     /**
      * Returns the item by its [id]
      */
-    fun lookUpValue(id: Id): T? {
-        return idPerItem.entries.firstOrNull { it.value == id }?.key
-    }
+    fun lookUpValue(id: Id): T? = idPerItem.entries.firstOrNull { it.value == id }?.key
 
     /**
      * Returns the rank of the [item]
@@ -74,10 +72,10 @@ class RankedIncrementalIdStorage<T> {
      */
     fun computeRanks() {
         val sortedIds = idCountMap.entries
-                .sortedBy { it.value }
-                .reversed()
-                .map { it.key }
-                .toList()
+            .sortedBy { it.value }
+            .reversed()
+            .map { it.key }
+            .toList()
         val idRankMap = mutableMapOf<Id, Long>()
         for ((index, id) in sortedIds.withIndex()) {
             idRankMap[id] = (index + 1).toLong()

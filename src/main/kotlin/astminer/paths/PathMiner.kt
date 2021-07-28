@@ -5,10 +5,9 @@ import astminer.common.model.Node
 
 data class PathRetrievalSettings(val maxLength: Int, val maxWidth: Int)
 
-class PathMiner(val settings: PathRetrievalSettings) {
+class PathMiner(private val settings: PathRetrievalSettings) {
     private val pathWorker = PathWorker()
 
-    fun retrievePaths(tree: Node): Collection<ASTPath> {
-        return pathWorker.retrievePaths(tree, settings.maxLength, settings.maxWidth)
-    }
+    fun retrievePaths(tree: Node): Collection<ASTPath> =
+        pathWorker.retrievePaths(tree, settings.maxLength, settings.maxWidth)
 }

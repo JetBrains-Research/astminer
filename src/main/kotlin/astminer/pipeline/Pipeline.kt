@@ -1,14 +1,15 @@
 package astminer.pipeline
 
 import astminer.common.getProjectFilesWithExtension
-import astminer.config.*
-import astminer.parse.getHandlerFactory
-import astminer.pipeline.branch.FilePipelineBranch
-import astminer.pipeline.branch.FunctionPipelineBranch
-import astminer.pipeline.branch.IllegalLabelExtractorException
 import astminer.common.model.FileLabelExtractor
 import astminer.common.model.FunctionLabelExtractor
 import astminer.common.model.Storage
+import astminer.config.FileExtension
+import astminer.config.PipelineConfig
+import astminer.parse.getParsingResultFactory
+import astminer.pipeline.branch.FilePipelineBranch
+import astminer.pipeline.branch.FunctionPipelineBranch
+import astminer.pipeline.branch.IllegalLabelExtractorException
 import java.io.File
 
 /**
@@ -40,17 +41,17 @@ class Pipeline(private val config: PipelineConfig) {
     }
 
     /**
-     * Runs the pipeline that is defined in the [config]
+     * Runs the pipeline that is defined in the [config].
      */
     fun run() {
-        for (extension in config.parser.extensions) {
-            val languageFactory = getHandlerFactory(extension, config.parser.name)
+        for (language in config.parser.languages) {
+            val parsingResultFactory = getParsingResultFactory(language, config.parser.name)
 
-            val files = getProjectFilesWithExtension(inputDirectory, extension.fileExtension)
+            val files = getProjectFilesWithExtension(inputDirectory, language.fileExtension)
 
-            createStorage(extension).use { storage ->
-                languageFactory.createHandlers(files) { languageHandler ->
-                    for (labeledResult in branch.process(languageHandler)) {
+            createStorage(language).use { storage ->
+                parsingResultFactory.parseFiles(files) { parseResult ->
+                    for (labeledResult in branch.process(parseResult)) {
                         storage.store(labeledResult)
                     }
                 }

@@ -1,0 +1,28 @@
+# input directory (path to project)
+inputDir: src/test/resources/
+# output directory
+outputDir: output
+
+# parse Java files with GumTree parser
+parser:
+  name: gumtree
+  languages: [java]
+
+filters:
+  - name: by function name length
+    maxWordsNumber: 10
+  - name: by words number
+    maxTokenWordsNumber: 100
+  - name: by annotations
+    annotations: [override]
+
+# use function name as labels
+# this selects the function level granularity
+label:
+  name: function name
+
+# save to disk ASTs in the code2seq format
+storage:
+  name: code2seq
+  length: 9
+  width: 2

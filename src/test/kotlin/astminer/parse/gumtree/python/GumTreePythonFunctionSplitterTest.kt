@@ -33,9 +33,13 @@ class GumTreePythonFunctionSplitterTest {
     @Test
     fun funcNamesTest() {
         val realNames = setOf(
-            "no_args_func", "with_args_no_typed", "with_typed_args",
-            "with_typed_return_no_args", "full_typed",
-            "func_dif_args_typed_return", "complex_args_full_typed"
+            "no_args_func",
+            "with_args_no_typed",
+            "with_typed_args",
+            "with_typed_return_no_args",
+            "full_typed",
+            "func_dif_args_typed_return",
+            "complex_args_full_typed"
         )
         val functionInfos = splitFunctions(createPath("1.py"))
         val parsedNames = functionInfos.map { it.name }.toSet()

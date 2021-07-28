@@ -4,12 +4,12 @@ import astminer.common.model.Storage
 import astminer.storage.ast.CsvAstStorage
 import astminer.storage.ast.DotAstStorage
 import astminer.storage.ast.JsonAstStorage
+import astminer.storage.path.Code2SeqPathStorage
 import astminer.storage.path.Code2VecPathStorage
 import astminer.storage.path.PathBasedStorageConfig
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import java.io.File
 
 /**
  * Config for storage that saved the results on the disk
@@ -23,7 +23,7 @@ sealed class StorageConfig {
  * @see astminer.storage.ast.CsvAstStorage
  */
 @Serializable
-@SerialName("CsvAST")
+@SerialName("csv AST")
 class CsvAstStorageConfig : StorageConfig() {
     override fun createStorage(outputDirectoryPath: String) = CsvAstStorage(outputDirectoryPath)
 }
@@ -32,7 +32,7 @@ class CsvAstStorageConfig : StorageConfig() {
  * @see astminer.storage.ast.DotAstStorage
  */
 @Serializable
-@SerialName("DotAST")
+@SerialName("dot AST")
 class DotAstStorageConfig : StorageConfig() {
     override fun createStorage(outputDirectoryPath: String) = DotAstStorage(outputDirectoryPath)
 }
@@ -41,7 +41,7 @@ class DotAstStorageConfig : StorageConfig() {
  * @see JsonAstStorage
  */
 @Serializable
-@SerialName("JsonAST")
+@SerialName("json AST")
 class JsonAstStorageConfig : StorageConfig() {
     override fun createStorage(outputDirectoryPath: String) = JsonAstStorage(outputDirectoryPath)
 }
@@ -50,7 +50,7 @@ class JsonAstStorageConfig : StorageConfig() {
  * Config for [astminer.storage.path.Code2VecPathStorage]
  */
 @Serializable
-@SerialName("Code2vec")
+@SerialName("code2vec")
 data class Code2VecPathStorageConfig(
     val maxPathLength: Int,
     val maxPathWidth: Int,
@@ -64,4 +64,20 @@ data class Code2VecPathStorageConfig(
 
     override fun createStorage(outputDirectoryPath: String) =
         Code2VecPathStorage(outputDirectoryPath, pathBasedStorageConfig)
+}
+
+@Serializable
+@SerialName("code2seq")
+data class Code2SeqPathStorageConfig(
+    @SerialName("length") val maxPathLength: Int,
+    @SerialName("width") val maxPathWidth: Int,
+    val maxPathContextsPerEntity: Int? = null,
+    val nodesToNumber: Boolean = true
+) : StorageConfig() {
+    @Transient
+    private val pathBasedStorageConfig =
+        PathBasedStorageConfig(maxPathLength, maxPathWidth, maxPathContextsPerEntity = maxPathContextsPerEntity)
+
+    override fun createStorage(outputDirectoryPath: String) =
+        Code2SeqPathStorage(outputDirectoryPath, pathBasedStorageConfig, nodesToNumber)
 }
