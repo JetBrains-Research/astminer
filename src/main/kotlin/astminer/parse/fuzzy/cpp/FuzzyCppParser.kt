@@ -1,8 +1,8 @@
 package astminer.parse.fuzzy.cpp
 
-import astminer.common.model.ParseResult
 import astminer.common.model.Parser
 import astminer.parse.ParsingException
+import astminer.parse.fuzzy.FuzzyNode
 import io.shiftleft.codepropertygraph.Cpg
 import io.shiftleft.codepropertygraph.generated.EdgeTypes
 import io.shiftleft.codepropertygraph.generated.NodeKeys
@@ -21,47 +21,6 @@ import java.io.InputStream
  */
 class FuzzyCppParser : Parser<FuzzyNode> {
 
-    companion object {
-        private val supportedExtensions = listOf("c", "cpp")
-
-        data class ExpandableNodeKey(
-                val key: String,
-                val supportedNodeLabels: List<String>,
-                val order: Int
-        )
-
-        private val expandableNodeKeys = listOf(
-                ExpandableNodeKey("NAME", listOf(
-                        NodeTypes.TYPE, NodeTypes.TYPE_DECL, NodeTypes.TYPE_PARAMETER, NodeTypes.MEMBER, NodeTypes.TYPE_ARGUMENT,
-                        NodeTypes.METHOD, NodeTypes.METHOD_PARAMETER_IN, NodeTypes.LOCAL, NodeTypes.MODIFIER,
-                        NodeTypes.IDENTIFIER, NodeTypes.CALL,
-                        NodeTypes.UNKNOWN
-                ), 0),
-                ExpandableNodeKey("TYPE_FULL_NAME", listOf(
-                        NodeTypes.TYPE,
-                        NodeTypes.METHOD_RETURN, NodeTypes.METHOD_PARAMETER_IN, NodeTypes.LOCAL,
-                        NodeTypes.IDENTIFIER,
-                        NodeTypes.UNKNOWN
-                ), 0),
-                ExpandableNodeKey("ALIAS_TYPE_FULL_NAME", listOf(
-                        NodeTypes.TYPE_DECL,
-                        NodeTypes.UNKNOWN
-                ), 0)
-        )
-
-        data class ReplaceableNodeKey(val key: String, val condition: (Node) -> Boolean)
-
-        private val replaceableNodeKeys = listOf(
-                ReplaceableNodeKey("NAME") { v ->
-                    v.propertyKeys().contains("NAME") &&
-                            v.property("NAME").toString().startsWith("<operator>")
-                },
-                ReplaceableNodeKey("PARSER_TYPE_NAME") { v ->
-                    v.propertyKeys().contains("PARSER_TYPE_NAME")
-                }
-        )
-    }
-
     /**
      * Parse input stream and create an AST.
      * If you already have a file with code you need to parse, better use [parseFile],
@@ -75,15 +34,15 @@ class FuzzyCppParser : Parser<FuzzyNode> {
         file.outputStream().use {
             content.copyTo(it)
         }
-        return parseFile(file).root
+        return parseFile(file)
     }
 
     /**
      * Parse a single file and create an AST.
      * @param file to parse
-     * @return [ParseResult] with root of an AST (null if parsing failed) and file path
+     * @return root of an AST (null if parsing failed)
      */
-    override fun parseFile(file: File): ParseResult<FuzzyNode> {
+    override fun parseFile(file: File): FuzzyNode {
         // We need some tweaks to create Scala sets from Kotlin code
         val pathSetScalaBuilder = Set.newBuilder<String>()
         pathSetScalaBuilder.addOne(file.path)
@@ -101,13 +60,13 @@ class FuzzyCppParser : Parser<FuzzyNode> {
 
     /**
      * Convert [cpg][io.shiftleft.codepropertygraph.Cpg] created by fuzzyc2cpg
-     * to list of [FuzzyNode][astminer.parse.fuzzy.cpp.FuzzyNode].
+     * to list of [FuzzyNode][astminer.parse.fuzzy.FuzzyNode].
      * Cpg may contain graphs for several files, in that case several ASTs will be created.
      * @param cpg to be converted
      * @param filePath to the parsed file that will be used if parsing failed
      * @return list of AST roots
      */
-    private fun cpg2Nodes(cpg: Cpg, filePath: String): ParseResult<FuzzyNode> {
+    private fun cpg2Nodes(cpg: Cpg, filePath: String): FuzzyNode {
         val g = cpg.graph()
         val vertexToNode = mutableMapOf<Node, FuzzyNode>()
         g.E().forEach {
@@ -121,44 +80,10 @@ class FuzzyCppParser : Parser<FuzzyNode> {
                 if (File(actualFilePath).absolutePath != File(filePath).absolutePath) {
                     println("While parsing $filePath, actually parsed $actualFilePath")
                 }
-                val node = vertexToNode[it] ?: throw ParsingException("Fuzzy", "C++")
-                return ParseResult(node, actualFilePath)
+                return vertexToNode[it] ?: throw ParsingException("Fuzzy", "C++")
             }
         }
         throw ParsingException("Fuzzy", "C++")
-    }
-
-    /**
-     * Run g++ preprocessor (if [preprocessCommand] is set) on a given file excluding 'include' directives.
-     * The result of preprocessing is stored in created directory [outputDir]
-     * @param file file to preprocess
-     * @param outputDir directory where the preprocessed file will be stored
-     * @param preprocessCommand bash command that runs preprocessing, "g++ -E" by default
-     */
-    fun preprocessFile(file: File, outputDir: File, preprocessCommand: String = "g++ -E") {
-        outputDir.mkdirs()
-        preprocessCppCode(file, outputDir, preprocessCommand).runCommand(file.absoluteFile.parentFile)
-    }
-
-    /**
-     * Run preprocessing for all .c and .cpp files in the [project][projectRoot].
-     * The preprocessed files will be stored in [outputDir], replicating file hierarchy of the original project.
-     * @param projectRoot root of the project that should be preprocessed
-     * @param outputDir directory where the preprocessed files will be stored
-     */
-    fun preprocessProject(projectRoot: File, outputDir: File) {
-        val files = projectRoot.walkTopDown()
-                .filter { file -> supportedExtensions.contains(file.extension) }
-        files.forEach { file ->
-            val relativeFilePath = file.relativeTo(projectRoot)
-            val outputPath = if (relativeFilePath.parent != null){
-                outputDir.resolve(relativeFilePath.parent)
-            } else {
-                outputDir
-            }
-            outputPath.mkdirs()
-            preprocessFile(file, outputPath)
-        }
     }
 
     private fun addNodesFromEdge(e: Edge, map: MutableMap<Node, FuzzyNode>) {
@@ -192,8 +117,60 @@ class FuzzyCppParser : Parser<FuzzyNode> {
                     return@forEach
                 }
             }
-            node.metadata[k]= property
+            node.metadata[k] = property
         }
         return node
+    }
+
+    companion object {
+        data class ExpandableNodeKey(
+            val key: String,
+            val supportedNodeLabels: List<String>,
+            val order: Int
+        )
+
+        private val expandableNodeKeys = listOf(
+            ExpandableNodeKey(
+                "NAME",
+                listOf(
+                    NodeTypes.TYPE, NodeTypes.TYPE_DECL, NodeTypes.TYPE_PARAMETER, NodeTypes.MEMBER,
+                    NodeTypes.TYPE_ARGUMENT, NodeTypes.METHOD, NodeTypes.METHOD_PARAMETER_IN, NodeTypes.LOCAL,
+                    NodeTypes.MODIFIER, NodeTypes.IDENTIFIER, NodeTypes.CALL, NodeTypes.UNKNOWN
+                ),
+                0
+            ),
+            ExpandableNodeKey(
+                "TYPE_FULL_NAME",
+                listOf(
+                    NodeTypes.TYPE,
+                    NodeTypes.METHOD_RETURN,
+                    NodeTypes.METHOD_PARAMETER_IN,
+                    NodeTypes.LOCAL,
+                    NodeTypes.IDENTIFIER,
+                    NodeTypes.UNKNOWN
+                ),
+                0
+            ),
+            ExpandableNodeKey(
+                "ALIAS_TYPE_FULL_NAME",
+                listOf(
+                    NodeTypes.TYPE_DECL,
+                    NodeTypes.UNKNOWN
+                ),
+                0
+            )
+        )
+
+        data class ReplaceableNodeKey(val key: String, val condition: (Node) -> Boolean)
+
+        private val replaceableNodeKeys = listOf(
+            ReplaceableNodeKey("NAME") { v ->
+                v.propertyKeys().contains("NAME") &&
+                    v.property("NAME").toString().startsWith("<operator>")
+            },
+            ReplaceableNodeKey("PARSER_TYPE_NAME") { v ->
+                v.propertyKeys().contains("PARSER_TYPE_NAME")
+            }
+        )
     }
 }

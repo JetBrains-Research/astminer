@@ -22,9 +22,9 @@ internal fun checkExtractedDir(extractedDataDir: File, languages: List<String>) 
 
 internal fun validPathContextsFile(name: String, batching: Boolean): Boolean {
     return if (batching) {
-        name.startsWith("path_contexts_") && name.endsWith(".csv")
+        name.startsWith("path_contexts_") && name.endsWith(".c2s")
     } else {
-        name == "path_contexts.csv"
+        name == "path_contexts.c2s"
     }
 }
 

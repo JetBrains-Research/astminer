@@ -9,14 +9,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-
 class JavaScriptFunctionSplitterTest {
-    companion object {
-        const val N_METHODS = 47
-        const val testFilePath = "src/test/resources/methodSplitting/testMethodSplitting.js"
-        val functionSplitter = JavaScriptFunctionSplitter()
-        val parser = JavaScriptParser()
-    }
 
     var functionInfos: Collection<FunctionInfo<AntlrNode>> = listOf()
 
@@ -46,18 +39,25 @@ class JavaScriptFunctionSplitterTest {
 
         fun FunctionInfo<AntlrNode>.getJsonInfo(): String {
             return "info : {" +
-                    "name : ${name}, " +
-                    "args : ${parameters.joinToString(", ") { it.name }}, " +
-                    "enclosing element : ${enclosingElement?.type?.getEnclosingElementType()}, " +
-                    "enclosing element name : ${enclosingElement?.name}" +
-                    "}"
+                "name : $name, " +
+                "args : ${parameters.joinToString(", ") { it.name }}, " +
+                "enclosing element : ${enclosingElement?.type?.getEnclosingElementType()}, " +
+                "enclosing element name : ${enclosingElement?.name}" +
+                "}"
         }
 
         val actualJsonInfos = functionInfos.map { it.getJsonInfo() }.sorted()
 
         val text = File(testFilePath).readText()
-        val expectedJsonInfos = Regex("info : \\{.*\\}").findAll(text).toList().map { it.value }.sorted()
+        val expectedJsonInfos = Regex("info : \\{.*}").findAll(text).toList().map { it.value }.sorted()
 
         assertEquals(expectedJsonInfos, actualJsonInfos)
+    }
+
+    companion object {
+        const val N_METHODS = 47
+        const val testFilePath = "src/test/resources/methodSplitting/testMethodSplitting.js"
+        val functionSplitter = JavaScriptFunctionSplitter()
+        val parser = JavaScriptParser()
     }
 }

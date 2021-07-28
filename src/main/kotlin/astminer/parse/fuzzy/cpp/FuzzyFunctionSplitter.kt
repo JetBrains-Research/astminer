@@ -1,6 +1,7 @@
 package astminer.parse.fuzzy.cpp
 
 import astminer.common.model.*
+import astminer.parse.fuzzy.FuzzyNode
 
 class FuzzyFunctionSplitter : TreeFunctionSplitter<FuzzyNode> {
     private val methodNode = "METHOD"

@@ -6,13 +6,13 @@ import astminer.pipeline.Pipeline
 import astminer.pipeline.branch.IllegalFilterException
 import astminer.pipeline.branch.IllegalLabelExtractorException
 import com.charleskorn.kaml.PolymorphismStyle
+import com.charleskorn.kaml.Yaml
+import com.charleskorn.kaml.YamlConfiguration
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.types.file
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
-import com.charleskorn.kaml.Yaml
-import com.charleskorn.kaml.YamlConfiguration
 import mu.KotlinLogging
 import java.io.File
 
@@ -38,7 +38,7 @@ class PipelineRunner : CliktCommand(name = "") {
         } catch (e: FunctionInfoPropertyNotImplementedException) {
             report(
                 "The chosen parser does not implement the required properties. " +
-                        "Consider implementing them or change the parser",
+                    "Consider implementing them or change the parser",
                 e
             )
         }
@@ -59,7 +59,6 @@ class PipelineRunner : CliktCommand(name = "") {
             )
         )
     }
-
 }
 
 fun main(args: Array<String>) = PipelineRunner().main(args)

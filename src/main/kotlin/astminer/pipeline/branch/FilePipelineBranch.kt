@@ -2,7 +2,6 @@ package astminer.pipeline.branch
 
 import astminer.common.model.*
 import astminer.common.model.FileFilter
-import astminer.labelextractor.*
 
 /**
  * PipelineBranch for pipeline with file-level granularity (FilePipelineConfig).
@@ -18,13 +17,12 @@ class FilePipelineBranch(
             ?: throw IllegalFilterException("file", filter::class.simpleName)
     }
 
-    private fun passesThroughFilters(parseResult: ParseResult<out Node>) =
+    private fun passesThroughFilters(parseResult: ParsingResult<out Node>) =
         filters.all { filter -> filter.validate(parseResult) }
 
-    override fun process(languageHandler: LanguageHandler<out Node>): List<LabeledResult<out Node>> {
-        val parseResult = languageHandler.parseResult
-        return if (passesThroughFilters(parseResult)) {
-            val labeledResult = labelExtractor.process(parseResult) ?: return emptyList()
+    override fun process(parsingResult: ParsingResult<out Node>): List<LabeledResult<out Node>> {
+        return if (passesThroughFilters(parsingResult)) {
+            val labeledResult = labelExtractor.process(parsingResult) ?: return emptyList()
             listOf(labeledResult)
         } else {
             emptyList()

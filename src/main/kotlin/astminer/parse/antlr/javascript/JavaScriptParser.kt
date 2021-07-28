@@ -22,7 +22,7 @@ class JavaScriptParser : Parser<AntlrNode> {
             val context = parser.program()
             convertAntlrTree(context, JavaScriptParser.ruleNames, JavaScriptParser.VOCABULARY)
         } catch (e: Exception) {
-            throw ParsingException("ANTLR", "JavaScript", e.message)
+            throw ParsingException("ANTLR", "JavaScript", e)
         }
     }
 }

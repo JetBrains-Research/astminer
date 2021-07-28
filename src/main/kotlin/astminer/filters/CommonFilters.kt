@@ -4,8 +4,8 @@ import astminer.common.model.*
 import astminer.featureextraction.NumberOfNodes
 
 /**
- * Filter that excludes trees which do not satisfy [minSize] <= tree size <= [maxSize]
- * @param minSize The minimum size of trees that pass the filter
+ * Filter that excludes trees which do not satisfy [minSize] <= tree size <= [maxSize].
+ * @param minSize The minimum size of trees that pass the filter.
  * @param maxSize The maximum size of trees that pass the filter. Set it to null if there should be no upper bound.
  */
 class TreeSizeFilter(private val minSize: Int = 0, private val maxSize: Int? = null) : FileFilter, FunctionFilter {
@@ -16,7 +16,7 @@ class TreeSizeFilter(private val minSize: Int = 0, private val maxSize: Int? = n
 
     override fun validate(functionInfo: FunctionInfo<out Node>): Boolean = validateTree(functionInfo.root)
 
-    override fun validate(parseResult: ParseResult<out Node>): Boolean = validateTree(parseResult.root)
+    override fun validate(parseResult: ParsingResult<out Node>): Boolean = validateTree(parseResult.root)
 }
 
 /**
@@ -28,5 +28,5 @@ class WordsNumberFilter(private val maxWordsNumber: Int) : FunctionFilter, FileF
 
     override fun validate(functionInfo: FunctionInfo<out Node>) = validateTree(functionInfo.root)
 
-    override fun validate(parseResult: ParseResult<out Node>) = validateTree(parseResult.root)
+    override fun validate(parseResult: ParsingResult<out Node>) = validateTree(parseResult.root)
 }

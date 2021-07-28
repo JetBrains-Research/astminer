@@ -1,8 +1,6 @@
 package astminer.pipeline.branch
 
 import astminer.common.model.*
-import astminer.labelextractor.*
-
 
 /**
  * PipelineBranch for pipeline with function-level granularity (FunctionPipelineConfig).
@@ -22,8 +20,8 @@ class FunctionPipelineBranch(
     private fun passesThroughFilters(functionInfo: FunctionInfo<out Node>) =
         filters.all { filter -> filter.validate(functionInfo) }
 
-    override fun process(languageHandler: LanguageHandler<out Node>): List<LabeledResult<out Node>> =
-        languageHandler.splitIntoFunctions()
+    override fun process(parsingResult: ParsingResult<out Node>): List<LabeledResult<out Node>> =
+        parsingResult.splitIntoFunctions()
             .filter { functionInfo -> passesThroughFilters(functionInfo) }
             .mapNotNull { functionInfo -> labelExtractor.process(functionInfo) }
 }

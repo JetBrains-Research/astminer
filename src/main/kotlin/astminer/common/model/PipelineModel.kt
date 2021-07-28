@@ -2,13 +2,12 @@ package astminer.common.model
 
 import java.io.Closeable
 
-
 interface Filter
 
 interface LabelExtractor
 
 interface FileFilter : Filter {
-    fun validate(parseResult: ParseResult<out Node>): Boolean
+    fun validate(parseResult: ParsingResult<out Node>): Boolean
 }
 
 interface FunctionFilter : Filter {
@@ -16,7 +15,7 @@ interface FunctionFilter : Filter {
 }
 
 interface FileLabelExtractor : LabelExtractor {
-    fun process(parseResult: ParseResult<out Node>): LabeledResult<out Node>?
+    fun process(parseResult: ParsingResult<out Node>): LabeledResult<out Node>?
 }
 
 interface FunctionLabelExtractor : LabelExtractor {
@@ -30,6 +29,8 @@ interface FunctionLabelExtractor : LabelExtractor {
  * @property filePath The path to the source file where the AST is from.
  */
 data class LabeledResult<T : Node>(val root: T, val label: String, val filePath: String)
+
+fun <T : Node> ParsingResult<T>.labeledWith(label: String): LabeledResult<T> = LabeledResult(root, label, file.path)
 
 /**
  * Storage saved labeled results to disk in a specified format.

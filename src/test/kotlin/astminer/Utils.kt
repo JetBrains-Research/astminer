@@ -15,4 +15,4 @@ fun checkExecutable(execName: String): Boolean {
     return false
 }
 
-fun <T : Node> Parser<T>.parseFiles(files: List<File>) = files.map { parseFile(it).root }
+fun <T : Node> Parser<T>.parseFiles(files: List<File>) = files.map { parseFile(it) }

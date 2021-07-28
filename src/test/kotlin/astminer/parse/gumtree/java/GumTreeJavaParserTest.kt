@@ -12,7 +12,7 @@ class GumTreeJavaParserTest {
         val parser = GumTreeJavaParser()
         val file = File("src/test/resources/examples/1.java")
 
-        val node = parser.parseFile(file).root
+        val node = parser.parseFile(file)
         Assert.assertNotNull("Parse tree for a valid file should not be null", node)
     }
 
@@ -22,7 +22,7 @@ class GumTreeJavaParserTest {
         val projectRoot = File("src/test/resources/examples")
 
         val trees = parser.parseFiles(getProjectFilesWithExtension(projectRoot, "java"))
-        Assert.assertEquals("There is only 2 file with .java extension in 'testData/examples' folder",2, trees.size)
+        Assert.assertEquals("There is only 2 file with .java extension in 'testData/examples' folder", 2, trees.size)
         trees.forEach { Assert.assertNotNull("Parse tree for a valid file should not be null", it) }
     }
 }

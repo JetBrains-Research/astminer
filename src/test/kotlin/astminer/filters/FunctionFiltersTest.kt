@@ -80,7 +80,7 @@ class FunctionFiltersTest {
     @Test
     fun `test WordsNumberFilter for 50 should exclude function with name of 100 words`() {
         val functionInfo = object : FunctionInfo<Node> {
-            override val root = AntlrNode("", null,  "Word".repeat(100))
+            override val root = AntlrNode("", null, "Word".repeat(100))
         }
         assertFalse { WordsNumberFilter(50).validate(functionInfo) }
     }
