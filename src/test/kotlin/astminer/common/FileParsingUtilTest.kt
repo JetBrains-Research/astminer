@@ -22,7 +22,10 @@ class FileParsingUtilTest {
         file.writeText(text)
         file = changeExtensionTo(file, newExtension)
 
-        Assert.assertTrue("File extension should be changed but its content should not", file.extension == newExtension && file.readText() == text)
+        Assert.assertTrue(
+            "File extension should be changed but its content should not",
+            file.extension == newExtension && file.readText() == text
+        )
 
         file.delete()
     }
@@ -35,7 +38,11 @@ class FileParsingUtilTest {
         file.writeText(text)
         addClassWrapper(file, "Foo")
 
-        Assert.assertEquals("File wrapper should be added with braces and newlines", file.readText(), "class Foo {\n$text\n}")
+        Assert.assertEquals(
+            "File wrapper should be added with braces and newlines",
+            file.readText(),
+            "class Foo {\n$text\n}"
+        )
 
         file.delete()
     }
@@ -51,5 +58,4 @@ class FileParsingUtilTest {
         val file = File("src/test/resources/common/NonParsableFile.java")
         Assert.assertTrue("This file has syntax errors", hasSyntaxErrors(file))
     }
-
 }

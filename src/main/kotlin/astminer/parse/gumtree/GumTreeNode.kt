@@ -4,7 +4,7 @@ import astminer.common.model.Node
 import com.github.gumtreediff.tree.ITree
 import com.github.gumtreediff.tree.TreeContext
 
-class GumTreeNode(val wrappedNode: ITree, val context: TreeContext,override var parent: GumTreeNode?) : Node() {
+class GumTreeNode(val wrappedNode: ITree, val context: TreeContext, override var parent: GumTreeNode?) : Node() {
     override val typeLabel: String
         get() = context.getTypeLabel(wrappedNode)
 

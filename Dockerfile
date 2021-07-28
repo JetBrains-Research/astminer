@@ -24,11 +24,8 @@ ENV PATH="/pythonparser:${PATH}"
 RUN wget http://131.123.42.38/lmcrs/v1.0.0/srcml_1.0.0-1_ubuntu20.04.deb && \
     dpkg -i srcml_1.0.0-1_ubuntu20.04.deb
 
-# Copy astminer sources
+# Copy astminer shadow jar
 WORKDIR astminer
-COPY . .
+COPY ./build/shadow/astminer.jar .
 
-# Prepare shadow jar
-RUN ./gradlew shadowJar
-
-ENTRYPOINT ["java", "-jar", "build/shadow/astminer.jar"]
+ENTRYPOINT ["java", "-jar", "astminer.jar"]

@@ -21,7 +21,6 @@ interface GumTreeJavaTest {
             assertEquals(listOf("args", "param"), parameters.map { it.name })
             assertEquals(listOf("String[]", "int"), parameters.map { it.type })
         }
-
     }
 
     @Test

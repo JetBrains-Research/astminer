@@ -11,9 +11,7 @@ import java.io.File
  * @param file file in which the number of lines is counted
  * @return number of lines in a given file
  */
-fun numberOfLines(file: File): Int {
-    return file.readLines().filter { it != "" }.size
-}
+fun numberOfLines(file: File): Int = file.readLines().filter { it != "" }.size
 
 /**
  * Changes extension of a given file to the new one.
@@ -38,7 +36,7 @@ fun addClassWrapper(file: File, className: String) {
 }
 
 /**
- * Checks if java file has any syntax errors, that can be identified via [Java8Parser][me.vovak.antlr.parser.Java8Parser]
+ * Checks if java file has any syntax errors that can be identified via [Java8Parser][me.vovak.antlr.parser.Java8Parser]
  * @param javaFile file which is checked for correct syntax
  * @return true if there are syntax errors and false otherwise
  */
@@ -57,3 +55,11 @@ fun getProjectFiles(projectRoot: File, filter: (File) -> Boolean = { true }) = p
 
 fun getProjectFilesWithExtension(projectRoot: File, extension: String): List<File> =
     getProjectFiles(projectRoot) { it.isFile && it.extension == extension }
+
+fun iterateFiles(dir: File, condition: (File) -> Boolean, action: (File) -> Unit) {
+    dir.walkTopDown().filter { it.isFile && condition(it) }.forEach { action.invoke(it) }
+}
+
+fun File.forFilesWithSuffix(extension: String, action: (File) -> Unit) {
+    iterateFiles(this, { file: File -> file.path.endsWith(extension) }, action)
+}

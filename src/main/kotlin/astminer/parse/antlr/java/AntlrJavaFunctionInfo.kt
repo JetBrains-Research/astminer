@@ -10,23 +10,7 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
     override val returnType: String? = collectReturnType()
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingClass()
 
-    companion object {
-        private const val METHOD_RETURN_TYPE_NODE = "typeTypeOrVoid"
-        private const val METHOD_NAME_NODE = "IDENTIFIER"
-
-        private const val CLASS_DECLARATION_NODE = "classDeclaration"
-        private const val CLASS_NAME_NODE = "IDENTIFIER"
-
-        private const val METHOD_PARAMETER_NODE = "formalParameters"
-        private const val METHOD_PARAMETER_INNER_NODE = "formalParameterList"
-        private val METHOD_SINGLE_PARAMETER_NODES = listOf("formalParameter", "lastFormalParameter")
-        private const val PARAMETER_RETURN_TYPE_NODE = "typeType"
-        private const val PARAMETER_NAME_NODE = "variableDeclaratorId"
-    }
-
-    private fun collectNameNode(): AntlrNode? {
-        return root.getChildOfType(METHOD_NAME_NODE)
-    }
+    private fun collectNameNode(): AntlrNode? = root.getChildOfType(METHOD_NAME_NODE)
 
     private fun collectReturnType(): String? {
         val returnTypeNode = root.getChildOfType(METHOD_RETURN_TYPE_NODE)
@@ -60,9 +44,22 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
         val returnTypeToken = returnTypeNode?.getTokensFromSubtree()
 
         val parameterName = parameterNode.getChildOfType(PARAMETER_NAME_NODE)?.getTokensFromSubtree()
-            ?: throw IllegalStateException("Parameter name wasn't found")
+            ?: error("Parameter name wasn't found")
 
         return FunctionInfoParameter(parameterName, returnTypeToken)
     }
-}
 
+    companion object {
+        private const val METHOD_RETURN_TYPE_NODE = "typeTypeOrVoid"
+        private const val METHOD_NAME_NODE = "IDENTIFIER"
+
+        private const val CLASS_DECLARATION_NODE = "classDeclaration"
+        private const val CLASS_NAME_NODE = "IDENTIFIER"
+
+        private const val METHOD_PARAMETER_NODE = "formalParameters"
+        private const val METHOD_PARAMETER_INNER_NODE = "formalParameterList"
+        private val METHOD_SINGLE_PARAMETER_NODES = listOf("formalParameter", "lastFormalParameter")
+        private const val PARAMETER_RETURN_TYPE_NODE = "typeType"
+        private const val PARAMETER_NAME_NODE = "variableDeclaratorId"
+    }
+}

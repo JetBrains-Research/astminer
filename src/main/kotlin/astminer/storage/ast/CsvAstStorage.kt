@@ -2,11 +2,11 @@ package astminer.storage.ast
 
 import astminer.common.model.LabeledResult
 import astminer.common.model.Node
+import astminer.common.model.Storage
 import astminer.common.storage.RankedIncrementalIdStorage
 import astminer.common.storage.dumpIdStorageToCsv
 import astminer.common.storage.nodeTypeToCsvString
 import astminer.common.storage.tokenToCsvString
-import astminer.common.model.Storage
 import java.io.File
 import java.io.PrintWriter
 
@@ -58,7 +58,7 @@ class CsvAstStorage(override val outputDirectoryPath: String) : Storage {
 
     internal fun astString(node: Node): String {
         return "${tokensMap.getId(node.token)} ${nodeTypesMap.getId(node.typeLabel)}{${
-            node.children.joinToString(separator = "", transform = ::astString)
+        node.children.joinToString(separator = "", transform = ::astString)
         }}"
     }
 }
