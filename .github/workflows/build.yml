@@ -1,6 +1,6 @@
 name: Build with lint
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   setup:
