@@ -45,9 +45,12 @@ class Pipeline(private val config: PipelineConfig) {
      */
     fun run() {
         for (language in config.parser.languages) {
+            println("Parsing $language")
             val parsingResultFactory = getParsingResultFactory(language, config.parser.name)
 
+            println("Files collecting...")
             val files = getProjectFilesWithExtension(inputDirectory, language.fileExtension)
+            println("${files.size} files retrieved")
 
             createStorage(language).use { storage ->
                 parsingResultFactory.parseFiles(files) { parseResult ->

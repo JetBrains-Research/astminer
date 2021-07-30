@@ -1,6 +1,7 @@
 package astminer.common.model
 
 import astminer.parse.ParsingException
+import me.tongfei.progressbar.ProgressBar
 import mu.KotlinLogging
 import java.io.File
 
@@ -9,15 +10,18 @@ private val logger = KotlinLogging.logger("HandlerFactory")
 interface ParsingResultFactory {
     fun parse(file: File): ParsingResult<out Node>
 
-    fun <T> parseFiles(files: List<File>, action: (ParsingResult<out Node>) -> T) =
-        files.map { file ->
+    fun <T> parseFiles(files: List<File>, action: (ParsingResult<out Node>) -> T): List<T?> {
+        val results = mutableListOf<T?>()
+        for (file in ProgressBar.wrap(files, "")) {
             try {
-                action(parse(file))
+                results.add(action(parse(file)))
             } catch (parsingException: ParsingException) {
                 logger.error(parsingException) { "Failed to parse file ${file.path}" }
-                null
+                results.add(null)
             }
         }
+        return results
+    }
 }
 
 interface PreprocessingParsingResultFactory : ParsingResultFactory {
