@@ -73,6 +73,6 @@ class JavaParserNode(jpNode: JPNode, override val parent: Node?) : Node() {
         super.getChildOfType(typeLabel) as? JavaParserNode
 }
 
-class MysteriousNodeException : Exception() {
+class MysteriousNodeException() : Exception() {
     override val message: String = "Blank node generated"
 }

@@ -14,7 +14,7 @@ class JavaparserMethodSplitter : TreeFunctionSplitter<JavaParserNode> {
             try {
                 methods.add(JavaparserFunctionInfo(methodRoot, filePath))
             } catch (e: IllegalStateException) {
-                logger.warn("Couldn't collect information about the function: ${e.message}")
+                logger.warn("Couldn't collect information about the function: ${e.message} in file $filePath")
             }
         }
         return methods

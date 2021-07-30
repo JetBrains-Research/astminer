@@ -12,7 +12,7 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
         root.getChildOfType(METHOD_NAME)
 
     override val parameters: List<FunctionInfoParameter> =
-        root.preOrder().filter { it.typeLabel == PARAMETER }.map { assembleParameter(it) }
+        root.children.filter { it.typeLabel == PARAMETER }.map { assembleParameter(it) }
 
     override val enclosingElement: EnclosingElement<JavaParserNode>? =
         root.findEnclosingElementBy { it.typeLabel == CLASS_OR_INTERFACE_DECLARATION }?.assembleEnclosingClass()
@@ -21,15 +21,16 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
         FunctionInfoParameter(type = getParameterType(node), name = getParameterName(node))
 
     private fun getParameterType(node: JavaParserNode): String {
-        val possibleTypeNode = node.children.find { it.typeLabel != PARAMETER_NAME }
-        checkNotNull(possibleTypeNode) { "Can't find parameter type" }
+        val possibleTypeNode = node.children
+            .find { it.typeLabel != PARAMETER_NAME && it.typeLabel != PARAMETER_ANNOTATION }
+        checkNotNull(possibleTypeNode) { "Couldn't find parameter type node" }
         val typeToken = when (possibleTypeNode.typeLabel) {
             ARRAY_TYPE -> getParameterType(possibleTypeNode) + ARRAY_BRACKETS
             PRIMITIVE_TYPE -> possibleTypeNode.originalToken
             CLASS_OR_INTERFACE_TYPE -> possibleTypeNode.getChildOfType(CLASS_NAME)?.originalToken
             else -> null
         }
-        checkNotNull(typeToken) { "Couldn't find parameter type" }
+        checkNotNull(typeToken) { "Couldn't extract parameter type from node" }
         return typeToken
     }
 
@@ -55,5 +56,6 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
         const val CLASS_OR_INTERFACE_TYPE = "Cls"
         const val CLASS_OR_INTERFACE_DECLARATION = "ClsD"
         const val CLASS_NAME = "SimpleName"
+        const val PARAMETER_ANNOTATION = "MarkerExpr"
     }
 }
