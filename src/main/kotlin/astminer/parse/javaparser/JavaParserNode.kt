@@ -1,11 +1,9 @@
 package astminer.parse.javaparser
 
 import astminer.common.model.Node
-import astminer.parse.ParsingException
 import com.github.javaparser.ast.expr.AssignExpr
 import com.github.javaparser.ast.expr.BinaryExpr
 import com.github.javaparser.ast.expr.UnaryExpr
-import mu.KotlinLogging
 import java.util.NoSuchElementException
 import com.github.javaparser.ast.Node as JPNode
 
@@ -52,7 +50,7 @@ class JavaParserNode(jpNode: JPNode, override val parent: Node?) : Node() {
             try {
                 jpNode.tokenRange.get().toString()
             } catch (e: NoSuchElementException) {
-                throw MysteriousNodeException()
+                throw MysteriousNodeException(e)
             }
         } else {
             null
@@ -73,6 +71,6 @@ class JavaParserNode(jpNode: JPNode, override val parent: Node?) : Node() {
         super.getChildOfType(typeLabel) as? JavaParserNode
 }
 
-class MysteriousNodeException() : Exception() {
-    override val message: String = "Blank node generated"
+class MysteriousNodeException(oldException: Exception) : Exception() {
+    override val message: String = "Blank node generated: ${oldException.message}"
 }
