@@ -11,8 +11,13 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
     override val nameNode: JavaParserNode? =
         root.getChildOfType(METHOD_NAME)
 
-    override val parameters: List<FunctionInfoParameter> =
-        root.children.filter { it.typeLabel == PARAMETER }.map { assembleParameter(it) }
+    override val parameters: List<FunctionInfoParameter>? =
+        try {
+            root.children.filter { it.typeLabel == PARAMETER }.map { assembleParameter(it) }
+        } catch (e: IllegalStateException) {
+            logger.warn { e.message }
+            null
+        }
 
     override val enclosingElement: EnclosingElement<JavaParserNode>? =
         root.findEnclosingElementBy { it.typeLabel == CLASS_OR_INTERFACE_DECLARATION }?.assembleEnclosingClass()
