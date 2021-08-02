@@ -4,22 +4,43 @@ import astminer.parse.ParsingException
 import me.tongfei.progressbar.ProgressBar
 import mu.KotlinLogging
 import java.io.File
+import kotlin.concurrent.thread
 
 private val logger = KotlinLogging.logger("HandlerFactory")
+private const val NUM_OF_THREADS = 16
 
 interface ParsingResultFactory {
     fun parse(file: File): ParsingResult<out Node>
 
-    fun <T> parseFiles(files: List<File>, action: (ParsingResult<out Node>) -> T): List<T?> {
+    fun <T> parseFiles(
+        files: List<File>,
+        progressBar: ProgressBar = ProgressBar("", files.size.toLong()),
+        action: (ParsingResult<out Node>) -> T
+    ): List<T?> {
         val results = mutableListOf<T?>()
-        for (file in ProgressBar.wrap(files, "")) {
+        files.map { file ->
             try {
                 results.add(action(parse(file)))
             } catch (parsingException: ParsingException) {
                 logger.error(parsingException) { "Failed to parse file ${file.path}" }
                 results.add(null)
             }
+            progressBar.step()
         }
+        return results
+    }
+
+    fun <T> parseFilesAsync(files: List<File>, action: (ParsingResult<out Node>) -> T): List<T?> {
+        val results = mutableListOf<T?>()
+        val threads = mutableListOf<Thread>()
+        val progressBar = ProgressBar("", files.size.toLong())
+
+        synchronized(results) {
+            files.chunked(files.size / (NUM_OF_THREADS - 1))
+                .map { chunk ->
+                    threads.add(thread { results.addAll(parseFiles(chunk, progressBar, action)) }) }
+        }
+        threads.map { it.join() }
         return results
     }
 }
@@ -32,7 +53,11 @@ interface PreprocessingParsingResultFactory : ParsingResultFactory {
      * @param files list of files to be parsed with preprocessing
      * @param action action to do with parsed files (e.g. save on the disk)
      */
-    override fun <T> parseFiles(files: List<File>, action: (ParsingResult<out Node>) -> T) =
+    override fun <T> parseFiles(
+        files: List<File>,
+        progressBar: ProgressBar,
+        action: (ParsingResult<out Node>) -> T
+    ) =
         files.map { file ->
             try {
                 val preprocessedFile = preprocess(file)

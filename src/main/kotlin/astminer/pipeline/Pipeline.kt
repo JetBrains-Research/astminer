@@ -53,9 +53,11 @@ class Pipeline(private val config: PipelineConfig) {
             println("${files.size} files retrieved")
 
             createStorage(language).use { storage ->
-                parsingResultFactory.parseFiles(files) { parseResult ->
-                    for (labeledResult in branch.process(parseResult)) {
-                        storage.store(labeledResult)
+                synchronized(storage) {
+                    parsingResultFactory.parseFilesAsync(files) { parseResult ->
+                        for (labeledResult in branch.process(parseResult)) {
+                            storage.store(labeledResult)
+                        }
                     }
                 }
             }
