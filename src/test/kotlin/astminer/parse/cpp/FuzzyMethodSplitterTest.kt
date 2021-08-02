@@ -85,28 +85,28 @@ class FuzzyMethodSplitterTest {
     fun testNoParameters() {
         val methodNoParameters = methodInfos.find { it.name == "functionWithNoParameters" }
         assertNotNull(methodNoParameters)
-        assertEquals(0, methodNoParameters.parameters.size)
+        assertEquals(0, methodNoParameters.parameters?.size)
     }
 
     @Test
     fun testOneParameter() {
         val methodOneParameter = methodInfos.find { it.name == "functionWithOneParameter" }
         assertNotNull(methodOneParameter)
-        assertEquals(1, methodOneParameter.parameters.size)
-        val parameter = methodOneParameter.parameters[0]
-        assertEquals("p1", parameter.name)
-        assertEquals("int", parameter.type)
+        assertEquals(1, methodOneParameter.parameters?.size)
+        val parameter = methodOneParameter.parameters?.get(0)
+        assertEquals("p1", parameter?.name)
+        assertEquals("int", parameter?.type)
     }
 
     @Test
     fun testThreeParameters() {
         val methodThreeParameters = methodInfos.find { it.name == "functionWithThreeParameters" }
         assertNotNull(methodThreeParameters)
-        assertEquals(3, methodThreeParameters.parameters.size)
+        assertEquals(3, methodThreeParameters.parameters?.size)
         for (i in 0 until 3) {
-            val parameter = methodThreeParameters.parameters[i]
-            assertEquals("p${i + 1}", parameter.name)
-            assertEquals("int", parameter.type)
+            val parameter = methodThreeParameters.parameters?.get(i)
+            assertEquals("p${i + 1}", parameter?.name)
+            assertEquals("int", parameter?.type)
         }
     }
 

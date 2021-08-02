@@ -9,16 +9,20 @@ import astminer.common.splitToSubtokens
  * Filter that excludes functions that have at least one of modifiers from the [excludeModifiers] list.
  */
 class ModifierFilter(private val excludeModifiers: List<String>) : FunctionFilter {
-    override fun validate(functionInfo: FunctionInfo<out Node>): Boolean =
-        !excludeModifiers.any { modifier -> modifier in functionInfo.modifiers }
+    override fun validate(functionInfo: FunctionInfo<out Node>): Boolean {
+        return functionInfo.modifiers?.let {modifiers -> excludeModifiers.intersect(modifiers).isEmpty()  }
+            ?: throw IllegalStateException("Modifiers wasn't properly parsed")
+    }
 }
 
 /**
- * Filter that excludes functions that have at least one annotations from the [excludeAnnotations] list.
+ * Filter that excludes functions that have at least one of annotations from the [excludeAnnotations] list.
  */
 class AnnotationFilter(private val excludeAnnotations: List<String>) : FunctionFilter {
-    override fun validate(functionInfo: FunctionInfo<out Node>): Boolean =
-        !excludeAnnotations.any { annotation -> annotation in functionInfo.annotations }
+    override fun validate(functionInfo: FunctionInfo<out Node>): Boolean {
+        return functionInfo.annotations?.let { annotations -> excludeAnnotations.intersect(annotations).isEmpty() }
+            ?: throw IllegalStateException("Annotations was not properly parsed")
+    }
 }
 
 /**
