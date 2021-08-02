@@ -26,7 +26,7 @@ interface FunctionInfo<T : Node> {
         get() = notImplemented("annotations")
     val modifiers: List<String>
         get() = notImplemented("modifiers")
-    val parameters: List<FunctionInfoParameter>?
+    val parameters: List<FunctionInfoParameter>
         get() = notImplemented("parameters")
     val returnType: String?
         get() = notImplemented("returnType")
