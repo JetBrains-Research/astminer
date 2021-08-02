@@ -62,5 +62,6 @@ class Pipeline(private val config: PipelineConfig) {
                 }
             }
         }
+        println("Done!")
     }
 }

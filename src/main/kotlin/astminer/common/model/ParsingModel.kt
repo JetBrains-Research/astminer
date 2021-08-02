@@ -12,12 +12,13 @@ abstract class Node {
     abstract val parent: Node?
     abstract val originalToken: String?
 
-    val normalizedToken: String = run {
+    val normalizedToken: String by lazy {
         originalToken?.let {
             val subtokens = splitToSubtokens(it)
             if (subtokens.isEmpty()) EMPTY_TOKEN else subtokens.joinToString(TOKEN_DELIMITER)
         } ?: EMPTY_TOKEN
     }
+
     var technicalToken: String? = null
 
     val token: String
