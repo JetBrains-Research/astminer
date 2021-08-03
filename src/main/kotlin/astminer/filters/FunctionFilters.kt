@@ -10,8 +10,8 @@ import astminer.common.splitToSubtokens
  */
 class ModifierFilter(private val excludeModifiers: List<String>) : FunctionFilter {
     override fun validate(functionInfo: FunctionInfo<out Node>): Boolean {
-        return functionInfo.modifiers?.let {modifiers -> excludeModifiers.intersect(modifiers).isEmpty()  }
-            ?: throw IllegalStateException("Modifiers wasn't properly parsed")
+        val functionModifiers = checkNotNull(functionInfo.modifiers) { "Modifiers weren't properly parsed" }
+        return functionModifiers.none { modifier -> modifier in excludeModifiers }
     }
 }
 
@@ -20,8 +20,8 @@ class ModifierFilter(private val excludeModifiers: List<String>) : FunctionFilte
  */
 class AnnotationFilter(private val excludeAnnotations: List<String>) : FunctionFilter {
     override fun validate(functionInfo: FunctionInfo<out Node>): Boolean {
-        return functionInfo.annotations?.let { annotations -> excludeAnnotations.intersect(annotations).isEmpty() }
-            ?: throw IllegalStateException("Annotations was not properly parsed")
+        val functionAnnotations = checkNotNull(functionInfo.annotations) { "Annotations weren't properly parsed" }
+        return functionAnnotations.none { annotation -> annotation in excludeAnnotations }
     }
 }
 
