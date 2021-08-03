@@ -13,9 +13,12 @@ private val logger = KotlinLogging.logger("ANTLR-PHP-function-info")
 class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: String) : FunctionInfo<AntlrNode> {
     override val returnType = getElementType(root)
     override val nameNode: AntlrNode? = root.getChildOfType(FUNCTION_NAME)
-
-    override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingElement()
+    override val parameters: List<FunctionInfoParameter>? =
+        try { collectParameters() } catch (e: IllegalStateException) {
+            astminer.parse.antlr.javascript.logger.warn { e.message }
+            null
+        }
 
     private fun collectParameters(): List<FunctionInfoParameter> {
         // Parameters in this grammar have following structure (children order may be wrong):
