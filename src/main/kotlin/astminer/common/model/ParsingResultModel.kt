@@ -42,6 +42,7 @@ interface ParsingResultFactory {
                 }
         }
         threads.map { it.join() }
+        progressBar.close()
         return results
     }
 }
