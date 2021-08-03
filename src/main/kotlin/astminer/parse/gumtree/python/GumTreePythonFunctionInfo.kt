@@ -4,9 +4,11 @@ import astminer.common.model.EnclosingElement
 import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
 import astminer.common.model.FunctionInfoParameter
-import astminer.parse.antlr.javascript.logger
 import astminer.parse.findEnclosingElementBy
 import astminer.parse.gumtree.GumTreeNode
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger("Gumtree-Java-function-info")
 
 class GumTreePythonFunctionInfo(
     override val root: GumTreeNode,

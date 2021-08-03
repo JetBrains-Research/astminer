@@ -16,7 +16,7 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: 
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingElement()
     override val parameters: List<FunctionInfoParameter>? =
         try { collectParameters() } catch (e: IllegalStateException) {
-            astminer.parse.antlr.javascript.logger.warn { e.message }
+            logger.warn { e.message }
             null
         }
 

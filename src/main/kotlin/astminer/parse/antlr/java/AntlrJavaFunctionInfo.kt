@@ -5,7 +5,7 @@ import astminer.parse.antlr.*
 import astminer.parse.findEnclosingElementBy
 import mu.KotlinLogging
 
-val logger = KotlinLogging.logger("Antlr-Java-function-info")
+private val logger = KotlinLogging.logger("Antlr-Java-function-info")
 
 class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath: String) : FunctionInfo<AntlrNode> {
     override val nameNode: AntlrNode? = collectNameNode()

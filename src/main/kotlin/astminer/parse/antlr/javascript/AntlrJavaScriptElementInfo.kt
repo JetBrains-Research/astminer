@@ -5,7 +5,7 @@ import astminer.parse.antlr.*
 import astminer.parse.findEnclosingElementBy
 import mu.KotlinLogging
 
-val logger = KotlinLogging.logger("Antlr-Javascript-function-info")
+private val logger = KotlinLogging.logger("Antlr-Javascript-function-info")
 
 /**
 Base class for describing JavaScript methods, functions or arrow functions.

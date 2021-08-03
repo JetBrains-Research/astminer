@@ -4,9 +4,11 @@ import astminer.common.model.EnclosingElement
 import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
 import astminer.common.model.FunctionInfoParameter
-import astminer.parse.antlr.javascript.logger
 import astminer.parse.findEnclosingElementBy
 import astminer.parse.fuzzy.FuzzyNode
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger("Fuzzyparser-Cpp-function-info")
 
 class FuzzyCppFunctionInfo(override val root: FuzzyNode, override val filePath: String) : FunctionInfo<FuzzyNode> {
 
