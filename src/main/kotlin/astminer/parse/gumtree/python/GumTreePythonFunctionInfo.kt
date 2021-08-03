@@ -19,8 +19,7 @@ class GumTreePythonFunctionInfo(
     override val enclosingElement: EnclosingElement<GumTreeNode>? = collectEnclosingClass()
     override val returnType: String? = getElementType(root)?.typeLabel
     override val parameters: List<FunctionInfoParameter>? =
-        try { collectParameters() }
-        catch (e: IllegalStateException) {
+        try { collectParameters() } catch (e: IllegalStateException) {
             logger.warn { e.message }
             null
         }

@@ -16,8 +16,7 @@ class FuzzyCppFunctionInfo(override val root: FuzzyNode, override val filePath: 
     override val enclosingElement: EnclosingElement<FuzzyNode>? = collectEnclosingClass()
     override val nameNode: FuzzyNode? = collectNameNode()
     override val parameters: List<FunctionInfoParameter>? =
-        try { collectParameters() }
-        catch (e: IllegalStateException) {
+        try { collectParameters() } catch (e: IllegalStateException) {
             logger.warn { e.message }
             null
         }
