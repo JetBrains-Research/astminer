@@ -16,7 +16,7 @@ private typealias Id = Int
  * Each line in the output file is a single json object that corresponds to one of the labeled trees.
  * Each tree is flattened and represented as a list of nodes.
  */
-class JsonAstStorage(override val outputDirectoryPath: String) : Storage {
+class JsonAstStorage(override val outputDirectoryPath: String, private val withPaths: Boolean) : Storage {
     private val treeFlattener = TreeFlattener()
 
     private val writer: PrintWriter
@@ -30,7 +30,7 @@ class JsonAstStorage(override val outputDirectoryPath: String) : Storage {
     }
 
     @Serializable
-    private data class LabeledAst(val label: String, val ast: List<OutputNode>)
+    private data class LabeledAst(val label: String, val path: String? = null, val ast: List<OutputNode>)
 
     @Serializable
     private data class OutputNode(val token: String, val typeLabel: String, val children: List<Id>)
@@ -40,7 +40,8 @@ class JsonAstStorage(override val outputDirectoryPath: String) : Storage {
 
     override fun store(labeledResult: LabeledResult<out Node>) {
         val outputNodes = treeFlattener.flatten(labeledResult.root).map { it.toOutputNode() }
-        val labeledAst = LabeledAst(labeledResult.label, outputNodes)
+        val path = if (withPaths) labeledResult.filePath else null
+        val labeledAst = LabeledAst(labeledResult.label, path, outputNodes)
         writer.println(Json.encodeToString(labeledAst))
     }
 
