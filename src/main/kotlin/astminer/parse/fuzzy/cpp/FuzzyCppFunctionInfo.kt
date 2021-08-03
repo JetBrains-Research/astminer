@@ -4,6 +4,7 @@ import astminer.common.model.EnclosingElement
 import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
 import astminer.common.model.FunctionInfoParameter
+import astminer.parse.antlr.javascript.logger
 import astminer.parse.findEnclosingElementBy
 import astminer.parse.fuzzy.FuzzyNode
 
@@ -11,8 +12,13 @@ class FuzzyCppFunctionInfo(override val root: FuzzyNode, override val filePath: 
 
     override val returnType: String? = collectReturnType()
     override val enclosingElement: EnclosingElement<FuzzyNode>? = collectEnclosingClass()
-    override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val nameNode: FuzzyNode? = collectNameNode()
+    override val parameters: List<FunctionInfoParameter>? =
+        try { collectParameters() }
+        catch (e: IllegalStateException) {
+            logger.warn { e.message }
+            null
+        }
 
     private fun collectNameNode(): FuzzyNode? = root.getChildOfType(METHOD_NAME_NODE) as? FuzzyNode
 

@@ -4,6 +4,7 @@ import astminer.common.model.EnclosingElement
 import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
 import astminer.common.model.FunctionInfoParameter
+import astminer.parse.antlr.javascript.logger
 import astminer.parse.gumtree.GumTreeNode
 
 class GumTreeJavaFunctionInfo(
@@ -12,9 +13,14 @@ class GumTreeJavaFunctionInfo(
 ) : FunctionInfo<GumTreeNode> {
 
     override val nameNode: GumTreeNode? = root.getChildOfType(TypeLabels.simpleName)
-    override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val returnType: String? = root.getElementType()
     override val enclosingElement: EnclosingElement<GumTreeNode>? = collectEnclosingClass()
+    override val parameters: List<FunctionInfoParameter>? =
+        try { collectParameters() }
+        catch (e: IllegalStateException) {
+            logger.warn { e.message }
+            null
+        }
 
     override val modifiers: List<String> = root.children.filter { it.typeLabel == "Modifier" }.map { it.originalToken }
     override val annotations: List<String> = root
