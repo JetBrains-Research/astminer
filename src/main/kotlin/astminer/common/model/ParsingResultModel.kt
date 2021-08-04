@@ -36,7 +36,7 @@ interface ParsingResultFactory {
         val progressBar = ProgressBar("Parsing progress:", files.size.toLong())
 
         synchronized(results) {
-            files.chunked(files.size / (NUM_OF_THREADS - 1) + 1).filter { it.isNotEmpty() }
+            files.chunked(files.size / NUM_OF_THREADS + 1).filter { it.isNotEmpty() }
                 .map { chunk ->
                     threads.add(thread { results.addAll(parseFiles(chunk, progressBar, action)) })
                 }
