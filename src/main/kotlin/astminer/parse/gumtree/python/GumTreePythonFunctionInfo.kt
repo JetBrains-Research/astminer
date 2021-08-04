@@ -56,10 +56,7 @@ class GumTreePythonFunctionInfo(
             }
         }
         return params.mapNotNull {
-            FunctionInfoParameter(
-                it.originalToken ?: return@mapNotNull null,
-                getElementType(it)?.originalToken
-            )
+            FunctionInfoParameter(it.originalToken ?: return@mapNotNull null, getElementType(it)?.originalToken)
         }
     }
 
