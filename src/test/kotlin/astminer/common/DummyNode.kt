@@ -6,11 +6,9 @@ import java.io.File
 class DummyNode(
     override val typeLabel: String,
     override val children: MutableList<DummyNode> = mutableListOf()
-) : Node() {
+) : Node(typeLabel) {
 
     override val parent: Node? = null
-
-    override val originalToken: String = typeLabel
 
     init {
         // Tokens may change after normalization, for tests we want tokens to be unchanged

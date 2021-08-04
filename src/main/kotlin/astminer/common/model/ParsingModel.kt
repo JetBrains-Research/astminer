@@ -6,11 +6,10 @@ import java.io.File
 import java.io.InputStream
 import java.util.*
 
-abstract class Node {
+abstract class Node(val originalToken: String?) {
     abstract val typeLabel: String
     abstract val children: List<Node>
     abstract val parent: Node?
-    abstract val originalToken: String?
 
     val normalizedToken: String by lazy {
         originalToken?.let {

@@ -55,7 +55,12 @@ class GumTreePythonFunctionInfo(
                 else -> emptyList()
             }
         }
-        return params.map { FunctionInfoParameter(it.originalToken, getElementType(it)?.originalToken) }
+        return params.mapNotNull {
+            FunctionInfoParameter(
+                it.originalToken ?: return@mapNotNull null,
+                getElementType(it)?.originalToken
+            )
+        }
     }
 
     companion object {
