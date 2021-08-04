@@ -42,6 +42,7 @@ abstract class Node(val originalToken: String?) {
         resultList.add(this)
         children.forEach { it.doTraversePreOrder(resultList) }
     }
+
     fun preOrderIterator(): Iterator<Node> = preOrder().listIterator()
     open fun preOrder(): List<Node> = mutableListOf<Node>().also { doTraversePreOrder(it) }
 
@@ -49,6 +50,7 @@ abstract class Node(val originalToken: String?) {
         children.forEach { it.doTraversePostOrder(resultList) }
         resultList.add(this)
     }
+
     fun postOrderIterator(): Iterator<Node> = postOrder().listIterator()
     open fun postOrder(): List<Node> = mutableListOf<Node>().also { doTraversePostOrder(it) }
 

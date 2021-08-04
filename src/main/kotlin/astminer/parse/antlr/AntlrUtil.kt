@@ -28,7 +28,8 @@ private fun convertRuleContext(
         }
     }
     currentNode.replaceChildren(children)
-
+    /* Forcing lazy property be calculated right now if it's a leaf */
+    if (currentNode.isLeaf()) { currentNode.normalizedToken }
     return currentNode
 }
 
