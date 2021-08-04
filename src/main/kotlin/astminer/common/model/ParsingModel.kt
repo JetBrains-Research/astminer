@@ -72,3 +72,8 @@ interface Parser<T : Node> {
      */
     fun parseFile(file: File) = parseInputStream(file.inputStream())
 }
+
+class ParserNotInstalledException(parser: String, language: String, val e: Exception): Exception() {
+    override val message: String = "Tools for parsing $language with $parser were not properly installed"
+    override val cause: Throwable = e
+}
