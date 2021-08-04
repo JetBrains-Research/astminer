@@ -1,9 +1,11 @@
 package astminer.parse.spoon
 
 import astminer.common.model.Parser
+import astminer.parse.ParsingException
 import mu.KotlinLogging
 import org.apache.commons.io.FileUtils.copyInputStreamToFile
 import spoon.Launcher
+import spoon.SpoonException
 import java.io.File
 import java.io.InputStream
 import kotlin.io.path.Path
@@ -34,10 +36,16 @@ class SpoonJavaParser : Parser<SpoonNode> {
         return SpoonNode(model.unnamedModule, null)
     }
 
-    override fun parseFile(file: File): SpoonNode {
+    override fun parseFile(file: File): SpoonNode = try {
         val launcher = Launcher()
         launcher.addInputResource(file.path)
         val model = launcher.buildModel()
-        return SpoonNode(model.unnamedModule, null)
+        SpoonNode(model.unnamedModule, null)
+    } catch (e: SpoonException) {
+        throw ParsingException("Spoon", "Java", e)
+    } catch (e:IllegalStateException) {
+        throw ParsingException("Spoon", "Java", e)
+    } catch (e: RuntimeException) {
+        throw ParsingException("Spoon", "Java", e)
     }
 }
