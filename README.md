@@ -26,9 +26,9 @@ Currently, it supports extraction of:
 
 It is designed to be very easily extensible to new languages.
 
-`astminer` lets you create end2end pipeline of data processing.
-It allows convert source code, cloned from VCS to suitable for training datasets.
-To do that, `astminer` provides multiple steps to handle data:
+`astminer` lets you create an end-to-end pipeline to processing code for machine learning models.
+It allows to convert source code cloned from VCS to formats suitable for training.
+To achieve that, `astminer` caters for multiple data processing steps:
 - [filters](./docs/filters.md) to remove redundant samples from data
 - [label extractors](./docs/label_extractors.md) to create label for each tree
 - [storages](./docs/storages.md) to define storage format.
@@ -41,12 +41,12 @@ There are two ways to use `astminer`.
 
 ### Using `astminer` cli
 
-Define config (examples of them in [configs](./configs) directory) and pass it shell script:
+Define config (examples of them in [configs](./configs) directory) and pass it to shell script:
 ```shell
 ./cli.sh <path-to-YAML-config>
 ```
 
-For details about config format and other navigate to [docs/cli](./docs/cli.md).
+For details on CLI configuration, see [docs/cli](./docs/cli.md).
 
 ### Using `astminer` as a dependency
 
@@ -88,10 +88,10 @@ After that, add `mavenLocal()` into the `repositories` section in your gradle co
 
 If you want to use `astminer` as a library in your Java/Kotlin based data mining tool, check the following:
 
-* A few simple [examples](src/examples) of `astminer` usage in Java and Kotlin.
+* A few simple [examples](src/examples) of using `astminer` in Java and Kotlin.
 * Using `astminer` as a part of another mining tool — [psiminer](https://github.com/JetBrains-Research/psiminer).
 
-Please consider trying Kotlin for your data mining pipelines: from our experience, it is much better suited for data collection and transformation instruments.
+Please consider trying Kotlin for your data mining pipelines: from our experience, it is much better suited for data collection and transformation instruments than Java.
 
 ## Contribution
 
