@@ -1,8 +1,6 @@
 package astminer.parse.gumtree.java
 
 import astminer.common.model.Parser
-import astminer.config.FileExtension
-import astminer.config.ParserType
 import astminer.parse.ParsingException
 import astminer.parse.gumtree.GumTreeNode
 import com.github.gumtreediff.client.Run
