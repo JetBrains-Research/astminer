@@ -1,7 +1,6 @@
 package astminer.common.model
 
 import astminer.parse.ParsingException
-import me.tongfei.progressbar.ProgressBar
 import mu.KotlinLogging
 import java.io.File
 import kotlin.concurrent.thread
