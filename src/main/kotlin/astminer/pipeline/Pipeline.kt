@@ -4,6 +4,7 @@ import astminer.common.getProjectFilesWithExtension
 import astminer.common.model.FileLabelExtractor
 import astminer.common.model.FunctionLabelExtractor
 import astminer.common.model.Storage
+import astminer.common.model.findDatasetHoldouts
 import astminer.config.FileExtension
 import astminer.config.PipelineConfig
 import astminer.parse.getParsingResultFactory
@@ -44,15 +45,17 @@ class Pipeline(private val config: PipelineConfig) {
      * Runs the pipeline that is defined in the [config].
      */
     fun run() {
+        val holdouts = findDatasetHoldouts(inputDirectory)
         for (language in config.parser.languages) {
             val parsingResultFactory = getParsingResultFactory(language, config.parser.name)
 
-            val files = getProjectFilesWithExtension(inputDirectory, language.fileExtension)
-
             createStorage(language).use { storage ->
-                parsingResultFactory.parseFiles(files) { parseResult ->
-                    for (labeledResult in branch.process(parseResult)) {
-                        storage.store(labeledResult)
+                for ((holdoutType, holdout) in holdouts) {
+                    val holdoutFiles = getProjectFilesWithExtension(holdout, language.fileExtension)
+
+                    parsingResultFactory.parseFiles(holdoutFiles) { parseResult ->
+                        val labeledResults = branch.process(parseResult)
+                        storage.store(labeledResults, holdoutType)
                     }
                 }
             }
