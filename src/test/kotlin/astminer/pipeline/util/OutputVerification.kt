@@ -1,6 +1,5 @@
 package astminer.pipeline.util
 
-import astminer.common.model.DatasetHoldout
 import java.io.File
 import kotlin.test.assertTrue
 

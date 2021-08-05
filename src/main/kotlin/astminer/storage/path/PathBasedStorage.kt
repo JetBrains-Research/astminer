@@ -7,7 +7,6 @@ import astminer.paths.PathMiner
 import astminer.paths.PathRetrievalSettings
 import astminer.paths.toPathContext
 import java.io.File
-import java.io.FileWriter
 import java.io.PrintWriter
 
 /**

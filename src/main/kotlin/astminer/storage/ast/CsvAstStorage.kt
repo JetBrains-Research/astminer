@@ -56,7 +56,7 @@ class CsvAstStorage(override val outputDirectoryPath: String) : Storage {
 
     internal fun astString(node: Node): String {
         return "${tokensMap.getId(node.token)} ${nodeTypesMap.getId(node.typeLabel)}{${
-            node.children.joinToString(separator = "", transform = ::astString)
+        node.children.joinToString(separator = "", transform = ::astString)
         }}"
     }
 

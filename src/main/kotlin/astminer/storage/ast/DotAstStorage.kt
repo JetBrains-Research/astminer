@@ -34,7 +34,7 @@ class DotAstStorage(override val outputDirectoryPath: String) : Storage {
         // TODO: save full signature for method
         val normalizedLabel = normalizeAstLabel(labeledResult.label)
         val normalizedFilepath = normalizeFilepath(labeledResult.filePath)
-        val astDirectoryPath = astDirectoryPaths.getOrPut(holdout) {holdout.resolveHoldout()}
+        val astDirectoryPath = astDirectoryPaths.getOrPut(holdout) { holdout.resolveHoldout() }
         val nodesMap =
             dumpAst(labeledResult.root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
         val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$normalizedFilepath,$normalizedLabel,%d,%s,%s"
