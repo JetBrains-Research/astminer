@@ -6,6 +6,9 @@ import astminer.common.model.FunctionInfo
 import astminer.common.model.FunctionInfoParameter
 import astminer.parse.findEnclosingElementBy
 import astminer.parse.gumtree.GumTreeNode
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger("Gumtree-Java-function-info")
 
 class GumTreePythonFunctionInfo(
     override val root: GumTreeNode,
@@ -13,9 +16,13 @@ class GumTreePythonFunctionInfo(
 ) : FunctionInfo<GumTreeNode> {
 
     override val nameNode: GumTreeNode = root
-    override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val enclosingElement: EnclosingElement<GumTreeNode>? = collectEnclosingClass()
     override val returnType: String? = getElementType(root)?.typeLabel
+    override val parameters: List<FunctionInfoParameter>? =
+        try { collectParameters() } catch (e: IllegalStateException) {
+            logger.warn { e.message }
+            null
+        }
 
     private fun getElementType(node: GumTreeNode): GumTreeNode? {
         if (node.typeLabel == TypeLabels.arg) {

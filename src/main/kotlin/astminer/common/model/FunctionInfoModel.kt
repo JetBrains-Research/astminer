@@ -22,11 +22,11 @@ interface FunctionInfo<T : Node> {
         get() = notImplemented("root")
     val filePath: String
         get() = notImplemented("filePath")
-    val annotations: List<String>
+    val annotations: List<String>?
         get() = notImplemented("annotations")
-    val modifiers: List<String>
+    val modifiers: List<String>?
         get() = notImplemented("modifiers")
-    val parameters: List<FunctionInfoParameter>
+    val parameters: List<FunctionInfoParameter>?
         get() = notImplemented("parameters")
     val returnType: String?
         get() = notImplemented("returnType")

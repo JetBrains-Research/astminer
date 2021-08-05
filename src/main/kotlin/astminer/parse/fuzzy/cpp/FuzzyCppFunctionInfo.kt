@@ -6,13 +6,20 @@ import astminer.common.model.FunctionInfo
 import astminer.common.model.FunctionInfoParameter
 import astminer.parse.findEnclosingElementBy
 import astminer.parse.fuzzy.FuzzyNode
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger("Fuzzyparser-Cpp-function-info")
 
 class FuzzyCppFunctionInfo(override val root: FuzzyNode, override val filePath: String) : FunctionInfo<FuzzyNode> {
 
     override val returnType: String? = collectReturnType()
     override val enclosingElement: EnclosingElement<FuzzyNode>? = collectEnclosingClass()
-    override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val nameNode: FuzzyNode? = collectNameNode()
+    override val parameters: List<FunctionInfoParameter>? =
+        try { collectParameters() } catch (e: IllegalStateException) {
+            logger.warn { e.message }
+            null
+        }
 
     private fun collectNameNode(): FuzzyNode? = root.getChildOfType(METHOD_NAME_NODE) as? FuzzyNode
 
