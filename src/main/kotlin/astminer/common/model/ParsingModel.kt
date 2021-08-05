@@ -11,7 +11,7 @@ abstract class Node(val originalToken: String?) {
     abstract val children: List<Node>
     abstract val parent: Node?
 
-    val normalizedToken: String by lazy {
+    val normalizedToken: String = run {
         originalToken?.let {
             val subtokens = splitToSubtokens(it)
             if (subtokens.isEmpty()) EMPTY_TOKEN else subtokens.joinToString(TOKEN_DELIMITER)
