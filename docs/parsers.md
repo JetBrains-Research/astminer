@@ -1,31 +1,30 @@
 # Parsers
 
-`astminer` supports multiple parsers for a large wide of programming languages.
-Here we describe integrated parsers and their peculiarities.
+`astminer` supports multiple parsers for various programming languages.
+Here we describe the integrated parsers and their peculiarities.
 
 ## ANTLR
 
-ANother Tool for Language Recognition from [antlr.org](https://www.antlr.org).
-It provides lexer and parsers for languages that can be generated into Java code.
-For now, `astminer` supports Java, Python, JS, and PHP.
+[ANTLR](https://www.antlr.org) provides an infrastructure to generate lexers and parsers for languages based on grammars.
+For now, `astminer` supports ANTLR-based parsers for Java, Python, JS, and PHP.
 
 ## GumTree
 
 [GumTree](https://github.com/GumTreeDiff/gumtree)
-framework to work with source code as trees and to compute difference between them.
-It also builds language-agnostic representation.
-For now, `astminer` supports Java and Python.
+is a framework to work with source code as trees and to compute differences of trees between different versions of code.
+It also builds language-agnostic representations of code.
+For now, `astminer` supports GumTree-based parsers for Java and Python.
 
 ### python-parser
 
-You should install python-parser to run GumTree with Python.
-There is instruction of how to do it:
+Running GumTree with Python requires `python-parser`.
+It can be set up through the following steps:
 1. Download sources from [GitHub](https://github.com/JetBrains-Research/pythonparser/blob/master/)
 2. Install dependencies
 ```shell
 pip install -r requirements.txt
 ```
-3. Make python parser script executable
+3. Make the `python-parser` script executable
 ```shell
 chmod +x src/main/python/pythonparser/pythonparser_3.py
 ```
@@ -37,9 +36,9 @@ export PATH="<path>/src/main/python/pythonparser/pythonparser:${PATH}"
 
 ## Fuzzy
 
-Originally [fuzzyc2cpg](https://github.com/ShiftLeftSecurity/fuzzyc2cpg)
-and now part of [codepropertygraph](https://github.com/ShiftLeftSecurity/codepropertygraph/).
-`astminer`uses it C/C++ parser from that. `G++`required for this parser.
+Originally [fuzzyc2cpg](https://github.com/ShiftLeftSecurity/fuzzyc2cpg), Fuzzy is
+now part of [codepropertygraph](https://github.com/ShiftLeftSecurity/codepropertygraph/).
+`astminer`uses it to parse C/C++ code. `g++` is required for this parser.
 
 ## Other languages and parsers
 
