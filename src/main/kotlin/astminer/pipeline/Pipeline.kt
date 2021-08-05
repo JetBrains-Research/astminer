@@ -10,6 +10,7 @@ import astminer.parse.getParsingResultFactory
 import astminer.pipeline.branch.FilePipelineBranch
 import astminer.pipeline.branch.FunctionPipelineBranch
 import astminer.pipeline.branch.IllegalLabelExtractorException
+import me.tongfei.progressbar.ProgressBar
 import java.io.File
 
 /**
@@ -44,6 +45,7 @@ class Pipeline(private val config: PipelineConfig) {
      * Runs the pipeline that is defined in the [config].
      */
     fun run() {
+        println("Working in ${config.performance.numOfThreads}")
         for (language in config.parser.languages) {
             println("Parsing $language")
             val parsingResultFactory = getParsingResultFactory(language, config.parser.name)
@@ -52,15 +54,19 @@ class Pipeline(private val config: PipelineConfig) {
             val files = getProjectFilesWithExtension(inputDirectory, language.fileExtension)
             println("${files.size} files retrieved")
 
+            val progressBar = ProgressBar("", files.size.toLong())
+
             createStorage(language).use { storage ->
                 synchronized(storage) {
-                    parsingResultFactory.parseFilesAsync(files) { parseResult ->
+                    parsingResultFactory.parseFilesInThreads(files, config.performance.numOfThreads) { parseResult ->
                         for (labeledResult in branch.process(parseResult)) {
                             storage.store(labeledResult)
                         }
+                        progressBar.step()
                     }
                 }
             }
+            progressBar.close()
         }
         println("Done!")
     }

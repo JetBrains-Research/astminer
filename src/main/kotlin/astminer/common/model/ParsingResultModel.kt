@@ -7,14 +7,12 @@ import java.io.File
 import kotlin.concurrent.thread
 
 private val logger = KotlinLogging.logger("HandlerFactory")
-private const val NUM_OF_THREADS = 16
 
 interface ParsingResultFactory {
     fun parse(file: File): ParsingResult<out Node>
 
     fun <T> parseFiles(
         files: List<File>,
-        progressBar: ProgressBar? = null,
         action: (ParsingResult<out Node>) -> T
     ): List<T?> {
         val results = mutableListOf<T?>()
@@ -25,24 +23,25 @@ interface ParsingResultFactory {
                 logger.error(parsingException) { "Failed to parse file ${file.path}" }
                 results.add(null)
             }
-            progressBar?.step()
         }
         return results
     }
 
-    fun <T> parseFilesAsync(files: List<File>, action: (ParsingResult<out Node>) -> T): List<T?> {
+    fun <T> parseFilesInThreads(
+        files: List<File>,
+        numOfThreads: Int,
+        action: (ParsingResult<out Node>) -> T
+    ): List<T?> {
         val results = mutableListOf<T?>()
         val threads = mutableListOf<Thread>()
-        val progressBar = ProgressBar("Parsing progress:", files.size.toLong())
 
         synchronized(results) {
-            files.chunked(files.size / NUM_OF_THREADS + 1).filter { it.isNotEmpty() }
+            files.chunked(files.size / numOfThreads + 1).filter { it.isNotEmpty() }
                 .map { chunk ->
-                    threads.add(thread { results.addAll(parseFiles(chunk, progressBar, action)) })
+                    threads.add(thread { results.addAll(parseFiles(chunk, action)) })
                 }
         }
         threads.map { it.join() }
-        progressBar.close()
         return results
     }
 }
@@ -57,11 +56,9 @@ interface PreprocessingParsingResultFactory : ParsingResultFactory {
      */
     override fun <T> parseFiles(
         files: List<File>,
-        progressBar: ProgressBar?,
         action: (ParsingResult<out Node>) -> T
     ) =
         files.map { file ->
-            progressBar?.step()
             try {
                 val preprocessedFile = preprocess(file)
                 val result = action(parse(preprocessedFile))

@@ -11,12 +11,11 @@ abstract class Node(val originalToken: String?) {
     abstract val children: List<Node>
     abstract val parent: Node?
 
-    val normalizedToken: String = run {
+    val normalizedToken: String =
         originalToken?.let {
             val subtokens = splitToSubtokens(it)
             if (subtokens.isEmpty()) EMPTY_TOKEN else subtokens.joinToString(TOKEN_DELIMITER)
         } ?: EMPTY_TOKEN
-    }
 
     var technicalToken: String? = null
 

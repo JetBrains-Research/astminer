@@ -14,5 +14,6 @@ data class PipelineConfig(
     val parser: ParserConfig,
     val filters: List<FilterConfig> = emptyList(),
     @SerialName("label") val labelExtractor: LabelExtractorConfig,
-    val storage: StorageConfig
+    val storage: StorageConfig,
+    val performance: PerformanceConfig = defaultPerformanceConfig
 )
