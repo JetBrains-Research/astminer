@@ -11,16 +11,12 @@ import kotlin.test.AfterTest
 import kotlin.test.assertEquals
 
 class PipelineAsyncStressTest {
-    @AfterTest
-    fun deleteOutput() {
-        tempOutputDir.deleteRecursively()
-    }
-
     @Test
     fun jsonStorageTest() {
+        val outputPath = tempOutputDir.resolve("json").path
         val config = PipelineConfig(
             inputDir = tempInputDir.path,
-            outputDir = tempOutputDir.path,
+            outputDir = outputPath,
             parser = ParserConfig(
                 name = ParserType.Antlr,
                 languages = listOf(FileExtension.Java)
@@ -30,7 +26,59 @@ class PipelineAsyncStressTest {
             storage = JsonAstStorageConfig()
         )
         Pipeline(config).run()
-        assertEquals((numOfFiles * numOfMethods).toLong(), countLines("${tempOutputDir.path}/java/asts.jsonl"))
+        val expectedNumOfAst = numOfFiles * numOfMethods
+        val actualNumOfAst = countLines("$outputPath/java/asts.jsonl")
+        assertEquals(expected = expectedNumOfAst.toLong(), actual = actualNumOfAst)
+    }
+
+    @Test
+    fun code2vecStorageTest() {
+        val outputPath = tempOutputDir.resolve("code2vec").path
+        val config = PipelineConfig(
+            inputDir = tempInputDir.path,
+            outputDir = outputPath,
+            parser = ParserConfig(
+                name = ParserType.Antlr,
+                languages = listOf(FileExtension.Java)
+            ),
+            filters = listOf(),
+            labelExtractor = FunctionNameExtractorConfig(),
+            storage = Code2VecPathStorageConfig(
+                maxPaths = null,
+                maxTokens = null,
+                maxPathContextsPerEntity = null,
+                maxPathLength = 1000,
+                maxPathWidth = 1000
+            )
+        )
+        Pipeline(config).run()
+        val expectedNumOfPathContexts = numOfFiles * numOfMethods
+        val actualNumOfPathContexts = countLines("$outputPath/java/path_contexts.c2s")
+        assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfPathContexts)
+    }
+
+    @Test
+    fun code2seqStorageTest() {
+        val outputPath = tempOutputDir.resolve("code2seq").path
+        val config = PipelineConfig(
+            inputDir = tempInputDir.path,
+            outputDir = outputPath,
+            parser = ParserConfig(
+                name = ParserType.Antlr,
+                languages = listOf(FileExtension.Java)
+            ),
+            filters = listOf(),
+            labelExtractor = FunctionNameExtractorConfig(),
+            storage = Code2SeqPathStorageConfig(
+                maxPathContextsPerEntity = null,
+                maxPathLength = 1000,
+                maxPathWidth = 1000
+            )
+        )
+        Pipeline(config).run()
+        val expectedNumOfPathContexts = numOfFiles * numOfMethods
+        val actualNumOfPathContexts = countLines("$outputPath/java/path_contexts.c2s")
+        assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfPathContexts)
     }
 
     private fun countLines(filePath: String): Long {
@@ -64,6 +112,7 @@ class PipelineAsyncStressTest {
         @JvmStatic
         fun tearDown() {
             tempInputDir.deleteRecursively()
+            tempOutputDir.deleteRecursively()
         }
     }
 }
