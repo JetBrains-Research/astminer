@@ -1,5 +1,6 @@
 package astminer.pipeline.util
 
+import astminer.common.model.DatasetHoldout
 import java.io.File
 import kotlin.test.assertTrue
 
@@ -28,12 +29,19 @@ internal fun validPathContextsFile(name: String, batching: Boolean): Boolean {
     }
 }
 
+internal fun validPathContextHoldout(holdoutDir: File, batching: Boolean): Boolean {
+    val holdoutFiles = checkNotNull(holdoutDir.listFiles())
+    return holdoutFiles.all { validPathContextsFile(it.name, batching) }
+}
+
 internal fun checkPathContextsDir(languageDir: File, batching: Boolean) {
     val expectedFiles = listOf("tokens.csv", "paths.csv", "node_types.csv")
     languageDir.listFiles()?.forEach { file ->
         with(file) {
+            val isDescriptionFile = expectedFiles.contains(name)
+            val isPathContextHoldout = this.isDirectory && validPathContextHoldout(this, batching)
             assertTrue(
-                expectedFiles.contains(name) || validPathContextsFile(name, batching),
+                isDescriptionFile || isPathContextHoldout,
                 "Unexpected file $name in ${languageDir.name}"
             )
         }
