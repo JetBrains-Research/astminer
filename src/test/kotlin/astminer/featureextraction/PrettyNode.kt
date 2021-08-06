@@ -2,7 +2,7 @@ package astminer.featureextraction
 
 import astminer.common.model.Node
 
-class PrettyNode(override val typeLabel: String, override val originalToken: String) : Node() {
+class PrettyNode(override val typeLabel: String, originalToken: String) : Node(originalToken) {
     override var children: MutableList<PrettyNode> = ArrayList()
     override var parent: PrettyNode? = null
         set(value) {
