@@ -8,34 +8,13 @@ import spoon.reflect.declaration.CtElement
 import spoon.reflect.declaration.CtNamedElement
 import spoon.reflect.reference.CtReference
 
-class SpoonNode(el: CtElement, override val parent: SpoonNode?) : Node() {
+class SpoonNode(el: CtElement, override val parent: SpoonNode?) : Node(el.getSpoonValue()) {
     val roleInParent: String? = el.roleInParent?.toString()
 
     // Turning Ct<Something> -> <Something>
     override val typeLabel = el.javaClass.simpleName.substring(startIndex = 2)
 
     override val children = run { el.directChildren.map { SpoonNode(it, this) } }.toMutableList()
-
-    override val originalToken = getValue(el)
-
-    fun getValue(element: CtElement): String? {
-        return when {
-            element is CtNamedElement -> element.simpleName
-            element is CtReference -> element.simpleName
-            element is CtBinaryOperator<*> -> element.kind.toString()
-            element is CtUnaryOperator<*> -> element.kind.toString()
-            element.directChildren.size == 0 -> element.toString()
-
-            /* For some reason not every literal in spoon have value */
-            element is CtLiteral<*> -> try { element.value.toString() } catch (e: NullPointerException) {
-                logger.warn { "Literal without value found : ${e.message}" }
-                require(element.directChildren.isNotEmpty()) { "Literal leaf does not have a value" }
-                null
-            }
-
-            else -> null
-        }
-    }
 
     override fun removeChildrenOfType(typeLabel: String) {
         children.removeIf { it.typeLabel == typeLabel }
@@ -46,4 +25,23 @@ class SpoonNode(el: CtElement, override val parent: SpoonNode?) : Node() {
 
     fun getChildWithRole(role: String): SpoonNode? = children.find { it.roleInParent == role }
     fun getChildrenWithRole(role: String): List<SpoonNode> = children.filter { it.roleInParent == role }
+}
+
+private fun CtElement.getSpoonValue():String? {
+    return when {
+        this is CtNamedElement -> this.simpleName
+        this is CtReference -> this.simpleName
+        this is CtBinaryOperator<*> -> this.kind.toString()
+        this is CtUnaryOperator<*> -> this.kind.toString()
+        this.directChildren.size == 0 -> this.toString()
+
+        /* For some reason not every literal in spoon have value */
+        this is CtLiteral<*> -> try { this.value.toString() } catch (e: NullPointerException) {
+            logger.warn { "Literal without value found : ${e.message}" }
+            require(this.directChildren.isNotEmpty()) { "Literal leaf does not have a value" }
+            null
+        }
+
+        else -> null
+    }
 }
