@@ -50,7 +50,6 @@ class Pipeline(private val config: PipelineConfig) {
             }
         }
 
-
     private fun parseLanguage(language: FileExtension) {
         val parsingResultFactory = getParsingResultFactory(language, config.parser.name)
         createStorage(language).useSynchronously { storage ->
