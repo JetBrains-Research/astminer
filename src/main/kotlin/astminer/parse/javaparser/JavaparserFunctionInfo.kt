@@ -5,14 +5,24 @@ import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
 import astminer.common.model.FunctionInfoParameter
 import astminer.parse.findEnclosingElementBy
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger("JavaParser-function-info")
 
 class JavaparserFunctionInfo(override val root: JavaParserNode, override val filePath: String) :
     FunctionInfo<JavaParserNode> {
     override val nameNode: JavaParserNode? =
         root.getChildOfType(METHOD_NAME)
 
-    override val parameters: List<FunctionInfoParameter> =
-        root.children.filter { it.typeLabel == PARAMETER }.map { assembleParameter(it) }
+    override val parameters: List<FunctionInfoParameter>? = run {
+        root.children.filter { it.typeLabel == PARAMETER }.map {
+            try { assembleParameter(it) }
+            catch (e: IllegalArgumentException) {
+                logger.warn { e.message }
+                return@run null
+            }
+        }
+    }
 
     override val enclosingElement: EnclosingElement<JavaParserNode>? =
         root.findEnclosingElementBy { it.typeLabel == CLASS_OR_INTERFACE_DECLARATION }?.assembleEnclosingClass()

@@ -7,7 +7,7 @@ import com.github.javaparser.StaticJavaParser
 import mu.KotlinLogging
 import java.io.InputStream
 
-val logger = KotlinLogging.logger("JavaParser")
+private val logger = KotlinLogging.logger("JavaParser")
 
 class JavaParserParseWrapper : Parser<JavaParserNode> {
     override fun parseInputStream(content: InputStream): JavaParserNode {

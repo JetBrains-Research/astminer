@@ -4,11 +4,14 @@ import astminer.common.model.Node
 import com.github.javaparser.ast.expr.AssignExpr
 import com.github.javaparser.ast.expr.BinaryExpr
 import com.github.javaparser.ast.expr.UnaryExpr
+import mu.KotlinLogging
 import java.util.NoSuchElementException
 import com.github.javaparser.ast.Node as JPNode
 
+private val logger = KotlinLogging.logger("JavaParser-Node")
+
 /* Be aware that JPNode is just an alias for Node from javaparser*/
-class JavaParserNode(jpNode: JPNode, override val parent: Node?) : Node() {
+class JavaParserNode(jpNode: JPNode, override val parent: Node?) : Node(getJavaParserNodeToken(jpNode)) {
     override val children: MutableList<JavaParserNode> = run {
         jpNode.childNodes.mapNotNull { subTree ->
             try {
@@ -29,8 +32,6 @@ class JavaParserNode(jpNode: JPNode, override val parent: Node?) : Node() {
         SHORTEN_VALUES.getOrDefault(rawType, rawType)
     }
 
-    override val originalToken: String? = getValue(jpNode)
-
     private fun getRawType(jpNode: JPNode): String {
         val type = jpNode.javaClass.simpleName
         val operator = when (jpNode) {
@@ -40,21 +41,6 @@ class JavaParserNode(jpNode: JPNode, override val parent: Node?) : Node() {
             else -> ""
         }
         return type + operator
-    }
-
-    /* Sometimes javaParser generates absolutely empty leaves without any information
-       which confuses the parse wrapper. Exception being thrown when such situation
-       occurs to ignore blank node. */
-    private fun getValue(jpNode: JPNode): String? {
-        return if (jpNode.childNodes.size == 0) {
-            try {
-                jpNode.tokenRange.get().toString()
-            } catch (e: NoSuchElementException) {
-                throw MysteriousNodeException(e)
-            }
-        } else {
-            null
-        }
     }
 
     override fun preOrder(): List<JavaParserNode> = super.preOrder().map { it as JavaParserNode }
@@ -69,6 +55,21 @@ class JavaParserNode(jpNode: JPNode, override val parent: Node?) : Node() {
 
     override fun getChildOfType(typeLabel: String): JavaParserNode? =
         super.getChildOfType(typeLabel) as? JavaParserNode
+}
+
+/* Sometimes javaParser generates absolutely empty leaves without any information
+       which confuses the parse wrapper. Exception being thrown when such situation
+       occurs to ignore blank node. */
+private fun getJavaParserNodeToken(jpNode: JPNode): String? {
+    return if (jpNode.childNodes.size == 0) {
+        try {
+            jpNode.tokenRange.get().toString()
+        } catch (e: NoSuchElementException) {
+            throw MysteriousNodeException(e)
+        }
+    } else {
+        null
+    }
 }
 
 class MysteriousNodeException(oldException: Exception) : Exception() {
