@@ -28,7 +28,6 @@ private fun convertRuleContext(
         }
     }
     currentNode.replaceChildren(children)
-
     return currentNode
 }
 

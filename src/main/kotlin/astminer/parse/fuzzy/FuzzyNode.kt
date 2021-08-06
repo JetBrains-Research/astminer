@@ -11,9 +11,9 @@ import com.google.common.collect.TreeMultiset
  */
 class FuzzyNode(
     override val typeLabel: String,
-    override val originalToken: String?,
+    originalToken: String?,
     order: Int?
-) : Node() {
+) : Node(originalToken) {
     private val order = order ?: -1
     override var parent: Node? = null
     private val childrenMultiset = TreeMultiset.create<FuzzyNode>(

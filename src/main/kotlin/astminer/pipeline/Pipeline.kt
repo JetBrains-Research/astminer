@@ -11,6 +11,7 @@ import astminer.parse.getParsingResultFactory
 import astminer.pipeline.branch.FilePipelineBranch
 import astminer.pipeline.branch.FunctionPipelineBranch
 import astminer.pipeline.branch.IllegalLabelExtractorException
+import me.tongfei.progressbar.ProgressBar
 import java.io.File
 
 /**
@@ -45,20 +46,28 @@ class Pipeline(private val config: PipelineConfig) {
      * Runs the pipeline that is defined in the [config].
      */
     fun run() {
+        println("Working in ${config.numOfThreads} thread(s)")
         val holdouts = findDatasetHoldouts(inputDirectory)
         for (language in config.parser.languages) {
+            println("Parsing $language")
             val parsingResultFactory = getParsingResultFactory(language, config.parser.name)
 
-            createStorage(language).use { storage ->
-                for ((holdoutType, holdout) in holdouts) {
-                    val holdoutFiles = getProjectFilesWithExtension(holdout, language.fileExtension)
+            val progressBar = ProgressBar("", files.size.toLong())
 
-                    parsingResultFactory.parseFiles(holdoutFiles) { parseResult ->
-                        val labeledResults = branch.process(parseResult)
-                        storage.store(labeledResults, holdoutType)
+            createStorage(language).use { storage ->
+                for ((holdoutType, holdoutDir) in holdouts) {
+                synchronized(storage) {
+                    val holdoutFiles = getProjectFilesWithExtension(holdoutDir, language.fileExtension)
+                    parsingResultFactory.parseFilesInThreads(files, config.numOfThreads) { parseResult ->
+                        for (labeledResult in branch.process(parseResult)) {
+                            storage.store(labeledResult, holdoutType)
+                        }
+                        progressBar.step()
                     }
-                }
+                } }
             }
+            progressBar.close()
         }
+        println("Done!")
     }
 }
