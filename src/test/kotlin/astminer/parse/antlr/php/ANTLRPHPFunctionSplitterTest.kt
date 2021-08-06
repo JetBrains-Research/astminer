@@ -40,7 +40,7 @@ internal class ANTLRPHPFunctionSplitterTest {
         fun FunctionInfo<AntlrNode>.getJsonInfo(): String = listOf(
             "info : {",
             "name: $name, ",
-            "args: ${parameters.joinToString(", ") {
+            "args: ${parameters?.joinToString(", ") {
                 listOfNotNull(it.type, it.name).joinToString(" ")
             }}, ",
             "enclosing element: ${enclosingElement?.type?.getEnclosingElementType()}, ",

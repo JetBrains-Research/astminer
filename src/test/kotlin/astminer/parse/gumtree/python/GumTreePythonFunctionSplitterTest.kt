@@ -54,9 +54,9 @@ class GumTreePythonFunctionSplitterTest {
         with(functionInfo) {
             assertEquals("complex_args_full_typed", name)
             assertEquals(null, returnType)
-            assertEquals(1, parameters.size)
-            assertEquals(listOf("node"), parameters.map { it.name }.toList())
-            assertEquals(listOf("JsonNodeType"), parameters.map { it.type }.toList())
+            assertEquals(1, parameters?.size)
+            assertEquals(listOf("node"), parameters?.map { it.name }?.toList())
+            assertEquals(listOf("JsonNodeType"), parameters?.map { it.type }?.toList())
         }
     }
 
@@ -68,9 +68,9 @@ class GumTreePythonFunctionSplitterTest {
         with(functionInfo) {
             assertEquals("func_dif_args_typed_return", name)
             assertEquals("Constant-int", returnType)
-            assertEquals(6, parameters.size)
-            assertEquals(listOf("a", "b", "c", "d", "e", "f"), parameters.map { it.name }.toList())
-            assertEquals(emptyList(), parameters.mapNotNull { it.type }.toList())
+            assertEquals(6, parameters?.size)
+            assertEquals(listOf("a", "b", "c", "d", "e", "f"), parameters?.map { it.name }?.toList())
+            assertEquals(emptyList(), parameters?.mapNotNull { it.type }?.toList())
         }
     }
 
@@ -83,9 +83,9 @@ class GumTreePythonFunctionSplitterTest {
             assertEquals("foo_typed", name)
             assertEquals("A", enclosingElement?.name)
             assertEquals(null, returnType)
-            assertEquals(3, parameters.size)
-            assertEquals(listOf("self", "x", "y"), parameters.map { it.name }.toList())
-            assertEquals(listOf(null, "int", "int"), parameters.map { it.type }.toList())
+            assertEquals(3, parameters?.size)
+            assertEquals(listOf("self", "x", "y"), parameters?.map { it.name }?.toList())
+            assertEquals(listOf(null, "int", "int"), parameters?.map { it.type }?.toList())
         }
     }
 
@@ -98,9 +98,9 @@ class GumTreePythonFunctionSplitterTest {
             assertEquals("bar_typed", name)
             assertEquals("C", enclosingElement?.name)
             assertEquals(null, returnType)
-            assertEquals(2, parameters.size)
-            assertEquals(listOf("self", "x"), parameters.map { it.name }.toList())
-            assertEquals(listOf(null, "int"), parameters.map { it.type }.toList())
+            assertEquals(2, parameters?.size)
+            assertEquals(listOf("self", "x"), parameters?.map { it.name }?.toList())
+            assertEquals(listOf(null, "int"), parameters?.map { it.type }?.toList())
         }
     }
 
@@ -114,9 +114,9 @@ class GumTreePythonFunctionSplitterTest {
             assertEquals("AsyncFunctionDef", root.typeLabel)
             assertEquals(null, enclosingElement?.name)
             assertEquals("Constant-int", returnType)
-            assertEquals(4, parameters.size)
-            assertEquals(listOf("event", "x", "args", "kwargs"), parameters.map { it.name }.toList())
-            assertEquals(listOf("str", "int", null, null), parameters.map { it.type }.toList())
+            assertEquals(4, parameters?.size)
+            assertEquals(listOf("event", "x", "args", "kwargs"), parameters?.map { it.name }?.toList())
+            assertEquals(listOf("str", "int", null, null), parameters?.map { it.type }?.toList())
         }
     }
 
@@ -136,12 +136,12 @@ class GumTreePythonFunctionSplitterTest {
                     ?.getChildOfType("Constant-str")
                     ?.originalToken
             )
-            assertEquals(4, parameters.size)
+            assertEquals(4, parameters?.size)
             assertEquals(
                 listOf("gh", "original_issue", "branch", "backport_pr_number"),
-                parameters.map { it.name }.toList()
+                parameters?.map { it.name }?.toList()
             )
-            assertEquals(listOf(null, null, null, null), parameters.map { it.type }.toList())
+            assertEquals(listOf(null, null, null, null), parameters?.map { it.type }?.toList())
         }
     }
 
@@ -155,9 +155,9 @@ class GumTreePythonFunctionSplitterTest {
             assertEquals("foo_1", functionInfo.root.parent?.wrappedNode?.parent?.label)
             assertEquals(null, enclosingElement?.name)
             assertEquals("Constant-NoneType", returnType)
-            assertEquals(1, parameters.size)
-            assertEquals(listOf("c"), parameters.map { it.name }.toList())
-            assertEquals(listOf(null), parameters.map { it.type }.toList())
+            assertEquals(1, parameters?.size)
+            assertEquals(listOf("c"), parameters?.map { it.name }?.toList())
+            assertEquals(listOf(null), parameters?.map { it.type }?.toList())
         }
     }
 
@@ -171,9 +171,9 @@ class GumTreePythonFunctionSplitterTest {
             assertEquals("bar_1", functionInfo.root.parent?.wrappedNode?.parent?.label)
             assertEquals(null, enclosingElement?.name)
             assertEquals("Constant-int", returnType)
-            assertEquals(2, parameters.size)
-            assertEquals(listOf("d", "e"), parameters.map { it.name }.toList())
-            assertEquals(listOf("int", "int"), parameters.map { it.type }.toList())
+            assertEquals(2, parameters?.size)
+            assertEquals(listOf("d", "e"), parameters?.map { it.name }?.toList())
+            assertEquals(listOf("int", "int"), parameters?.map { it.type }?.toList())
         }
     }
 }

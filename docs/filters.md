@@ -1,20 +1,18 @@
 # Filters
 
-Each filter dedicate to remove *bad* trees from data, e.g. too large trees.
-Also, each filter works only for certain levels of granulaity.
-Here we describe all implemented filters.
-Each description contains corresponding YAML config.
+Each filter is dedicated to removing *bad* trees from the data, e.g. trees that are too big.
+Moreover, each filter works only for certain levels of granulaity.
+Here we describe all filters provided by `astminer`.
+Each description contains the corresponding YAML config.
 
-Since filters may be language or parser specific, `astminer` should support all this zoo.
-And since we **do not** use any of intermediate representation it is impossible to unify filtering.
-Therefore some languages or parsers may not support needed filter 
+Filters can be specific to a language or a parser.
+Therefore, some languages or parsers may not support the needed filter 
 (`FunctionInfoPropertyNotImplementedException` appears).
-To handle this user should manually add specific logic of parsing AST to get info about function or code at 
-all. 
+To handle this, the user might manually add specific logic of parsing AST to get the desired information about function or code at all. 
 
 Filter config classes are defined in [FilterConfigs.kt](../src/main/kotlin/astminer/config/FilterConfigs.kt).
 
-## by tree size
+## Filter by tree size
 **granularity**: files, functions
 
 Exclude ASTs that are too small or too big.
@@ -25,7 +23,7 @@ Exclude ASTs that are too small or too big.
  maxTreeSize: 100
  ```
 
-## by words number
+## Filter by words count
 **granularity**: files, functions
 
 Exclude ASTs that have too many words in any token.
@@ -35,7 +33,7 @@ Exclude ASTs that have too many words in any token.
  maxTokenWordsNumber: 10
  ```
 
-## by function name length
+## Filter by function name length
 **granularity**: functions
 
 Exclude functions that have too many words in their name.
@@ -45,7 +43,7 @@ Exclude functions that have too many words in their name.
  maxWordsNumber: 10
  ```
 
-## no constructors
+## Exclude constructors
 **granularity**: functions
 
 Exclude constructors
@@ -54,7 +52,7 @@ Exclude constructors
  name: no constructors
  ```
 
-## by annotations
+## Filter by annotation
 **granularity**: functions
 
 Exclude functions that have certain annotations (e.g. `@Override`)
@@ -64,7 +62,7 @@ Exclude functions that have certain annotations (e.g. `@Override`)
  annotations: [ override ]
  ```
 
-## by modifiers
+## Filter by modifiers
 **granularity**: functions
 
 Exclude functions with certain modifiers (e.g. `private` functions)
