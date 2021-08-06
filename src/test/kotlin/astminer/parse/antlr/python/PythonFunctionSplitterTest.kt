@@ -53,44 +53,44 @@ class PythonFunctionSplitterTest {
     fun testNoParameters() {
         val functionNoParameters = functionInfos.find { it.name == "function_with_no_parameters" }
         assertNotNull(functionNoParameters)
-        assertEquals(0, functionNoParameters.parameters.size)
+        assertEquals(0, functionNoParameters.parameters?.size)
     }
 
     @Test
     fun testOneParameter() {
         val functionOneParameter = functionInfos.find { it.name == "function_with_one_parameter" }
         assertNotNull(functionOneParameter)
-        assertEquals(1, functionOneParameter.parameters.size)
-        val parameter = functionOneParameter.parameters[0]
-        assertEquals("p1", parameter.name)
+        assertEquals(1, functionOneParameter.parameters?.size)
+        val parameter = functionOneParameter.parameters?.get(0)
+        assertEquals("p1", parameter?.name)
     }
 
     @Test
     fun testOneTypedParameter() {
         val functionOneTypedParameter = functionInfos.find { it.name == "function_with_one_typed_parameter" }
         assertNotNull(functionOneTypedParameter)
-        assertEquals(1, functionOneTypedParameter.parameters.size)
-        val parameter = functionOneTypedParameter.parameters[0]
-        assertEquals("p1", parameter.name)
-        assertEquals("int", parameter.type)
+        assertEquals(1, functionOneTypedParameter.parameters?.size)
+        val parameter = functionOneTypedParameter.parameters?.get(0)
+        assertEquals("p1", parameter?.name)
+        assertEquals("int", parameter?.type)
     }
 
     @Test
     fun functionWithComplexParameter() {
         val functionOneTypedParameter = functionInfos.find { it.name == "function_with_complex_parameter" }
         assertNotNull(functionOneTypedParameter)
-        assertEquals(1, functionOneTypedParameter.parameters.size)
-        val parameter = functionOneTypedParameter.parameters[0]
-        assertEquals("p1", parameter.name)
-        assertEquals("List[int]", parameter.type)
+        assertEquals(1, functionOneTypedParameter.parameters?.size)
+        val parameter = functionOneTypedParameter.parameters?.get(0)
+        assertEquals("p1", parameter?.name)
+        assertEquals("List[int]", parameter?.type)
     }
 
     @Test
     fun testThreeParameters() {
         val functionThreeParameters = functionInfos.find { it.name == "function_with_three_parameters" }
         assertNotNull(functionThreeParameters)
-        assertEquals(3, functionThreeParameters.parameters.size)
-        val parameters = functionThreeParameters.parameters
+        assertEquals(3, functionThreeParameters.parameters?.size)
+        val parameters = functionThreeParameters.parameters!!
         assertEquals("p1", parameters[0].name)
 
         assertEquals("p2", parameters[1].name)
@@ -103,19 +103,19 @@ class PythonFunctionSplitterTest {
     fun testParameterInClass() {
         val functionOneParameter = functionInfos.find { it.name == "fun_with_parameter_in_class" }
         assertNotNull(functionOneParameter)
-        assertEquals(2, functionOneParameter.parameters.size)
-        val parameter = functionOneParameter.parameters[1]
-        assertEquals("p1", parameter.name)
+        assertEquals(2, functionOneParameter.parameters?.size)
+        val parameter = functionOneParameter.parameters?.get(1)
+        assertEquals("p1", parameter?.name)
     }
 
     @Test
     fun testTypedParameterInClass() {
         val functionOneTypedParameter = functionInfos.find { it.name == "fun_with_typed_parameter_in_class" }
         assertNotNull(functionOneTypedParameter)
-        assertEquals(2, functionOneTypedParameter.parameters.size)
-        val parameter = functionOneTypedParameter.parameters[1]
-        assertEquals("p1", parameter.name)
-        assertEquals("int", parameter.type)
+        assertEquals(2, functionOneTypedParameter.parameters?.size)
+        val parameter = functionOneTypedParameter.parameters?.get(1)
+        assertEquals("p1", parameter?.name)
+        assertEquals("int", parameter?.type)
     }
 
     @Test

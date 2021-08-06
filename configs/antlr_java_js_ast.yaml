@@ -22,3 +22,7 @@ label:
 # save to disk ASTs in the JSON format
 storage:
   name: json AST
+
+# number of threads used for parsing
+# the default is one thread
+numOfThreads: 4
