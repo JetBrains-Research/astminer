@@ -9,7 +9,7 @@ import java.io.File
 import java.io.FileReader
 import kotlin.test.assertEquals
 
-class PipelineAsyncStressTest {
+class PipelineMultiThreadStressTest {
     @Test
     fun jsonStorageTest() {
         val outputPath = tempOutputDir.resolve("json").path

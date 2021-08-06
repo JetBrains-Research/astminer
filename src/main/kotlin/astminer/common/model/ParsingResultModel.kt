@@ -4,6 +4,7 @@ import astminer.parse.ParsingException
 import mu.KotlinLogging
 import java.io.File
 import kotlin.concurrent.thread
+import kotlin.math.ceil
 
 private val logger = KotlinLogging.logger("HandlerFactory")
 
@@ -35,7 +36,7 @@ interface ParsingResultFactory {
         val threads = mutableListOf<Thread>()
 
         synchronized(results) {
-            files.chunked(files.size / numOfThreads + 1).filter { it.isNotEmpty() }
+            files.chunked(ceil(files.size.toDouble() / numOfThreads).toInt()).filter { it.isNotEmpty() }
                 .map { chunk ->
                     threads.add(thread { results.addAll(parseFiles(chunk, action)) })
                 }

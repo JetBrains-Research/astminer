@@ -45,12 +45,12 @@ class Pipeline(private val config: PipelineConfig) {
      * Runs the pipeline that is defined in the [config].
      */
     fun run() {
-        println("Working in ${config.performance.numOfThreads}")
+        println("Working in ${config.numOfThreads} thread(s)")
         for (language in config.parser.languages) {
             println("Parsing $language")
             val parsingResultFactory = getParsingResultFactory(language, config.parser.name)
 
-            println("Files collecting...")
+            println("Collecting files...")
             val files = getProjectFilesWithExtension(inputDirectory, language.fileExtension)
             println("${files.size} files retrieved")
 
@@ -58,7 +58,7 @@ class Pipeline(private val config: PipelineConfig) {
 
             createStorage(language).use { storage ->
                 synchronized(storage) {
-                    parsingResultFactory.parseFilesInThreads(files, config.performance.numOfThreads) { parseResult ->
+                    parsingResultFactory.parseFilesInThreads(files, config.numOfThreads) { parseResult ->
                         for (labeledResult in branch.process(parseResult)) {
                             storage.store(labeledResult)
                         }
