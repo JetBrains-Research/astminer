@@ -9,7 +9,6 @@ import astminer.pipeline.branch.FilePipelineBranch
 import astminer.pipeline.branch.FunctionPipelineBranch
 import astminer.pipeline.branch.IllegalLabelExtractorException
 import me.tongfei.progressbar.ProgressBar
-import java.io.Closeable
 import java.io.File
 
 /**
