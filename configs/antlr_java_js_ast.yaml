@@ -21,6 +21,4 @@ label:
 
 # save to disk ASTs in the JSON format
 storage:
-  name: code2seq
-  length: 9
-  width: 2
+  name: json AST

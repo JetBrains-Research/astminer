@@ -3,6 +3,11 @@
 The storage defines how the ASTs should be saved on disk.
 For now, `astminer` support tree-based and path-based storage formats.
 
+`Astminer` also knows how to find the structure of the dataset and can 
+save trees or path contexts in the appropriate holdout folders. (`train`, `val` and `test`). If the data is not structured, 
+all trees will be saved in the `data` folder. Description files for trees or paths will be
+saved along with holdouts in the same `outputPath` directory.
+
 Storage config classes are defined in [StorageConfigs.kt](../src/main/kotlin/astminer/config/StorageConfigs.kt).
 
 ## Tree formats
@@ -47,6 +52,7 @@ Extract paths from each AST. Output is 4 files:
 2. `tokens.csv` contains numeric ids and corresponding tokens;
 3. `paths.csv` contains numeric ids and AST paths in form of space-separated sequences of node type ids;
 4. `path_contexts.c2s` contains the labels and sequences of path-contexts (each representing two tokens and a path between them).
+    This file will be generated for every holdout.
 
 Each line in `path_contexts.c2s` starts with a label, followed by a sequence of space-separated triples. Each triple contains start token id, path id, end token id, separated with commas.
 
@@ -63,7 +69,7 @@ Each line in `path_contexts.c2s` starts with a label, followed by a sequence of 
 ### Code2seq
 
 Extract paths from each AST and save in the code2seq format.
-The output is `path_context.c2s` file.
+The output is `path_context.c2s` file, which will be generated for every holdout.
 Each line starts with a label, followed by a sequence of space-separated triples.
 Each triple contains the start token, path node types, and end token id, separated with commas.
 
