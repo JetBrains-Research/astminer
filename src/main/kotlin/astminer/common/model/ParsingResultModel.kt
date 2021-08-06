@@ -35,6 +35,8 @@ interface ParsingResultFactory {
         val results = mutableListOf<T?>()
         val threads = mutableListOf<Thread>()
 
+        if (files.isEmpty()) {return emptyList()}
+
         synchronized(results) {
             files.chunked(ceil(files.size.toDouble() / numOfThreads).toInt()).filter { it.isNotEmpty() }
                 .map { chunk ->

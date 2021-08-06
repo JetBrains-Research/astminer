@@ -26,7 +26,7 @@ class PipelineMultiThreadStressTest {
         )
         Pipeline(config).run()
         val expectedNumOfAst = numOfFiles * numOfMethods
-        val actualNumOfAst = countLines("$outputPath/java/asts.jsonl")
+        val actualNumOfAst = countLines("$outputPath/java/data/asts.jsonl")
         assertEquals(expected = expectedNumOfAst.toLong(), actual = actualNumOfAst)
     }
 
@@ -52,7 +52,7 @@ class PipelineMultiThreadStressTest {
         )
         Pipeline(config).run()
         val expectedNumOfPathContexts = numOfFiles * numOfMethods
-        val actualNumOfPathContexts = countLines("$outputPath/java/path_contexts.c2s")
+        val actualNumOfPathContexts = countLines("$outputPath/java/data/path_contexts.c2s")
         assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfPathContexts)
     }
 
@@ -76,7 +76,7 @@ class PipelineMultiThreadStressTest {
         )
         Pipeline(config).run()
         val expectedNumOfPathContexts = numOfFiles * numOfMethods
-        val actualNumOfPathContexts = countLines("$outputPath/java/path_contexts.c2s")
+        val actualNumOfPathContexts = countLines("$outputPath/java/data/path_contexts.c2s")
         assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfPathContexts)
     }
 

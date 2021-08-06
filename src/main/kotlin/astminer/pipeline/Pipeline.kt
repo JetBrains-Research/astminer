@@ -1,10 +1,7 @@
 package astminer.pipeline
 
 import astminer.common.getProjectFilesWithExtension
-import astminer.common.model.FileLabelExtractor
-import astminer.common.model.FunctionLabelExtractor
-import astminer.common.model.Storage
-import astminer.common.model.findDatasetHoldouts
+import astminer.common.model.*
 import astminer.config.FileExtension
 import astminer.config.PipelineConfig
 import astminer.parse.getParsingResultFactory
@@ -12,6 +9,7 @@ import astminer.pipeline.branch.FilePipelineBranch
 import astminer.pipeline.branch.FunctionPipelineBranch
 import astminer.pipeline.branch.IllegalLabelExtractorException
 import me.tongfei.progressbar.ProgressBar
+import java.io.Closeable
 import java.io.File
 
 /**
@@ -24,6 +22,9 @@ class Pipeline(private val config: PipelineConfig) {
 
     private val filters = config.filters.map { it.filterImpl }
     private val labelExtractor = config.labelExtractor.labelExtractorImpl
+
+    private val holdoutMap = findDatasetHoldouts(inputDirectory)
+    private val isDataset = holdoutMap.size > 1
 
     private val branch = when (labelExtractor) {
         is FileLabelExtractor -> FilePipelineBranch(filters, labelExtractor)
@@ -42,31 +43,46 @@ class Pipeline(private val config: PipelineConfig) {
         return config.storage.createStorage(storagePath)
     }
 
+    private fun <T : Closeable, R> T.useSynchronously(callback: (T) -> R) =
+        this.use {
+            synchronized(this) {
+                callback(this)
+            }
+        }
+
+
+    private fun parseLanguage(language: FileExtension) {
+        val parsingResultFactory = getParsingResultFactory(language, config.parser.name)
+        createStorage(language).useSynchronously { storage ->
+            for ((holdoutType, holdoutDir) in holdoutMap) {
+                val holdoutFiles = getProjectFilesWithExtension(holdoutDir, language.fileExtension)
+                printHoldoutStat(holdoutFiles, holdoutType)
+                val progressBar = ProgressBar("", holdoutFiles.size.toLong())
+                parsingResultFactory.parseFilesInThreads(holdoutFiles, config.numOfThreads) { parseResult ->
+                    val labeledResults = branch.process(parseResult)
+                    storage.store(labeledResults, holdoutType)
+                    progressBar.step()
+                }
+                progressBar.close()
+            }
+        }
+    }
+
+    private fun printHoldoutStat(files: List<File>, holdoutType: DatasetHoldout) {
+        var output = "${files.size} file(s) found"
+        if (isDataset) { output += " in ${holdoutType.name}" }
+        println(output)
+    }
+
     /**
      * Runs the pipeline that is defined in the [config].
      */
     fun run() {
         println("Working in ${config.numOfThreads} thread(s)")
-        val holdouts = findDatasetHoldouts(inputDirectory)
+        if (isDataset) { println("Dataset structure found") }
         for (language in config.parser.languages) {
             println("Parsing $language")
-            val parsingResultFactory = getParsingResultFactory(language, config.parser.name)
-
-            val progressBar = ProgressBar("", files.size.toLong())
-
-            createStorage(language).use { storage ->
-                for ((holdoutType, holdoutDir) in holdouts) {
-                synchronized(storage) {
-                    val holdoutFiles = getProjectFilesWithExtension(holdoutDir, language.fileExtension)
-                    parsingResultFactory.parseFilesInThreads(files, config.numOfThreads) { parseResult ->
-                        for (labeledResult in branch.process(parseResult)) {
-                            storage.store(labeledResult, holdoutType)
-                        }
-                        progressBar.step()
-                    }
-                } }
-            }
-            progressBar.close()
+            parseLanguage(language)
         }
         println("Done!")
     }
