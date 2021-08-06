@@ -1,9 +1,7 @@
 package astminer.parse.spoon
 
-import astminer.common.EMPTY_TOKEN
 import astminer.common.model.Node
 import spoon.reflect.code.CtBinaryOperator
-import spoon.reflect.code.CtInvocation
 import spoon.reflect.code.CtLiteral
 import spoon.reflect.code.CtUnaryOperator
 import spoon.reflect.declaration.CtElement
@@ -29,9 +27,9 @@ class SpoonNode(el: CtElement, override val parent: SpoonNode?) : Node() {
             element.directChildren.size == 0 -> element.toString()
 
             /* For some reason not every literal in spoon have value */
-            element is CtLiteral<*> -> try {element.value.toString() }
-            catch (e: NullPointerException) {
-                require(element.directChildren.isNotEmpty()) {"Literal leaf does not have a value"}
+            element is CtLiteral<*> -> try { element.value.toString() } catch (e: NullPointerException) {
+                logger.warn { "Literal without value found : ${e.message}" }
+                require(element.directChildren.isNotEmpty()) { "Literal leaf does not have a value" }
                 null
             }
 

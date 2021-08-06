@@ -20,7 +20,7 @@ class SpoonJavaFunctionInfo(override val root: SpoonNode, override val filePath:
     private fun assembleParameter(parameterNode: SpoonNode): FunctionInfoParameter {
         val type = parameterNode.getChildWithRole(TYPE_ROLE)?.originalToken
         val name = parameterNode.originalToken
-        checkNotNull(name) {"Couldn't find parameter name token"}
+        checkNotNull(name) { "Couldn't find parameter name token" }
         return FunctionInfoParameter(name, type)
     }
 

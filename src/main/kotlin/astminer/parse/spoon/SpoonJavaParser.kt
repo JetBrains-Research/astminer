@@ -10,6 +10,8 @@ import java.io.File
 import java.io.InputStream
 import kotlin.io.path.Path
 
+internal val logger = KotlinLogging.logger("Spoon-JavaParser")
+
 class SpoonJavaParser : Parser<SpoonNode> {
     // TODO try to run on different platforms
     private val tempPath = Path("./spoonTmpCanBeDeletedAfterParsing")
@@ -43,7 +45,7 @@ class SpoonJavaParser : Parser<SpoonNode> {
         SpoonNode(model.unnamedModule, null)
     } catch (e: SpoonException) {
         throw ParsingException("Spoon", "Java", e)
-    } catch (e:IllegalStateException) {
+    } catch (e: IllegalStateException) {
         throw ParsingException("Spoon", "Java", e)
     } catch (e: RuntimeException) {
         throw ParsingException("Spoon", "Java", e)
