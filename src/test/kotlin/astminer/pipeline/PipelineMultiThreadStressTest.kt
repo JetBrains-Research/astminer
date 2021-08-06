@@ -22,7 +22,8 @@ class PipelineMultiThreadStressTest {
             ),
             filters = listOf(),
             labelExtractor = FunctionNameExtractorConfig(),
-            storage = JsonAstStorageConfig()
+            storage = JsonAstStorageConfig(),
+            numOfThreads = 8
         )
         Pipeline(config).run()
         val expectedNumOfAst = numOfFiles * numOfMethods
@@ -48,7 +49,8 @@ class PipelineMultiThreadStressTest {
                 maxPathContextsPerEntity = null,
                 maxPathLength = 1000,
                 maxPathWidth = 1000
-            )
+            ),
+            numOfThreads = 8
         )
         Pipeline(config).run()
         val expectedNumOfPathContexts = numOfFiles * numOfMethods
@@ -72,7 +74,8 @@ class PipelineMultiThreadStressTest {
                 maxPathContextsPerEntity = null,
                 maxPathLength = 1000,
                 maxPathWidth = 1000
-            )
+            ),
+            numOfThreads = 8
         )
         Pipeline(config).run()
         val expectedNumOfPathContexts = numOfFiles * numOfMethods

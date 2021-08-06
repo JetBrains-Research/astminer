@@ -43,23 +43,16 @@ class Pipeline(private val config: PipelineConfig) {
         return config.storage.createStorage(storagePath)
     }
 
-    private fun <T : Closeable, R> T.useSynchronously(callback: (T) -> R) =
-        this.use {
-            synchronized(this) {
-                callback(this)
-            }
-        }
-
     private fun parseLanguage(language: FileExtension) {
         val parsingResultFactory = getParsingResultFactory(language, config.parser.name)
-        createStorage(language).useSynchronously { storage ->
+        createStorage(language).use { storage ->
             for ((holdoutType, holdoutDir) in holdoutMap) {
                 val holdoutFiles = getProjectFilesWithExtension(holdoutDir, language.fileExtension)
                 printHoldoutStat(holdoutFiles, holdoutType)
                 val progressBar = ProgressBar("", holdoutFiles.size.toLong())
                 parsingResultFactory.parseFilesInThreads(holdoutFiles, config.numOfThreads) { parseResult ->
                     val labeledResults = branch.process(parseResult)
-                    storage.store(labeledResults, holdoutType)
+                    storage.storeSynchronously(labeledResults, holdoutType)
                     progressBar.step()
                 }
                 progressBar.close()
@@ -68,9 +61,9 @@ class Pipeline(private val config: PipelineConfig) {
     }
 
     private fun printHoldoutStat(files: List<File>, holdoutType: DatasetHoldout) {
-        var output = "${files.size} file(s) found"
-        if (isDataset) { output += " in ${holdoutType.name}" }
-        println(output)
+        val output = StringBuilder("${files.size} file(s) found")
+        if (isDataset) { output.append(" in ${holdoutType.name}") }
+        println(output.toString())
     }
 
     /**

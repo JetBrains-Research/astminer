@@ -43,10 +43,23 @@ interface Storage : Closeable {
 
     fun store(labeledResult: LabeledResult<out Node>, holdout: DatasetHoldout = DatasetHoldout.None)
 
+    fun storeSynchronously(labeledResult: LabeledResult<out Node>, holdout: DatasetHoldout = DatasetHoldout.None) {
+        synchronized(this) {
+            store(labeledResult, holdout)
+        }
+    }
+
     fun store(labeledResults: Iterable<LabeledResult<out Node>>, holdout: DatasetHoldout = DatasetHoldout.None) {
         for (labeledResult in labeledResults) {
             store(labeledResult, holdout)
         }
+    }
+
+    fun storeSynchronously(
+        labeledResults: Iterable<LabeledResult<out Node>>,
+        holdout: DatasetHoldout = DatasetHoldout.None
+    ) = synchronized(this) {
+        store(labeledResults, holdout)
     }
 }
 
