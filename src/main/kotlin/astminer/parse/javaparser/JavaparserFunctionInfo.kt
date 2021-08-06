@@ -16,8 +16,7 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
 
     override val parameters: List<FunctionInfoParameter>? = run {
         root.children.filter { it.typeLabel == PARAMETER }.map {
-            try { assembleParameter(it) }
-            catch (e: IllegalArgumentException) {
+            try { assembleParameter(it) } catch (e: IllegalArgumentException) {
                 logger.warn { e.message }
                 return@run null
             }
