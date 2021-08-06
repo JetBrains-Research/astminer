@@ -27,7 +27,7 @@ class SpoonNode(el: CtElement, override val parent: SpoonNode?) : Node(el.getSpo
     fun getChildrenWithRole(role: String): List<SpoonNode> = children.filter { it.roleInParent == role }
 }
 
-private fun CtElement.getSpoonValue():String? {
+private fun CtElement.getSpoonValue(): String? {
     return when {
         this is CtNamedElement -> this.simpleName
         this is CtReference -> this.simpleName
