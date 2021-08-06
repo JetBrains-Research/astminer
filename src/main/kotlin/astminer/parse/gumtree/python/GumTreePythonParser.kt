@@ -5,7 +5,6 @@ import astminer.common.model.ParserNotInstalledException
 import astminer.parse.ParsingException
 import astminer.parse.gumtree.GumTreeNode
 import com.github.gumtreediff.client.Run
-import com.github.gumtreediff.gen.SyntaxException
 import com.github.gumtreediff.gen.python.PythonTreeGenerator
 import com.github.gumtreediff.tree.TreeContext
 import java.io.IOException
