@@ -20,7 +20,7 @@ class GumTreePythonParser : Parser<GumTreeNode> {
     override fun parseInputStream(content: InputStream): GumTreeNode = try {
         val context = PythonTreeGenerator().generate(InputStreamReader(content))
         wrapGumTreeNode(context)
-    } catch (e: SyntaxException) {
+    } catch (e: RuntimeException) {
         throw ParsingException("GumTree", "Python", e)
     } catch (e: IOException) {
         throw ParserNotInstalledException("Gumtree", "Python", e)
