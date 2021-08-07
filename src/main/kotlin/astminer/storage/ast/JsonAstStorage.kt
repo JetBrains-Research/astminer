@@ -1,5 +1,6 @@
 package astminer.storage.ast
 
+import astminer.common.model.DatasetHoldout
 import astminer.common.model.LabeledResult
 import astminer.common.model.Node
 import astminer.common.model.Storage
@@ -19,14 +20,11 @@ private typealias Id = Int
 class JsonAstStorage(override val outputDirectoryPath: String, private val withPaths: Boolean) : Storage {
     private val treeFlattener = TreeFlattener()
 
-    private val writer: PrintWriter
+    private val datasetWriters = mutableMapOf<DatasetHoldout, PrintWriter>()
 
     init {
         val outputDirectory = File(outputDirectoryPath)
         outputDirectory.mkdirs()
-        val file = outputDirectory.resolve("asts.jsonl")
-        file.createNewFile()
-        writer = file.printWriter()
     }
 
     @Serializable
@@ -38,15 +36,24 @@ class JsonAstStorage(override val outputDirectoryPath: String, private val withP
     private fun TreeFlattener.EnumeratedNode.toOutputNode() =
         OutputNode(node.token, node.typeLabel, children.map { it.id })
 
-    override fun store(labeledResult: LabeledResult<out Node>) {
+    override fun store(labeledResult: LabeledResult<out Node>, holdout: DatasetHoldout) {
         val outputNodes = treeFlattener.flatten(labeledResult.root).map { it.toOutputNode() }
         val path = if (withPaths) labeledResult.filePath else null
         val labeledAst = LabeledAst(labeledResult.label, path, outputNodes)
+        val writer = datasetWriters.getOrPut(holdout) { holdout.resolveHoldout() }
         writer.println(Json.encodeToString(labeledAst))
     }
 
     override fun close() {
-        writer.close()
+        datasetWriters.values.map { it.close() }
+    }
+
+    private fun DatasetHoldout.resolveHoldout(): PrintWriter {
+        val holdoutDir = File(outputDirectoryPath).resolve(this.dirName)
+        holdoutDir.mkdirs()
+        val astFile = holdoutDir.resolve("asts.jsonl")
+        astFile.createNewFile()
+        return PrintWriter(astFile)
     }
 }
 

@@ -1,5 +1,6 @@
 package astminer.storage.ast
 
+import astminer.common.model.DatasetHoldout
 import astminer.common.model.LabeledResult
 import astminer.common.model.Node
 import astminer.common.model.Storage
@@ -15,26 +16,25 @@ class DotAstStorage(override val outputDirectoryPath: String) : Storage {
 
     internal data class FilePath(val parentPath: String, val fileName: String)
 
-    private val astDirectoryPath: File
+    private val astDirectoryPaths = mutableMapOf<DatasetHoldout, File>()
     private val astFilenameFormat = "ast_%d.dot"
     private val descriptionFileStream: PrintWriter
     private var index: Long = 0
 
     init {
         File(outputDirectoryPath).mkdirs()
-        astDirectoryPath = File(outputDirectoryPath, "asts")
-        astDirectoryPath.mkdirs()
         val descriptionFile = File(outputDirectoryPath, "description.csv")
         descriptionFile.createNewFile()
         descriptionFileStream = PrintWriter(descriptionFile)
         descriptionFileStream.write("dot_file,source_file,label,node_id,token,type\n")
     }
 
-    override fun store(labeledResult: LabeledResult<out Node>) {
+    override fun store(labeledResult: LabeledResult<out Node>, holdout: DatasetHoldout) {
         // Use filename as a label for ast
         // TODO: save full signature for method
         val normalizedLabel = normalizeAstLabel(labeledResult.label)
         val normalizedFilepath = normalizeFilepath(labeledResult.filePath)
+        val astDirectoryPath = astDirectoryPaths.getOrPut(holdout) { holdout.resolveHoldout() }
         val nodesMap =
             dumpAst(labeledResult.root, File(astDirectoryPath, astFilenameFormat.format(index)), normalizedLabel)
         val nodeDescriptionFormat = "${astFilenameFormat.format(index)},$normalizedFilepath,$normalizedLabel,%d,%s,%s"
@@ -66,6 +66,13 @@ class DotAstStorage(override val outputDirectoryPath: String) : Storage {
             out.println("}")
         }
         return nodesMap
+    }
+
+    private fun DatasetHoldout.resolveHoldout(): File {
+        val outputDir = File(outputDirectoryPath)
+        val asts = outputDir.resolve(this.dirName).resolve("asts")
+        asts.mkdirs()
+        return asts
     }
 
     // Label should contain only latin letters, numbers and underscores, other symbols replace with an underscore

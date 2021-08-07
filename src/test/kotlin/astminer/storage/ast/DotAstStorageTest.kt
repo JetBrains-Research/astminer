@@ -12,7 +12,7 @@ class DotAstStorageTest {
             storage.store(root.labeledWith("entityId"))
         }
 
-        val storageLines = File(File("test_examples", "asts"), "ast_0.dot").readLines()
+        val storageLines = File(File("test_examples/data", "asts"), "ast_0.dot").readLines()
 
         File("test_examples").deleteRecursively()
 
@@ -51,7 +51,7 @@ class DotAstStorageTest {
             "3 -- {};",
             "}"
         )
-        val storageLines = File(File(OUTPUT_FOLDER, "asts"), "ast_0.dot").readLines()
+        val storageLines = File(File("$OUTPUT_FOLDER/data", "asts"), "ast_0.dot").readLines()
         assertEquals(trueLines, storageLines)
     }
 
