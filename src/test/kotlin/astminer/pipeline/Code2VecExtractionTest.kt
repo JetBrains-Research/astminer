@@ -10,7 +10,7 @@ internal class Code2VecExtractionTest {
     private val testDataDir = File("src/test/resources")
 
     @Test
-    fun `test code2vec path extraction from files generates correct folders and files`() {
+    fun `test code2vec path extraction from files generates correct folders and files when no dataset`() {
         val extractedDataDir = Files.createTempDirectory("extractedData")
 
         val languages = listOf(FileExtension.Java, FileExtension.Python)

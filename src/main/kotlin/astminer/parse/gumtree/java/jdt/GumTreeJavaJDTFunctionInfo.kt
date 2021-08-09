@@ -5,6 +5,9 @@ import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
 import astminer.common.model.FunctionInfoParameter
 import astminer.parse.gumtree.GumTreeNode
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger("Gumtree-Java-function-info")
 
 class GumTreeJavaJDTFunctionInfo(
     override val root: GumTreeNode,
@@ -12,15 +15,24 @@ class GumTreeJavaJDTFunctionInfo(
 ) : FunctionInfo<GumTreeNode> {
 
     override val nameNode: GumTreeNode? = root.getChildOfType(TypeLabels.simpleName)
-    override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val returnType: String? = root.getElementType()
     override val enclosingElement: EnclosingElement<GumTreeNode>? = collectEnclosingClass()
+    override val parameters: List<FunctionInfoParameter>? =
+        try { collectParameters() } catch (e: IllegalStateException) {
+            logger.warn { e.message }
+            null
+        }
 
-    override val modifiers: List<String> = root.children.filter { it.typeLabel == "Modifier" }.map { it.originalToken }
+    override val modifiers: List<String> = root
+        .children
+        .filter { it.typeLabel == "Modifier" }
+        .mapNotNull { it.originalToken }
+
     override val annotations: List<String> = root
         .children
         .filter { it.typeLabel == "MarkerAnnotation" }
-        .map { it.children.first().originalToken }
+        .mapNotNull { it.children.first().originalToken }
+
     override val isConstructor: Boolean = root.typeLabel == "Initializer"
 
     private fun collectEnclosingClass(): EnclosingElement<GumTreeNode>? {

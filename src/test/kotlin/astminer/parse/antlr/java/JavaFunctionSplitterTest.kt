@@ -70,29 +70,29 @@ class JavaFunctionSplitterTest {
     fun testNoParameters() {
         val methodNoParameters = functionInfos.find { it.name == "functionWithNoParameters" }
         assertNotNull(methodNoParameters)
-        assertEquals(0, methodNoParameters.parameters.size)
+        assertEquals(0, methodNoParameters.parameters?.size)
     }
 
     @Test
     fun testOneParameter() {
         val methodOneParameter = functionInfos.find { it.name == "functionWithOneParameter" }
         assertNotNull(methodOneParameter)
-        assertEquals(1, methodOneParameter.parameters.size)
-        val parameter = methodOneParameter.parameters[0]
-        assertEquals("p1", parameter.name)
-        assertEquals("int", parameter.type)
+        assertEquals(1, methodOneParameter.parameters?.size)
+        val parameter = methodOneParameter.parameters?.get(0)
+        assertEquals("p1", parameter?.name)
+        assertEquals("int", parameter?.type)
     }
 
     @Test
     fun testThreeParameters() {
         val methodThreeParameters = functionInfos.find { it.name == "functionWithThreeParameters" }
         assertNotNull(methodThreeParameters)
-        assertEquals(3, methodThreeParameters.parameters.size)
+        assertEquals(3, methodThreeParameters.parameters?.size)
         val methodTypes = listOf("Class", "String[][]", "int[]")
         for (i in 0 until 3) {
-            val parameter = methodThreeParameters.parameters[i]
-            assertEquals("p${i + 1}", parameter.name)
-            assertEquals(methodTypes[i], parameter.type)
+            val parameter = methodThreeParameters.parameters?.get(i)
+            assertEquals("p${i + 1}", parameter?.name)
+            assertEquals(methodTypes[i], parameter?.type)
         }
     }
 
@@ -100,10 +100,10 @@ class JavaFunctionSplitterTest {
     fun testWeirdArrayParameter() {
         val methodWeirdArrayParameter = functionInfos.find { it.name == "functionWithStrangeArrayParameter" }
         assertNotNull(methodWeirdArrayParameter)
-        assertEquals(1, methodWeirdArrayParameter.parameters.size)
-        val weirdParameter = methodWeirdArrayParameter.parameters[0]
-        assertEquals(weirdParameter.name, "arr[]")
-        assertEquals(weirdParameter.type, "int")
+        assertEquals(1, methodWeirdArrayParameter.parameters?.size)
+        val weirdParameter = methodWeirdArrayParameter.parameters?.get(0)
+        assertEquals(weirdParameter?.name, "arr[]")
+        assertEquals(weirdParameter?.type, "int")
     }
 
     companion object {

@@ -3,21 +3,49 @@ package astminer.common.model
 import astminer.parse.ParsingException
 import mu.KotlinLogging
 import java.io.File
+import kotlin.concurrent.thread
+import kotlin.math.ceil
 
 private val logger = KotlinLogging.logger("HandlerFactory")
 
 interface ParsingResultFactory {
     fun parse(file: File): ParsingResult<out Node>
 
-    fun <T> parseFiles(files: List<File>, action: (ParsingResult<out Node>) -> T) =
+    fun <T> parseFiles(
+        files: List<File>,
+        action: (ParsingResult<out Node>) -> T
+    ): List<T?> {
+        val results = mutableListOf<T?>()
         files.map { file ->
             try {
-                action(parse(file))
+                results.add(action(parse(file)))
             } catch (parsingException: ParsingException) {
                 logger.error(parsingException) { "Failed to parse file ${file.path}" }
-                null
+                results.add(null)
             }
         }
+        return results
+    }
+
+    fun <T> parseFilesInThreads(
+        files: List<File>,
+        numOfThreads: Int,
+        action: (ParsingResult<out Node>) -> T
+    ): List<T?> {
+        val results = mutableListOf<T?>()
+        val threads = mutableListOf<Thread>()
+
+        if (files.isEmpty()) { return emptyList() }
+
+        synchronized(results) {
+            files.chunked(ceil(files.size.toDouble() / numOfThreads).toInt()).filter { it.isNotEmpty() }
+                .map { chunk ->
+                    threads.add(thread { results.addAll(parseFiles(chunk, action)) })
+                }
+        }
+        threads.map { it.join() }
+        return results
+    }
 }
 
 interface PreprocessingParsingResultFactory : ParsingResultFactory {
@@ -28,7 +56,10 @@ interface PreprocessingParsingResultFactory : ParsingResultFactory {
      * @param files list of files to be parsed with preprocessing
      * @param action action to do with parsed files (e.g. save on the disk)
      */
-    override fun <T> parseFiles(files: List<File>, action: (ParsingResult<out Node>) -> T) =
+    override fun <T> parseFiles(
+        files: List<File>,
+        action: (ParsingResult<out Node>) -> T
+    ) =
         files.map { file ->
             try {
                 val preprocessedFile = preprocess(file)

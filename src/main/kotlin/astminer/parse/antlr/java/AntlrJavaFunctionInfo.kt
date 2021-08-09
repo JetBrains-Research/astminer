@@ -3,12 +3,20 @@ package astminer.parse.antlr.java
 import astminer.common.model.*
 import astminer.parse.antlr.*
 import astminer.parse.findEnclosingElementBy
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger("Antlr-Java-function-info")
 
 class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath: String) : FunctionInfo<AntlrNode> {
     override val nameNode: AntlrNode? = collectNameNode()
-    override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val returnType: String? = collectReturnType()
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingClass()
+
+    override val parameters: List<FunctionInfoParameter>? =
+        try { collectParameters() } catch (e: IllegalStateException) {
+            logger.warn { e.message }
+            null
+        }
 
     private fun collectNameNode(): AntlrNode? = root.getChildOfType(METHOD_NAME_NODE)
 

@@ -22,8 +22,8 @@ class GumTreeJavaJDTFunctionSplitterTest {
             assertEquals("fun", name)
             assertEquals("void", returnType)
             assertEquals("SingleFunction", enclosingElement?.name)
-            assertEquals(listOf("args", "param"), parameters.map { it.name })
-            assertEquals(listOf("String[]", "int"), parameters.map { it.type })
+            assertEquals(listOf("args", "param"), parameters?.map { it.name })
+            assertEquals(listOf("String[]", "int"), parameters?.map { it.type })
         }
     }
 
@@ -36,8 +36,8 @@ class GumTreeJavaJDTFunctionSplitterTest {
             assertEquals("main", name)
             assertEquals("void", returnType)
             assertEquals("InnerClass", enclosingElement?.name)
-            assertEquals(listOf("args"), parameters.map { it.name })
-            assertEquals(listOf("String[]"), parameters.map { it.type })
+            assertEquals(listOf("args"), parameters?.map { it.name })
+            assertEquals(listOf("String[]"), parameters?.map { it.type })
         }
     }
 
@@ -50,15 +50,15 @@ class GumTreeJavaJDTFunctionSplitterTest {
             assertEquals("main", name)
             assertEquals("void", returnType)
             assertEquals("InnerClass", enclosingElement?.name)
-            assertEquals(listOf("args"), parameters.map { it.name })
-            assertEquals(listOf("String[]"), parameters.map { it.type })
+            assertEquals(listOf("args"), parameters?.map { it.name })
+            assertEquals(listOf("String[]"), parameters?.map { it.type })
         }
         with(functionInfos.last()) {
             assertEquals("fun", name)
             assertEquals("void", returnType)
             assertEquals("SingleMethodInnerClass", enclosingElement?.name)
-            assertEquals(listOf("args", "param"), parameters.map { it.name })
-            assertEquals(listOf("String[]", "int"), parameters.map { it.type })
+            assertEquals(listOf("args", "param"), parameters?.map { it.name })
+            assertEquals(listOf("String[]", "int"), parameters?.map { it.type })
         }
     }
 
@@ -71,8 +71,8 @@ class GumTreeJavaJDTFunctionSplitterTest {
             assertEquals("fun", name)
             assertEquals("int", returnType)
             assertEquals("SingleFunction", enclosingElement?.name)
-            assertEquals(listOf("args", "param"), parameters.map { it.name })
-            assertEquals(listOf("int", "SingleFunction"), parameters.map { it.type })
+            assertEquals(listOf("args", "param"), parameters?.map { it.name })
+            assertEquals(listOf("int", "SingleFunction"), parameters?.map { it.type })
         }
     }
 }

@@ -40,7 +40,7 @@ class JavaScriptFunctionSplitterTest {
         fun FunctionInfo<AntlrNode>.getJsonInfo(): String {
             return "info : {" +
                 "name : $name, " +
-                "args : ${parameters.joinToString(", ") { it.name }}, " +
+                "args : ${parameters?.joinToString(", ") { it.name }}, " +
                 "enclosing element : ${enclosingElement?.type?.getEnclosingElementType()}, " +
                 "enclosing element name : ${enclosingElement?.name}" +
                 "}"

@@ -3,6 +3,9 @@ package astminer.parse.antlr.javascript
 import astminer.common.model.*
 import astminer.parse.antlr.*
 import astminer.parse.findEnclosingElementBy
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger("Antlr-Javascript-function-info")
 
 /**
 Base class for describing JavaScript methods, functions or arrow functions.
@@ -76,8 +79,13 @@ abstract class AntlrJavaScriptElementInfo(override val root: AntlrNode, override
 class JavaScriptArrowInfo(root: AntlrNode, filePath: String) : AntlrJavaScriptElementInfo(root, filePath) {
 
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingElement()
-    override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val nameNode: AntlrNode? = root.getChildOfType(ARROW_NAME_NODE)
+
+    override val parameters: List<FunctionInfoParameter>? =
+        try { collectParameters() } catch (e: IllegalStateException) {
+            logger.warn { e.message }
+            null
+        }
 
     override fun getParametersRoot(): AntlrNode? {
         val parameterRoot = root.getChildOfType(ARROW_PARAMETER_NODE)
@@ -94,8 +102,12 @@ class JavaScriptArrowInfo(root: AntlrNode, filePath: String) : AntlrJavaScriptEl
 class JavaScriptMethodInfo(root: AntlrNode, filePath: String) : AntlrJavaScriptElementInfo(root, filePath) {
 
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingElement()
-    override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val nameNode: AntlrNode? = collectNameNode()
+    override val parameters: List<FunctionInfoParameter>? =
+        try { collectParameters() } catch (e: IllegalStateException) {
+            logger.warn { e.message }
+            null
+        }
 
     private fun collectNameNode(): AntlrNode? {
         val methodNameParent = root.children.firstOrNull {
@@ -119,8 +131,12 @@ class JavaScriptMethodInfo(root: AntlrNode, filePath: String) : AntlrJavaScriptE
 class JavaScriptFunctionInfo(root: AntlrNode, filePath: String) : AntlrJavaScriptElementInfo(root, filePath) {
 
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingElement()
-    override val parameters: List<FunctionInfoParameter> = collectParameters()
     override val nameNode: AntlrNode? = root.getChildOfType(FUNCTION_NAME_NODE)
+    override val parameters: List<FunctionInfoParameter>? =
+        try { collectParameters() } catch (e: IllegalStateException) {
+            logger.warn { e.message }
+            null
+        }
 
     override fun getParametersRoot(): AntlrNode? = root.getChildOfType(FUNCTION_PARAMETER_NODE)
 

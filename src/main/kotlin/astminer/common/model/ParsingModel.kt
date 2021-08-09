@@ -6,18 +6,17 @@ import java.io.File
 import java.io.InputStream
 import java.util.*
 
-abstract class Node {
+abstract class Node(val originalToken: String?) {
     abstract val typeLabel: String
     abstract val children: List<Node>
     abstract val parent: Node?
-    abstract val originalToken: String?
 
-    val normalizedToken: String by lazy {
+    val normalizedToken: String =
         originalToken?.let {
             val subtokens = splitToSubtokens(it)
             if (subtokens.isEmpty()) EMPTY_TOKEN else subtokens.joinToString(TOKEN_DELIMITER)
         } ?: EMPTY_TOKEN
-    }
+
     var technicalToken: String? = null
 
     val token: String
@@ -42,6 +41,7 @@ abstract class Node {
         resultList.add(this)
         children.forEach { it.doTraversePreOrder(resultList) }
     }
+
     fun preOrderIterator(): Iterator<Node> = preOrder().listIterator()
     open fun preOrder(): List<Node> = mutableListOf<Node>().also { doTraversePreOrder(it) }
 
@@ -49,6 +49,7 @@ abstract class Node {
         children.forEach { it.doTraversePostOrder(resultList) }
         resultList.add(this)
     }
+
     fun postOrderIterator(): Iterator<Node> = postOrder().listIterator()
     open fun postOrder(): List<Node> = mutableListOf<Node>().also { doTraversePostOrder(it) }
 
@@ -71,4 +72,9 @@ interface Parser<T : Node> {
      * @return ParseResult instance
      */
     fun parseFile(file: File) = parseInputStream(file.inputStream())
+}
+
+class ParserNotInstalledException(parser: String, language: String, val e: Exception) : Exception() {
+    override val message: String = "Tools for parsing $language with $parser were not properly installed"
+    override val cause: Throwable = e
 }
