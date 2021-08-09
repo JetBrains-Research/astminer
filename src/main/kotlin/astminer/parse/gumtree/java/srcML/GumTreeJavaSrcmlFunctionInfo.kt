@@ -18,7 +18,8 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
 
     override val parameters: List<FunctionInfoParameter>? = run {
         root.preOrder().filter { it.typeLabel == PARAMETER }
-            .map { try { assembleParameter(it) } catch (e: IllegalStateException) {
+            .map {
+                try { assembleParameter(it) } catch (e: IllegalStateException) {
                     logger.warn { e.message }
                     return@run null
                 }
