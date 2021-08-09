@@ -6,6 +6,9 @@ import astminer.common.model.FunctionInfo
 import astminer.common.model.FunctionInfoParameter
 import astminer.parse.findEnclosingElementBy
 import astminer.parse.gumtree.GumTreeNode
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger("GumTree_srcML-Java-function-info")
 
 class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val filePath: String) :
     FunctionInfo<GumTreeNode> {
@@ -13,8 +16,14 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
 
     override val returnType: String = root.extractType()
 
-    override val parameters: List<FunctionInfoParameter> = root.preOrder().filter { it.typeLabel == PARAMETER }
-        .map { assembleParameter(it) }
+    override val parameters: List<FunctionInfoParameter>? = run {
+        root.preOrder().filter { it.typeLabel == PARAMETER }
+            .map { try { assembleParameter(it) } catch (e: IllegalStateException) {
+                    logger.warn { e.message }
+                    return@run null
+                }
+            }
+    }
 
     override val enclosingElement: EnclosingElement<GumTreeNode>? =
         root.findEnclosingElementBy { it.typeLabel == CLASS_DECLARATION }?.assembleEnclosing()
@@ -40,7 +49,7 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
             if (node.typeLabel == ARRAY_BRACKETS) {
                 "[]"
             } else {
-                node.originalToken
+                checkNotNull(node.originalToken) { "No type found" }
             }
         }
     }
