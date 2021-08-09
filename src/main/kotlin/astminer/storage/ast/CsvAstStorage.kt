@@ -1,5 +1,6 @@
 package astminer.storage.ast
 
+import astminer.common.model.DatasetHoldout
 import astminer.common.model.LabeledResult
 import astminer.common.model.Node
 import astminer.common.model.Storage
@@ -19,29 +20,26 @@ class CsvAstStorage(override val outputDirectoryPath: String) : Storage {
     private val tokensMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
     private val nodeTypesMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
 
-    private val astsOutputStream: PrintWriter
+    private val astsPrintWriters = mutableMapOf<DatasetHoldout, PrintWriter>()
 
     init {
         File(outputDirectoryPath).mkdirs()
-        val astsFile = File("$outputDirectoryPath/asts.csv")
-        astsFile.createNewFile()
-        astsOutputStream = PrintWriter(astsFile)
-        astsOutputStream.write("id,ast\n")
     }
 
-    override fun store(labeledResult: LabeledResult<out Node>) {
+    override fun store(labeledResult: LabeledResult<out Node>, holdout: DatasetHoldout) {
         for (node in labeledResult.root.preOrder()) {
             tokensMap.record(node.token)
             nodeTypesMap.record(node.typeLabel)
         }
-        dumpAst(labeledResult.root, labeledResult.label)
+        val writer = astsPrintWriters.getOrPut(holdout) { holdout.resolveHoldout() }
+        dumpAst(labeledResult.root, labeledResult.label, writer)
     }
 
     override fun close() {
         dumpTokenStorage(File("$outputDirectoryPath/tokens.csv"))
         dumpNodeTypesStorage(File("$outputDirectoryPath/node_types.csv"))
 
-        astsOutputStream.close()
+        astsPrintWriters.values.map { it.close() }
     }
 
     private fun dumpTokenStorage(file: File) {
@@ -52,13 +50,23 @@ class CsvAstStorage(override val outputDirectoryPath: String) : Storage {
         dumpIdStorageToCsv(nodeTypesMap, "node_type", nodeTypeToCsvString, file)
     }
 
-    private fun dumpAst(root: Node, id: String) {
-        astsOutputStream.write("$id,${astString(root)}\n")
+    private fun dumpAst(root: Node, id: String, writer: PrintWriter) {
+        writer.println("$id,${astString(root)}")
     }
 
     internal fun astString(node: Node): String {
         return "${tokensMap.getId(node.token)} ${nodeTypesMap.getId(node.typeLabel)}{${
         node.children.joinToString(separator = "", transform = ::astString)
         }}"
+    }
+
+    private fun DatasetHoldout.resolveHoldout(): PrintWriter {
+        val holdoutDir = File(outputDirectoryPath).resolve(this.dirName)
+        holdoutDir.mkdirs()
+        val astFile = holdoutDir.resolve("asts.csv")
+        astFile.createNewFile()
+        val newWriter = PrintWriter(astFile)
+        newWriter.println("id,ast")
+        return newWriter
     }
 }

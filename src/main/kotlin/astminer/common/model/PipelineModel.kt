@@ -1,6 +1,7 @@
 package astminer.common.model
 
 import java.io.Closeable
+import java.io.File
 
 interface Filter
 
@@ -40,11 +41,52 @@ fun <T : Node> ParsingResult<T>.labeledWith(label: String): LabeledResult<T> = L
 interface Storage : Closeable {
     val outputDirectoryPath: String
 
-    fun store(labeledResult: LabeledResult<out Node>)
+    fun store(labeledResult: LabeledResult<out Node>, holdout: DatasetHoldout = DatasetHoldout.None)
 
-    fun store(labeledResults: Iterable<LabeledResult<out Node>>) {
-        for (labeledResult in labeledResults) {
-            store(labeledResult)
+    fun storeSynchronously(labeledResult: LabeledResult<out Node>, holdout: DatasetHoldout = DatasetHoldout.None) {
+        synchronized(this) {
+            store(labeledResult, holdout)
         }
+    }
+
+    fun store(labeledResults: Iterable<LabeledResult<out Node>>, holdout: DatasetHoldout = DatasetHoldout.None) {
+        for (labeledResult in labeledResults) {
+            store(labeledResult, holdout)
+        }
+    }
+
+    fun storeSynchronously(
+        labeledResults: Iterable<LabeledResult<out Node>>,
+        holdout: DatasetHoldout = DatasetHoldout.None
+    ) = synchronized(this) {
+        store(labeledResults, holdout)
+    }
+}
+
+enum class DatasetHoldout(val dirName: String) {
+    Train("train"),
+    Validation("val"),
+    Test("test"),
+    None("data");
+}
+
+/** Returns map with three entries (keys: train data pool, validation data pool and test data pool;
+ *  values: holdout directories) if dataset structure is present.
+ *  One pool (None) otherwise.**/
+fun findDatasetHoldouts(inputDir: File): Map<DatasetHoldout, File> {
+    val trainDir = inputDir.resolve(DatasetHoldout.Train.dirName)
+    val valDir = inputDir.resolve(DatasetHoldout.Validation.dirName)
+    val testDir = inputDir.resolve(DatasetHoldout.Test.dirName)
+
+    return if (trainDir.exists() && valDir.exists() && testDir.exists()) {
+        mapOf(
+            DatasetHoldout.Train to trainDir,
+            DatasetHoldout.Validation to valDir,
+            DatasetHoldout.Test to testDir
+        )
+    } else {
+        mapOf(
+            DatasetHoldout.None to inputDir
+        )
     }
 }
