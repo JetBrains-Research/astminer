@@ -1,52 +1,50 @@
 package astminer.parse.antlr
 
+import astminer.common.EMPTY_TOKEN
 import astminer.common.model.Node
 import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.Vocabulary
 import org.antlr.v4.runtime.tree.ErrorNode
 import org.antlr.v4.runtime.tree.TerminalNode
 
-fun convertAntlrTree(tree: ParserRuleContext, ruleNames: Array<String>, vocabulary: Vocabulary): SimpleNode {
-    return compressTree(convertRuleContext(tree, ruleNames, null, vocabulary))
-}
+fun convertAntlrTree(tree: ParserRuleContext, ruleNames: Array<String>, vocabulary: Vocabulary): AntlrNode =
+    compressTree(convertRuleContext(tree, ruleNames, null, vocabulary))
 
-private fun convertRuleContext(ruleContext: ParserRuleContext, ruleNames: Array<String>, parent: Node?, vocabulary: Vocabulary): SimpleNode {
+private fun convertRuleContext(
+    ruleContext: ParserRuleContext,
+    ruleNames: Array<String>,
+    parent: AntlrNode?,
+    vocabulary: Vocabulary
+): AntlrNode {
     val typeLabel = ruleNames[ruleContext.ruleIndex]
-    val currentNode = SimpleNode(typeLabel, parent, null)
-    val children: MutableList<Node> = ArrayList()
+    val currentNode = AntlrNode(typeLabel, parent, null)
+    val children: MutableList<AntlrNode> = ArrayList()
 
     ruleContext.children?.forEach {
-        if (it is TerminalNode) {
-            children.add(convertTerminal(it, currentNode, vocabulary))
-            return@forEach
+        when (it) {
+            is TerminalNode -> children.add(convertTerminal(it, currentNode, vocabulary))
+            is ErrorNode -> children.add(convertErrorNode(it, currentNode))
+            else -> children.add(convertRuleContext(it as ParserRuleContext, ruleNames, currentNode, vocabulary))
         }
-        if (it is ErrorNode) {
-            children.add(convertErrorNode(it, currentNode))
-            return@forEach
-        }
-        children.add(convertRuleContext(it as ParserRuleContext, ruleNames, currentNode, vocabulary))
     }
-    currentNode.setChildren(children)
-
+    currentNode.replaceChildren(children)
     return currentNode
 }
 
-private fun convertTerminal(terminalNode: TerminalNode, parent: Node?, vocabulary: Vocabulary): SimpleNode {
-    return SimpleNode(vocabulary.getSymbolicName(terminalNode.symbol.type), parent, terminalNode.symbol.text)
-}
+private fun convertTerminal(terminalNode: TerminalNode, parent: AntlrNode?, vocabulary: Vocabulary): AntlrNode =
+    AntlrNode(vocabulary.getSymbolicName(terminalNode.symbol.type), parent, terminalNode.symbol.text)
 
-private fun convertErrorNode(errorNode: ErrorNode, parent: Node?): SimpleNode {
-    return SimpleNode("Error", parent, errorNode.text)
-}
+private fun convertErrorNode(errorNode: ErrorNode, parent: AntlrNode?): AntlrNode =
+    AntlrNode("Error", parent, errorNode.text)
 
 /**
  * Remove intermediate nodes that have a single child.
  */
-fun simplifyTree(tree: SimpleNode): SimpleNode {
-    return if (tree.getChildren().size == 1) {
-        simplifyTree(tree.getChildren().first() as SimpleNode)
+fun simplifyTree(tree: AntlrNode): AntlrNode {
+    return if (tree.children.size == 1) {
+        simplifyTree(tree.children.first())
     } else {
-        tree.setChildren(tree.getChildren().map { simplifyTree(it as SimpleNode) }.toMutableList())
+        tree.replaceChildren(tree.children.map { simplifyTree(it) }.toMutableList())
         tree
     }
 }
@@ -54,21 +52,38 @@ fun simplifyTree(tree: SimpleNode): SimpleNode {
 /**
  * Compress paths of intermediate nodes that have a single child into individual nodes.
  */
-fun compressTree(root: SimpleNode): SimpleNode {
-    return if (root.getChildren().size == 1) {
-        val child = compressTree(root.getChildren().first() as SimpleNode)
-        val compressedNode = SimpleNode(
-                root.getTypeLabel() + "|" + child.getTypeLabel(),
-                root.getParent(),
-                child.getToken()
+fun compressTree(root: AntlrNode): AntlrNode {
+    return if (root.children.size == 1) {
+        val child = compressTree(root.children.first())
+        val compressedNode = AntlrNode(
+            root.typeLabel + "|" + child.typeLabel,
+            root.parent,
+            child.originalToken
         )
-        compressedNode.setChildren(child.getChildren())
+        compressedNode.replaceChildren(child.children)
         compressedNode
     } else {
-        root.setChildren(root.getChildren().map { compressTree(it as SimpleNode) }.toMutableList())
+        root.replaceChildren(root.children.map { compressTree(it) }.toMutableList())
         root
     }
 }
 
-
 fun decompressTypeLabel(typeLabel: String) = typeLabel.split("|")
+
+fun AntlrNode.lastLabel() = decompressTypeLabel(typeLabel).last()
+
+fun AntlrNode.firstLabel() = decompressTypeLabel(typeLabel).first()
+
+fun AntlrNode.hasLastLabel(label: String): Boolean = lastLabel() == label
+
+fun AntlrNode.lastLabelIn(labels: List<String>): Boolean = labels.contains(lastLabel())
+
+fun AntlrNode.hasFirstLabel(label: String): Boolean = firstLabel() == label
+
+fun AntlrNode.firstLabelIn(labels: List<String>): Boolean = labels.contains(firstLabel())
+
+fun Node.getTokensFromSubtree(): String =
+    if (isLeaf()) originalToken ?: EMPTY_TOKEN else children.joinToString(separator = "") { it.getTokensFromSubtree() }
+
+fun AntlrNode.getItOrChildrenOfType(typeLabel: String): List<AntlrNode> =
+    if (hasLastLabel(typeLabel)) listOf(this) else this.getChildrenOfType(typeLabel).map { it }

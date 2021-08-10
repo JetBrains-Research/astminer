@@ -1,0 +1,28 @@
+# input directory (path to project)
+inputDir: src/test/resources/
+# output directory
+outputDir: output
+
+# parse Java & JavaScript files with ANTLR parser
+parser:
+  name: antlr
+  languages: [java, js]
+
+filters:
+  - name: by tree size  # exclude the trees that have > 1000 nodes
+    maxTreeSize: 1000
+  - name: by words number
+    maxTokenWordsNumber: 1000
+
+# use file names as labels
+# this selects the file level granularity
+label:
+  name: file name
+
+# save to disk ASTs in the JSON format
+storage:
+  name: json AST
+
+# number of threads used for parsing
+# the default is one thread
+numOfThreads: 4

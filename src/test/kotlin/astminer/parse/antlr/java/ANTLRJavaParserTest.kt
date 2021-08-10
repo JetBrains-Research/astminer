@@ -1,6 +1,7 @@
 package astminer.parse.antlr.java
 
 import astminer.common.getProjectFilesWithExtension
+import astminer.parseFiles
 import org.junit.Assert
 import org.junit.Test
 import java.io.File
@@ -57,9 +58,8 @@ class ANTLRJavaParserTest {
     fun testProjectParsing() {
         val parser = JavaParser()
         val projectRoot = File("src/test/resources/arrayCalls")
-        val trees = parser.parseFiles(
-            getProjectFilesWithExtension(projectRoot, "java")).map { it.root }
-        Assert.assertEquals("There is only 5 file with .java extension in 'testData/arrayCalls' folder",5, trees.size)
+        val trees = parser.parseFiles(getProjectFilesWithExtension(projectRoot, "java"))
+        Assert.assertEquals("There is only 5 file with .java extension in 'testData/arrayCalls' folder", 5, trees.size)
         trees.forEach { Assert.assertNotNull("Parse tree for a valid file should not be null", it) }
     }
 }

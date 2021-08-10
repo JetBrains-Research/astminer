@@ -3,17 +3,19 @@ package astminer.common.storage
 import astminer.common.model.OrientedNodeType
 import java.io.File
 
-fun <T> dumpIdStorageToCsv(storage: RankedIncrementalIdStorage<T>,
-                           typeHeader: String,
-                           csvSerializer: (T) -> String,
-                           file: File,
-                           limit: Long = Long.MAX_VALUE) {
+fun <T> dumpIdStorageToCsv(
+    storage: RankedIncrementalIdStorage<T>,
+    typeHeader: String,
+    csvSerializer: (T) -> String,
+    file: File,
+    limit: Long? = null
+) {
     file.printWriter().use { out ->
         out.println("id,$typeHeader")
         storage.idPerItem.forEach {
             val id = it.value
             val item = it.key
-            if (storage.getKeyRank(item) <= limit) {
+            if (limit == null || storage.getKeyRank(item) <= limit) {
                 out.println("$id,${csvSerializer.invoke(item)}")
             }
         }

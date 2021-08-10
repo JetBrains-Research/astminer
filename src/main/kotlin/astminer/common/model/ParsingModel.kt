@@ -1,34 +1,61 @@
 package astminer.common.model
 
+import astminer.common.EMPTY_TOKEN
+import astminer.common.splitToSubtokens
 import java.io.File
 import java.io.InputStream
+import java.util.*
 
+abstract class Node(val originalToken: String?) {
+    abstract val typeLabel: String
+    abstract val children: List<Node>
+    abstract val parent: Node?
 
-interface Node {
-    fun getTypeLabel(): String
-    fun getChildren(): List<Node>
-    fun getParent(): Node?
-    fun getToken(): String
-    fun isLeaf(): Boolean
+    val normalizedToken: String =
+        originalToken?.let {
+            val subtokens = splitToSubtokens(it)
+            if (subtokens.isEmpty()) EMPTY_TOKEN else subtokens.joinToString(TOKEN_DELIMITER)
+        } ?: EMPTY_TOKEN
 
-    fun getMetadata(key: String): Any?
-    fun setMetadata(key: String, value: Any)
+    var technicalToken: String? = null
 
+    val token: String
+        get() = technicalToken ?: normalizedToken
+
+    val metadata: MutableMap<String, Any> = HashMap()
+    fun isLeaf() = children.isEmpty()
+
+    override fun toString(): String = "$typeLabel : $token"
     fun prettyPrint(indent: Int = 0, indentSymbol: String = "--") {
         repeat(indent) { print(indentSymbol) }
-        print(getTypeLabel())
-        if (getToken().isNotEmpty()) {
-            println(" : ${getToken()}")
-        } else {
-            println()
-        }
-        getChildren().forEach { it.prettyPrint(indent + 1, indentSymbol) }
+        println(this)
+        children.forEach { it.prettyPrint(indent + 1, indentSymbol) }
     }
 
-    fun getChildrenOfType(typeLabel: String) = getChildren().filter { it.getTypeLabel() == typeLabel }
-    fun getChildOfType(typeLabel: String) = getChildrenOfType(typeLabel).firstOrNull()
+    open fun getChildrenOfType(typeLabel: String) = children.filter { it.typeLabel == typeLabel }
+    open fun getChildOfType(typeLabel: String) = getChildrenOfType(typeLabel).firstOrNull()
 
-    fun removeChildrenOfType(typeLabel: String)
+    abstract fun removeChildrenOfType(typeLabel: String)
+
+    private fun doTraversePreOrder(resultList: MutableList<Node>) {
+        resultList.add(this)
+        children.forEach { it.doTraversePreOrder(resultList) }
+    }
+
+    fun preOrderIterator(): Iterator<Node> = preOrder().listIterator()
+    open fun preOrder(): List<Node> = mutableListOf<Node>().also { doTraversePreOrder(it) }
+
+    private fun doTraversePostOrder(resultList: MutableList<Node>) {
+        children.forEach { it.doTraversePostOrder(resultList) }
+        resultList.add(this)
+    }
+
+    fun postOrderIterator(): Iterator<Node> = postOrder().listIterator()
+    open fun postOrder(): List<Node> = mutableListOf<Node>().also { doTraversePostOrder(it) }
+
+    companion object {
+        const val TOKEN_DELIMITER = "|"
+    }
 }
 
 interface Parser<T : Node> {
@@ -37,31 +64,17 @@ interface Parser<T : Node> {
      * @param content input stream to parse
      * @return root of the AST
      */
-    fun parseInputStream(content: InputStream): T?
+    fun parseInputStream(content: InputStream): T
 
     /**
      * Parse file into an AST.
      * @param file file to parse
-     * @return ParseResult instance 
+     * @return ParseResult instance
      */
-    fun parseFile(file: File) = ParseResult(parseInputStream(file.inputStream()), file.path)
-
-    /**
-     * Parse list of files.
-     * @param files files to parse
-     * @return list of ParseResult instances, one for each parsed file
-     */
-    @Deprecated("Please use parseFiles (List<File>, (ParseResult<T>) -> Any) to avoid clogging memory")
-    fun parseFiles(files: List<File>): List<ParseResult<T>> = files.map { ParseResult(parseInputStream(it.inputStream()), it.path) }
-
-    /**
-     * Parse list of files.
-     * @param files files to parse
-     * @param handleResult handler to invoke on each file parse result
-     */
-    fun parseFiles(files: List<File>, handleResult: (ParseResult<T>) -> Any) {
-        files.forEach { handleResult(parseFile(it)) }
-    }
+    fun parseFile(file: File) = parseInputStream(file.inputStream())
 }
 
-data class ParseResult<T : Node>(val root: T?, val filePath: String)
+class ParserNotInstalledException(parser: String, language: String, val e: Exception) : Exception() {
+    override val message: String = "Tools for parsing $language with $parser were not properly installed"
+    override val cause: Throwable = e
+}

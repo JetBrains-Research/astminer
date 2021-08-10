@@ -44,7 +44,7 @@ class RankedIncrementalIdStorageTest {
         val correctRanks = listOf(2, 3, 4, 1, 5)
 
         for (i in items.indices) {
-            for (rep in 0 until counts[i]) {
+            repeat(counts[i]) {
                 storage.record(items[i])
             }
         }
