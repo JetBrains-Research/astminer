@@ -1,5 +1,10 @@
 package astminer.parse.javaparser
 
+/**
+ * Shorten values used to decrease memory usage. This workaround was taken from code2seq repository.
+ * @see [link][https://github.com/tech-srl/code2seq/blob/428b1896a87e0c34af5a407c709c56047ec99a07/
+ * JavaExtractor/JPredict/src/main/java/JavaExtractor/FeaturesEntities/Property.java]
+ * */
 val SHORTEN_VALUES = hashMapOf(
     "ArrayAccessExpr" to "ArAc",
     "ArrayBracketPair" to "ArBr",

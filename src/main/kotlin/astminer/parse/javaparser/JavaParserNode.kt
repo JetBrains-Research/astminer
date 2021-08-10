@@ -10,9 +10,14 @@ import com.github.javaparser.ast.Node as JPNode
 
 private val logger = KotlinLogging.logger("JavaParser-Node")
 
-/* Be aware that JPNode is just an alias for Node from javaparser*/
-class JavaParserNode(jpNode: JPNode, override val parent: Node?) : Node(getJavaParserNodeToken(jpNode)) {
-    override val children: MutableList<JavaParserNode> = run {
+/**
+ * Representation of JavaParser nodes inside `astminer`
+ *
+ * @property jpNode node from javapParser. JPNode is an alias for Node from javaparser
+ * @property parent parent of this node. Null if it's a root.
+ */
+class JavaParserNode(jpNode: JPNode, override val parent: JavaParserNode?) : Node(getJavaParserNodeToken(jpNode)) {
+    override val children: MutableList<JavaParserNode> =
         jpNode.childNodes.mapNotNull { subTree ->
             try {
                 JavaParserNode(subTree, this)
@@ -21,17 +26,20 @@ class JavaParserNode(jpNode: JPNode, override val parent: Node?) : Node(getJavaP
                 null
             }
         }.toMutableList()
-    }
 
-    /* For some reason code2seq JavaExtractor also checks for boxed type
-       and sets its type to PrimitiveType
-       which is not necessary since javaclass.simpleName
-       will be PrimitiveType nonetheless */
+
+    /**
+     * Node type label. Value is shortened if possible to preserve space.
+     * */
     override val typeLabel: String = run {
         val rawType = getRawType(jpNode)
         SHORTEN_VALUES.getOrDefault(rawType, rawType)
     }
 
+    /**
+     * Returns node type. Composed of `javaClass.simpleName` and
+     * `jpNode.operator` if node is expression.
+     * */
     private fun getRawType(jpNode: JPNode): String {
         val type = jpNode.javaClass.simpleName
         val operator = when (jpNode) {
@@ -57,9 +65,6 @@ class JavaParserNode(jpNode: JPNode, override val parent: Node?) : Node(getJavaP
         super.getChildOfType(typeLabel) as? JavaParserNode
 }
 
-/* Sometimes javaParser generates absolutely empty leaves without any information
-       which confuses the parse wrapper. Exception being thrown when such situation
-       occurs to ignore blank node. */
 private fun getJavaParserNodeToken(jpNode: JPNode): String? {
     return if (jpNode.childNodes.size == 0) {
         try {
@@ -72,6 +77,11 @@ private fun getJavaParserNodeToken(jpNode: JPNode): String? {
     }
 }
 
+/**
+ * Sometimes javaParser generates absolutely empty leaves without any information
+ * which confuses the parse wrapper. This exception being thrown when such situation
+ * occurs to ignore blank node.
+ * */
 class MysteriousNodeException(oldException: Exception) : Exception() {
     override val message: String = "Blank node generated: ${oldException.message}"
 }
