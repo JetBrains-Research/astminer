@@ -40,17 +40,6 @@ jobs:
       - name: Build astminer
         run: ./gradlew build
 
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    container: voudy/astminer
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Run JUnit tests
-        run: ./gradlew test
-
       - name: Upload Test Report
         uses: actions/upload-artifact@v2
         if: ${{ always() }}
@@ -58,18 +47,7 @@ jobs:
           name: test-report
           path: build/astminer/reports/tests/**/*
 
-  code-style:
-    needs: build
-    runs-on: ubuntu-latest
-    container: voudy/astminer
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Run detekt
-        run: ./gradlew detekt
-
-      - name: Upload Report
+      - name: Upload Detekt Report
         uses: github/codeql-action/upload-sarif@v1
         if: ${{ always() }}
         with:
