@@ -79,7 +79,7 @@ data class WordsNumberFilterConfig(val maxTokenWordsNumber: Int) : FilterConfig(
  */
 @Serializable
 @SerialName("by function body tree size")
-data class FunctionBodySizeFilterConfig(val minSize: Int? = null, val maxSize: Int? = null): FilterConfig() {
+data class FunctionBodySizeFilterConfig(val minSize: Int? = null, val maxSize: Int? = null) : FilterConfig() {
     @Transient
     override val filterImpl: Filter = FunctionBodySizeFilter(minSize, maxSize)
 }
