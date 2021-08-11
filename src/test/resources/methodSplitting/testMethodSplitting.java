@@ -27,3 +27,8 @@ class Class1 {
 
     void functionWithStrangeArrayParameter(int arr[]) {}
 }
+
+abstract class SomeAbstractClass {
+    abstract int abstractFunctionReturningInt(int someInt);
+    public static final String staticFunctionReturningString() { return "hello"; }
+}

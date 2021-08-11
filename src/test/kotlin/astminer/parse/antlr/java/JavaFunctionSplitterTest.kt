@@ -106,9 +106,27 @@ class JavaFunctionSplitterTest {
         assertEquals(weirdParameter?.type, "int")
     }
 
+    @Test
+    fun testOneModifierFunction() {
+        val methodWithOneModifier = functionInfos.find { it.name == "abstractFunctionReturningInt" }
+        assertNotNull(methodWithOneModifier)
+        val modifiers = methodWithOneModifier.modifiers
+        assertNotNull(modifiers)
+        assertEquals("abstract", modifiers.first())
+    }
+
+    @Test
+    fun testMultipleModifiersFunction() {
+        val methodWithMultipleModifiers = functionInfos.find { it.name == "staticFunctionReturningString" }
+        assertNotNull(methodWithMultipleModifiers)
+        val modifiers = methodWithMultipleModifiers.modifiers
+        assertNotNull(modifiers)
+        assertEquals(setOf("static", "public", "final"), modifiers.toSet())
+    }
+
     companion object {
         const val FILE_PATH = "src/test/resources/methodSplitting/testMethodSplitting.java"
-        const val N_FUNCTIONS = 10
+        const val N_FUNCTIONS = 12
         val functionSplitter = JavaFunctionSplitter()
         val parser = JavaParser()
     }
