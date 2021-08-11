@@ -19,7 +19,14 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
         }
 
     override val modifiers: List<String>? =
-        root.parent?.children?.filter { it.hasFirstLabel(METHOD_MODIFIER) }?.mapNotNull { it.originalToken }
+        root.parent?.children
+            ?.filter { it.hasFirstLabel(METHOD_MODIFIER) && !it.hasLastLabel(METHOD_ANNOTATION) }
+            ?.mapNotNull { it.originalToken }
+
+    override val annotations: List<String>? =
+        root.parent?.children
+            ?.filter { it.hasLastLabel(METHOD_ANNOTATION) }
+            ?.mapNotNull { it.getChildOfType(ANNOTATION_NAME)?.originalToken }
 
     private fun collectNameNode(): AntlrNode? = root.getChildOfType(METHOD_NAME_NODE)
 
@@ -64,6 +71,8 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
         private const val METHOD_RETURN_TYPE_NODE = "typeTypeOrVoid"
         private const val METHOD_NAME_NODE = "IDENTIFIER"
         private const val METHOD_MODIFIER = "modifier"
+        private const val METHOD_ANNOTATION = "annotation"
+        private const val ANNOTATION_NAME = "qualifiedName"
 
         private const val CLASS_DECLARATION_NODE = "classDeclaration"
         private const val CLASS_NAME_NODE = "IDENTIFIER"

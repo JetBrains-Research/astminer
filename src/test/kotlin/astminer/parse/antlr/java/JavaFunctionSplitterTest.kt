@@ -124,9 +124,39 @@ class JavaFunctionSplitterTest {
         assertEquals(setOf("static", "public", "final"), modifiers.toSet())
     }
 
+    @Test
+    fun testOneAnnotationFunction() {
+        val methodWithOneAnnotation = functionInfos.find { it.name == "deprecatedFunction" }
+        assertNotNull(methodWithOneAnnotation)
+        val annotations = methodWithOneAnnotation.annotations
+        assertNotNull(annotations)
+        assertEquals(setOf("Deprecated"), annotations.toSet())
+    }
+
+    @Test
+    fun testMultipleAnnotationsFunction() {
+        val methodWithOneAnnotation = functionInfos.find { it.name == "functionWithAnnotations" }
+        assertNotNull(methodWithOneAnnotation)
+        val annotations = methodWithOneAnnotation.annotations
+        assertNotNull(annotations)
+        assertEquals(setOf("Deprecated", "SuppressWarnings"), annotations.toSet())
+    }
+
+    @Test
+    fun testModifiersAndAnnotation() {
+        val methodWithModifierAndAnnotation = functionInfos.find { it.name == "functionWithModifiersAndAnnotations" }
+        assertNotNull(methodWithModifierAndAnnotation)
+        val modifiers = methodWithModifierAndAnnotation.modifiers
+        assertNotNull(modifiers)
+        val annotations = methodWithModifierAndAnnotation.annotations
+        assertNotNull(annotations)
+        assertEquals(setOf("public", "static"), modifiers.toSet())
+        assertEquals(setOf("Deprecated"), annotations.toSet())
+    }
+
     companion object {
         const val FILE_PATH = "src/test/resources/methodSplitting/testMethodSplitting.java"
-        const val N_FUNCTIONS = 12
+        const val N_FUNCTIONS = 15
         val functionSplitter = JavaFunctionSplitter()
         val parser = JavaParser()
     }
