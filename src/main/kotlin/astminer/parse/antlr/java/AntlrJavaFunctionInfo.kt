@@ -18,6 +18,8 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
             null
         }
 
+    override val body: AntlrNode? = root.children.find { it.hasFirstLabel(METHOD_BODY_NODE) }
+
     private fun collectNameNode(): AntlrNode? = root.getChildOfType(METHOD_NAME_NODE)
 
     private fun collectReturnType(): String? {
@@ -60,6 +62,7 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
     companion object {
         private const val METHOD_RETURN_TYPE_NODE = "typeTypeOrVoid"
         private const val METHOD_NAME_NODE = "IDENTIFIER"
+        private const val METHOD_BODY_NODE = "methodBody"
 
         private const val CLASS_DECLARATION_NODE = "classDeclaration"
         private const val CLASS_NAME_NODE = "IDENTIFIER"
