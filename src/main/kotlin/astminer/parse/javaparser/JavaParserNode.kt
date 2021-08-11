@@ -27,7 +27,6 @@ class JavaParserNode(jpNode: JPNode, override val parent: JavaParserNode?) : Nod
             }
         }.toMutableList()
 
-
     /**
      * Node type label. Value is shortened if possible to preserve space.
      * */
