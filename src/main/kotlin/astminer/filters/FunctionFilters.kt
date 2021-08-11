@@ -41,3 +41,17 @@ class FunctionNameWordsNumberFilter(private val maxWordsNumber: Int) : FunctionF
         return name != null && splitToSubtokens(name).size <= maxWordsNumber
     }
 }
+
+/**
+ * Filter that excludes functions which do not satisfy [minSize] <= body size <= [maxSize].
+ * If body is null then function body size is considered zero.
+ */
+class FunctionBodySizeFilter(private val minSize: Int?, private val maxSize: Int?): FunctionFilter {
+    override fun validate(functionInfo: FunctionInfo<out Node>): Boolean {
+        val bodySize = functionInfo.body?.preOrder()?.size ?: 0
+        var validationValue = true
+        if (minSize != null) {validationValue = validationValue && (bodySize >= minSize)}
+        if (maxSize != null) {validationValue = validationValue && (bodySize <= maxSize)}
+        return validationValue
+    }
+}
