@@ -18,6 +18,16 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
             null
         }
 
+    override val modifiers: List<String>? =
+        root.parent?.children
+            ?.filter { it.hasFirstLabel(METHOD_MODIFIER) && !it.hasLastLabel(METHOD_ANNOTATION) }
+            ?.mapNotNull { it.originalToken }
+
+    override val annotations: List<String>? =
+        root.parent?.children
+            ?.filter { it.hasLastLabel(METHOD_ANNOTATION) }
+            ?.mapNotNull { it.getChildOfType(ANNOTATION_NAME)?.originalToken }
+
     override val body: AntlrNode? = root.children.find { it.hasFirstLabel(METHOD_BODY_NODE) }
 
     override fun isBlank() = body == null || body.children.size <= 2
@@ -64,6 +74,9 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
     companion object {
         private const val METHOD_RETURN_TYPE_NODE = "typeTypeOrVoid"
         private const val METHOD_NAME_NODE = "IDENTIFIER"
+        private const val METHOD_MODIFIER = "modifier"
+        private const val METHOD_ANNOTATION = "annotation"
+        private const val ANNOTATION_NAME = "qualifiedName"
         private const val METHOD_BODY_NODE = "methodBody"
 
         private const val CLASS_DECLARATION_NODE = "classDeclaration"
