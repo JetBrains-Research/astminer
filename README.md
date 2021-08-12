@@ -14,6 +14,8 @@ Supported languages of the input:
 | ANTLR   | ✅    | ✅      |       | ✅          | ✅   |
 | GumTree | ✅    | ✅      |       |            |     |
 | Fuzzy   |      |        | ✅     |            |     |
+| JavaParser | ✅ |        |        |             |      |
+
 
 
 ## About

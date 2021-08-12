@@ -122,4 +122,3 @@ internal class JavaparserMethodSplitterTest {
         }
     }
 }
-
