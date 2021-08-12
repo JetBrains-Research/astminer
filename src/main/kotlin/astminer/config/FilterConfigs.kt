@@ -73,3 +73,13 @@ data class WordsNumberFilterConfig(val maxTokenWordsNumber: Int) : FilterConfig(
     @Transient
     override val filterImpl = WordsNumberFilter(maxTokenWordsNumber)
 }
+
+/**
+ * @see RemoveBlankFunctions
+ * */
+@Serializable
+@SerialName("no blank functions")
+class BlankFunctionsFilterConfig : FilterConfig() {
+    @Transient
+    override val filterImpl = RemoveBlankFunctions()
+}
