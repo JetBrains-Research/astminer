@@ -2,22 +2,14 @@ package astminer.parse.javaparser
 
 import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
+import org.junit.BeforeClass
 import org.junit.Test
 import java.io.File
-import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 internal class JavaparserMethodSplitterTest {
-    var functionInfos: Collection<FunctionInfo<JavaParserNode>> = listOf()
-
-    @BeforeTest
-    fun parseTree() {
-        val testTree = parser.parseInputStream(File(FILE_PATH).inputStream())
-        assertNotNull(testTree)
-        functionInfos = functionSplitter.splitIntoFunctions(testTree, FILE_PATH)
-    }
-
     @Test
     fun testValidSplitting() {
         assertEquals(N_FUNCTIONS, functionInfos.size, "Test file contains $N_FUNCTIONS methods")
@@ -62,8 +54,7 @@ internal class JavaparserMethodSplitterTest {
         val parameters = checkNotNull(methodWeirdArrayParameter.parameters)
         assertEquals(1, parameters.size)
         val weirdParameter = parameters[0]
-        // TODO: consider how name and type should be extracted in this case
-        assertEquals("arr[]", weirdParameter.name)
+        assertEquals("arr", weirdParameter.name)
         assertEquals("int[]", weirdParameter.type)
     }
 
@@ -83,10 +74,52 @@ internal class JavaparserMethodSplitterTest {
         assertEquals("Class2", methodClass.enclosingElement?.name)
     }
 
+    private fun testModifiers(functionName: String, expectedModifiers: Set<String>) {
+        val function = functionInfos.find { it.name == functionName }
+        assertNotNull(function)
+        val actualModifiers = function.modifiers
+        assertNotNull(actualModifiers)
+        assertEquals(expected = expectedModifiers, actual = actualModifiers.toSet())
+    }
+
+    @Test
+    fun testFunctionWithOneModifier() {
+        testModifiers("abstractFunctionReturningInt", setOf("abstract"))
+    }
+
+    @Test
+    fun testFunctionWithMultipleModifiers() {
+        testModifiers("staticFunctionReturningString", setOf("static", "public", "final"))
+    }
+
+    @Test
+    fun testFunctionWithNoBodyIsBlank() {
+        val blankFunction = functionInfos.find { it.name == "abstractFunctionReturningInt" }
+        assertNotNull(blankFunction)
+        assertTrue(blankFunction.isBlank())
+    }
+
+    @Test
+    fun testFunctionWithEmptyBodyIsBlank() {
+        val blankFunction = functionInfos.find { it.name == "functionReturningVoid" }
+        assertNotNull(blankFunction)
+        assertTrue(blankFunction.isBlank())
+    }
+
     companion object {
-        const val FILE_PATH = "src/test/resources/methodSplitting/testMethodSplitting.java"
-        const val N_FUNCTIONS = 10
-        val functionSplitter = JavaparserMethodSplitter()
+        private const val FILE_PATH = "src/test/resources/methodSplitting/testMethodSplitting.java"
+        const val N_FUNCTIONS = 15
+        private val functionSplitter = JavaparserMethodSplitter()
         val parser = JavaParserParseWrapper()
+        var functionInfos: Collection<FunctionInfo<JavaParserNode>> = listOf()
+
+        @BeforeClass
+        @JvmStatic
+        fun parseTree() {
+            val testTree = parser.parseInputStream(File(FILE_PATH).inputStream())
+            assertNotNull(testTree)
+            functionInfos = functionSplitter.splitIntoFunctions(testTree, FILE_PATH)
+        }
     }
 }
+
