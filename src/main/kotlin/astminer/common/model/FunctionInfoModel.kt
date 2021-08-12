@@ -36,6 +36,9 @@ interface FunctionInfo<T : Node> {
         get() = notImplemented("enclosingElement")
     val isConstructor: Boolean
         get() = notImplemented("isConstructor")
+
+    fun isBlank() = body?.children?.isEmpty() ?: true
+    fun isNotBlank() = !isBlank()
 }
 
 data class FunctionInfoParameter(val name: String, val type: String?)

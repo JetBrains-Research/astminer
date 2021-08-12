@@ -20,6 +20,8 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
 
     override val body: AntlrNode? = root.children.find { it.hasFirstLabel(METHOD_BODY_NODE) }
 
+    override fun isBlank() = body == null || body.children.size <= 2
+
     private fun collectNameNode(): AntlrNode? = root.getChildOfType(METHOD_NAME_NODE)
 
     private fun collectReturnType(): String? {

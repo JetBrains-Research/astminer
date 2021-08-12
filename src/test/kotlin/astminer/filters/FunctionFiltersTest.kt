@@ -130,28 +130,18 @@ class FunctionFiltersTest {
     }
 
     @Test
-    fun `test FunctionBodySizeFilter for maxSize 10 should exclude bamboo 15`() {
+    fun `test remove blank functions function with null body must be removed`() {
         val functionInfo = object : FunctionInfo<Node> {
-            override val body = createBamboo(15)
+            override val body: Node? = null
         }
-        assertFalse { FunctionBodySizeFilter(maxSize = 10).validate(functionInfo) }
+        assertFalse { RemoveBlankFunctions().validate(functionInfo) }
     }
 
     @Test
-    fun `test FunctionBodySizeFilter for minSize 10 should exclude body bamboo 5 with root bamboo 15`() {
+    fun `test remove blank functions shouldn't exclude function with bamboo 2 body`() {
         val functionInfo = object : FunctionInfo<Node> {
-            override val root = createBamboo(15)
-            override val body = createBamboo(5)
+            override val body: Node = createBamboo(2)
         }
-        assertFalse { FunctionBodySizeFilter(minSize = 10).validate(functionInfo) }
-    }
-
-    @Test
-    fun `test FunctionBodySizeFilter for (10,100) should not exclude body bamboo 50 with root bamboo 110`() {
-        val functionInfo = object : FunctionInfo<Node> {
-            override val root: Node = createBamboo(110)
-            override val body: Node = createBamboo(50)
-        }
-        assertTrue { FunctionBodySizeFilter(10, 100).validate(functionInfo) }
+        assertTrue { RemoveBlankFunctions().validate(functionInfo) }
     }
 }

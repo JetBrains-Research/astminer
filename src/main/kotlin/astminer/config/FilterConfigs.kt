@@ -75,11 +75,11 @@ data class WordsNumberFilterConfig(val maxTokenWordsNumber: Int) : FilterConfig(
 }
 
 /**
- * @see FunctionBodySizeFilter
- */
+ * @see RemoveBlankFunctions
+ * */
 @Serializable
-@SerialName("by function body tree size")
-data class FunctionBodySizeFilterConfig(val minSize: Int? = null, val maxSize: Int? = null) : FilterConfig() {
+@SerialName("remove blank functions")
+class BlankFunctionsFilterConfig : FilterConfig() {
     @Transient
-    override val filterImpl: Filter = FunctionBodySizeFilter(minSize, maxSize)
+    override val filterImpl = RemoveBlankFunctions()
 }
