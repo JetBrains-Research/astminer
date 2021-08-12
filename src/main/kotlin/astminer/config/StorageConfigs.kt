@@ -69,8 +69,8 @@ data class Code2VecPathStorageConfig(
 @Serializable
 @SerialName("code2seq")
 data class Code2SeqPathStorageConfig(
-    @SerialName("length") val maxPathLength: Int,
-    @SerialName("width") val maxPathWidth: Int,
+    val maxPathLength: Int,
+    val maxPathWidth: Int,
     val maxPathContextsPerEntity: Int? = null,
     val nodesToNumber: Boolean = true
 ) : StorageConfig() {
