@@ -20,6 +20,8 @@ interface FunctionInfo<T : Node> {
         get() = nameNode?.originalToken
     val root: T
         get() = notImplemented("root")
+    val body: T?
+        get() = notImplemented("body")
     val filePath: String
         get() = notImplemented("filePath")
     val annotations: List<String>?
@@ -34,6 +36,9 @@ interface FunctionInfo<T : Node> {
         get() = notImplemented("enclosingElement")
     val isConstructor: Boolean
         get() = notImplemented("isConstructor")
+
+    fun isBlank() = body?.children?.isEmpty() ?: true
+    fun isNotBlank() = !isBlank()
 }
 
 data class FunctionInfoParameter(val name: String, val type: String?)

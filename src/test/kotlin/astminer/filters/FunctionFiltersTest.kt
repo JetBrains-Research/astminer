@@ -128,4 +128,20 @@ class FunctionFiltersTest {
         }
         assertTrue { TreeSizeFilter(10, 100).validate(functionInfo) }
     }
+
+    @Test
+    fun `test remove blank functions function with null body must be removed`() {
+        val functionInfo = object : FunctionInfo<Node> {
+            override val body: Node? = null
+        }
+        assertFalse { RemoveBlankFunctions().validate(functionInfo) }
+    }
+
+    @Test
+    fun `test remove blank functions shouldn't exclude function with bamboo 2 body`() {
+        val functionInfo = object : FunctionInfo<Node> {
+            override val body: Node = createBamboo(2)
+        }
+        assertTrue { RemoveBlankFunctions().validate(functionInfo) }
+    }
 }
