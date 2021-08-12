@@ -27,7 +27,7 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
         root.parent?.children
             ?.filter { it.hasLastLabel(METHOD_ANNOTATION) }
             ?.mapNotNull { it.getChildOfType(ANNOTATION_NAME)?.originalToken }
-    
+
     override val body: AntlrNode? = root.children.find { it.hasFirstLabel(METHOD_BODY_NODE) }
 
     override fun isBlank() = body == null || body.children.size <= 2
