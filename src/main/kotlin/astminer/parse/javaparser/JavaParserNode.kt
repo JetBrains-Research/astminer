@@ -20,13 +20,8 @@ private val logger = KotlinLogging.logger("JavaParser-Node")
 class JavaParserNode(jpNode: JPNode, override val parent: JavaParserNode?) : Node(getJavaParserNodeToken(jpNode)) {
     override val children: MutableList<JavaParserNode> =
         jpNode.childNodes.mapNotNull { subTree ->
-            try {
-                if (subTree is UnknownType) return@mapNotNull null
-                JavaParserNode(subTree, this)
-            } catch (e: MysteriousNodeException) {
-                logger.warn(e.message)
-                null
-            }
+            if (subTree.isPhantom || (subTree.isLeaf() && subTree.hasNoToken())) return@mapNotNull null
+            JavaParserNode(subTree, this)
         }.toMutableList()
 
     /**
@@ -66,23 +61,11 @@ class JavaParserNode(jpNode: JPNode, override val parent: JavaParserNode?) : Nod
         super.getChildOfType(typeLabel) as? JavaParserNode
 }
 
-private fun getJavaParserNodeToken(jpNode: JPNode): String? {
-    return if (jpNode.childNodes.size == 0) {
-        try {
-            jpNode.tokenRange.get().toString()
-        } catch (e: NoSuchElementException) {
-            throw MysteriousNodeException(e)
-        }
-    } else {
-        null
-    }
-}
+private fun JPNode.isLeaf() : Boolean = this.childNodes.isEmpty()
 
-/**
- * Sometimes javaParser generates absolutely empty leaves without any information
- * which confuses the parse wrapper. This exception being thrown when such situation
- * occurs to ignore blank node.
- * */
-class MysteriousNodeException(oldException: Exception) : Exception() {
-    override val message: String = "Blank node generated: ${oldException.message}"
+private fun JPNode.hasNoToken(): Boolean = !this.tokenRange.isPresent
+
+private fun getJavaParserNodeToken(jpNode: JPNode): String? {
+    if (jpNode.childNodes.isNotEmpty()) return null
+    return jpNode.tokenRange.get().toString()
 }
