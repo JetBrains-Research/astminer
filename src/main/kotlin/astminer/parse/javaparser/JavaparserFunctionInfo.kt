@@ -17,7 +17,7 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
     override val parameters: List<FunctionInfoParameter>? = run {
         root.children.filter { it.typeLabel == PARAMETER }.map {
             try { assembleParameter(it) } catch (e: IllegalStateException) {
-                logger.warn { e.message }
+                logger.warn { "In function $name in file $filePath ${e.message}" }
                 return@run null
             }
         }
@@ -43,8 +43,7 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
         FunctionInfoParameter(type = getParameterType(node), name = getParameterName(node))
 
     private fun getParameterType(node: JavaParserNode): String {
-        val possibleTypeNode = node.children
-            .find { it.typeLabel != PARAMETER_NAME && it.typeLabel != PARAMETER_ANNOTATION }
+        val possibleTypeNode = node.children.find { it.typeLabel in POSSIBLE_PARAMETERS_TYPES }
         checkNotNull(possibleTypeNode) { "Couldn't find parameter type node" }
         val typeToken = when (possibleTypeNode.typeLabel) {
             ARRAY_TYPE -> getParameterType(possibleTypeNode) + ARRAY_BRACKETS
@@ -82,6 +81,7 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
         const val CLASS_OR_INTERFACE_DECLARATION = "ClsD"
         const val CLASS_NAME = "SimpleName"
         const val PARAMETER_ANNOTATION = "MarkerExpr"
+        val POSSIBLE_PARAMETERS_TYPES = listOf(PRIMITIVE_TYPE, CLASS_OR_INTERFACE_TYPE, ARRAY_TYPE)
         const val MODIFIER = "Modifier"
         const val FUNCTION_BODY = "Bk"
     }

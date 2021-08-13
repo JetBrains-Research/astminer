@@ -4,6 +4,7 @@ import astminer.common.model.Node
 import com.github.javaparser.ast.expr.AssignExpr
 import com.github.javaparser.ast.expr.BinaryExpr
 import com.github.javaparser.ast.expr.UnaryExpr
+import com.github.javaparser.ast.type.UnknownType
 import mu.KotlinLogging
 import java.util.NoSuchElementException
 import com.github.javaparser.ast.Node as JPNode
@@ -20,6 +21,7 @@ class JavaParserNode(jpNode: JPNode, override val parent: JavaParserNode?) : Nod
     override val children: MutableList<JavaParserNode> =
         jpNode.childNodes.mapNotNull { subTree ->
             try {
+                if (subTree is UnknownType) return@mapNotNull null
                 JavaParserNode(subTree, this)
             } catch (e: MysteriousNodeException) {
                 logger.warn(e.message)
