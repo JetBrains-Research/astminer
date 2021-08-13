@@ -15,6 +15,12 @@ internal class JavaparserMethodSplitterTest {
         assertEquals(N_FUNCTIONS, functionInfos.size, "Test file contains $N_FUNCTIONS methods")
     }
 
+    private fun findFunction(name: String): FunctionInfo<JavaParserNode> {
+        val function = functionInfos.find { it.name == name }
+        assertNotNull(function)
+        return function
+    }
+
     @Test
     fun testNoParameters() {
         val methodNoParameters = functionInfos.find { it.name == "functionWithNoParameters" }
@@ -104,6 +110,27 @@ internal class JavaparserMethodSplitterTest {
         val blankFunction = functionInfos.find { it.name == "functionReturningVoid" }
         assertNotNull(blankFunction)
         assertTrue(blankFunction.isBlank())
+    }
+
+    private fun testAnnotationsMatches(functionName: String, expectedAnnotations: Set<String>) {
+        val actualAnnotations = findFunction(functionName).annotations
+        assertNotNull(actualAnnotations)
+        assertEquals(expectedAnnotations, actualAnnotations.toSet())
+    }
+
+    @Test
+    fun testOneAnnotation() {
+        testAnnotationsMatches("deprecatedFunction", setOf("Deprecated"))
+    }
+
+    @Test
+    fun testMultipleAnnotations() {
+        testAnnotationsMatches("functionWithAnnotations", setOf("Deprecated", "SuppressWarnings"))
+    }
+
+    @Test
+    fun testModifiersAndAnnotation() {
+        testAnnotationsMatches("functionWithModifiersAndAnnotations", setOf("Deprecated"))
     }
 
     companion object {

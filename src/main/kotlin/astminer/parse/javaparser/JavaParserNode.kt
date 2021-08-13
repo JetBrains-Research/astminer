@@ -4,9 +4,7 @@ import astminer.common.model.Node
 import com.github.javaparser.ast.expr.AssignExpr
 import com.github.javaparser.ast.expr.BinaryExpr
 import com.github.javaparser.ast.expr.UnaryExpr
-import com.github.javaparser.ast.type.UnknownType
 import mu.KotlinLogging
-import java.util.NoSuchElementException
 import com.github.javaparser.ast.Node as JPNode
 
 private val logger = KotlinLogging.logger("JavaParser-Node")
@@ -20,7 +18,7 @@ private val logger = KotlinLogging.logger("JavaParser-Node")
 class JavaParserNode(jpNode: JPNode, override val parent: JavaParserNode?) : Node(getJavaParserNodeToken(jpNode)) {
     override val children: MutableList<JavaParserNode> =
         jpNode.childNodes.mapNotNull { subTree ->
-            if (subTree.isPhantom || (subTree.isLeaf() && subTree.hasNoToken())) return@mapNotNull null
+            if (subTree.isLeaf() && subTree.hasNoToken()) return@mapNotNull null
             JavaParserNode(subTree, this)
         }.toMutableList()
 
@@ -61,7 +59,7 @@ class JavaParserNode(jpNode: JPNode, override val parent: JavaParserNode?) : Nod
         super.getChildOfType(typeLabel) as? JavaParserNode
 }
 
-private fun JPNode.isLeaf() : Boolean = this.childNodes.isEmpty()
+private fun JPNode.isLeaf(): Boolean = this.childNodes.isEmpty()
 
 private fun JPNode.hasNoToken(): Boolean = !this.tokenRange.isPresent
 
