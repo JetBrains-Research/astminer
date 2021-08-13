@@ -29,7 +29,14 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
     override val body: JavaParserNode? = root.getChildOfType(FUNCTION_BODY)
 
     override val modifiers: List<String>? = run {
-        root.children.filter { it.typeLabel == MODIFIER }.map { it.originalToken ?: return@run null }
+        root.children.filter { it.typeLabel == MODIFIER }.map {
+            val token = it.originalToken
+            if (token == null) {
+                logger.warn { "Modifier for function $name in file $filePath doesn't have a token" }
+                return@run null
+            }
+            return@map token
+        }
     }
 
     private fun assembleParameter(node: JavaParserNode): FunctionInfoParameter =
