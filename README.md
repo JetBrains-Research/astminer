@@ -42,12 +42,15 @@ There are two ways to use `astminer`:
 
 ### Using `astminer` CLI
 
-Specify a config (see examples in the [configs](./configs) directory) and pass it to the shell script:
-```shell
-./cli.sh <path-to-YAML-config>
-```
+1. [Build the CLI](./docs/cli.md#Getting+started) from the sources.
 
-For details on CLI configuration, see [docs/cli](./docs/cli.md).
+2. Prepare your inputs and [configure](./docs/cli.md#Configuration) the CLI. For YAML examples, see the [configs](./configs) directory. 
+
+3. To run the CLI, pass the config to the shell script:
+    ```shell
+    ./cli.sh <path-to-YAML-config>
+    ```
+Alternatively, you can use the [Docker image](./docs/cli.md#Docker).
 
 ### Using `astminer` as a dependency
 
@@ -83,7 +86,7 @@ To use a specific version of the library, navigate to the required branch and bu
 ```shell
 ./gradlew publishToMavenLocal
 ```
-After that, add `mavenLocal()` into the `repositories` section in your gradle configuration.
+After that add `mavenLocal()` into the `repositories` section in your gradle configuration.
 
 #### Examples
 
@@ -96,7 +99,7 @@ Please consider trying Kotlin for your data mining pipelines: from our experienc
 
 ## Contribution
 
-We believe that `astminer` could find use beyond our own mining tasks.
+We believe that `astminer` can find use beyond our own mining tasks.
 
 Please help make `astminer` easier to use by sharing your use cases. Pull requests are welcome as well.
 Support for other languages and documentation are the key areas of improvement.

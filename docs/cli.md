@@ -3,7 +3,7 @@
 You can run `astminer` via its command line interface (CLI).
 The CLI allows you to run the tool on any implemented parser with specified options for filtering, label extraction, and storage of the results.
 
-## How to
+## Getting started
 You can build and run the CLI with any version of `astminer`:
 1. Check out the relevant version of `astminer` sources (for example, the `master-dev` branch).
 2. Build a shadow jar for `astminer`:
@@ -14,12 +14,12 @@ gradle shadowJar
 ```shell
 docker pull voudy/astminer
 ```
-4. Run `astminer` with a specified config:
+4. Run `astminer` with a specified configuration file:
 ```shell
 ./cli.sh <path-to-yaml-config>
 ```
 
-## Config
+## Configuration
 
 The CLI of `astminer` is fully configured by a YAML config.
 The config should contain the following values:
@@ -42,3 +42,5 @@ This image can be pulled from DockerHub:
 ```shell
 docker pull voudy/astminer
 ```
+
+[//]: # "How do you run the docker image? args? options? do you use the YAML in the same way for the docker image?"
