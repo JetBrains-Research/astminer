@@ -10,12 +10,14 @@ import astminer.parse.antlr.AntlrPythonParsingResultFactory
 import astminer.parse.fuzzy.FuzzyParsingResultFactory
 import astminer.parse.gumtree.GumtreeJavaParsingResultFactory
 import astminer.parse.gumtree.GumtreePythonParsingResultFactory
+import astminer.parse.javaparser.JavaParserParsedFileFactory
 
 fun getParsingResultFactory(extension: FileExtension, parserType: ParserType): ParsingResultFactory {
     return when (parserType) {
         ParserType.GumTree -> getGumtreeParsingResultFactory(extension)
         ParserType.Antlr -> getAntlrParsingResultFactory(extension)
         ParserType.Fuzzy -> getFuzzyParsingResultFactory(extension)
+        ParserType.JavaParser -> getJavaParserParsingFactory(extension)
     }
 }
 
@@ -41,5 +43,13 @@ private fun getFuzzyParsingResultFactory(extension: FileExtension): ParsingResul
     return when (extension) {
         FileExtension.C, FileExtension.Cpp -> FuzzyParsingResultFactory
         else -> throw UnsupportedOperationException()
+    }
+}
+
+private fun getJavaParserParsingFactory(extension: FileExtension): ParsingResultFactory {
+    if (extension == FileExtension.Java) {
+        return JavaParserParsedFileFactory
+    } else {
+        throw UnsupportedOperationException()
     }
 }
