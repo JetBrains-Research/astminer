@@ -1,14 +1,17 @@
 # Filters
 
 Each filter is dedicated to removing *bad* trees from the data, e.g. trees that are too big.
-Moreover, each filter works only for certain levels of granulaity.
-Here we describe all filters provided by `astminer`.
-Each description contains the corresponding YAML config.
+Moreover, each filter works only for certain levels of granularity.
+Here we describe all filters provided by `astminer` and provide corresponding YAML examples.
 
 Filters can be specific to a language or a parser.
-Therefore, some languages or parsers may not support the needed filter 
-(`FunctionInfoPropertyNotImplementedException` appears).
-To handle this, the user might manually add specific logic of parsing AST to get the desired information about function or code at all. 
+Therefore, some languages or parsers may not support a certain filter. In this case,
+`FunctionInfoPropertyNotImplementedException` appears.
+To handle this, add specific logic of parsing AST to get the desired information about function or code at all. 
+
+[//]: # "Please write more specifically what the developer should do and what result they would get. e.g. To get the necessary information about the function or file, you can extend psiminer with the specific logic of parsing an AST. To do this, ??? add a custom filter ??? in ... "
+
+[//]: # "Can I specify in the YAML several filters or just one?"
 
 Filter config classes are defined in [FilterConfigs.kt](../src/main/kotlin/astminer/config/FilterConfigs.kt).
 

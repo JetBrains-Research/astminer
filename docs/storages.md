@@ -1,12 +1,14 @@
 # Storages
 
 The storage defines how the ASTs should be saved on disk.
-For now, `astminer` support tree-based and path-based storage formats.
+For now, `astminer` supports several tree-based and path-based storage formats.
 
-`Astminer` also knows how to find the structure of the dataset and can 
+`astminer` also knows how to find the structure of the dataset and can 
 save trees or path contexts in the appropriate holdout folders. (`train`, `val` and `test`). If the data is not structured, 
 all trees will be saved in the `data` folder. Description files for trees or paths will be
 saved along with holdouts in the same `outputPath` directory.
+
+[//]: # "As far as I know, datasets are split to the three parts randomly, only the size of each part is defined. So what is it about the structure that helps split the dataset?"
 
 Storage config classes are defined in [StorageConfigs.kt](../src/main/kotlin/astminer/config/StorageConfigs.kt).
 
@@ -23,18 +25,18 @@ Each tree is encoded to a single line using parentheses sequences.
 
 ### Dot
 
-Saves each tree in separate file using [dot](https://graphviz.org/doc/info/lang.html) syntax.
-Along with dot files, this storage also saves `description.csv` with mapping between files, source files, and labels.
+Saves each tree in a separate file using the [dot](https://graphviz.org/doc/info/lang.html) syntax.
+Along with dot files, this storage also saves `description.csv` with a mapping between files with trees, source files, and labels.
 
 
  ```yaml
  name: dot AST
  ```
 
-### Json lines
+### JSON Lines
 
-Saves each tree with its label in the Json Lines format.
-Json format of AST inspired by the [150k Python](https://www.sri.inf.ethz.ch/py150) dataset.
+Saves each tree with its label in the JSON Lines format.
+The JSON format of storing ASTs inspired by the [150k Python](https://www.sri.inf.ethz.ch/py150) dataset.
 
  ```yaml
  name: json AST
@@ -47,14 +49,14 @@ It is used in popular code representation models such as `code2vec` and `code2se
 
 ### Code2vec
 
-Extract paths from each AST. Output is 4 files:
-1. `node_types.csv` contains numeric ids and corresponding node types with directions (up/down, as described in [paper](https://arxiv.org/pdf/1803.09544.pdf));
-2. `tokens.csv` contains numeric ids and corresponding tokens;
-3. `paths.csv` contains numeric ids and AST paths in form of space-separated sequences of node type ids;
+Extract paths from each AST. The output is stored in 4 files:
+1. `node_types.csv` contains numeric IDs and corresponding node types with directions (up/down, as described in this [paper by Uri Alon et al.](https://arxiv.org/pdf/1803.09544.pdf)).
+2. `tokens.csv` contains numeric IDs and corresponding tokens.
+3. `paths.csv` contains numeric IDs and AST paths in the form of space-separated sequences of node type IDs.
 4. `path_contexts.c2s` contains the labels and sequences of path-contexts (each representing two tokens and a path between them).
-    This file will be generated for every holdout.
+    This file is generated for every holdout.
 
-Each line in `path_contexts.c2s` starts with a label, followed by a sequence of space-separated triples. Each triple contains start token id, path id, end token id, separated with commas.
+    Each line in `path_contexts.c2s` starts with a label followed by a sequence of space-separated triples. Each triple contains comma-separated IDs of the start token, path, and end token.
 
  ```yaml
  name: code2vec
@@ -69,17 +71,17 @@ Each line in `path_contexts.c2s` starts with a label, followed by a sequence of 
 ### Code2seq
 
 Extract paths from each AST and save in the code2seq format.
-The output is `path_context.c2s` file, which will be generated for every holdout.
-Each line starts with a label, followed by a sequence of space-separated triples.
-Each triple contains the start token, path node types, and end token id, separated with commas.
+The output is `path_context.c2s` file, which is generated for every holdout.
+Each line starts with a label followed by a sequence of space-separated triples.
+Each triple contains comma-separated IDs of the start token, path node types, and end token.
 
-To reduce memory usage, you can enable `nodesToNumber` option.
-If `nodesToNumber` is set to `true`, all types are converted into numbers and `node_types.csv` is added to output files.
+To reduce memory usage, you can enable the `nodesToNumbers` option.
+If `nodesToNumbers` is set to `true`, all types are converted into numbers and `node_types.csv` with the node-number vocabulary is added to the output files.
 
  ```yaml
  name: code2seq
  maxPathLength: 10
  maxPathWidth: 2
  maxPathContextsPerEntity: 200 # can be omitted
- nodeToNumber: true # can be omitted
+ nodesToNumbers: true # can be omitted
  ```

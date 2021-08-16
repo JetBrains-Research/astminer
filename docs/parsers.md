@@ -11,16 +11,16 @@ For now, `astminer` supports ANTLR-based parsers for Java, Python, JS, and PHP.
 ## GumTree
 
 [GumTree](https://github.com/GumTreeDiff/gumtree)
-is a framework to work with source code as trees and to compute differences of trees between different versions of code.
+is a framework to work with source code as trees and to compute the differences between the trees in different versions of code.
 It also builds language-agnostic representations of code.
 For now, `astminer` supports GumTree-based parsers for Java and Python.
 
 ### python-parser
 
 Running GumTree with Python requires `python-parser`.
-It can be set up through the following steps:
-1. Download sources from [GitHub](https://github.com/JetBrains-Research/pythonparser/blob/master/)
-2. Install dependencies
+You can set it up as follows:
+1. Download the sources from [GitHub](https://github.com/JetBrains-Research/pythonparser/blob/master/)
+2. Install the dependencies
 ```shell
 pip install -r requirements.txt
 ```
@@ -53,12 +53,12 @@ in the Code2Vec repository to get similar trees.
 Support for a new programming language can be implemented in a few simple steps.
 
 If there is an ANTLR grammar for the language:
-1. Add the corresponding [ANTLR4 grammar file](https://github.com/antlr/grammars-v4) to the `antlr` directory;
-2. Run the `generateGrammarSource` Gradle task to generate the parser;
+1. Add the corresponding [ANTLR4 grammar file](https://github.com/antlr/grammars-v4) to the `antlr` directory.
+2. Run the `generateGrammarSource` Gradle task to generate the parser.
 3. Implement a small wrapper around the generated parser.
-   See [JavaParser](src/main/kotlin/astminer/parse/antlr/java/JavaParser.kt) or [PythonParser](src/main/kotlin/astminer/parse/antlr/python/PythonParser.kt) for an example of a wrapper.
+   See [JavaParser](src/main/kotlin/astminer/parse/antlr/java/JavaParser.kt) or [PythonParser](src/main/kotlin/astminer/parse/antlr/python/PythonParser.kt) for an example of such a wrapper.
 
-If the language has a parsing tool that is available as Java library:
-1. Add the library as a dependency in [build.gradle.kts](/build.gradle.kts);
+If the language has a parsing tool that is available as a Java library:
+1. Add the library as a dependency in [build.gradle.kts](/build.gradle.kts).
 2. Implement a wrapper for the parsing tool.
-   See [FuzzyCppParser](src/main/kotlin/astminer/parse/fuzzy/cpp/FuzzyCppParser.kt) for an example of a wrapper.
+   See [FuzzyCppParser](src/main/kotlin/astminer/parse/fuzzy/cpp/FuzzyCppParser.kt) for an example of such a wrapper.
