@@ -53,6 +53,8 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
 
     override val body: GumTreeNode? = root.getChildOfType(FUNCTION_BODY)
 
+    override val isConstructor: Boolean = false
+
     override val enclosingElement: EnclosingElement<GumTreeNode>? =
         root.findEnclosingElementBy { it.typeLabel == CLASS_DECLARATION }?.assembleEnclosing()
 
