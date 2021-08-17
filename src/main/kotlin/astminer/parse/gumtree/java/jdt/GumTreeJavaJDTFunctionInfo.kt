@@ -35,6 +35,8 @@ class GumTreeJavaJDTFunctionInfo(
 
     override val isConstructor: Boolean = root.typeLabel == "Initializer"
 
+    override val body: GumTreeNode? = root.children.find { it.typeLabel == "Block" }
+
     private fun collectEnclosingClass(): EnclosingElement<GumTreeNode>? {
         val enclosingClassNode = getEnclosingClassNode(root.parent) ?: return null
         val enclosingClassName = enclosingClassNode.getChildOfType(TypeLabels.simpleName)?.originalToken

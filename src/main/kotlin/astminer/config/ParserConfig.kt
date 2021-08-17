@@ -28,7 +28,10 @@ enum class ParserType {
     GumTreeSrcml,
 
     @SerialName("fuzzy")
-    Fuzzy
+    Fuzzy,
+
+    @SerialName("javaparser")
+    JavaParser
 }
 
 @Serializable

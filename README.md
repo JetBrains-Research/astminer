@@ -1,5 +1,5 @@
 [![JetBrains Research](https://jb.gg/badges/research.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
-![astminer version](https://img.shields.io/badge/astminer-v0.6.4-blue)
+![astminer version](https://img.shields.io/badge/astminer-v0.7.0-blue)
 
 # `astminer`
 A library for mining of [path-based representations of code](https://arxiv.org/pdf/1803.09544.pdf) and more,
@@ -14,6 +14,8 @@ Supported languages of the input:
 | ANTLR   | ✅    | ✅      |       | ✅          | ✅   |
 | GumTree | ✅    | ✅      |       |            |     |
 | Fuzzy   |      |        | ✅     |            |     |
+| JavaParser | ✅ |        |        |             |      |
+
 
 
 ## About
