@@ -44,7 +44,7 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
         type.children.filter { it.typeLabel == MODIFIER }.map {
             val token = it.originalToken
             if (token == null) {
-                logger.warn { "Modifier in functin $name in file $filePath doesn't have a name" }
+                logger.warn { "Modifier in function $name in file $filePath doesn't have a name" }
                 return@run null
             }
             return@map token

@@ -6,6 +6,7 @@ import org.junit.Test
 import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 internal class GumTreeJavaSrcmlFunctionSplitterTest {
     private fun createTree(filename: String): GumTreeNode =
@@ -94,6 +95,7 @@ internal class GumTreeJavaSrcmlFunctionSplitterTest {
             assertEquals("int", returnType)
             assertEquals("someAbstractClass", enclosingElement?.name)
             assertEquals(setOf("public", "abstract"), modifiers?.toSet())
+            assertTrue(isBlank())
         }
     }
 }
