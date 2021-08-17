@@ -15,6 +15,7 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode, override val filePat
             logger.warn { e.message }
             null
         }
+    override val isConstructor: Boolean = name == CONSTRUCTOR_FUNCTION_NAME
 
     private fun collectNameNode(): AntlrNode? = root.getChildOfType(FUNCTION_NAME_NODE)
 
@@ -87,6 +88,7 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode, override val filePat
 
         private const val CLASS_DECLARATION_NODE = "classdef"
         private const val CLASS_NAME_NODE = "NAME"
+        private const val CONSTRUCTOR_FUNCTION_NAME = "__init__"
 
         private const val METHOD_PARAMETER_NODE = "parameters"
         private const val METHOD_PARAMETER_INNER_NODE = "typedargslist"

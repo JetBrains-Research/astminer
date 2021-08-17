@@ -14,10 +14,10 @@ class GumTreePythonFunctionInfo(
     override val root: GumTreeNode,
     override val filePath: String
 ) : FunctionInfo<GumTreeNode> {
-
     override val nameNode: GumTreeNode = root
     override val enclosingElement: EnclosingElement<GumTreeNode>? = collectEnclosingClass()
     override val returnType: String? = getElementType(root)?.typeLabel
+    override val isConstructor: Boolean = name == TypeLabels.constructorFunctionName
     override val parameters: List<FunctionInfoParameter>? =
         try { collectParameters() } catch (e: IllegalStateException) {
             logger.warn { e.message }
@@ -70,6 +70,7 @@ class GumTreePythonFunctionInfo(
     companion object {
         private object TypeLabels {
             const val classDefinition = "ClassDef"
+            const val constructorFunctionName = "__init__"
             const val functionDefinition = "FunctionDef"
             const val asyncFunctionDefinition = "AsyncFunctionDef"
             const val nameLoad = "Name_Load"

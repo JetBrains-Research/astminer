@@ -12,6 +12,8 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
     override val returnType: String? = collectReturnType()
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingClass()
 
+    override val isConstructor: Boolean = false
+
     override val parameters: List<FunctionInfoParameter>? =
         try { collectParameters() } catch (e: IllegalStateException) {
             logger.warn { e.message }
