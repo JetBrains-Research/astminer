@@ -5,6 +5,7 @@ import astminer.parse.gumtree.GumTreeNode
 import org.junit.Test
 import java.io.File
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 
 internal class GumTreeJavaSrcmlFunctionSplitterTest {
     private fun createTree(filename: String): GumTreeNode =
@@ -73,6 +74,26 @@ internal class GumTreeJavaSrcmlFunctionSplitterTest {
             assertEquals("SingleFunction", enclosingElement?.name)
             assertEquals(listOf("args", "param"), parameters?.map { it.name })
             assertEquals(listOf("int", "SingleFunction"), parameters?.map { it.type })
+        }
+    }
+
+    @Test
+    fun testMethodExtraction5() {
+        val functionInfos = createAndSplitTree("src/test/resources/gumTreeMethodSplitter/5.java")
+
+        assertEquals(2, functionInfos.size)
+        with(functionInfos.first()) {
+            assertEquals("someDeprecatedFun", name)
+            assertEquals("String", returnType)
+            assertEquals("AnnotatedFunction", enclosingElement?.name)
+            assertEquals(setOf("Deprecated", "SuppressWarnings"), annotations?.toSet())
+            assertFalse(isBlank())
+        }
+        with(functionInfos.last()) {
+            assertEquals("function", name)
+            assertEquals("int", returnType)
+            assertEquals("someAbstractClass", enclosingElement?.name)
+            assertEquals(setOf("public", "abstract"), modifiers?.toSet())
         }
     }
 }

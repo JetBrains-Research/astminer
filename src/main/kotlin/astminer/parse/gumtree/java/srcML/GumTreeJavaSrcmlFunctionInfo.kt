@@ -19,12 +19,39 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
     override val parameters: List<FunctionInfoParameter>? = run {
         root.preOrder().filter { it.typeLabel == PARAMETER }
             .map {
-                try { assembleParameter(it) } catch (e: IllegalStateException) {
+                try {
+                    assembleParameter(it)
+                } catch (e: IllegalStateException) {
                     logger.warn { e.message }
                     return@run null
                 }
             }
     }
+
+    override val annotations: List<String>? = run {
+        root.children.filter { it.typeLabel == ANNOTATION }.map {
+            val token = it.getChildOfType(NAME)?.originalToken
+            if (token == null) {
+                logger.warn { "Annotation in function $name in file $filePath don't have a name" }
+                return@run null
+            }
+            return@map token
+        }
+    }
+
+    override val modifiers: List<String>? = run {
+        val type = checkNotNull(root.getChildOfType(TYPE)) { "Function $name in file $filePath doesn't have a type" }
+        type.children.filter { it.typeLabel == MODIFIER }.map {
+            val token = it.originalToken
+            if (token == null) {
+                logger.warn { "Modifier in functin $name in file $filePath doesn't have a name" }
+                return@run null
+            }
+            return@map token
+        }
+    }
+
+    override val body: GumTreeNode? = root.getChildOfType(FUNCTION_BODY)
 
     override val enclosingElement: EnclosingElement<GumTreeNode>? =
         root.findEnclosingElementBy { it.typeLabel == CLASS_DECLARATION }?.assembleEnclosing()
@@ -45,7 +72,7 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
     }
 
     private fun GumTreeNode.extractType(): String {
-        val typeNode = checkNotNull(this.getChildOfType(TYPE)) { "No type found" }
+        val typeNode = checkNotNull(this.getChildOfType(TYPE)?.getChildOfType(NAME)) { "No type found" }
         return typeNode.preOrder().joinToString(separator = "") { node ->
             if (node.typeLabel == ARRAY_BRACKETS) {
                 "[]"
@@ -56,9 +83,12 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
     }
 
     companion object {
+        const val FUNCTION_BODY = "block"
+        const val MODIFIER = "specifier"
         const val TYPE = "type"
         const val NAME = "name"
         const val ARRAY_BRACKETS = "index"
+        const val ANNOTATION = "annotation"
         const val PARAMETER = "parameter"
         const val VAR_DECLARATION = "decl"
         const val CLASS_DECLARATION = "class"
