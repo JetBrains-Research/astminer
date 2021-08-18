@@ -3,9 +3,7 @@ package astminer.parse.spoon
 import astminer.common.model.FunctionInfo
 import org.junit.Test
 import java.io.File
-import kotlin.test.BeforeTest
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
+import kotlin.test.*
 
 internal class SpoonJavaFunctionSplitterTest {
     var functionInfos: Collection<FunctionInfo<SpoonNode>> = listOf()
@@ -106,6 +104,47 @@ internal class SpoonJavaFunctionSplitterTest {
         val weirdParameter = parameters[0]
         assertEquals(weirdParameter.name, "arr")
         assertEquals(weirdParameter.type, "int[]")
+    }
+
+    @Test
+    fun testOneAnnotation() {
+        val methodWithAnnotation = functionInfos.find { it.name == "deprecatedFunction" }
+        assertNotNull(methodWithAnnotation)
+        val annotations = methodWithAnnotation.annotations
+        assertNotNull(annotations)
+        assertEquals(1, annotations.size)
+        assertEquals(setOf("Deprecated"), annotations.toSet())
+    }
+
+    @Test
+    fun testMultipleAnnotations() {
+        val methodWithMultipleAnnotations = functionInfos.find { it.name == "functionWithAnnotations" }
+        assertNotNull(methodWithMultipleAnnotations)
+        val annotations = methodWithMultipleAnnotations.annotations
+        assertNotNull(annotations)
+        assertEquals(2, annotations.size)
+        assertEquals(setOf("Deprecated", "SuppressWarnings"), annotations.toSet())
+    }
+
+    @Test
+    fun functionIsNotBlank() {
+        val nonBlankFunction = functionInfos.find { it.name == "functionReturningInt" }
+        assertNotNull(nonBlankFunction)
+        assertFalse(nonBlankFunction.isBlank())
+    }
+
+    @Test
+    fun functionHaveNoBodyIsBlank() {
+        val blankFunction = functionInfos.find { it.name == "abstractFunctionReturningInt" }
+        assertNotNull(blankFunction)
+        assertTrue(blankFunction.isBlank())
+    }
+
+    @Test
+    fun functionHaveEmptyBodyIsBlank() {
+        val blankFunction = functionInfos.find { it.name == "functionWithNoParameters" }
+        assertNotNull(blankFunction)
+        assertTrue(blankFunction.isBlank())
     }
 
     companion object {

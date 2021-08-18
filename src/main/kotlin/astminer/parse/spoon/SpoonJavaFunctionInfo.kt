@@ -12,7 +12,17 @@ class SpoonJavaFunctionInfo(override val root: SpoonNode, override val filePath:
     override val parameters: List<FunctionInfoParameter> =
         root.preOrder().filter { it.typeLabel == PARAMETER_TYPE }.map { assembleParameter(it) }
 
+    override val annotations: List<String>? = run {
+        root.getChildrenOfType(ANNOTATION_NODE_TYPE).map {
+            return@map it.getChildOfType(TYPE_REFERENCE)?.originalToken ?: return@run null
+        }
+    }
+
     override val returnType: String? = root.children.find {it.typeLabel in POSSIBLE_PARAMETER_TYPES}?.originalToken
+
+    override val body: SpoonNode? = root.getChildOfType(BLOCK)
+
+    override val isConstructor: Boolean = false
 
     override val enclosingElement: EnclosingElement<SpoonNode>? =
         root.findEnclosingElementBy { it.typeLabel == CLASS_DECLARATION_TYPE }?.assembleEnclosingClass()
@@ -38,5 +48,7 @@ class SpoonJavaFunctionInfo(override val root: SpoonNode, override val filePath:
         private const val ARRAY_TYPE_REFERENCE = "ArrayTypeReference"
         val POSSIBLE_PARAMETER_TYPES = listOf(TYPE_REFERENCE, ARRAY_TYPE_REFERENCE)
         const val CLASS_DECLARATION_TYPE = "Class"
+        const val ANNOTATION_NODE_TYPE = "Annotation"
+        const val BLOCK = "Block"
     }
 }

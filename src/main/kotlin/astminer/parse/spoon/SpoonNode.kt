@@ -16,6 +16,14 @@ class SpoonNode(el: CtElement, override val parent: SpoonNode?) : Node(el.getSpo
         children.removeIf { it.typeLabel == typeLabel }
     }
 
+    override fun getChildOfType(typeLabel: String): SpoonNode? {
+        return super.getChildOfType(typeLabel) as? SpoonNode
+    }
+
+    override fun getChildrenOfType(typeLabel: String): List<SpoonNode> {
+        return super.getChildrenOfType(typeLabel).map { it as SpoonNode }
+    }
+
     override fun preOrder(): List<SpoonNode> = super.preOrder().map { it as SpoonNode }
     override fun postOrder(): List<SpoonNode> = super.postOrder().map { it as SpoonNode }
 }
