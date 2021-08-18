@@ -18,7 +18,7 @@ class SpoonJavaFunctionInfo(override val root: SpoonNode, override val filePath:
         }
     }
 
-    override val returnType: String? = root.children.find {it.typeLabel in POSSIBLE_PARAMETER_TYPES}?.originalToken
+    override val returnType: String? = root.children.find { it.typeLabel in POSSIBLE_PARAMETER_TYPES }?.originalToken
 
     override val body: SpoonNode? = root.getChildOfType(BLOCK)
 
