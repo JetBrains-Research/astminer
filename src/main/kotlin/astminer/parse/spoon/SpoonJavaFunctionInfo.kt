@@ -10,15 +10,15 @@ class SpoonJavaFunctionInfo(override val root: SpoonNode, override val filePath:
     override val nameNode: SpoonNode = root
 
     override val parameters: List<FunctionInfoParameter> =
-        root.preOrder().filter { it.roleInParent == PARAMETER_ROLE }.map { assembleParameter(it) }
+        root.preOrder().filter { it.typeLabel == PARAMETER_TYPE }.map { assembleParameter(it) }
 
-    override val returnType: String? = root.getChildWithRole(TYPE_ROLE)?.originalToken
+    override val returnType: String? = root.children.find {it.typeLabel in POSSIBLE_PARAMETER_TYPES}?.originalToken
 
     override val enclosingElement: EnclosingElement<SpoonNode>? =
         root.findEnclosingElementBy { it.typeLabel == CLASS_DECLARATION_TYPE }?.assembleEnclosingClass()
 
     private fun assembleParameter(parameterNode: SpoonNode): FunctionInfoParameter {
-        val type = parameterNode.getChildWithRole(TYPE_ROLE)?.originalToken
+        val type = parameterNode.children.find { it.typeLabel in POSSIBLE_PARAMETER_TYPES }?.originalToken
         val name = parameterNode.originalToken
         checkNotNull(name) { "Couldn't find parameter name token" }
         return FunctionInfoParameter(name, type)
@@ -33,8 +33,10 @@ class SpoonJavaFunctionInfo(override val root: SpoonNode, override val filePath:
     }
 
     companion object {
-        const val PARAMETER_ROLE = "parameter"
-        const val TYPE_ROLE = "type"
+        const val PARAMETER_TYPE = "Parameter"
+        private const val TYPE_REFERENCE = "TypeReference"
+        private const val ARRAY_TYPE_REFERENCE = "ArrayTypeReference"
+        val POSSIBLE_PARAMETER_TYPES = listOf(TYPE_REFERENCE, ARRAY_TYPE_REFERENCE)
         const val CLASS_DECLARATION_TYPE = "Class"
     }
 }

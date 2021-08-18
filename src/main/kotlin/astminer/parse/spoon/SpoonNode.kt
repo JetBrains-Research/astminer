@@ -7,8 +7,6 @@ import spoon.reflect.declaration.CtNamedElement
 import spoon.reflect.reference.CtReference
 
 class SpoonNode(el: CtElement, override val parent: SpoonNode?) : Node(el.getSpoonValue()) {
-    val roleInParent: String? = el.roleInParent?.toString()
-
     // Turning Ct<Something>Impl -> <Something>
     override val typeLabel = el.javaClass.simpleName.substring(startIndex = 2).dropLast(4)
 
@@ -20,9 +18,6 @@ class SpoonNode(el: CtElement, override val parent: SpoonNode?) : Node(el.getSpo
 
     override fun preOrder(): List<SpoonNode> = super.preOrder().map { it as SpoonNode }
     override fun postOrder(): List<SpoonNode> = super.postOrder().map { it as SpoonNode }
-
-    fun getChildWithRole(role: String): SpoonNode? = children.find { it.roleInParent == role }
-    fun getChildrenWithRole(role: String): List<SpoonNode> = children.filter { it.roleInParent == role }
 }
 
 private fun CtElement.getSpoonValue(): String? {
