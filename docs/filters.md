@@ -9,9 +9,9 @@ You can apply several filters at once.
 Some filters are specific to a language or a parser.
 If a language or parser does not support a certain filter,
 `FunctionInfoPropertyNotImplementedException` appears.
-To handle this, add the specific logic of parsing ASTs to get the desired information about the function or code. 
+To get the necessary information about a function or file, extend `astminer` with the specific logic of parsing an AST.
 
-[//]: # "Please write more specifically what the developer should do and what result they would get. e.g. To get the necessary information about the function or file, you can extend astminer with the specific logic of parsing an AST. To do this, ??? add a custom filter ??? in ... "
+[//]: # " todo Please write more specifically what the developer should do and what result they would get, e.g. To do this, ...add a custom filter ... in ... "
 
 Filter config classes are defined in [FilterConfigs.kt](../src/main/kotlin/astminer/config/FilterConfigs.kt).
 
