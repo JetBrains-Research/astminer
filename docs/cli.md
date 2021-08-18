@@ -5,7 +5,7 @@ The CLI allows you to run the tool on any implemented parser with specified opti
 
 ## Getting started
 You can build and run the CLI with any version of `astminer`:
-1. Check out the relevant version of `astminer` sources (for example, the `master-dev` branch).
+1. Check out the relevant version of `astminer` sources (for example, the `master` branch).
 2. Build a shadow jar for `astminer`:
 ```shell
 gradle shadowJar 
@@ -42,5 +42,3 @@ This image can be pulled from DockerHub:
 ```shell
 docker pull voudy/astminer
 ```
-
-[//]: # "How do you run the docker image? args? options? do you use the YAML in the same way for the docker image?"

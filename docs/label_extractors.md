@@ -1,12 +1,10 @@
 # Label extractors
 
-Label extractors are required for correct extraction of labels from raw ASTs.
-Internally, they extract labels from the tree and process the tree to avoid data leaks.
-Also, label extractors define the granularity level for the whole pipeline.
+The label extractor module extracts labels from AST trees and processes them to avoid data leaks.
+You can assign a certain label type to each tree.
+Also, the selected type defines the granularity level of label extraction for the whole pipeline.
 
-[//]: # "How do you use these labels? What does it replace? Are ALL identifier names are replaced with the SAME label or different abstract labels, e.g. 'identifier'?"
-
-[//]: # "Can I specify in the YAML several label extractors or just one?"
+You can define only one label extractor or skip this module at all. Then identifier names will be preserved.
 
 Label extractor config classes are defined in [LabelExtractorConfigs.kt](src/main/kotlin/astminer/config/LabelExtractorConfigs.kt).
 

@@ -44,13 +44,13 @@ There are two ways to use `astminer`:
 
 1. [Build the CLI](./docs/cli.md#Getting+started) from the sources.
 
-2. Prepare your inputs and [configure](./docs/cli.md#Configuration) the CLI. For YAML examples, see the [configs](./configs) directory. 
+2. Prepare your inputs and [configure](./docs/cli.md#Configuration) pipeline options. For config examples, see the [configs](./configs) directory. 
 
 3. To run the CLI, pass the config to the shell script:
     ```shell
     ./cli.sh <path-to-YAML-config>
     ```
-Alternatively, you can use the [Docker image](./docs/cli.md#Docker).
+Alternatively, you can run the tool inside the [Docker image](./docs/cli.md#Docker).
 
 ### Using `astminer` as a dependency
 
@@ -92,8 +92,8 @@ After that add `mavenLocal()` into the `repositories` section in your gradle con
 
 If you want to use `astminer` as a library in your Java/Kotlin-based data mining tool, check the following usage examples:
 
-* A few simple [examples](src/examples) of using `astminer` in Java and Kotlin.
-* [psiminer](https://github.com/JetBrains-Research/psiminer), a mining tool that uses `astminer`.
+* Simple standalone [example scripts](src/examples) in Java and Kotlin with calling to different APIs of `astminer`.
+* [psiminer](https://github.com/JetBrains-Research/psiminer), a mining tool that uses `astminer` to extract paths from PSI trees. See the [code2seq storage implementation] (https://github.com/JetBrains-Research/psiminer/blob/master/psiminer-core/src/main/kotlin/storage/paths/Code2SeqStorage.kt).
 
 Please consider trying Kotlin for your data mining pipelines: from our experience, it is much better suited for data collection and transformation instruments than Java.
 

@@ -4,11 +4,9 @@ The storage defines how the ASTs should be saved on disk.
 For now, `astminer` supports several tree-based and path-based storage formats.
 
 `astminer` also knows how to find the structure of the dataset and can 
-save trees or path contexts in the appropriate holdout folders. (`train`, `val` and `test`). If the data is not structured, 
-all trees will be saved in the `data` folder. Description files for trees or paths will be
-saved along with holdouts in the same `outputPath` directory.
-
-[//]: # "As far as I know, datasets are split to the three parts randomly, only the size of each part is defined. So what is it about the structure that helps split the dataset?"
+save trees or path contexts in the appropriate holdout folders. (`train`, `val` and `test`). 
+If the data is not split, all trees will be saved in the `data` folder. 
+Description files for trees or paths will be saved along with holdouts in the same `outputPath` directory.
 
 Storage config classes are defined in [StorageConfigs.kt](../src/main/kotlin/astminer/config/StorageConfigs.kt).
 
@@ -80,8 +78,9 @@ If `nodesToNumbers` is set to `true`, all types are converted into numbers and `
 
  ```yaml
  name: code2seq
- maxPathLength: 10
- maxPathWidth: 2
+ length: 10
+ width: 2
  maxPathContextsPerEntity: 200 # can be omitted
  nodesToNumbers: true # can be omitted
  ```
+`length` stands for the maximum length of a path inclusively; `width` stands for the maximum distance between the children of the least common ancestor of a path.
