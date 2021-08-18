@@ -1,9 +1,7 @@
 package astminer.parse.spoon
 
 import astminer.common.model.Node
-import spoon.reflect.code.CtBinaryOperator
-import spoon.reflect.code.CtLiteral
-import spoon.reflect.code.CtUnaryOperator
+import spoon.reflect.code.*
 import spoon.reflect.declaration.CtElement
 import spoon.reflect.declaration.CtNamedElement
 import spoon.reflect.reference.CtReference
@@ -11,8 +9,8 @@ import spoon.reflect.reference.CtReference
 class SpoonNode(el: CtElement, override val parent: SpoonNode?) : Node(el.getSpoonValue()) {
     val roleInParent: String? = el.roleInParent?.toString()
 
-    // Turning Ct<Something> -> <Something>
-    override val typeLabel = el.javaClass.simpleName.substring(startIndex = 2)
+    // Turning Ct<Something>Impl -> <Something>
+    override val typeLabel = el.javaClass.simpleName.substring(startIndex = 2).dropLast(4)
 
     override val children = run { el.directChildren.map { SpoonNode(it, this) } }.toMutableList()
 
@@ -30,18 +28,15 @@ class SpoonNode(el: CtElement, override val parent: SpoonNode?) : Node(el.getSpo
 private fun CtElement.getSpoonValue(): String? {
     return when {
         this is CtNamedElement -> this.simpleName
+        this is CtVariableAccess<*> -> this.variable.simpleName
+        this is CtInvocation<*> -> this.executable?.simpleName
+        this is CtOperatorAssignment<*, *> -> this.label
+        this is CtTypeAccess<*> -> this.accessedType?.qualifiedName
         this is CtReference -> this.simpleName
         this is CtBinaryOperator<*> -> this.kind.toString()
         this is CtUnaryOperator<*> -> this.kind.toString()
+        this is CtLiteral<*> -> this.toString()
         this.directChildren.size == 0 -> this.toString()
-
-        /* For some reason not every literal in spoon have value */
-        this is CtLiteral<*> -> try { this.value.toString() } catch (e: NullPointerException) {
-            logger.warn { "Literal without value found : ${e.message}" }
-            require(this.directChildren.isNotEmpty()) { "Literal leaf does not have a value" }
-            null
-        }
-
         else -> null
     }
 }

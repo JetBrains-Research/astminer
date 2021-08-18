@@ -49,5 +49,7 @@ class SpoonJavaParser : Parser<SpoonNode> {
         throw ParsingException("Spoon", "Java", e)
     } catch (e: RuntimeException) {
         throw ParsingException("Spoon", "Java", e)
+    } catch (e: StackOverflowError) {
+        throw ParsingException("Spoon", "Java")
     }
 }

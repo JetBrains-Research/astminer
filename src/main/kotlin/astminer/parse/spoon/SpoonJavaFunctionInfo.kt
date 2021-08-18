@@ -35,6 +35,6 @@ class SpoonJavaFunctionInfo(override val root: SpoonNode, override val filePath:
     companion object {
         const val PARAMETER_ROLE = "parameter"
         const val TYPE_ROLE = "type"
-        const val CLASS_DECLARATION_TYPE = "ClassImpl"
+        const val CLASS_DECLARATION_TYPE = "Class"
     }
 }
