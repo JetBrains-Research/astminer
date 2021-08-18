@@ -50,6 +50,7 @@ class SpoonJavaParser : Parser<SpoonNode> {
     } catch (e: RuntimeException) {
         throw ParsingException("Spoon", "Java", e)
     } catch (e: StackOverflowError) {
+        logger.error { "Got StackOverflowError while parsing ${file.path}. Please report about this issue." }
         throw ParsingException("Spoon", "Java")
     }
 }
