@@ -110,7 +110,7 @@ internal class SpoonJavaFunctionSplitterTest {
 
     companion object {
         const val FILE_PATH = "src/test/resources/methodSplitting/testMethodSplitting.java"
-        const val N_FUNCTIONS = 10
+        const val N_FUNCTIONS = 15
         val functionSplitter = SpoonJavaFunctionSplitter()
         val parser = SpoonJavaParser()
     }
