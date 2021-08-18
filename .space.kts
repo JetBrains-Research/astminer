@@ -1,17 +1,9 @@
-job("Test") {
-    container(image="voudy/astminer") {
-        shellScript {
-            content = """
-              ./gradlew test    
-          """
-        }
-    }
-}
-
 job("Release") {
     startOn {
         gitPush {
-            enabled = false
+            branchFilter {
+                +"refs/tags/*"
+            }
         }
     }
 

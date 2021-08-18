@@ -27,6 +27,9 @@ enum class ParserType {
     @SerialName("fuzzy")
     Fuzzy,
 
+    @SerialName("javaparser")
+    JavaParser,
+
     @SerialName("spoon")
     Spoon
 }

@@ -40,6 +40,14 @@ Originally [fuzzyc2cpg](https://github.com/ShiftLeftSecurity/fuzzyc2cpg), Fuzzy 
 now part of [codepropertygraph](https://github.com/ShiftLeftSecurity/codepropertygraph/).
 `astminer`uses it to parse C/C++ code. `g++` is required for this parser.
 
+## JavaParser
+
+Parser for Java which is used to get trees for Code2seq and Code2vec models, and is also 
+used in many other studies to collect trees and work with them.
+When working with Javaparser `astminer` implements an algorithm similar to the algorithm in
+the [JavaExtractor module](https://github.com/tech-srl/code2vec/tree/master/JavaExtractor)
+in the Code2Vec repository to get similar trees.
+
 ## Other languages and parsers
 
 Support for a new programming language can be implemented in a few simple steps.

@@ -41,3 +41,10 @@ class FunctionNameWordsNumberFilter(private val maxWordsNumber: Int) : FunctionF
         return name != null && splitToSubtokens(name).size <= maxWordsNumber
     }
 }
+
+/**
+ * Filter that excludes blank functions (functions without body or with empty body)
+ * */
+class RemoveBlankFunctions : FunctionFilter {
+    override fun validate(functionInfo: FunctionInfo<out Node>): Boolean = functionInfo.isNotBlank()
+}

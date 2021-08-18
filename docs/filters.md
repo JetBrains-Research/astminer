@@ -71,3 +71,12 @@ Exclude functions with certain modifiers (e.g. `private` functions)
  name: by modifiers
  modifiers: [ private ]
  ```
+
+## Exclude blank functions
+**granularity**: functions
+
+Exclude functions with empty body and functions without body
+
+```yaml
+name: no blank functions
+```
