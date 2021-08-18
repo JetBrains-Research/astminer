@@ -9,7 +9,7 @@ Therefore, some languages or parsers may not support a certain filter. In this c
 `FunctionInfoPropertyNotImplementedException` appears.
 To handle this, add specific logic of parsing AST to get the desired information about function or code at all. 
 
-[//]: # "Please write more specifically what the developer should do and what result they would get. e.g. To get the necessary information about the function or file, you can extend psiminer with the specific logic of parsing an AST. To do this, ??? add a custom filter ??? in ... "
+[//]: # "Please write more specifically what the developer should do and what result they would get. e.g. To get the necessary information about the function or file, you can extend astminer with the specific logic of parsing an AST. To do this, ??? add a custom filter ??? in ... "
 
 [//]: # "Can I specify in the YAML several filters or just one?"
 

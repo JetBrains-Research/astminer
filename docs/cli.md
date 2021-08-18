@@ -19,9 +19,9 @@ docker pull voudy/astminer
 ./cli.sh <path-to-yaml-config>
 ```
 
-## Configuration
+## Configuration file
 
-The CLI of `astminer` is fully configured by a YAML config.
+The CLI of `astminer` is fully configured via a YAML file.
 The config should contain the following values:
 - `inputDir` — path to the directory with input data
 - `outputDir` — path to the output directory 

@@ -2,7 +2,7 @@
 
 Label extractors are required for correct extraction of labels from raw ASTs.
 Internally, they extract labels from the tree and process the tree to avoid data leaks.
-Also label extractors define the granularity level for the whole pipeline.
+Also, label extractors define the granularity level for the whole pipeline.
 
 [//]: # "How do you use these labels? What does it replace? Are ALL identifier names are replaced with the SAME label or different abstract labels, e.g. 'identifier'?"
 
