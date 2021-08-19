@@ -24,7 +24,7 @@ class DummyNode(
     fun labeledWith(label: String) = LabeledResult(this, label, "")
 }
 
-class DummyParsingResult(file: File, override val root: DummyNode) : ParsingResult<DummyNode>(file) {
+class DummyParsingResult(file: File, override val root: DummyNode) : ParsingResult<DummyNode>(file, file.path) {
     override val splitter: TreeFunctionSplitter<DummyNode> = object : TreeFunctionSplitter<DummyNode> {
         override fun splitIntoFunctions(root: DummyNode, filePath: String) = listOf<FunctionInfo<DummyNode>>()
     }

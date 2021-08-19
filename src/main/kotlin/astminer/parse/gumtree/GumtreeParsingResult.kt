@@ -1,6 +1,5 @@
 package astminer.parse.gumtree
 
-import astminer.common.model.Node
 import astminer.common.model.ParsingResult
 import astminer.common.model.ParsingResultFactory
 import astminer.common.model.TreeFunctionSplitter
@@ -13,27 +12,33 @@ import astminer.parse.gumtree.python.GumTreePythonParser
 import java.io.File
 
 object GumtreeJavaJDTParsingResultFactory : ParsingResultFactory {
-    override fun parse(file: File): ParsingResult<GumTreeNode> = GumTreeJavaJDTParsingResult(file)
+    override fun parse(file: File, inputDirectoryPath: String?) =
+        GumTreeJavaJDTParsingResult(file, inputDirectoryPath)
 
-    class GumTreeJavaJDTParsingResult(file: File) : ParsingResult<GumTreeNode>(file) {
+    class GumTreeJavaJDTParsingResult(file: File, inputDirectoryPath: String?) :
+        ParsingResult<GumTreeNode>(file, inputDirectoryPath) {
         override val root = GumTreeJavaJDTParser().parseFile(file)
         override val splitter = GumTreeJavaJDTFunctionSplitter()
     }
 }
 
 object GumtreeJavaSrcmlParsingResultFactory : ParsingResultFactory {
-    override fun parse(file: File): ParsingResult<out Node> = GumTreeJavaSrcmlParsingResult(file)
+    override fun parse(file: File, inputDirectoryPath: String?) =
+        GumTreeJavaSrcmlParsingResult(file, inputDirectoryPath)
 
-    class GumTreeJavaSrcmlParsingResult(file: File) : ParsingResult<GumTreeNode>(file) {
+    class GumTreeJavaSrcmlParsingResult(file: File, inputDirectoryPath: String?) :
+        ParsingResult<GumTreeNode>(file, inputDirectoryPath) {
         override val root: GumTreeNode = GumTreeJavaSrcmlParser().parseFile(file)
         override val splitter: TreeFunctionSplitter<GumTreeNode> = GumTreeJavaSrcmlFunctionSplitter()
     }
 }
 
 object GumtreePythonParsingResultFactory : ParsingResultFactory {
-    override fun parse(file: File): ParsingResult<GumTreeNode> = PythonGumtreeParsingResult(file)
+    override fun parse(file: File, inputDirectoryPath: String?) =
+        PythonGumtreeParsingResult(file, inputDirectoryPath)
 
-    class PythonGumtreeParsingResult(file: File) : ParsingResult<GumTreeNode>(file) {
+    class PythonGumtreeParsingResult(file: File, inputDirectoryPath: String?) :
+        ParsingResult<GumTreeNode>(file, inputDirectoryPath) {
         override val root = GumTreePythonParser().parseFile(file)
         override val splitter = GumTreePythonFunctionSplitter()
     }
