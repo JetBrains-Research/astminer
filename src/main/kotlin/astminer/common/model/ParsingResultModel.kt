@@ -13,8 +13,8 @@ interface ParsingResultFactory {
 
     fun <T> parseFiles(
         files: List<File>,
-        action: (ParsingResult<out Node>) -> T,
-        inputDirectoryPath: String?
+        inputDirectoryPath: String? = null,
+        action: (ParsingResult<out Node>) -> T
     ): List<T?> {
         val results = mutableListOf<T?>()
         files.map { file ->
@@ -42,7 +42,7 @@ interface ParsingResultFactory {
         synchronized(results) {
             files.chunked(ceil(files.size.toDouble() / numOfThreads).toInt()).filter { it.isNotEmpty() }
                 .map { chunk ->
-                    threads.add(thread { results.addAll(parseFiles(chunk, action, inputDirectoryPath)) })
+                    threads.add(thread { results.addAll(parseFiles(chunk, inputDirectoryPath, action)) })
                 }
         }
         threads.map { it.join() }
@@ -60,8 +60,8 @@ interface PreprocessingParsingResultFactory : ParsingResultFactory {
      */
     override fun <T> parseFiles(
         files: List<File>,
-        action: (ParsingResult<out Node>) -> T,
-        inputDirectoryPath: String?
+        inputDirectoryPath: String?,
+        action: (ParsingResult<out Node>) -> T
     ) =
         files.map { file ->
             try {

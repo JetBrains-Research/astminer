@@ -29,7 +29,10 @@ object FuzzyParsingResultFactory : PreprocessingParsingResultFactory {
         return outputFile
     }
 
-    class CppFuzzyParsingResult(file: File, inputDirectoryPath: String?) : ParsingResult<FuzzyNode>(file, inputDirectoryPath) {
+    class CppFuzzyParsingResult(file: File, inputDirectoryPath: String?) : ParsingResult<FuzzyNode>(
+        file,
+        inputDirectoryPath
+    ) {
         override val root = FuzzyCppParser().parseFile(file)
         override val splitter = FuzzyFunctionSplitter()
     }

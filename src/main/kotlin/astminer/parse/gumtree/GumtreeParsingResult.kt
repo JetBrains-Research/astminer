@@ -1,6 +1,5 @@
 package astminer.parse.gumtree
 
-import astminer.common.model.Node
 import astminer.common.model.ParsingResult
 import astminer.common.model.ParsingResultFactory
 import astminer.common.model.TreeFunctionSplitter
