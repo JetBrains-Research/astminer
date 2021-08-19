@@ -24,6 +24,9 @@ enum class ParserType {
     @SerialName("gumtree")
     GumTree,
 
+    @SerialName("gumtree_srcML")
+    GumTreeSrcml,
+
     @SerialName("fuzzy")
     Fuzzy,
 

@@ -49,8 +49,8 @@ class Pipeline(private val config: PipelineConfig) {
                 val holdoutFiles = getProjectFilesWithExtension(holdoutDir, language.fileExtension)
                 printHoldoutStat(holdoutFiles, holdoutType)
                 val progressBar = ProgressBar("", holdoutFiles.size.toLong())
-                parsingResultFactory.parseFilesInThreads(holdoutFiles, config.numOfThreads) { parseResult ->
-                    val labeledResults = branch.process(parseResult)
+                parsingResultFactory.parseFilesInThreads(holdoutFiles, config.numOfThreads, inputDirectory.path) {
+                    val labeledResults = branch.process(it)
                     storage.storeSynchronously(labeledResults, holdoutType)
                     progressBar.step()
                 }

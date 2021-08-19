@@ -52,6 +52,8 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
 
     override val body: JavaParserNode? = root.getChildOfType(FUNCTION_BODY)
 
+    override val isConstructor: Boolean = false
+
     private fun assembleParameter(node: JavaParserNode): FunctionInfoParameter =
         FunctionInfoParameter(type = getParameterType(node), name = getParameterName(node))
 

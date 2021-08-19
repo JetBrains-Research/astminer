@@ -1,4 +1,4 @@
-package astminer.parse.gumtree.java
+package astminer.parse.gumtree.java.jdt
 
 import astminer.common.model.EnclosingElement
 import astminer.common.model.EnclosingElementType
@@ -9,7 +9,7 @@ import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger("Gumtree-Java-function-info")
 
-class GumTreeJavaFunctionInfo(
+class GumTreeJavaJDTFunctionInfo(
     override val root: GumTreeNode,
     override val filePath: String
 ) : FunctionInfo<GumTreeNode> {
@@ -33,7 +33,7 @@ class GumTreeJavaFunctionInfo(
         .filter { it.typeLabel == "MarkerAnnotation" }
         .mapNotNull { it.children.first().originalToken }
 
-    override val isConstructor: Boolean = root.typeLabel == "Initializer"
+    override val isConstructor: Boolean = enclosingElement?.name?.equals(name) ?: false
 
     override val body: GumTreeNode? = root.children.find { it.typeLabel == "Block" }
 

@@ -12,36 +12,44 @@ import astminer.parse.antlr.python.PythonParser
 import java.io.File
 
 object AntlrJavaParsingResultFactory : ParsingResultFactory {
-    override fun parse(file: File) = AntlrJavaParsingResult(file)
+    override fun parse(file: File, inputDirectoryPath: String?) =
+        AntlrJavaParsingResult(file, inputDirectoryPath)
 
-    class AntlrJavaParsingResult(file: File) : ParsingResult<AntlrNode>(file) {
+    class AntlrJavaParsingResult(file: File, inputDirectoryPath: String?) :
+        ParsingResult<AntlrNode>(file, inputDirectoryPath) {
         override val root = JavaParser().parseFile(file)
         override val splitter = JavaFunctionSplitter()
     }
 }
 
 object AntlrPythonParsingResultFactory : ParsingResultFactory {
-    override fun parse(file: File) = AntlrPythonParsingResult(file)
+    override fun parse(file: File, inputDirectoryPath: String?) =
+        AntlrPythonParsingResult(file, inputDirectoryPath)
 
-    class AntlrPythonParsingResult(file: File) : ParsingResult<AntlrNode>(file) {
+    class AntlrPythonParsingResult(file: File, inputDirectoryPath: String?) :
+        ParsingResult<AntlrNode>(file, inputDirectoryPath) {
         override val root = PythonParser().parseFile(file)
         override val splitter = PythonFunctionSplitter()
     }
 }
 
 object AntlrJavascriptParsingResultFactory : ParsingResultFactory {
-    override fun parse(file: File) = AntlrJavascriptParsingResult(file)
+    override fun parse(file: File, inputDirectoryPath: String?) =
+        AntlrJavascriptParsingResult(file, inputDirectoryPath)
 
-    class AntlrJavascriptParsingResult(file: File) : ParsingResult<AntlrNode>(file) {
+    class AntlrJavascriptParsingResult(file: File, inputDirectoryPath: String?) :
+        ParsingResult<AntlrNode>(file, inputDirectoryPath) {
         override val root = JavaScriptParser().parseFile(file)
         override val splitter = JavaScriptFunctionSplitter()
     }
 }
 
 object AntlrPHPParsingResultFactory : ParsingResultFactory {
-    override fun parse(file: File): ParsingResult<out Node> = AntlrPHPParsingResult(file)
+    override fun parse(file: File, inputDirectoryPath: String?) =
+        AntlrPHPParsingResult(file, inputDirectoryPath)
 
-    class AntlrPHPParsingResult(file: File) : ParsingResult<AntlrNode>(file) {
+    class AntlrPHPParsingResult(file: File, inputDirectoryPath: String?) :
+        ParsingResult<AntlrNode>(file, inputDirectoryPath) {
         override val root = PHPParser().parseFile(file)
         override val splitter = PHPFunctionSplitter()
     }
