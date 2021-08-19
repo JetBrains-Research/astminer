@@ -1,4 +1,4 @@
-package astminer.parse.gumtree.java
+package astminer.parse.gumtree.java.jdt
 
 import astminer.common.model.FunctionInfo
 import astminer.parse.gumtree.GumTreeNode
@@ -6,13 +6,13 @@ import org.junit.Test
 import java.io.File
 import kotlin.test.assertEquals
 
-private fun createTree(filename: String): GumTreeNode =
-    GumTreeJavaParser().parseInputStream(File(filename).inputStream())
+class GumTreeJavaJDTFunctionSplitterTest {
+    private fun createTree(filename: String): GumTreeNode =
+        GumTreeJavaJDTParser().parseInputStream(File(filename).inputStream())
 
-private fun createAndSplitTree(filename: String): Collection<FunctionInfo<GumTreeNode>> =
-    GumTreeJavaFunctionSplitter().splitIntoFunctions(createTree(filename), filename)
+    private fun createAndSplitTree(filename: String): Collection<FunctionInfo<GumTreeNode>> =
+        GumTreeJavaJDTFunctionSplitter().splitIntoFunctions(createTree(filename), filename)
 
-class GumTreeJavaFunctionSplitterTest {
     @Test
     fun testMethodExtraction1() {
         val functionInfos = createAndSplitTree("src/test/resources/gumTreeMethodSplitter/1.java")
@@ -75,6 +75,4 @@ class GumTreeJavaFunctionSplitterTest {
             assertEquals(listOf("int", "SingleFunction"), parameters?.map { it.type })
         }
     }
-
-//     TODO: add more tests
 }

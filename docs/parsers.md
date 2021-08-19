@@ -34,6 +34,14 @@ cp src/main/python/pythonparser/pythonparser_3.py src/main/python/pythonparser/p
 export PATH="<path>/src/main/python/pythonparser/pythonparser:${PATH}"
 ```
 
+### srcML backend
+
+A lot of languages in gumtree additionally supported with srcML backend, so `astminer`
+uses gumtree with srcML as a whole new parser.
+Running it requires installing `srcML`: https://www.srcml.org/
+
+If you have any problems with installation check the Dockerfile in the project root
+
 ## Fuzzy
 
 Originally [fuzzyc2cpg](https://github.com/ShiftLeftSecurity/fuzzyc2cpg), Fuzzy is

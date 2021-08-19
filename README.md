@@ -12,7 +12,7 @@ Supported languages of the input:
 |         | Java | Python | C/C++ | JavaScript | PHP |
 |---------|------|--------|-------|------------|-----|
 | ANTLR   | ✅    | ✅      |       | ✅          | ✅   |
-| GumTree | ✅    | ✅      |       |            |     |
+| GumTree | ✅ (JDT and srcML)    | ✅      |       |            |     |
 | Fuzzy   |      |        | ✅     |            |     |
 | JavaParser | ✅ |        |        |             |      |
 
