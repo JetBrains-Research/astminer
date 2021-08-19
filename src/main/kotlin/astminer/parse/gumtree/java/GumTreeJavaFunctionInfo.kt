@@ -33,10 +33,7 @@ class GumTreeJavaFunctionInfo(
         .filter { it.typeLabel == "MarkerAnnotation" }
         .mapNotNull { it.children.first().originalToken }
 
-    override val isConstructor: Boolean = run {
-        val enclosingName = enclosingElement?.name ?: return@run false
-        return@run name == enclosingName
-    }
+    override val isConstructor: Boolean = enclosingElement?.name?.equals(name) ?: false
 
     override val body: GumTreeNode? = root.children.find { it.typeLabel == "Block" }
 
