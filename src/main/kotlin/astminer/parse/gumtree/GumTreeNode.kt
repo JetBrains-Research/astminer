@@ -28,3 +28,5 @@ class GumTreeNode(val wrappedNode: ITree, val context: TreeContext, override var
 
     override fun preOrder(): List<GumTreeNode> = super.preOrder().map { it as GumTreeNode }
 }
+
+fun wrapGumTreeNode(treeContext: TreeContext): GumTreeNode = GumTreeNode(treeContext.root, treeContext, null)
