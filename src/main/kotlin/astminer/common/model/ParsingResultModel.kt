@@ -9,16 +9,17 @@ import kotlin.math.ceil
 private val logger = KotlinLogging.logger("HandlerFactory")
 
 interface ParsingResultFactory {
-    fun parse(file: File): ParsingResult<out Node>
+    fun parse(file: File, inputDirectoryPath: String? = null): ParsingResult<out Node>
 
     fun <T> parseFiles(
         files: List<File>,
-        action: (ParsingResult<out Node>) -> T
+        action: (ParsingResult<out Node>) -> T,
+        inputDirectoryPath: String?
     ): List<T?> {
         val results = mutableListOf<T?>()
         files.map { file ->
             try {
-                results.add(action(parse(file)))
+                results.add(action(parse(file, inputDirectoryPath)))
             } catch (parsingException: ParsingException) {
                 logger.error(parsingException) { "Failed to parse file ${file.path}" }
                 results.add(null)
@@ -30,6 +31,7 @@ interface ParsingResultFactory {
     fun <T> parseFilesInThreads(
         files: List<File>,
         numOfThreads: Int,
+        inputDirectoryPath: String? = null,
         action: (ParsingResult<out Node>) -> T
     ): List<T?> {
         val results = mutableListOf<T?>()
@@ -40,7 +42,7 @@ interface ParsingResultFactory {
         synchronized(results) {
             files.chunked(ceil(files.size.toDouble() / numOfThreads).toInt()).filter { it.isNotEmpty() }
                 .map { chunk ->
-                    threads.add(thread { results.addAll(parseFiles(chunk, action)) })
+                    threads.add(thread { results.addAll(parseFiles(chunk, action, inputDirectoryPath)) })
                 }
         }
         threads.map { it.join() }
@@ -58,12 +60,13 @@ interface PreprocessingParsingResultFactory : ParsingResultFactory {
      */
     override fun <T> parseFiles(
         files: List<File>,
-        action: (ParsingResult<out Node>) -> T
+        action: (ParsingResult<out Node>) -> T,
+        inputDirectoryPath: String?
     ) =
         files.map { file ->
             try {
                 val preprocessedFile = preprocess(file)
-                val result = action(parse(preprocessedFile))
+                val result = action(parse(preprocessedFile, inputDirectoryPath))
                 preprocessedFile.delete()
                 result
             } catch (parsingException: ParsingException) {
@@ -73,10 +76,11 @@ interface PreprocessingParsingResultFactory : ParsingResultFactory {
         }
 }
 
-abstract class ParsingResult<T : Node>(internal val file: File) {
+abstract class ParsingResult<T : Node>(internal val file: File, inputDir: String?) {
     abstract val root: T
     protected abstract val splitter: TreeFunctionSplitter<T>
+    val filePath: String = if (inputDir != null) file.relativeTo(File(inputDir)).path else file.path
 
     fun splitIntoFunctions(): Collection<FunctionInfo<out Node>> =
-        splitter.splitIntoFunctions(root, file.path)
+        splitter.splitIntoFunctions(root, filePath)
 }

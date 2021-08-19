@@ -7,12 +7,12 @@ import astminer.parse.fuzzy.cpp.FuzzyFunctionSplitter
 import java.io.File
 
 object FuzzyParsingResultFactory : PreprocessingParsingResultFactory {
-    override fun parse(file: File): ParsingResult<FuzzyNode> {
+    override fun parse(file: File, inputDirectoryPath: String?): ParsingResult<FuzzyNode> {
         val actualFile = if (file.nameWithoutExtension.endsWith(preprocessSuffix)) {
             val actualFileNameSize = file.nameWithoutExtension.length - preprocessSuffix.length
             file.parentFile.resolve("${file.nameWithoutExtension.take(actualFileNameSize)}.${file.extension}")
         } else file
-        return CppFuzzyParsingResult(actualFile)
+        return CppFuzzyParsingResult(actualFile, inputDirectoryPath)
     }
 
     /**
@@ -29,7 +29,7 @@ object FuzzyParsingResultFactory : PreprocessingParsingResultFactory {
         return outputFile
     }
 
-    class CppFuzzyParsingResult(file: File) : ParsingResult<FuzzyNode>(file) {
+    class CppFuzzyParsingResult(file: File, inputDirectoryPath: String?) : ParsingResult<FuzzyNode>(file, inputDirectoryPath) {
         override val root = FuzzyCppParser().parseFile(file)
         override val splitter = FuzzyFunctionSplitter()
     }
