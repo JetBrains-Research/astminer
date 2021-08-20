@@ -8,23 +8,18 @@ import spoon.Launcher
 import spoon.SpoonException
 import java.io.File
 import java.io.InputStream
-import kotlin.io.path.Path
+import java.nio.file.StandardOpenOption
+import kotlin.io.path.createTempDirectory
 
 internal val logger = KotlinLogging.logger("Spoon-JavaParser")
 
 class SpoonJavaParser : Parser<SpoonNode> {
     // TODO try to run on different platforms
-    private val tempPath = Path("./spoonTmpCanBeDeletedAfterParsing")
+    private val tempPath = createTempDirectory(prefix = "spoonTmp").also { it.toFile().deleteOnExit() }
     private val suffix = ".java"
     private val logger = KotlinLogging.logger("Spoon parser")
 
-    private fun createTempDirectory() {
-        val directory = tempPath.toFile()
-        if (!directory.exists()) { directory.mkdir() }
-    }
-
     override fun parseInputStream(content: InputStream): SpoonNode {
-        createTempDirectory()
         val tempFile = kotlin.io.path.createTempFile(suffix = suffix, directory = tempPath).toFile()
         copyInputStreamToFile(content, tempFile)
 
