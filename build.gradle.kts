@@ -34,6 +34,9 @@ dependencies {
     // https://github.com/javaparser/javaparser
     implementation("com.github.javaparser:javaparser-symbol-solver-core:3.22.1")
 
+    // https://spoon.gforge.inria.fr/
+    implementation("fr.inria.gforge.spoon:spoon-core:9.1.0-beta-16")
+
     // https://mvnrepository.com/artifact/io.shiftleft/fuzzyc2cpg
     api("io.shiftleft", "fuzzyc2cpg_2.13", "1.2.30")
 
