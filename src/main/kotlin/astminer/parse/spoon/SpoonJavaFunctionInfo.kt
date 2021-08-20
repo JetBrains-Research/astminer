@@ -14,8 +14,8 @@ class SpoonJavaFunctionInfo(override val root: SpoonNode, override val filePath:
 
     override val parameters: List<FunctionInfoParameter>? = run {
         root.preOrder().filter { it.typeLabel == PARAMETER_TYPE }.map {
-            try{ assembleParameter(it) } catch (e: IllegalStateException) {
-                logger.warn{}
+            try { assembleParameter(it) } catch (e: IllegalStateException) {
+                logger.warn { e.message }
                 return@run null
             }
         }
