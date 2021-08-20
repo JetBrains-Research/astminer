@@ -10,7 +10,7 @@ import java.io.File
 import java.io.InputStream
 import kotlin.io.path.createTempDirectory
 
-internal val logger = KotlinLogging.logger("Spoon-JavaParser")
+private val logger = KotlinLogging.logger("Spoon-JavaParser")
 
 class SpoonJavaParser : Parser<SpoonNode> {
     // TODO try to run on different platforms

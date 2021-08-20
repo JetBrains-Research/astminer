@@ -5,12 +5,21 @@ import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
 import astminer.common.model.FunctionInfoParameter
 import astminer.parse.findEnclosingElementBy
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger("Spoon-Java-function-info")
 
 class SpoonJavaFunctionInfo(override val root: SpoonNode, override val filePath: String) : FunctionInfo<SpoonNode> {
     override val nameNode: SpoonNode = root
 
-    override val parameters: List<FunctionInfoParameter> =
-        root.preOrder().filter { it.typeLabel == PARAMETER_TYPE }.map { assembleParameter(it) }
+    override val parameters: List<FunctionInfoParameter>? = run {
+        root.preOrder().filter { it.typeLabel == PARAMETER_TYPE }.map {
+            try{ assembleParameter(it) } catch (e: IllegalStateException) {
+                logger.warn{}
+                return@run null
+            }
+        }
+    }
 
     override val annotations: List<String>? = run {
         root.getChildrenOfType(ANNOTATION_NODE_TYPE).map {
