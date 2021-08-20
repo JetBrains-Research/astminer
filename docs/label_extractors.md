@@ -1,12 +1,10 @@
 # Label extractors
 
-The label extractor module extracts labels from AST trees and processes them to avoid data leaks.
-You can assign a certain label type to each tree.
-Also, the selected type defines the granularity level of label extraction for the whole pipeline.
-
-You can define only one label extractor or skip this module at all. Then identifier names will be preserved.
+The label extractor module defines the logic of assigning labels to each AST.
+The selected label type also defines the granularity level of label extraction for the whole pipeline. Currently, 3 types of labels are supported. You can specify only one.
 
 Label extractor config classes are defined in [LabelExtractorConfigs.kt](src/main/kotlin/astminer/config/LabelExtractorConfigs.kt).
+
 
 ## file name
 **granularity**: files
@@ -31,8 +29,9 @@ May be useful for code classification datasets, e.g., POJ-104.
 **granularity**: functions
 
 Use the name of each function as a label.
-This label extractor will also hide the function name in the AST and all recursive calls to prevent data leaks.
 
  ```yaml
  name: function name
  ```
+
+> If a function name is used as the label, the module additionally processes the AST to avoid data leaks. It looks for all recursive calls of this function and replaces the function name in the `token` value of the respective vertices with `METHOD_NAME`.

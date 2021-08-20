@@ -31,14 +31,26 @@ Along with dot files, this storage also saves `description.csv` with a mapping b
  name: dot AST
  ```
 
-### JSON Lines
+### JSON lines
 
-Saves each tree with its label in the JSON Lines format.
-The JSON format of storing ASTs inspired by the [150k Python](https://www.sri.inf.ethz.ch/py150) dataset.
+Saves each tree with its label in the JSON lines format inspired by the [150k Python](https://www.sri.inf.ethz.ch/py150) dataset.
 
  ```yaml
  name: json AST
  ```
+
+In this format, each line represents an AST with its [label](label_extractors.md), path, and all vertices:
+
+```json
+{
+  "label": "1.java",
+  "path": "src/test/resources/examples/1.java",
+  "ast": [
+    { "token": "EMPTY", "typeLabel": "CompilationUnit", "children": [1] },
+    { "token": "class", "typeLabel": "TypeDeclaration", "children": [2, 3, 4] },
+    ...
+  ]
+```
 
 ## Path-based representations
 
@@ -47,7 +59,7 @@ It is used in popular code representation models such as `code2vec` and `code2se
 
 ### Code2vec
 
-Extract paths from each AST. The output is stored in 4 files:
+Extracts paths from each AST. The output is stored in 4 files:
 1. `node_types.csv` contains numeric IDs and corresponding node types with directions (up/down, as described in this [paper by Uri Alon et al.](https://arxiv.org/pdf/1803.09544.pdf)).
 2. `tokens.csv` contains numeric IDs and corresponding tokens.
 3. `paths.csv` contains numeric IDs and AST paths in the form of space-separated sequences of node type IDs.
