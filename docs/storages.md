@@ -80,7 +80,7 @@ Extracts paths from each AST. The output is stored in 4 files:
 
 ### Code2seq
 
-Extract paths from each AST and save in the code2seq format.
+Extracts paths from each AST and save in the code2seq format.
 The output is `path_context.c2s` file, which is generated for every holdout.
 Each line starts with a label followed by a sequence of space-separated triples.
 Each triple contains comma-separated IDs of the start token, path node types, and end token.
