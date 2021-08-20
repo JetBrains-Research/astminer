@@ -8,7 +8,6 @@ import spoon.Launcher
 import spoon.SpoonException
 import java.io.File
 import java.io.InputStream
-import java.nio.file.StandardOpenOption
 import kotlin.io.path.createTempDirectory
 
 internal val logger = KotlinLogging.logger("Spoon-JavaParser")
