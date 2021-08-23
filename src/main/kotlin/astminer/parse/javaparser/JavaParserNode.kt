@@ -3,6 +3,7 @@ package astminer.parse.javaparser
 import astminer.common.model.Node
 import com.github.javaparser.ast.expr.AssignExpr
 import com.github.javaparser.ast.expr.BinaryExpr
+import com.github.javaparser.ast.expr.Name
 import com.github.javaparser.ast.expr.UnaryExpr
 import mu.KotlinLogging
 import com.github.javaparser.ast.Node as JPNode
@@ -64,6 +65,9 @@ private fun JPNode.isLeaf(): Boolean = this.childNodes.isEmpty()
 private fun JPNode.hasNoToken(): Boolean = !this.tokenRange.isPresent
 
 private fun getJavaParserNodeToken(jpNode: JPNode): String? {
-    if (jpNode.childNodes.isNotEmpty()) return null
-    return jpNode.tokenRange.get().toString()
+    return when {
+        jpNode is Name -> jpNode.asString()
+        jpNode.isLeaf() -> jpNode.tokenRange.get().toString()
+        else -> null
+    }
 }
