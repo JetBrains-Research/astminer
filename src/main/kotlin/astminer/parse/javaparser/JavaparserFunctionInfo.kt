@@ -38,7 +38,7 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
 
     override val annotations: List<String>? = run {
         root.children.filter { it.typeLabel in POSSIBLE_ANNOTATION_TYPES }.map {
-            val token = it.getChildOfType(ANNOTATION_NAME)?.originalToken
+            val token = it.getChildOfType(ANNOTATION_NAME)?.originalToken?.split(".")?.last()
             if (token == null) {
                 logger.warn { "Annotation for function $name in file $filePath doesn't have a token" }
                 return@run null
