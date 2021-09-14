@@ -34,7 +34,10 @@ enum class ParserType {
     JavaParser,
 
     @SerialName("spoon")
-    Spoon
+    Spoon,
+
+    @SerialName("javalang")
+    JavaLang
 }
 
 @Serializable
