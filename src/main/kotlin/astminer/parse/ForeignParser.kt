@@ -4,7 +4,6 @@ import astminer.common.model.Node
 import astminer.common.model.Parser
 import astminer.config.FileExtension
 import astminer.config.ParserType
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
@@ -14,13 +13,13 @@ import java.io.File
 import java.io.InputStream
 import kotlin.io.path.createTempDirectory
 
-fun getTreeFromPythonScript(args: List<String>): SimpleNode {
-    val treeString = launchPythonScript(args)
+fun getTreeFromScript(args: List<String>): SimpleNode {
+    val treeString = launchScript(args)
     val foreignTree = Json.decodeFromString<ForeignTree>(treeString)
     return convertFromForeignTree(foreignTree)
 }
 
-private fun launchPythonScript(args: List<String>): String {
+private fun launchScript(args: List<String>): String {
     val processBuilder = ProcessBuilder(args)
     processBuilder.redirectErrorStream(true)
     val process = processBuilder.start()
@@ -84,7 +83,7 @@ abstract class ForeignParser : Parser<SimpleNode> {
 
     override fun parseFile(file: File): SimpleNode {
         return try {
-            getTreeFromPythonScript(getArguments(file))
+            getTreeFromScript(getArguments(file))
         } catch (e: SerializationException) {
             throw ParsingException(parserType = parser.name, language = language.name, e)
         }
