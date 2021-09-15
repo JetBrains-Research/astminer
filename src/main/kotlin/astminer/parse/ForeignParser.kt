@@ -13,6 +13,17 @@ import java.io.File
 import java.io.InputStream
 import kotlin.io.path.createTempDirectory
 
+/** Launches external script with java `ProcessBuilder` and
+ *  converts output to `astminer` tree.
+ *
+ *  Output of the script must be a json tree.
+ *
+ *  Example:
+ *  `{"tree" : [{"token" : null, "nodeType" : "i_am_root", "children" : [1,2]}`,
+ *
+ *  `{"token" : "Hello", "nodeType" : "left_child", "children" : []}`,
+ *
+ *  `{"token" : "World!", "nodeType" : "right_child", "children" : []}]}` **/
 fun getTreeFromScript(args: List<String>): SimpleNode {
     val treeString = launchScript(args)
     val foreignTree = Json.decodeFromString<ForeignTree>(treeString)
@@ -57,6 +68,13 @@ class SimpleNode(
     override fun preOrder() = super.preOrder().map { it as SimpleNode }
 }
 
+/** Use this parser to get a tree from external script.
+ *  It uses `getTreeFromScript` and `getArguments` functions to generate
+ *  parameters based on target file and then launches java `ProcessBuilder`
+ *  on these parameters to get `astminer` tree
+ *
+ *  Please note that external script must output json AST.
+ *  @see getTreeFromScript**/
 abstract class ForeignParser : Parser<SimpleNode> {
     abstract val parser: ParserType
     abstract val language: FileExtension
