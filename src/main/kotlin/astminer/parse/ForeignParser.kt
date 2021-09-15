@@ -4,7 +4,6 @@ import astminer.common.model.Node
 import astminer.common.model.Parser
 import astminer.config.FileExtension
 import astminer.config.ParserType
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
@@ -14,15 +13,25 @@ import java.io.File
 import java.io.InputStream
 import kotlin.io.path.createTempDirectory
 
-@ExperimentalSerializationApi
-fun getTreeFromPythonScript(vararg args: String): SimpleNode {
-    val treeString = launchPythonScript(*args)
+/** Launches external script with java `ProcessBuilder` and
+ *  converts output to `astminer` tree.
+ *
+ *  Output of the script must be a json tree.
+ *
+ *  Example:
+ *  `{"tree" : [{"token" : null, "nodeType" : "i_am_root", "children" : [1,2]}`,
+ *
+ *  `{"token" : "Hello", "nodeType" : "left_child", "children" : []}`,
+ *
+ *  `{"token" : "World!", "nodeType" : "right_child", "children" : []}]}` **/
+fun getTreeFromScript(args: List<String>): SimpleNode {
+    val treeString = launchScript(args)
     val foreignTree = Json.decodeFromString<ForeignTree>(treeString)
     return convertFromForeignTree(foreignTree)
 }
 
-private fun launchPythonScript(vararg args: String): String {
-    val processBuilder = ProcessBuilder(*args)
+private fun launchScript(args: List<String>): String {
+    val processBuilder = ProcessBuilder(args)
     processBuilder.redirectErrorStream(true)
     val process = processBuilder.start()
     val treeString = process.inputStream.bufferedReader().use { it.readText() }
@@ -59,13 +68,23 @@ class SimpleNode(
     override fun preOrder() = super.preOrder().map { it as SimpleNode }
 }
 
-abstract class ForeignParser: Parser<SimpleNode> {
-    abstract fun getArguments(file: File): Array<out String>
+/** Use this parser to get a tree from external script.
+ *  It uses `getTreeFromScript` and `getArguments` functions to generate
+ *  parameters based on target file and then launches java `ProcessBuilder`
+ *  on these parameters to get `astminer` tree
+ *
+ *  Please note that external script must output json AST.
+ *  @see getTreeFromScript**/
+abstract class ForeignParser : Parser<SimpleNode> {
     abstract val parser: ParserType
     abstract val language: FileExtension
 
-    private val tempPath by lazy { createTempDirectory(prefix = "${parser.name}Tmp").also { it.toFile().deleteOnExit() } }
+    private val tempPath by lazy {
+        createTempDirectory(prefix = "${parser.name}Tmp").also { it.toFile().deleteOnExit() }
+    }
     private val suffix by lazy { ".${language.fileExtension}" }
+
+    abstract fun getArguments(file: File): List<String>
 
     override fun parseInputStream(content: InputStream): SimpleNode {
         val tempFile = kotlin.io.path.createTempFile(suffix = suffix, directory = tempPath).toFile()
@@ -81,8 +100,9 @@ abstract class ForeignParser: Parser<SimpleNode> {
     }
 
     override fun parseFile(file: File): SimpleNode {
-        return try { getTreeFromPythonScript(*getArguments(file)) }
-        catch (e: SerializationException) {
+        return try {
+            getTreeFromScript(getArguments(file))
+        } catch (e: SerializationException) {
             throw ParsingException(parserType = parser.name, language = language.name, e)
         }
     }
