@@ -64,10 +64,10 @@ private fun convertFromForeignTree(context: ForeignTree, rootId: Int = 0, parent
 }
 
 @Serializable
-data class ForeignTree(val tree: List<ForeignNode>)
+private data class ForeignTree(val tree: List<ForeignNode>)
 
 @Serializable
-data class ForeignNode(val token: String?, val nodeType: String, val children: List<Int>)
+private data class ForeignNode(val token: String?, val nodeType: String, val children: List<Int>)
 
 /** Use this parser to get a tree from external script.
  *  It uses `getTreeFromScript` and `getArguments` functions to generate
