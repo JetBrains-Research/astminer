@@ -16,14 +16,29 @@ import kotlin.io.path.createTempDirectory
 /** Launches external script with java `ProcessBuilder` and
  *  converts output to `astminer` tree.
  *
- *  Output of the script must be a json tree.
- *
- *  Example:
- *  `{"tree" : [{"token" : null, "nodeType" : "i_am_root", "children" : [1,2]}`,
- *
- *  `{"token" : "Hello", "nodeType" : "left_child", "children" : []}`,
- *
- *  `{"token" : "World!", "nodeType" : "right_child", "children" : []}]}` **/
+ *  Output of the script must be a json tree. Example:
+ *  ```
+ *  {
+ *    "tree": [
+ *      {
+ *        "token": null,
+ *        "nodeType": "i_am_root",
+ *        "children": [1,2]
+ *      },
+ *      {
+ *        "token": "Hello",
+ *        "nodeType": "left_child",
+ *        "children": []
+ *      },
+ *      {
+ *        "token": "World!",
+ *        "nodeType": "right_child",
+ *        "children": []
+ *      }
+ *    ]
+ *  }
+ *  ```
+ **/
 fun getTreeFromScript(args: List<String>): SimpleNode {
     val treeString = launchScript(args)
     val foreignTree = Json.decodeFromString<ForeignTree>(treeString)
