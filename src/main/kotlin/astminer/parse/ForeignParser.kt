@@ -1,7 +1,7 @@
 package astminer.parse
 
-import astminer.common.model.Node
 import astminer.common.model.Parser
+import astminer.common.model.SimpleNode
 import astminer.config.FileExtension
 import astminer.config.ParserType
 import kotlinx.serialization.Serializable
@@ -68,20 +68,6 @@ data class ForeignTree(val tree: List<ForeignNode>)
 
 @Serializable
 data class ForeignNode(val token: String?, val nodeType: String, val children: List<Int>)
-
-class SimpleNode(
-    override val typeLabel: String,
-    override val children: MutableList<SimpleNode>,
-    override val parent: Node?,
-    token: String?
-) : Node(token) {
-    override fun removeChildrenOfType(typeLabel: String) {
-        children.removeIf { it.typeLabel == typeLabel }
-    }
-
-    override fun getChildOfType(typeLabel: String) = super.getChildOfType(typeLabel) as? SimpleNode
-    override fun preOrder() = super.preOrder().map { it as SimpleNode }
-}
 
 /** Use this parser to get a tree from external script.
  *  It uses `getTreeFromScript` and `getArguments` functions to generate
