@@ -2,8 +2,8 @@ package astminer.parse.treesitter.java
 
 import astminer.common.model.ParsingResult
 import astminer.common.model.ParsingResultFactory
+import astminer.common.model.SimpleNode
 import astminer.common.model.TreeFunctionSplitter
-import astminer.parse.SimpleNode
 import java.io.File
 
 class TreeSitterJavaFactory : ParsingResultFactory {

@@ -1,7 +1,7 @@
 package astminer.parse.treesitter.java
 
 import astminer.common.model.FunctionInfo
-import astminer.parse.SimpleNode
+import astminer.common.model.SimpleNode
 
 class TreeSitterJavaFunctionInfo(override val root: SimpleNode, override val filePath: String) :
     FunctionInfo<SimpleNode> {
