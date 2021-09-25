@@ -9,17 +9,25 @@ import astminer.parse.antlr.getTokensFromSubtree
 
 class TreeSitterJavaFunctionInfo(override val root: SimpleNode, override val filePath: String) :
     FunctionInfo<SimpleNode> {
-    override val nameNode: SimpleNode? = root.getChildOfType(FUNCTION_NAME)
+    override val nameNode: SimpleNode? = root.getChildOfType(NAME)
 
     override val body: SimpleNode? = root.getChildOfType(BODY)
 
-    override val annotations: List<String>?
-        get() = super.annotations
+    override val annotations: List<String>? =
+        root.getChildOfType(MODIFIERS)?.children
+            ?.filter { possibleAnnotations.contains(it.typeLabel) }
+            ?.map { it.getChildOfType(NAME)?.originalToken }
+            ?.map { checkNotNull(it) { "Annotation without a name in function $name in $filePath" } }
 
-    override val modifiers: List<String>?
-        get() = super.modifiers
+    override val modifiers: List<String>? =
+        root.getChildOfType(MODIFIERS)?.children
+            ?.filter { possibleModifiers.contains(it.typeLabel) }
+            ?.map { it.originalToken }
+            ?.map { checkNotNull(it) { "Modifier without a token in function $name in $filePath" } }
+
     override val parameters: List<FunctionInfoParameter>?
         get() = super.parameters
+
     override val returnType: String = run {
         val returnTypeNode = root.children.find { returnTypes.contains(it.typeLabel) }
         checkNotNull(returnTypeNode) { "No return type in function $name in file $filePath" }
@@ -38,9 +46,40 @@ class TreeSitterJavaFunctionInfo(override val root: SimpleNode, override val fil
         get() = super.isConstructor
 
     companion object {
-        const val FUNCTION_NAME = "identifier"
+        const val NAME = "identifier"
         const val BODY = "block"
         const val ARRAY_TYPE = "array_type"
+
+        const val CLASS_DECLARATION = "class_declaration"
+        const val ENUM_DECLARATION = "enum_declaration"
+
+        val possible_enclosings = listOf(
+            CLASS_DECLARATION,
+            ENUM_DECLARATION
+        )
+
+        const val MODIFIERS = "modifiers"
+
+        val possibleAnnotations = listOf(
+            "marker_annotation",
+            "annotation"
+        )
+
+        val possibleModifiers = listOf(
+            "public",
+            "protected",
+            "private",
+            "abstract",
+            "static",
+            "final",
+            "strictfp",
+            "default",
+            "synchronized",
+            "native",
+            "transient",
+            "volatile"
+        )
+
         val returnTypes = listOf(
             "void_type",
             "integral_type",
