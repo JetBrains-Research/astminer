@@ -42,8 +42,7 @@ class TreeSitterJavaFunctionInfo(override val root: SimpleNode, override val fil
     override val enclosingElement: EnclosingElement<SimpleNode>?
         get() = super.enclosingElement
 
-    override val isConstructor: Boolean
-        get() = super.isConstructor
+    override val isConstructor: Boolean = false
 
     companion object {
         const val NAME = "identifier"
