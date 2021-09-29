@@ -1,27 +1,18 @@
 SHADOW_LIST = ["{", "}", "(", ")", "[", "]", ",", ";"]
 
+
 class NextSiblingAvailable(Exception):
     pass
 
 
 def get_node_as_dict(cursor, file_bytes):
-    field_name = cursor.current_field_name()
-    if field_name is not None:
-        field_name = field_name + "|"
-    else:
-        field_name = ""
-
     node_type = cursor.node.type
     if len(cursor.node.children) == 0:
-        node_value = file_bytes[cursor.node.start_byte:cursor.node.end_byte].decode("utf-8")
+        node_value = file_bytes[cursor.node.start_byte : cursor.node.end_byte].decode("utf-8")
     else:
         node_value = None
 
-    return {
-        "token": node_value,
-        "nodeType": node_type,
-        "children": []
-    }
+    return {"token": node_value, "nodeType": node_type, "children": []}
 
 
 def get_tree_as_dict(cursor, original_file_bytes):

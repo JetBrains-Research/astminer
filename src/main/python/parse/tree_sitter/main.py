@@ -1,27 +1,26 @@
-from tree_sitter import Language, Parser, TreeCursor
+from tree_sitter import Language, Parser
 from ast import get_tree_as_dict
 import json
 from argparse import ArgumentParser
 import os
 
 argument_parser = ArgumentParser()
-argument_parser.add_argument("-f", "--file", dest="filename", type=str,
-                             help="path to the target file", metavar="FILE")
+argument_parser.add_argument("-f", "--file", dest="filename", type=str, help="path to the target file", metavar="FILE")
 argument_parser.add_argument("-b", "--build", dest="grammars", nargs="+")
 
 
 def build_libraries(languages):
     Language.build_library(
         # Store the library in the `build` directory
-        'build/my-languages.so',
+        "build/my-languages.so",
         # Include one or more languages
-        languages
+        languages,
     )
 
 
 def setup_java_parser() -> Parser:
     dirname = os.path.dirname(__file__)
-    filename = os.path.join(dirname, 'build/my-languages.so')
+    filename = os.path.join(dirname, "build/my-languages.so")
     java_grammar = Language(filename, "java")
     java_parser = Parser()
     java_parser.set_language(java_grammar)
@@ -52,5 +51,5 @@ def main():
         parse_file(args.filename)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
