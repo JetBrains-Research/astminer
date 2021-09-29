@@ -7,44 +7,56 @@ NodeAsDict = TypedDict("NodeAsDict", {"token": Optional[str], "nodeType": str, "
 TreeAsDict = TypedDict("TreeAsDict", {"tree": List[NodeAsDict]})
 
 
-class NextSiblingAvailable(Exception):
-    pass
+class TreeBuilder:
+    _cursor: TreeCursor
+    _file_bytes: bytes
 
+    def __init__(self, cursor: TreeCursor, file_bytes: bytes):
+        self._cursor = cursor
+        self._file_bytes = file_bytes
 
-def get_node_as_dict(cursor: "TreeCursor", file_bytes: bytes) -> NodeAsDict:
-    node_type = cursor.node.type
-    if len(cursor.node.children) == 0:
-        node_value: Optional[str] = file_bytes[cursor.node.start_byte : cursor.node.end_byte].decode("utf-8")
-    else:
-        node_value = None
+    def _get_current_node_as_dict(self) -> NodeAsDict:
+        node_type = self._cursor.node.type
+        if len(self._cursor.node.children) == 0:
+            node_value_bytes = self._file_bytes[self._cursor.node.start_byte: self._cursor.node.end_byte]
+            node_value: Optional[str] = node_value_bytes.decode("utf-8")
+        else:
+            node_value = None
 
-    return {"token": node_value, "nodeType": node_type, "children": []}
+        return {"token": node_value, "nodeType": node_type, "children": []}
 
-
-def get_tree_as_dict(cursor: "TreeCursor", original_file_bytes: bytes) -> TreeAsDict:
-    depth = 0
-    tree = []
-    last_node_by_indent = {}
-    index = 0
-    while True:
-        if cursor.node.type not in SHADOW_LIST:
-            node = get_node_as_dict(cursor, original_file_bytes)
-            last_node_by_indent[depth] = node
-            if depth > 0:
-                last_node_by_indent[depth - 1]["children"].append(index)
-            tree.append(node)
-            index += 1
-        if cursor.goto_first_child():
-            depth += 1
-            continue
-        if cursor.goto_next_sibling():
-            continue
-        try:
-            while cursor.goto_parent():
+    def get_tree_as_dict(self) -> TreeAsDict:
+        depth = 0
+        tree = []
+        last_node_by_depth = {}
+        index = 0
+        while True:
+            # creating new node
+            if self._cursor.node.type not in SHADOW_LIST:
+                node = self._get_current_node_as_dict()
+                last_node_by_depth[depth] = node
+                if depth > 0:
+                    last_node_by_depth[depth - 1]["children"].append(index)
+                tree.append(node)
+                index += 1
+            # going deeper if we can
+            if self._cursor.goto_first_child():
+                depth += 1
+                continue
+            # trying to go right
+            if self._cursor.goto_next_sibling():
+                continue
+            # if we are in the most deep right node
+            # traverse up to find node with right sibling
+            found_right_sibling = False
+            while self._cursor.goto_parent():
                 depth -= 1
-                if cursor.goto_next_sibling():
-                    raise NextSiblingAvailable
-        except NextSiblingAvailable:
-            continue
-        break
-    return {"tree": tree}
+                if self._cursor.goto_next_sibling():
+                    found_right_sibling = True
+                    break
+            if found_right_sibling:
+                continue
+            # if we couldn't find any new node to traverse
+            # end while loop
+            break
+        return {"tree": tree}

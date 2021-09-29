@@ -1,9 +1,9 @@
 from tree_sitter import Language, Parser
-from ast import get_tree_as_dict
 import json
 from argparse import ArgumentParser
 import os
 from typing import List
+from ast import TreeBuilder
 
 argument_parser = ArgumentParser()
 argument_parser.add_argument("-f", "--file", dest="filename", type=str, help="path to the target file", metavar="FILE")
@@ -38,7 +38,7 @@ def parse_file(filename: str):
     code_bytes = get_code_bytes(filename)
     tree = parser.parse(code_bytes)
     cursor = tree.walk()
-    tree_as_dict = get_tree_as_dict(cursor, code_bytes)
+    tree_as_dict = TreeBuilder(cursor, code_bytes).get_tree_as_dict()
     print(json.dumps(tree_as_dict))
 
 
