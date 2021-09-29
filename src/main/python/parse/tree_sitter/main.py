@@ -3,13 +3,14 @@ from ast import get_tree_as_dict
 import json
 from argparse import ArgumentParser
 import os
+from typing import List
 
 argument_parser = ArgumentParser()
 argument_parser.add_argument("-f", "--file", dest="filename", type=str, help="path to the target file", metavar="FILE")
 argument_parser.add_argument("-b", "--build", dest="grammars", nargs="+")
 
 
-def build_libraries(languages):
+def build_libraries(languages: List[str]):
     Language.build_library(
         # Store the library in the `build` directory
         "build/my-languages.so",
@@ -27,12 +28,12 @@ def setup_java_parser() -> Parser:
     return java_parser
 
 
-def get_code_bytes(filepath) -> bytes:
+def get_code_bytes(filepath: str) -> bytes:
     example = open(filepath, "r")
     return bytes(example.read(), "utf-8")
 
 
-def parse_file(filename):
+def parse_file(filename: str):
     parser = setup_java_parser()
     code_bytes = get_code_bytes(filename)
     tree = parser.parse(code_bytes)

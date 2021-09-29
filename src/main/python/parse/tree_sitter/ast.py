@@ -1,21 +1,27 @@
+from tree_sitter import TreeCursor
+from typing import Optional, TypedDict, List
+
 SHADOW_LIST = ["{", "}", "(", ")", "[", "]", ",", ";"]
+
+NodeAsDict = TypedDict("NodeAsDict", {"token": Optional[str], "nodeType": str, "children": List[int]})
+TreeAsDict = TypedDict("TreeAsDict", {"tree": List[NodeAsDict]})
 
 
 class NextSiblingAvailable(Exception):
     pass
 
 
-def get_node_as_dict(cursor, file_bytes):
+def get_node_as_dict(cursor: "TreeCursor", file_bytes: bytes) -> NodeAsDict:
     node_type = cursor.node.type
     if len(cursor.node.children) == 0:
-        node_value = file_bytes[cursor.node.start_byte : cursor.node.end_byte].decode("utf-8")
+        node_value: Optional[str] = file_bytes[cursor.node.start_byte : cursor.node.end_byte].decode("utf-8")
     else:
         node_value = None
 
     return {"token": node_value, "nodeType": node_type, "children": []}
 
 
-def get_tree_as_dict(cursor, original_file_bytes):
+def get_tree_as_dict(cursor: "TreeCursor", original_file_bytes: bytes) -> TreeAsDict:
     depth = 0
     tree = []
     last_node_by_indent = {}
