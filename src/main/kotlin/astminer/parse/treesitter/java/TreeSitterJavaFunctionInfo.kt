@@ -30,11 +30,14 @@ class TreeSitterJavaFunctionInfo(override val root: SimpleNode, override val fil
 
     override val parameters: List<FunctionInfoParameter>? = extractWithLogger {
         val parametersRoot = root.getChildOfType(PARAMETERS)
-            ?: throw IllegalStateException("No parameters found")
+        checkNotNull(parametersRoot) { "No parameters found" }
         parametersRoot.children.map { parameter ->
             val possibleNameNode = parameter.getChildOfType(NAME)
-            val name = if (possibleNameNode != null) possibleNameNode.originalToken
-            else parameter.getChildOfType(VARIABLE_DECLARATOR)?.getChildOfType(NAME)?.originalToken
+            val name = if (possibleNameNode != null) {
+                possibleNameNode.originalToken
+            } else {
+                parameter.getChildOfType(VARIABLE_DECLARATOR)?.getChildOfType(NAME)?.originalToken
+            }
             checkNotNull(name) { "Can't find parameter name" }
 
             val type = parameter.children.find { it.typeLabel in returnTypes }?.getTokensFromSubtree()
@@ -58,12 +61,8 @@ class TreeSitterJavaFunctionInfo(override val root: SimpleNode, override val fil
 
     override val enclosingElement: EnclosingElement<SimpleNode>? = run {
         val enclosingNode = root.findEnclosingElementBy { it.typeLabel in possible_enclosings } ?: return@run null
-        val enclosingType = when (enclosingNode.typeLabel) {
-            CLASS_DECLARATION, ENUM_DECLARATION -> EnclosingElementType.Class
-            else -> throw IllegalStateException("Unexpected enclosing")
-        }
         val name = enclosingNode.getChildOfType(NAME)?.originalToken
-        return@run EnclosingElement(type = enclosingType, name = name, root = enclosingNode)
+        return@run EnclosingElement(type = EnclosingElementType.Class, name = name, root = enclosingNode)
     }
 
     override val isConstructor: Boolean = false
