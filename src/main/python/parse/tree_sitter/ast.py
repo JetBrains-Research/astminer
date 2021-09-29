@@ -1,4 +1,4 @@
-SHADOW_LIST = ["{", "}", "(", ")", "[", "]", ",", ";"]
+SHADOW_LIST = ["{", "}", "(", ")", ",", ";"]
 
 class NextSiblingAvailable(Exception):
     pass
