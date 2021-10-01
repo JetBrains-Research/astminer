@@ -1,8 +1,6 @@
 from tree_sitter import TreeCursor
 from typing import Optional, TypedDict, List
 
-SHADOW_LIST = ["{", "}", "(", ")", "[", "]", ",", ";"]
-
 NodeAsDict = TypedDict("NodeAsDict", {"token": Optional[str], "nodeType": str, "children": List[int]})
 TreeAsDict = TypedDict("TreeAsDict", {"tree": List[NodeAsDict]})
 
@@ -32,13 +30,12 @@ class TreeBuilder:
         index = 0
         while True:
             # creating new node
-            if self._cursor.node.type not in SHADOW_LIST:
-                node = self._get_current_node_as_dict()
-                last_node_by_depth[depth] = node
-                if depth > 0:
-                    last_node_by_depth[depth - 1]["children"].append(index)
-                tree.append(node)
-                index += 1
+            node = self._get_current_node_as_dict()
+            last_node_by_depth[depth] = node
+            if depth > 0:
+                last_node_by_depth[depth - 1]["children"].append(index)
+            tree.append(node)
+            index += 1
             # going deeper if we can
             if self._cursor.goto_first_child():
                 depth += 1
