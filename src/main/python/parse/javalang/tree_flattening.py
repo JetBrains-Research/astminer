@@ -20,8 +20,10 @@ class TreeSerializer:
             self.node_id = node_id
 
     def _enumerate_node(self, node: Node) -> EnumeratedNode:
+        new_node = self.EnumeratedNode(node, self._current_id, [])
         self._current_id += 1
-        return self.EnumeratedNode(node, self._current_id, [self._enumerate_node(n) for n in node.children])
+        new_node.children = [self._enumerate_node(n) for n in node.children]
+        return new_node
 
     def _get_node_as_json(self, e_node: EnumeratedNode) -> NodeAsDict:
         return {
