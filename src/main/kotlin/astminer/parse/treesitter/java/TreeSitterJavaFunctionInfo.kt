@@ -31,7 +31,7 @@ class TreeSitterJavaFunctionInfo(override val root: SimpleNode, override val fil
     override val parameters: List<FunctionInfoParameter>? = extractWithLogger {
         val parametersRoot = root.getChildOfType(PARAMETERS)
         checkNotNull(parametersRoot) { "No parameters found" }
-        parametersRoot.children.map { parameter ->
+        parametersRoot.children.filter { it.typeLabel in possibleParameters }.map { parameter ->
             val possibleNameNode = parameter.getChildOfType(NAME)
             val name = if (possibleNameNode != null) {
                 possibleNameNode.originalToken
@@ -66,6 +66,8 @@ class TreeSitterJavaFunctionInfo(override val root: SimpleNode, override val fil
     }
 
     override val isConstructor: Boolean = false
+
+    override fun isBlank(): Boolean = super.isBlank() || body?.getTokensFromSubtree() == "{}"
 
     /** Tries to extract the feature. If `IllegalStateException` being thrown
      * returns null and logs the error in useful form**/
