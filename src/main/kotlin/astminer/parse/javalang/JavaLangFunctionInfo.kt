@@ -1,7 +1,7 @@
 package astminer.parse.javalang
 
 import astminer.common.model.FunctionInfo
-import astminer.parse.SimpleNode
+import astminer.common.model.SimpleNode
 
 class JavaLangFunctionInfo(override val root: SimpleNode, override val filePath: String) : FunctionInfo<SimpleNode> {
     override val nameNode: SimpleNode? = root.getChildOfType(NAME)

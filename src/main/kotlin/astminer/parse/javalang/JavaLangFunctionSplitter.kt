@@ -1,8 +1,8 @@
 package astminer.parse.javalang
 
 import astminer.common.model.FunctionInfo
+import astminer.common.model.SimpleNode
 import astminer.common.model.TreeFunctionSplitter
-import astminer.parse.SimpleNode
 
 class JavaLangFunctionSplitter : TreeFunctionSplitter<SimpleNode> {
     private val methodDeclarationType = "MethodDeclaration"

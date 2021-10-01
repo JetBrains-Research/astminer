@@ -10,5 +10,9 @@ class JavaLangParser : ForeignParser() {
     override val language: FileExtension = FileExtension.Java
 
     override fun getArguments(file: File): List<String> =
-        listOf("python3", "src/main/python/parse/javalang/main.py", "-f", file.path, "&")
+        listOf("python3", scriptPath, "-f", file.path, "&")
+
+    companion object {
+        const val scriptPath = "src/main/python/parse/javalang/main.py"
+    }
 }
