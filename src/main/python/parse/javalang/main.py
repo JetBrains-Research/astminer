@@ -1,14 +1,12 @@
 import javalang
 from ast_generation import generate_presentable_AST
-from tree_flattening import get_tree_as_json
+from tree_flattening import TreeSerializer
 from argparse import ArgumentParser
 import json
 
 parser = ArgumentParser()
-parser.add_argument("-f", "--file", dest="filename", type=str,
-                    help="path to the target file", metavar="FILE")
-parser.add_argument("-d", "--declined", dest="show_declined", type=bool,
-                    help="Show declined attributes", default=False)
+parser.add_argument("-f", "--file", dest="filename", type=str, help="path to the target file", metavar="FILE")
+parser.add_argument("-d", "--declined", dest="show_declined", type=bool, help="Show declined attributes", default=False)
 
 
 def main():
@@ -25,8 +23,8 @@ def main():
         print("---------------------------------------------------------------------------")
         print("Generated AST:")
 
-    print(json.dumps(get_tree_as_json(AST)))
+    print(json.dumps(TreeSerializer().get_tree_as_json(AST)))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
