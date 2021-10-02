@@ -16,7 +16,7 @@ class TreeBuilder:
     def _get_current_node_as_dict(self) -> NodeAsDict:
         node_type = self._cursor.node.type
         if len(self._cursor.node.children) == 0:
-            node_value_bytes = self._file_bytes[self._cursor.node.start_byte: self._cursor.node.end_byte]
+            node_value_bytes = self._file_bytes[self._cursor.node.start_byte : self._cursor.node.end_byte]
             node_value: Optional[str] = node_value_bytes.decode("utf-8")
         else:
             node_value = None
