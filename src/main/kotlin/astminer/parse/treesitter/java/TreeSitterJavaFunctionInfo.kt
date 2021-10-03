@@ -4,6 +4,7 @@ import astminer.common.EMPTY_TOKEN
 import astminer.common.model.*
 import astminer.parse.antlr.getTokensFromSubtree
 import astminer.parse.findEnclosingElementBy
+import mu.KLogger
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger("TreeSitter-Java-FunctionInfo")
@@ -14,21 +15,21 @@ class TreeSitterJavaFunctionInfo(override val root: SimpleNode, override val fil
 
     override val body: SimpleNode? = root.getChildOfType(BODY)
 
-    override val annotations: List<String>? = extractWithLogger {
+    override val annotations: List<String>? = extractWithLogger(logger) {
         root.getChildOfType(MODIFIERS)?.children
             ?.filter { it.typeLabel in possibleAnnotations }
             ?.map { it.getChildOfType(NAME)?.originalToken }
             ?.map { checkNotNull(it) { "Annotation without a name in function $name in $filePath" } }
     }
 
-    override val modifiers: List<String>? = extractWithLogger {
+    override val modifiers: List<String>? = extractWithLogger(logger) {
         root.getChildOfType(MODIFIERS)?.children
             ?.filter { it.typeLabel in possibleModifiers }
             ?.map { it.originalToken }
             ?.map { checkNotNull(it) { "Modifier without a token" } }
     }
 
-    override val parameters: List<FunctionInfoParameter>? = extractWithLogger {
+    override val parameters: List<FunctionInfoParameter>? = extractWithLogger(logger) {
         val parametersRoot = root.getChildOfType(PARAMETERS)
         checkNotNull(parametersRoot) { "No parameters found" }
         parametersRoot.children.filter { it.typeLabel in possibleParameters }.map { parameter ->
@@ -68,15 +69,6 @@ class TreeSitterJavaFunctionInfo(override val root: SimpleNode, override val fil
     override val isConstructor: Boolean = false
 
     override fun isBlank(): Boolean = super.isBlank() || body?.getTokensFromSubtree() == "{}"
-
-    /** Tries to extract the feature. If `IllegalStateException` being thrown
-     * returns null and logs the error in useful form**/
-    private fun <T> extractWithLogger(featureExtraction: () -> T): T? {
-        return try { featureExtraction() } catch (e: IllegalStateException) {
-            logger.warn { e.message + " in function $name in $filePath" }
-            null
-        }
-    }
 
     companion object {
         const val NAME = "identifier"
