@@ -93,8 +93,8 @@ internal class JavaLangFunctionSplitterTest {
         assertNotNull(methodWeirdArrayParameter)
         assertEquals(1, methodWeirdArrayParameter.parameters?.size)
         val weirdParameter = methodWeirdArrayParameter.parameters?.get(0)
-        assertEquals(weirdParameter?.name, "arr[]")
-        assertEquals(weirdParameter?.type, "int")
+        assertEquals(weirdParameter?.name, "arr")
+        assertEquals(weirdParameter?.type, "int[]")
     }
 
     @Test
