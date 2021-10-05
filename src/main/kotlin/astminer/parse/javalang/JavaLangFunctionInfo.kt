@@ -18,6 +18,7 @@ class JavaLangFunctionInfo(override val root: SimpleNode, override val filePath:
     override val modifiers: List<String>?
         get() = super.modifiers
 
+    //TODO: refactor when function `extractWithLogger` will be introduced
     override val parameters: List<FunctionInfoParameter>? = try {
         run {
             val parameters = root.getChildOfType(PARAMETERS) ?: return@run listOf<FunctionInfoParameter>()
