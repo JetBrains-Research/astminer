@@ -4,7 +4,6 @@ import astminer.common.EMPTY_TOKEN
 import astminer.common.model.*
 import astminer.parse.antlr.getTokensFromSubtree
 import astminer.parse.findEnclosingElementBy
-import mu.KLogger
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger("TreeSitter-Java-FunctionInfo")
@@ -16,22 +15,23 @@ class TreeSitterJavaFunctionInfo(override val root: SimpleNode, override val fil
     override val body: SimpleNode? = root.getChildOfType(BODY)
 
     override val annotations: List<String>? = extractWithLogger(logger) {
-        root.getChildOfType(MODIFIERS)?.children
-            ?.filter { it.typeLabel in possibleAnnotations }
-            ?.map { it.getChildOfType(NAME)?.originalToken }
-            ?.map { checkNotNull(it) { "Annotation without a name in function $name in $filePath" } }
+        val annotations = root.getChildOfType(MODIFIERS) ?: return@extractWithLogger listOf()
+        annotations.children
+            .filter { it.typeLabel in possibleAnnotations }
+            .map { it.getChildOfType(NAME)?.originalToken }
+            .map { checkNotNull(it) { "Annotation without a name in function $name in $filePath" } }
     }
 
     override val modifiers: List<String>? = extractWithLogger(logger) {
-        root.getChildOfType(MODIFIERS)?.children
-            ?.filter { it.typeLabel in possibleModifiers }
-            ?.map { it.originalToken }
-            ?.map { checkNotNull(it) { "Modifier without a token" } }
+        val modifiers = root.getChildOfType(MODIFIERS) ?: return@extractWithLogger listOf<String>()
+        modifiers.children
+            .filter { it.typeLabel in possibleModifiers }
+            .map { it.originalToken }
+            .map { checkNotNull(it) { "Modifier without a token" } }
     }
 
     override val parameters: List<FunctionInfoParameter>? = extractWithLogger(logger) {
-        val parametersRoot = root.getChildOfType(PARAMETERS)
-        checkNotNull(parametersRoot) { "No parameters found" }
+        val parametersRoot = root.getChildOfType(PARAMETERS) ?: return@extractWithLogger listOf<FunctionInfoParameter>()
         parametersRoot.children.filter { it.typeLabel in possibleParameters }.map { parameter ->
             val possibleNameNode = parameter.getChildOfType(NAME)
             val name = if (possibleNameNode != null) {
