@@ -28,7 +28,9 @@ class JavaLangFunctionInfo(override val root: SimpleNode, override val filePath:
     override val modifiers: List<String>? = try {
         run {
             val modifiers = root.getChildOfType(MODIFIERS) ?: return@run listOf<String>()
-            modifiers.children.map { checkNotNull(it.originalToken) }
+            modifiers.children
+                .map { it.originalToken }
+                .map { checkNotNull(it) { "No name for modifier found" } }
         }
     } catch (e: IllegalStateException) {
         logger.warn { e.message + " in function $name in $filePath" }
