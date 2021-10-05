@@ -15,8 +15,16 @@ class JavaLangFunctionInfo(override val root: SimpleNode, override val filePath:
 
     override val annotations: List<String>?
         get() = super.annotations
-    override val modifiers: List<String>?
-        get() = super.modifiers
+
+    override val modifiers: List<String>? = try {
+        run {
+            val modifiers = root.getChildOfType(MODIFIERS) ?: return@run listOf<String>()
+            modifiers.children.map { checkNotNull(it.originalToken) }
+        }
+    } catch (e: IllegalStateException) {
+        logger.warn { e.message + " in function $name in $filePath" }
+        null
+    }
 
     //TODO: refactor when function `extractWithLogger` will be introduced
     override val parameters: List<FunctionInfoParameter>? = try {
@@ -57,5 +65,6 @@ class JavaLangFunctionInfo(override val root: SimpleNode, override val filePath:
         )
 
         const val PARAMETERS = "parameters"
+        const val MODIFIERS = "modifiers"
     }
 }
