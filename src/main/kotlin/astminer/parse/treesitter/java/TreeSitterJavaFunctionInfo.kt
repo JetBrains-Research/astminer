@@ -15,11 +15,13 @@ class TreeSitterJavaFunctionInfo(override val root: SimpleNode, override val fil
     override val body: SimpleNode? = root.getChildOfType(BODY)
 
     override val annotations: List<String>? = extractWithLogger(logger) {
+        // In tree sitter java grammar annotations are children of modifiers node
         val annotations = root.getChildOfType(MODIFIERS) ?: return@extractWithLogger listOf()
         annotations.children
             .filter { it.typeLabel in possibleAnnotations }
-            .map { it.getChildOfType(NAME)?.originalToken }
-            .map { checkNotNull(it) { "Annotation without a name in function $name in $filePath" } }
+            .map { annotation -> annotation.preOrder().filter { it.typeLabel in listOf(NAME, SCOPE_IDENTIFIER, DOT) } }
+            .map { nameNodes -> nameNodes.map { it.originalToken ?: "" } }
+            .map { nameNodesWithToken ->  nameNodesWithToken.joinToString(separator = "") }
     }
 
     override val modifiers: List<String>? = extractWithLogger(logger) {
@@ -72,6 +74,8 @@ class TreeSitterJavaFunctionInfo(override val root: SimpleNode, override val fil
 
     companion object {
         const val NAME = "identifier"
+        const val SCOPE_IDENTIFIER = "scope_identifier"
+        const val DOT = "."
         const val BODY = "block"
         const val ARRAY_TYPE = "array_type"
         const val ARRAY_DIMENSION = "dimensions"
