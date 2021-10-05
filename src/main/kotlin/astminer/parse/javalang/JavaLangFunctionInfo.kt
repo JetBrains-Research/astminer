@@ -1,9 +1,7 @@
 package astminer.parse.javalang
 
-import astminer.common.model.EnclosingElement
-import astminer.common.model.FunctionInfo
-import astminer.common.model.FunctionInfoParameter
-import astminer.common.model.SimpleNode
+import astminer.common.model.*
+import astminer.parse.findEnclosingElementBy
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger("JavaLang-Function-info")
@@ -56,10 +54,17 @@ class JavaLangFunctionInfo(override val root: SimpleNode, override val filePath:
 
     override val returnType: String = root.children.find { it.typeLabel in possibleTypes }?.extractType() ?: VOID
 
-    override val enclosingElement: EnclosingElement<SimpleNode>?
-        get() = super.enclosingElement
-    override val isConstructor: Boolean
-        get() = super.isConstructor
+    override val enclosingElement: EnclosingElement<SimpleNode>? =
+        root.findEnclosingElementBy { it.typeLabel in possibleEnclosings }
+            ?.let {
+                EnclosingElement(
+                    type = EnclosingElementType.Class,
+                    name = it.getChildOfType(NAME)?.originalToken,
+                    root = it
+                )
+            }
+
+    override val isConstructor: Boolean = false
 
     private fun SimpleNode.extractType(): String = this.preOrder()
         .mapNotNull { if (it.typeLabel == "dimensions" && it.isLeaf()) "[]" else it.originalToken }
@@ -78,5 +83,10 @@ class JavaLangFunctionInfo(override val root: SimpleNode, override val filePath:
         const val PARAMETERS = "parameters"
         const val MODIFIERS = "modifiers"
         const val ANNOTATIONS = "annotations"
+
+        val possibleEnclosings = listOf(
+            "ClassDeclaration",
+            "EnumDeclaration"
+        )
     }
 }
