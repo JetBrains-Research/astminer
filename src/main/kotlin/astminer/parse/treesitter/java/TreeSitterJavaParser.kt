@@ -10,5 +10,5 @@ class TreeSitterJavaParser : ForeignParser() {
     override val parser: ParserType = ParserType.TreeSitter
 
     override fun getArguments(file: File): List<String> =
-        listOf("python3", "/tmp/tree_sitter/main.py", "-l", "java", "-f", file.path, "&")
+        listOf("aw_tree_sitter", "-l", "java", "-f", file.path, "&")
 }
