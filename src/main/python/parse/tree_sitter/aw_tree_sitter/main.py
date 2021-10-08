@@ -3,7 +3,7 @@ import json
 from argparse import ArgumentParser
 import os
 from typing import List
-from ast import TreeBuilder, TreeAsDict
+from aw_tree_sitter.ast import TreeBuilder, TreeAsDict
 
 argument_parser = ArgumentParser()
 argument_parser.add_argument("-f", "--file", dest="filename", type=str, help="Path to the target file", metavar="FILE")
@@ -13,10 +13,13 @@ argument_parser.add_argument(
 argument_parser.add_argument("-l", "--language", dest="language", help="Target language. For example: -l java")
 
 
-def build_libraries(languages: List[str]):
+def build_libraries(languages: List[str], path):
+    # Forcing tree sitter to create new library
+    if os.path.isfile(path):
+        os.remove(path)
     Language.build_library(
         # Store the library in the `build` directory
-        "build/my-languages.so",
+        path,
         # Include one or more languages
         languages,
     )
@@ -43,13 +46,13 @@ class TreeSitterLauncher:
 
 def main():
     args, unknown = argument_parser.parse_known_args()
+    dirname = os.path.dirname(__file__)
+    library_path = os.path.join(dirname, "./build/my-languages.so")
 
     if args.grammars is not None:
-        build_libraries(args.grammars)
+        build_libraries(args.grammars, library_path)
 
     if args.filename is not None:
-        dirname = os.path.dirname(__file__)
-        library_path = os.path.join(dirname, "build/my-languages.so")
         tree = TreeSitterLauncher(args.language, library_path).parse_file(args.filename)
         print(json.dumps(tree))
 
