@@ -1,5 +1,7 @@
 package astminer.common.model
 
+import java.io.File
+
 interface TreeFunctionSplitter<T : Node> {
     fun splitIntoFunctions(root: T, filePath: String): Collection<FunctionInfo<T>>
 }
@@ -39,6 +41,12 @@ interface FunctionInfo<T : Node> {
 
     fun isBlank() = body?.children?.isEmpty() ?: true
     fun isNotBlank() = !isBlank()
+
+    fun getQualifiedPath(): String {
+        val dottedPath = filePath.substringBeforeLast(".").replace(File.separator, ".")
+        val enclosingName = enclosingElement?.name ?: ""
+        return "$dottedPath.$enclosingName"
+    }
 }
 
 data class FunctionInfoParameter(val name: String, val type: String?)

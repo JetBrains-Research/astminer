@@ -21,6 +21,6 @@ object FunctionNameLabelExtractor : FunctionLabelExtractor {
             }
         }
         functionInfo.nameNode?.technicalToken = HIDDEN_METHOD_NAME_TOKEN
-        return LabeledResult(functionInfo.root, normalizedName, functionInfo.filePath)
+        return LabeledResult(functionInfo.root, normalizedName, functionInfo.getQualifiedPath())
     }
 }
