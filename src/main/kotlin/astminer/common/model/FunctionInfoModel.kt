@@ -44,8 +44,8 @@ interface FunctionInfo<T : Node> {
 
     fun getQualifiedPath(): String {
         val dottedPath = filePath.substringBeforeLast(".").replace(File.separator, ".")
-        val enclosingName = enclosingElement?.name ?: ""
-        return "$dottedPath.$enclosingName"
+        val enclosingName = enclosingElement?.name
+        return listOfNotNull(dottedPath, enclosingName).joinToString(separator = ".")
     }
 }
 
