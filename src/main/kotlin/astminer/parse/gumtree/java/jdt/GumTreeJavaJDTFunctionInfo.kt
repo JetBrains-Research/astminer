@@ -48,7 +48,7 @@ class GumTreeJavaJDTFunctionInfo(
     }
 
     private fun getEnclosingClassNode(node: GumTreeNode?): GumTreeNode? {
-        if (node == null || node.typeLabel == TypeLabels.typeDeclaration) {
+        if (node == null || node.typeLabel in TypeLabels.possibleEnclosingElements) {
             return node
         }
         return getEnclosingClassNode(node.parent)
@@ -72,6 +72,11 @@ class GumTreeJavaJDTFunctionInfo(
         private object TypeLabels {
             const val simpleName = "SimpleName"
             const val typeDeclaration = "TypeDeclaration"
+            const val enumDeclaration = "EnumDeclaration"
+            val possibleEnclosingElements = listOf(
+                typeDeclaration,
+                enumDeclaration
+            )
             const val singleVariableDeclaration = "SingleVariableDeclaration"
         }
     }
