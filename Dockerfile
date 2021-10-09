@@ -21,11 +21,10 @@ RUN apt-get update && \
 ENV PATH="/pythonparser:${PATH}"
 
 # Install tree sitter, tree sitter grammars and copy scripts
-COPY ./src/main/python/parse/tree_sitter tmp/tree_sitter
-RUN cd tmp/tree_sitter && \
-    pip install tree-sitter && \
+COPY ./src/main/python/parse/tree_sitter aw_tree_sitter
+RUN pip install ./aw_tree_sitter && \
     git clone https://github.com/tree-sitter/tree-sitter-java.git && \
-    python3 main.py -b tree-sitter-java
+    aw_tree_sitter -b tree-sitter-java
 
 # Install srcML
 RUN wget http://131.123.42.38/lmcrs/v1.0.0/srcml_1.0.0-1_ubuntu20.04.deb && \
