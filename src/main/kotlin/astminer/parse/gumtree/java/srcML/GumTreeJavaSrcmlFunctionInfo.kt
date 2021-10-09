@@ -66,7 +66,7 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
     }
 
     private fun GumTreeNode.assembleEnclosing(): EnclosingElement<GumTreeNode>? {
-        val enclosingType = when(this.typeLabel) {
+        val enclosingType = when (this.typeLabel) {
             CLASS_DECLARATION -> EnclosingElementType.Class
             ENUM_DECLARATION -> EnclosingElementType.Enum
             else -> return null

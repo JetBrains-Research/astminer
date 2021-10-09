@@ -40,7 +40,7 @@ class GumTreeJavaJDTFunctionInfo(
     private fun collectEnclosingClass(): EnclosingElement<GumTreeNode>? {
         val enclosingNode = getEnclosingClassNode(root.parent) ?: return null
         val name = enclosingNode.getChildOfType(TypeLabels.simpleName)?.originalToken
-        val type = when(enclosingNode.typeLabel) {
+        val type = when (enclosingNode.typeLabel) {
             TypeLabels.typeDeclaration -> EnclosingElementType.Class
             TypeLabels.enumDeclaration -> EnclosingElementType.Enum
             else -> error("No enclosing element type found for ${enclosingNode.typeLabel}")
