@@ -55,6 +55,7 @@ data class EnclosingElement<T>(val type: EnclosingElementType, val name: String?
 
 enum class EnclosingElementType {
     Class,
+    Enum,
     Function,
     Method,
     VariableDeclaration,
