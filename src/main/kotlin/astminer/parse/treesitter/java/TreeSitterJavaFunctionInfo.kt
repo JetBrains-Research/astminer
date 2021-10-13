@@ -21,7 +21,7 @@ class TreeSitterJavaFunctionInfo(override val root: SimpleNode, override val fil
             .filter { it.typeLabel in possibleAnnotations }
             .map { annotation -> annotation.preOrder().filter { it.typeLabel in listOf(NAME, SCOPE_IDENTIFIER, DOT) } }
             .map { nameNodes -> nameNodes.map { it.originalToken ?: "" } }
-            .map { nameNodesWithToken ->  nameNodesWithToken.joinToString(separator = "") }
+            .map { nameNodesWithToken -> nameNodesWithToken.joinToString(separator = "") }
     }
 
     override val modifiers: List<String>? = extractWithLogger(logger) {
