@@ -11,6 +11,6 @@ class TreeSitterJavaFunctionSplitter : TreeFunctionSplitter<SimpleNode> {
             .map { TreeSitterJavaFunctionInfo(it, filePath) }
     }
     companion object {
-        const val METHOD_DECLARATION_TYPE = "methodDeclaration"
+        const val METHOD_DECLARATION_TYPE = "method_declaration"
     }
 }
