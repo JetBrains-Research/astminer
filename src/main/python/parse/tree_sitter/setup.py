@@ -11,6 +11,6 @@ setup(
         'console_scripts': ["aw_tree_sitter = aw_tree_sitter.main:main"]
     },
     install_requires=[
-        'tree_sitter'
+        'tree_sitter~=0.19.0'
     ]
 )
