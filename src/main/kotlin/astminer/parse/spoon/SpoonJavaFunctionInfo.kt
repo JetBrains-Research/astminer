@@ -23,7 +23,7 @@ class SpoonJavaFunctionInfo(override val root: SpoonNode, override val filePath:
 
     override val annotations: List<String>? = run {
         root.getChildrenOfType(ANNOTATION_NODE_TYPE).map {
-            return@map it.getChildOfType(TYPE_REFERENCE)?.originalToken ?: return@run null
+            it.getChildOfType(TYPE_REFERENCE)?.originalToken ?: return@run null
         }
     }
 
@@ -44,7 +44,7 @@ class SpoonJavaFunctionInfo(override val root: SpoonNode, override val filePath:
     }
 
     private fun SpoonNode.assembleEnclosingClass(): EnclosingElement<SpoonNode>? {
-        val type = when(this.typeLabel) {
+        val type = when (this.typeLabel) {
             ENUM_DECLARATION_TYPE -> EnclosingElementType.Enum
             CLASS_DECLARATION_TYPE -> EnclosingElementType.Class
             else -> return null
