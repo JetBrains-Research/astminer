@@ -48,7 +48,7 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
     }
 
     override val enclosingElement: EnclosingElement<JavaParserNode>? =
-        root.findEnclosingElementBy { it.typeLabel == CLASS_OR_INTERFACE_DECLARATION }?.assembleEnclosingClass()
+        root.findEnclosingElementBy { it.typeLabel in possibleEnclosingElements }?.assembleEnclosingClass()
 
     override val body: JavaParserNode? = root.getChildOfType(FUNCTION_BODY)
 
@@ -75,13 +75,14 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
         return name.replace(ARRAY_BRACKETS_REGEX, "")
     }
 
-    private fun JavaParserNode.assembleEnclosingClass(): EnclosingElement<JavaParserNode> {
+    private fun JavaParserNode.assembleEnclosingClass(): EnclosingElement<JavaParserNode>? {
         val name = this.getChildOfType(CLASS_NAME)?.originalToken
-        return EnclosingElement(
-            type = EnclosingElementType.Class,
-            name = name,
-            root = this
-        )
+        val type = when (this.typeLabel) {
+            CLASS_OR_INTERFACE_DECLARATION -> EnclosingElementType.Class
+            ENUM_DECLARATION -> EnclosingElementType.Enum
+            else -> return null
+        }
+        return EnclosingElement(type, name, this)
     }
 
     companion object {
@@ -96,6 +97,10 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
         const val CLASS_OR_INTERFACE_TYPE = "Cls"
         const val CLASS_OR_INTERFACE_DECLARATION = "ClsD"
         const val CLASS_NAME = "SimpleName"
+
+        const val ENUM_DECLARATION = "EnD"
+
+        val possibleEnclosingElements = listOf(CLASS_OR_INTERFACE_DECLARATION, ENUM_DECLARATION)
 
         const val ARRAY_TYPE = "ArTy"
         const val ARRAY_BRACKETS = "[]"
