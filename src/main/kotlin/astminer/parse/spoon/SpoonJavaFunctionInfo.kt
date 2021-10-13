@@ -34,7 +34,7 @@ class SpoonJavaFunctionInfo(override val root: SpoonNode, override val filePath:
     override val isConstructor: Boolean = false
 
     override val enclosingElement: EnclosingElement<SpoonNode>? =
-        root.findEnclosingElementBy { it.typeLabel == CLASS_DECLARATION_TYPE }?.assembleEnclosingClass()
+        root.findEnclosingElementBy { it.typeLabel in POSSIBLE_ENCLOSING_ELEMENTS }?.assembleEnclosingClass()
 
     private fun assembleParameter(parameterNode: SpoonNode): FunctionInfoParameter {
         val type = parameterNode.children.find { it.typeLabel in POSSIBLE_PARAMETER_TYPES }?.originalToken
@@ -43,12 +43,13 @@ class SpoonJavaFunctionInfo(override val root: SpoonNode, override val filePath:
         return FunctionInfoParameter(name, type)
     }
 
-    private fun SpoonNode.assembleEnclosingClass(): EnclosingElement<SpoonNode> {
-        return EnclosingElement(
-            type = EnclosingElementType.Class,
-            name = this.originalToken,
-            root = this
-        )
+    private fun SpoonNode.assembleEnclosingClass(): EnclosingElement<SpoonNode>? {
+        val type = when(this.typeLabel) {
+            ENUM_DECLARATION_TYPE -> EnclosingElementType.Enum
+            CLASS_DECLARATION_TYPE -> EnclosingElementType.Class
+            else -> return null
+        }
+        return EnclosingElement(type, this.originalToken, root)
     }
 
     companion object {
@@ -57,6 +58,8 @@ class SpoonJavaFunctionInfo(override val root: SpoonNode, override val filePath:
         private const val ARRAY_TYPE_REFERENCE = "ArrayTypeReference"
         val POSSIBLE_PARAMETER_TYPES = listOf(TYPE_REFERENCE, ARRAY_TYPE_REFERENCE)
         const val CLASS_DECLARATION_TYPE = "Class"
+        const val ENUM_DECLARATION_TYPE = "Enum"
+        val POSSIBLE_ENCLOSING_ELEMENTS = listOf(CLASS_DECLARATION_TYPE, ENUM_DECLARATION_TYPE)
         const val ANNOTATION_NODE_TYPE = "Annotation"
         const val BLOCK = "Block"
     }
