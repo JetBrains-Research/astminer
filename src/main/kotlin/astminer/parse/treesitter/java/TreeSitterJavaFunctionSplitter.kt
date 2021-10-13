@@ -5,10 +5,12 @@ import astminer.common.model.SimpleNode
 import astminer.common.model.TreeFunctionSplitter
 
 class TreeSitterJavaFunctionSplitter : TreeFunctionSplitter<SimpleNode> {
-    val methodDeclarationType = "method_declaration"
     override fun splitIntoFunctions(root: SimpleNode, filePath: String): Collection<FunctionInfo<SimpleNode>> {
         return root.preOrder()
-            .filter { it.typeLabel == "method_declaration" }
+            .filter { it.typeLabel == METHOD_DECLARATION_TYPE }
             .map { TreeSitterJavaFunctionInfo(it, filePath) }
+    }
+    companion object {
+        const val METHOD_DECLARATION_TYPE = "methodDeclaration"
     }
 }
