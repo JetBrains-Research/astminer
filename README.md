@@ -15,6 +15,7 @@ Supported languages of the input:
 | GumTree | ✅ (JDT and srcML)    | ✅      |       |            |     |
 | Fuzzy   |      |        | ✅     |            |     |
 | JavaParser | ✅ |        |        |             |      |
+| TreeSitter | ✅ |       |        |            |     |
 
 
 
