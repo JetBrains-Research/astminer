@@ -11,45 +11,30 @@ class JavaLangFunctionInfo(override val root: SimpleNode, override val filePath:
 
     override val body: SimpleNode? = root.getChildOfType(BODY)
 
-    override val annotations: List<String>? = try {
-        run {
-            val annotations = root.getChildOfType(ANNOTATIONS) ?: return@run listOf<String>()
-            annotations.children
-                .map { it.getChildOfType(NAME)?.originalToken }
-                .map { checkNotNull(it) { "No name for annotation found" } }
-        }
-    } catch (e: IllegalStateException) {
-        logger.warn { e.message + " in function $name in $filePath" }
-        null
+    override val annotations: List<String>? = extractWithLogger(logger) {
+        val annotations = root.getChildOfType(ANNOTATIONS) ?: return@extractWithLogger listOf<String>()
+        annotations.children
+            .map { it.getChildOfType(NAME)?.originalToken }
+            .map { checkNotNull(it) { "No name for annotation found" } }
     }
 
-    override val modifiers: List<String>? = try {
-        run {
-            val modifiers = root.getChildOfType(MODIFIERS) ?: return@run listOf<String>()
-            modifiers.children
-                .map { it.originalToken }
-                .map { checkNotNull(it) { "No name for modifier found" } }
-        }
-    } catch (e: IllegalStateException) {
-        logger.warn { e.message + " in function $name in $filePath" }
-        null
+    override val modifiers: List<String>? = extractWithLogger(logger) {
+        val modifiers = root.getChildOfType(MODIFIERS) ?: return@extractWithLogger listOf<String>()
+        modifiers.children
+            .map { it.originalToken }
+            .map { checkNotNull(it) { "No name for modifier found" } }
+
     }
 
-    //TODO: refactor when function `extractWithLogger` will be introduced
-    override val parameters: List<FunctionInfoParameter>? = try {
-        run {
-            val parameters = root.getChildOfType(PARAMETERS) ?: return@run listOf<FunctionInfoParameter>()
-            parameters.children.map { parameter ->
-                val type = parameter.children.find { it.typeLabel in possibleTypes }?.extractType()
-                checkNotNull(type) { "Can't extract parameter type" }
-                val name = parameter.children.find { it.typeLabel == NAME }?.originalToken
-                checkNotNull(name) { "Can't find parameter name" }
-                return@map FunctionInfoParameter(name, type)
-            }
+    override val parameters: List<FunctionInfoParameter>? = extractWithLogger(logger) {
+        val parameters = root.getChildOfType(PARAMETERS) ?: return@extractWithLogger listOf<FunctionInfoParameter>()
+        parameters.children.map { parameter ->
+            val type = parameter.children.find { it.typeLabel in possibleTypes }?.extractType()
+            checkNotNull(type) { "Can't extract parameter type" }
+            val name = parameter.children.find { it.typeLabel == NAME }?.originalToken
+            checkNotNull(name) { "Can't find parameter name" }
+            return@map FunctionInfoParameter(name, type)
         }
-    } catch (e: IllegalStateException) {
-        logger.warn { e.message + " in function $name in $filePath" }
-        null
     }
 
     override val returnType: String = root.children.find { it.typeLabel in possibleTypes }?.extractType() ?: VOID
