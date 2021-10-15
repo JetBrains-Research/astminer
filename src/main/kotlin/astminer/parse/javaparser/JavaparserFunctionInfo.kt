@@ -75,14 +75,14 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
         return name.replace(ARRAY_BRACKETS_REGEX, "")
     }
 
-    private fun JavaParserNode.assembleEnclosingClass(): EnclosingElement<JavaParserNode>? {
+    private fun JavaParserNode.assembleEnclosingClass(): EnclosingElement<JavaParserNode>? = extractWithLogger(logger) {
         val name = this.getChildOfType(CLASS_NAME)?.originalToken
         val type = when (this.typeLabel) {
             CLASS_OR_INTERFACE_DECLARATION -> EnclosingElementType.Class
             ENUM_DECLARATION -> EnclosingElementType.Enum
-            else -> return null
+            else -> error("Can't find any enclosing type association")
         }
-        return EnclosingElement(type, name, this)
+        EnclosingElement(type, name, this)
     }
 
     companion object {

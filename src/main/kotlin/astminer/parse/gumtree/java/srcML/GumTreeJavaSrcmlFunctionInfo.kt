@@ -65,15 +65,15 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
         return FunctionInfoParameter(name, type)
     }
 
-    private fun GumTreeNode.assembleEnclosing(): EnclosingElement<GumTreeNode>? {
+    private fun GumTreeNode.assembleEnclosing(): EnclosingElement<GumTreeNode>? = extractWithLogger(logger) {
         val enclosingType = when (this.typeLabel) {
             CLASS_DECLARATION -> EnclosingElementType.Class
             ENUM_DECLARATION -> EnclosingElementType.Enum
-            else -> return null
+            else -> error("Can't find any enclosing type association")
         }
-        return EnclosingElement(
+        EnclosingElement(
             type = enclosingType,
-            name = this.getChildOfType(NAME)?.originalToken ?: return null,
+            name = this.getChildOfType(NAME)?.originalToken ?: return@extractWithLogger null,
             root = this
         )
     }

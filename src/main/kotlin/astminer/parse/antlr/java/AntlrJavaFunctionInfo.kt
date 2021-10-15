@@ -41,15 +41,15 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
         return returnTypeNode?.getTokensFromSubtree()
     }
 
-    private fun collectEnclosingClass(): EnclosingElement<AntlrNode>? {
+    private fun collectEnclosingClass(): EnclosingElement<AntlrNode>?  = extractWithLogger(logger) {
         val enclosingClassNode = root
-            .findEnclosingElementBy { it.lastLabelIn(possibleEnclosingElements) } ?: return null
+            .findEnclosingElementBy { it.lastLabelIn(possibleEnclosingElements) } ?: return@extractWithLogger null
         val enclosingType = when {
             enclosingClassNode.hasLastLabel(CLASS_DECLARATION_NODE) -> EnclosingElementType.Class
             enclosingClassNode.hasLastLabel(ENUM_DECLARATION_NODE) -> EnclosingElementType.Enum
             else -> error("No enclosing element type found")
         }
-        return EnclosingElement(
+        EnclosingElement(
             type = enclosingType,
             name = enclosingClassNode.getChildOfType(ENCLOSING_NAME_NODE)?.originalToken,
             root = enclosingClassNode

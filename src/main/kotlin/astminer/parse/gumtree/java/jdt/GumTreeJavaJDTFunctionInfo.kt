@@ -37,15 +37,15 @@ class GumTreeJavaJDTFunctionInfo(
 
     override val body: GumTreeNode? = root.children.find { it.typeLabel == "Block" }
 
-    private fun collectEnclosingClass(): EnclosingElement<GumTreeNode>? {
-        val enclosingNode = getEnclosingClassNode(root.parent) ?: return null
+    private fun collectEnclosingClass(): EnclosingElement<GumTreeNode>? = extractWithLogger(logger) {
+        val enclosingNode = getEnclosingClassNode(root.parent) ?: return@extractWithLogger null
         val name = enclosingNode.getChildOfType(TypeLabels.simpleName)?.originalToken
         val type = when (enclosingNode.typeLabel) {
             TypeLabels.typeDeclaration -> EnclosingElementType.Class
             TypeLabels.enumDeclaration -> EnclosingElementType.Enum
             else -> error("No enclosing element type found for ${enclosingNode.typeLabel}")
         }
-        return EnclosingElement(type, name, enclosingNode)
+        EnclosingElement(type, name, enclosingNode)
     }
 
     private fun getEnclosingClassNode(node: GumTreeNode?): GumTreeNode? {

@@ -43,13 +43,13 @@ class SpoonJavaFunctionInfo(override val root: SpoonNode, override val filePath:
         return FunctionInfoParameter(name, type)
     }
 
-    private fun SpoonNode.assembleEnclosingClass(): EnclosingElement<SpoonNode>? {
+    private fun SpoonNode.assembleEnclosingClass(): EnclosingElement<SpoonNode>? = extractWithLogger(logger) {
         val type = when (this.typeLabel) {
             ENUM_DECLARATION_TYPE -> EnclosingElementType.Enum
             CLASS_DECLARATION_TYPE -> EnclosingElementType.Class
-            else -> return null
+            else -> error("Can't find any enclosing type association")
         }
-        return EnclosingElement(type, this.originalToken, root)
+        EnclosingElement(type, this.originalToken, root)
     }
 
     companion object {
