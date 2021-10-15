@@ -9,14 +9,14 @@ interface TreeFunctionSplitter<T : Node> {
 
 class FunctionInfoPropertyNotImplementedException(propertyName: String) :
     UnsupportedOperationException(
-        "The property `$propertyName` of FunctionInfo for this language and parser type is not implemented yet. " +
+        "The property `$propertyName`for this language and parser type is not implemented yet. " +
             "Consider implementing it."
     )
 
 private fun notImplemented(propertyName: String): Nothing =
     throw FunctionInfoPropertyNotImplementedException(propertyName)
 
-interface FunctionInfo<T : Node> {
+interface NamedTree<T: Node> {
     val nameNode: T?
         get() = notImplemented("nameNode")
     val name: String?
@@ -27,6 +27,9 @@ interface FunctionInfo<T : Node> {
         get() = notImplemented("body")
     val filePath: String
         get() = notImplemented("filePath")
+}
+
+interface FunctionInfo<T : Node>: NamedTree<T> {
     val annotations: List<String>?
         get() = notImplemented("annotations")
     val modifiers: List<String>?
