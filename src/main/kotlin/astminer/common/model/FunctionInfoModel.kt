@@ -1,5 +1,7 @@
 package astminer.common.model
 
+import mu.KLogger
+
 interface TreeFunctionSplitter<T : Node> {
     fun splitIntoFunctions(root: T, filePath: String): Collection<FunctionInfo<T>>
 }
@@ -39,6 +41,15 @@ interface FunctionInfo<T : Node> {
 
     fun isBlank() = body?.children?.isEmpty() ?: true
     fun isNotBlank() = !isBlank()
+
+    /** Tries to extract the feature. If `IllegalStateException` being thrown
+     * returns null and logs the error in useful form **/
+    fun <T> extractWithLogger(logger: KLogger, featureExtraction: () -> T): T? {
+        return try { featureExtraction() } catch (e: IllegalStateException) {
+            logger.warn { e.message + " in function $name in $filePath" }
+            null
+        }
+    }
 }
 
 data class FunctionInfoParameter(val name: String, val type: String?)

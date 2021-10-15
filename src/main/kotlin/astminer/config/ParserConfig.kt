@@ -37,7 +37,10 @@ enum class ParserType {
     Spoon,
 
     @SerialName("javalang")
-    JavaLang
+    JavaLang,
+
+    @SerialName("tree_sitter")
+    TreeSitter
 }
 
 @Serializable
