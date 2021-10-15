@@ -24,7 +24,7 @@ ENV PATH="/pythonparser:${PATH}"
 COPY ./src/main/python/parse/tree_sitter aw_tree_sitter
 RUN pip install ./aw_tree_sitter && \
     git clone https://github.com/tree-sitter/tree-sitter-java.git && \
-    aw_tree_sitter -b tree-sitter-java \
+    aw_tree_sitter -b tree-sitter-java
 
 # Install javalang parser
 COPY ./src/main/python/parse/javalang aw_javalang
