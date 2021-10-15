@@ -41,7 +41,7 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
         return returnTypeNode?.getTokensFromSubtree()
     }
 
-    private fun collectEnclosingClass(): EnclosingElement<AntlrNode>?  = extractWithLogger(logger) {
+    private fun collectEnclosingClass(): EnclosingElement<AntlrNode>? = extractWithLogger(logger) {
         val enclosingClassNode = root
             .findEnclosingElementBy { it.lastLabelIn(possibleEnclosingElements) } ?: return@extractWithLogger null
         val enclosingType = when {

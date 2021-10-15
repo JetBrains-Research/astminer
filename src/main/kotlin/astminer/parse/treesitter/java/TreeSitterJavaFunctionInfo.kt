@@ -63,9 +63,10 @@ class TreeSitterJavaFunctionInfo(override val root: SimpleNode, override val fil
     }
 
     override val enclosingElement: EnclosingElement<SimpleNode>? = extractWithLogger(logger) {
-        val enclosingNode = root.findEnclosingElementBy { it.typeLabel in possible_enclosings } ?: return@extractWithLogger null
+        val enclosingNode = root.findEnclosingElementBy { it.typeLabel in possible_enclosings }
+            ?: return@extractWithLogger null
         val name = enclosingNode.getChildOfType(NAME)?.originalToken
-        val type = when(enclosingNode.typeLabel) {
+        val type = when (enclosingNode.typeLabel) {
             CLASS_DECLARATION -> EnclosingElementType.Class
             ENUM_DECLARATION -> EnclosingElementType.Enum
             else -> error("Can't find any enclosing type association")

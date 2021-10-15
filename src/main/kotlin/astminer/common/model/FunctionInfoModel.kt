@@ -1,7 +1,7 @@
 package astminer.common.model
 
-import java.io.File
 import mu.KLogger
+import java.io.File
 
 interface TreeFunctionSplitter<T : Node> {
     fun splitIntoFunctions(root: T, filePath: String): Collection<FunctionInfo<T>>
