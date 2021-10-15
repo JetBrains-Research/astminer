@@ -16,7 +16,7 @@ class FunctionInfoPropertyNotImplementedException(propertyName: String) :
 private fun notImplemented(propertyName: String): Nothing =
     throw FunctionInfoPropertyNotImplementedException(propertyName)
 
-interface NamedTree<T: Node> {
+interface NamedTree<T : Node> {
     val nameNode: T?
         get() = notImplemented("nameNode")
     val name: String?
@@ -29,7 +29,7 @@ interface NamedTree<T: Node> {
         get() = notImplemented("filePath")
 }
 
-interface FunctionInfo<T : Node>: NamedTree<T> {
+interface FunctionInfo<T : Node> : NamedTree<T> {
     val annotations: List<String>?
         get() = notImplemented("annotations")
     val modifiers: List<String>?
