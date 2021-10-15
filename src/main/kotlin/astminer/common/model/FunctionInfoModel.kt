@@ -40,14 +40,15 @@ interface FunctionInfo<T : Node> {
     val isConstructor: Boolean
         get() = notImplemented("isConstructor")
 
+    val qualifiedPath: String
+        get() {
+            val dottedPath = filePath.substringBeforeLast(".").replace(File.separator, ".")
+            val enclosingName = enclosingElement?.name
+            return listOfNotNull(dottedPath, enclosingName).joinToString(separator = ".")
+        }
+
     fun isBlank() = body?.children?.isEmpty() ?: true
     fun isNotBlank() = !isBlank()
-
-    fun getQualifiedPath(): String {
-        val dottedPath = filePath.substringBeforeLast(".").replace(File.separator, ".")
-        val enclosingName = enclosingElement?.name
-        return listOfNotNull(dottedPath, enclosingName).joinToString(separator = ".")
-    }
 
     /** Tries to extract the feature. If `IllegalStateException` being thrown
      * returns null and logs the error in useful form **/
