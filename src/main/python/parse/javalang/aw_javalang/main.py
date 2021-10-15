@@ -1,6 +1,6 @@
 import javalang
-from ast_generation import generate_presentable_AST
-from tree_flattening import TreeSerializer
+from aw_javalang.ast_generation import generate_presentable_AST
+from aw_javalang.tree_flattening import TreeSerializer
 from argparse import ArgumentParser
 import json
 

@@ -1,5 +1,5 @@
 from typing import TypedDict, Optional, List
-from ast_generation import Node
+from aw_javalang.ast_generation import Node
 
 NodeAsDict = TypedDict("NodeAsDict", {"token": Optional[str], "nodeType": str, "children": List[int]})
 TreeAsDict = TypedDict("TreeAsDict", {"tree": List[NodeAsDict]})
