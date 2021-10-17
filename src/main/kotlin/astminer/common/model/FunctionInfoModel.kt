@@ -47,7 +47,7 @@ interface FunctionInfo<T : Node> : NamedTree<T> {
         get() {
             val dottedPath = filePath.substringBeforeLast(".").replace(File.separator, ".")
             val enclosingName = enclosingElement?.name
-            return listOfNotNull(dottedPath, enclosingName).joinToString(separator = ".")
+            return listOfNotNull(dottedPath, enclosingName).joinToString(separator = "#")
         }
 
     fun isBlank() = body?.children?.isEmpty() ?: true
