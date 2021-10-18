@@ -1,6 +1,7 @@
 package astminer.labelextractor
 
 import astminer.common.DummyNode
+import astminer.common.model.EnclosingElement
 import astminer.common.model.FunctionInfo
 import astminer.common.model.LabeledResult
 import astminer.common.model.Node
@@ -17,6 +18,7 @@ class FunctionNameLabelExtractorTest {
             override val nameNode = functionRoot
             override val filePath = PATH
             override val root = functionRoot
+            override val enclosingElement: EnclosingElement<Node>? = null
         }
 
     @Before
@@ -29,7 +31,8 @@ class FunctionNameLabelExtractorTest {
     @Test
     fun `test FunctionNameProblem extracts correct method name`() {
         val labeledResult = FunctionNameLabelExtractor.process(functionInfo)
-        assertEquals(LabeledResult(functionRoot, FUNCTION_NAME, PATH), labeledResult)
+        val dottedPath = PATH.substringBeforeLast(".").replace("/", ".")
+        assertEquals(LabeledResult(functionRoot, FUNCTION_NAME, dottedPath), labeledResult)
     }
 
     @Test

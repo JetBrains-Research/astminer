@@ -37,18 +37,19 @@ class GumTreeJavaJDTFunctionInfo(
 
     override val body: GumTreeNode? = root.children.find { it.typeLabel == "Block" }
 
-    private fun collectEnclosingClass(): EnclosingElement<GumTreeNode>? {
-        val enclosingClassNode = getEnclosingClassNode(root.parent) ?: return null
-        val enclosingClassName = enclosingClassNode.getChildOfType(TypeLabels.simpleName)?.originalToken
-        return EnclosingElement(
-            root = enclosingClassNode,
-            type = EnclosingElementType.Class,
-            name = enclosingClassName
-        )
+    private fun collectEnclosingClass(): EnclosingElement<GumTreeNode>? = extractWithLogger(logger) {
+        val enclosingNode = getEnclosingClassNode(root.parent) ?: return@extractWithLogger null
+        val name = enclosingNode.getChildOfType(TypeLabels.simpleName)?.originalToken
+        val type = when (enclosingNode.typeLabel) {
+            TypeLabels.typeDeclaration -> EnclosingElementType.Class
+            TypeLabels.enumDeclaration -> EnclosingElementType.Enum
+            else -> error("No enclosing element type found for ${enclosingNode.typeLabel}")
+        }
+        EnclosingElement(type, name, enclosingNode)
     }
 
     private fun getEnclosingClassNode(node: GumTreeNode?): GumTreeNode? {
-        if (node == null || node.typeLabel == TypeLabels.typeDeclaration) {
+        if (node == null || node.typeLabel in TypeLabels.possibleEnclosingElements) {
             return node
         }
         return getEnclosingClassNode(node.parent)
@@ -72,6 +73,11 @@ class GumTreeJavaJDTFunctionInfo(
         private object TypeLabels {
             const val simpleName = "SimpleName"
             const val typeDeclaration = "TypeDeclaration"
+            const val enumDeclaration = "EnumDeclaration"
+            val possibleEnclosingElements = listOf(
+                typeDeclaration,
+                enumDeclaration
+            )
             const val singleVariableDeclaration = "SingleVariableDeclaration"
         }
     }

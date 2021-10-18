@@ -58,6 +58,7 @@ val SHORTEN_VALUES = hashMapOf(
     "DoubleLiteralExpr" to "Dbl",
     "EmptyMemberDeclaration" to "Emp",
     "EnclosedExpr" to "Enc",
+    "EnumDeclaration" to "EnD",
     "ExplicitConstructorInvocationStmt" to "ExpCtor",
     "ExpressionStmt" to "Ex",
     "FieldAccessExpr" to "Fld",

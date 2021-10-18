@@ -41,11 +41,17 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
         return returnTypeNode?.getTokensFromSubtree()
     }
 
-    private fun collectEnclosingClass(): EnclosingElement<AntlrNode>? {
-        val enclosingClassNode = root.findEnclosingElementBy { it.hasLastLabel(CLASS_DECLARATION_NODE) } ?: return null
-        return EnclosingElement(
-            type = EnclosingElementType.Class,
-            name = enclosingClassNode.getChildOfType(CLASS_NAME_NODE)?.originalToken,
+    private fun collectEnclosingClass(): EnclosingElement<AntlrNode>? = extractWithLogger(logger) {
+        val enclosingClassNode = root
+            .findEnclosingElementBy { it.lastLabelIn(possibleEnclosingElements) } ?: return@extractWithLogger null
+        val enclosingType = when {
+            enclosingClassNode.hasLastLabel(CLASS_DECLARATION_NODE) -> EnclosingElementType.Class
+            enclosingClassNode.hasLastLabel(ENUM_DECLARATION_NODE) -> EnclosingElementType.Enum
+            else -> error("No enclosing element type found")
+        }
+        EnclosingElement(
+            type = enclosingType,
+            name = enclosingClassNode.getChildOfType(ENCLOSING_NAME_NODE)?.originalToken,
             root = enclosingClassNode
         )
     }
@@ -82,7 +88,12 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
         private const val METHOD_BODY_NODE = "methodBody"
 
         private const val CLASS_DECLARATION_NODE = "classDeclaration"
-        private const val CLASS_NAME_NODE = "IDENTIFIER"
+        private const val ENUM_DECLARATION_NODE = "enumDeclaration"
+        val possibleEnclosingElements = listOf(
+            CLASS_DECLARATION_NODE,
+            ENUM_DECLARATION_NODE
+        )
+        private const val ENCLOSING_NAME_NODE = "IDENTIFIER"
 
         private const val METHOD_PARAMETER_NODE = "formalParameters"
         private const val METHOD_PARAMETER_INNER_NODE = "formalParameterList"
