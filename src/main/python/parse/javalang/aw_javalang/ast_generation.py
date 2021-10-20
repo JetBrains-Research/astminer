@@ -21,9 +21,8 @@ class Node:
             result.extend(child.pre_order())
         return result
 
-    def pretty_print(self, ind=0):
-        for i in range(ind):
-            print("-", end="")
+    def pretty_print(self, ind=0, ind_len=2):
+        print("-" * ind_len * ind)
         print(self)
         for child in self.children:
             child.pretty_print(ind + 1)
