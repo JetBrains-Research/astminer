@@ -1,38 +1,34 @@
-from typing import TypedDict, Optional, List
+from typing import Optional, List, Tuple
 from aw_javalang.ast_generation import Node
+from dataclasses import dataclass
 
-NodeAsDict = TypedDict("NodeAsDict", {"token": Optional[str], "nodeType": str, "children": List[int]})
-TreeAsDict = TypedDict("TreeAsDict", {"tree": List[NodeAsDict]})
+
+@dataclass
+class EnumeratedTree:
+    tree: List["EnumeratedNode"]
+
+
+@dataclass
+class EnumeratedNode:
+    token: Optional[str]
+    nodeType: str
+    children: List[int]
 
 
 class TreeSerializer:
-    _current_id: int
-
     def __init__(self):
         self._current_id = 0
 
-    class EnumeratedNode(Node):
-        node_id: int
-
-        def __init__(self, node: Node, node_id: int, children: list):
-            super().__init__(node.type, node.value, children, node.parent)
-            self.node = node
-            self.node_id = node_id
-
-    def _enumerate_node(self, node: Node) -> EnumeratedNode:
-        new_node = self.EnumeratedNode(node, self._current_id, [])
+    def _enumerate_tree(self, node) -> Tuple[List["EnumeratedNode"], int]:
+        enumerated_root = EnumeratedNode(node.value, node.type, [])
+        root_id = self._current_id
         self._current_id += 1
-        new_node.children = [self._enumerate_node(n) for n in node.children]
-        return new_node
+        enumerated_tree = [enumerated_root]
+        for child in node.children:
+            subtree, subtree_root_id = self._enumerate_tree(child)
+            enumerated_root.children.append(subtree_root_id)
+            enumerated_tree.extend(subtree)
+        return enumerated_tree, root_id
 
-    def _get_node_as_json(self, e_node: EnumeratedNode) -> NodeAsDict:
-        return {
-            "token": e_node.value,
-            "nodeType": e_node.type,
-            "children": [c.node_id for c in e_node.children],
-        }
-
-    def get_tree_as_json(self, tree) -> TreeAsDict:
-        self._current_id = 0
-        enumerated_tree = self._enumerate_node(tree)
-        return {"tree": [self._get_node_as_json(n) for n in enumerated_tree.pre_order()]}
+    def get_enumerated_tree(self, root: Node) -> EnumeratedTree:
+        return EnumeratedTree(self._enumerate_tree(root)[0])
