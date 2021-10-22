@@ -39,15 +39,17 @@ class JavaLangFunctionInfo(override val root: SimpleNode, override val filePath:
 
     override val returnType: String = root.children.find { it.typeLabel in possibleTypes }?.extractType() ?: VOID
 
-    override val enclosingElement: EnclosingElement<SimpleNode>? =
-        root.findEnclosingElementBy { it.typeLabel in possibleEnclosings }
-            ?.let {
-                EnclosingElement(
-                    type = EnclosingElementType.Class,
-                    name = it.getChildOfType(NAME)?.originalToken,
-                    root = it
-                )
-            }
+    override val enclosingElement: EnclosingElement<SimpleNode>? = extractWithLogger(logger) {
+        val enclosingNode = root.findEnclosingElementBy { it.typeLabel in possibleEnclosingElements }
+            ?: return@extractWithLogger null
+        val type = when(enclosingNode.typeLabel) {
+            CLASS_DECLARATION -> EnclosingElementType.Class
+            ENUM_DECLARATION -> EnclosingElementType.Enum
+            else -> throw IllegalStateException("No type can be associated with enclosing node type label")
+        }
+        val name = enclosingNode.getChildOfType(NAME)?.originalToken
+        EnclosingElement(type, name, enclosingNode)
+    }
 
     override val isConstructor: Boolean = false
 
@@ -69,9 +71,12 @@ class JavaLangFunctionInfo(override val root: SimpleNode, override val filePath:
         const val MODIFIERS = "modifiers"
         const val ANNOTATIONS = "annotations"
 
-        val possibleEnclosings = listOf(
-            "ClassDeclaration",
-            "EnumDeclaration"
+        const val CLASS_DECLARATION = "ClassDeclaration"
+        const val ENUM_DECLARATION = "EnumDeclaration"
+
+        val possibleEnclosingElements = listOf(
+            CLASS_DECLARATION,
+            ENUM_DECLARATION
         )
     }
 }
