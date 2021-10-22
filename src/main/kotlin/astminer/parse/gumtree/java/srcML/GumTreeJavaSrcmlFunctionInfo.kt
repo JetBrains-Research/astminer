@@ -56,7 +56,7 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
     override val isConstructor: Boolean = false
 
     override val enclosingElement: EnclosingElement<GumTreeNode>? =
-        root.findEnclosingElementBy { it.typeLabel == CLASS_DECLARATION }?.assembleEnclosing()
+        root.findEnclosingElementBy { it.typeLabel in possibleEnclosingElements }?.assembleEnclosing()
 
     private fun assembleParameter(node: GumTreeNode): FunctionInfoParameter {
         val parameter = checkNotNull(node.getChildOfType(VAR_DECLARATION)) { "No variable found" }
@@ -65,10 +65,15 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
         return FunctionInfoParameter(name, type)
     }
 
-    private fun GumTreeNode.assembleEnclosing(): EnclosingElement<GumTreeNode>? {
-        return EnclosingElement(
-            type = EnclosingElementType.Class,
-            name = this.getChildOfType(NAME)?.originalToken ?: return null,
+    private fun GumTreeNode.assembleEnclosing(): EnclosingElement<GumTreeNode>? = extractWithLogger(logger) {
+        val enclosingType = when (this.typeLabel) {
+            CLASS_DECLARATION -> EnclosingElementType.Class
+            ENUM_DECLARATION -> EnclosingElementType.Enum
+            else -> error("Can't find any enclosing type association")
+        }
+        EnclosingElement(
+            type = enclosingType,
+            name = this.getChildOfType(NAME)?.originalToken ?: return@extractWithLogger null,
             root = this
         )
     }
@@ -94,5 +99,10 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
         const val PARAMETER = "parameter"
         const val VAR_DECLARATION = "decl"
         const val CLASS_DECLARATION = "class"
+        const val ENUM_DECLARATION = "enum"
+        val possibleEnclosingElements = listOf(
+            CLASS_DECLARATION,
+            ENUM_DECLARATION
+        )
     }
 }
