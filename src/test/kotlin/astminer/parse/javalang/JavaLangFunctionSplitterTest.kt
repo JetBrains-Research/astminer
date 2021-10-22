@@ -2,7 +2,6 @@ package astminer.parse.javalang
 
 import astminer.common.model.FunctionInfo
 import astminer.common.model.SimpleNode
-import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 import java.io.File

@@ -23,7 +23,6 @@ class JavaLangFunctionInfo(override val root: SimpleNode, override val filePath:
         modifiers.children
             .map { it.originalToken }
             .map { checkNotNull(it) { "No name for modifier found" } }
-
     }
 
     override val parameters: List<FunctionInfoParameter>? = extractWithLogger(logger) {
@@ -42,10 +41,10 @@ class JavaLangFunctionInfo(override val root: SimpleNode, override val filePath:
     override val enclosingElement: EnclosingElement<SimpleNode>? = extractWithLogger(logger) {
         val enclosingNode = root.findEnclosingElementBy { it.typeLabel in possibleEnclosingElements }
             ?: return@extractWithLogger null
-        val type = when(enclosingNode.typeLabel) {
+        val type = when (enclosingNode.typeLabel) {
             CLASS_DECLARATION -> EnclosingElementType.Class
             ENUM_DECLARATION -> EnclosingElementType.Enum
-            else -> throw IllegalStateException("No type can be associated with enclosing node type label")
+            else -> error("No type can be associated with enclosing node type label")
         }
         val name = enclosingNode.getChildOfType(NAME)?.originalToken
         EnclosingElement(type, name, enclosingNode)
