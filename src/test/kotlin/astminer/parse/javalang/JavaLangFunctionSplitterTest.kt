@@ -145,9 +145,9 @@ internal class JavaLangFunctionSplitterTest {
     }
 
     companion object {
-        const val FILE_PATH = "src/test/resources/methodSplitting/testMethodSplitting.java"
+        private const val FILE_PATH = "src/test/resources/methodSplitting/testMethodSplitting.java"
         const val N_FUNCTIONS = 15
-        val functionSplitter = JavaLangFunctionSplitter()
+        private val functionSplitter = JavaLangFunctionSplitter()
         val parser = JavaLangParser()
         lateinit var functionInfos: Collection<FunctionInfo<SimpleNode>>
 
