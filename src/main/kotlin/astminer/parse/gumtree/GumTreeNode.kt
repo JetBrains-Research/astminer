@@ -1,16 +1,16 @@
 package astminer.parse.gumtree
 
 import astminer.common.model.Node
-import com.github.gumtreediff.tree.ITree
+import com.github.gumtreediff.tree.Tree
 import com.github.gumtreediff.tree.TreeContext
 
-class GumTreeNode(val wrappedNode: ITree, val context: TreeContext, override var parent: GumTreeNode?) :
+class GumTreeNode(val wrappedNode: Tree, override var parent: GumTreeNode?) :
     Node(wrappedNode.label) {
     override val typeLabel: String
-        get() = context.getTypeLabel(wrappedNode)
+        get() = wrappedNode.type.name
 
     override val children: MutableList<GumTreeNode> by lazy {
-        wrappedNode.children.map { GumTreeNode(it, context, this) }.toMutableList()
+        wrappedNode.children.map { GumTreeNode(it, this) }.toMutableList()
     }
 
     override fun removeChildrenOfType(typeLabel: String) {
@@ -29,4 +29,4 @@ class GumTreeNode(val wrappedNode: ITree, val context: TreeContext, override var
     override fun preOrder(): List<GumTreeNode> = super.preOrder().map { it as GumTreeNode }
 }
 
-fun wrapGumTreeNode(treeContext: TreeContext): GumTreeNode = GumTreeNode(treeContext.root, treeContext, null)
+fun wrapGumTreeNode(treeContext: TreeContext): GumTreeNode = GumTreeNode(treeContext.root, null)

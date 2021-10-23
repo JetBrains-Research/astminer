@@ -4,6 +4,7 @@ import astminer.common.model.EnclosingElement
 import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
 import astminer.common.model.FunctionInfoParameter
+import astminer.parse.antlr.getTokensFromSubtree
 import astminer.parse.gumtree.GumTreeNode
 import mu.KotlinLogging
 
@@ -18,7 +19,9 @@ class GumTreeJavaJDTFunctionInfo(
     override val returnType: String? = root.getElementType()
     override val enclosingElement: EnclosingElement<GumTreeNode>? = collectEnclosingClass()
     override val parameters: List<FunctionInfoParameter>? =
-        try { collectParameters() } catch (e: IllegalStateException) {
+        try {
+            collectParameters()
+        } catch (e: IllegalStateException) {
             logger.warn { e.message }
             null
         }
@@ -65,12 +68,16 @@ class GumTreeJavaJDTFunctionInfo(
     private fun GumTreeNode.getElementName(): String =
         getChildOfType(TypeLabels.simpleName)?.originalToken ?: error("No name found for element")
 
-    private fun GumTreeNode.getElementType(): String? = children.firstOrNull { it.isTypeNode() }?.originalToken
+    private fun GumTreeNode.getElementType(): String? = children.firstOrNull { it.isTypeNode() }?.preOrder()
+        ?.mapNotNull { if (it.typeLabel == TypeLabels.arrayDimensions) "[]" else it.originalToken }
+        ?.joinToString(separator = "")
 
     private fun GumTreeNode.isTypeNode() = typeLabel.endsWith("Type")
 
     companion object {
         private object TypeLabels {
+            const val arrayType = "ArrayType"
+            const val arrayDimensions = "Dimension"
             const val simpleName = "SimpleName"
             const val typeDeclaration = "TypeDeclaration"
             const val enumDeclaration = "EnumDeclaration"
