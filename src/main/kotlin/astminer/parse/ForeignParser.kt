@@ -2,6 +2,7 @@ package astminer.parse
 
 import astminer.common.model.Parser
 import astminer.common.model.SimpleNode
+import astminer.common.model.Token
 import astminer.config.FileExtension
 import astminer.config.ParserType
 import kotlinx.serialization.Serializable
@@ -57,7 +58,12 @@ private fun launchScript(args: List<String>): String {
 
 private fun convertFromForeignTree(context: ForeignTree, rootId: Int = 0, parent: SimpleNode? = null): SimpleNode {
     val foreignNode = context.tree[rootId]
-    val node = SimpleNode(foreignNode.nodeType, mutableListOf(), parent, foreignNode.token)
+    val node = SimpleNode(
+        typeLabel = foreignNode.nodeType,
+        children = mutableListOf(),
+        parent = parent,
+        token = Token(foreignNode.token, null)
+    )
     val children = foreignNode.children.map { convertFromForeignTree(context, it, node) }
     node.children.addAll(children)
     return node

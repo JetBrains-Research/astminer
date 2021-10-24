@@ -29,12 +29,12 @@ class GumTreeJavaJDTFunctionInfo(
     override val modifiers: List<String> = root
         .children
         .filter { it.typeLabel == "Modifier" }
-        .mapNotNull { it.originalToken }
+        .mapNotNull { it.token.original }
 
     override val annotations: List<String> = root
         .children
         .filter { it.typeLabel == "MarkerAnnotation" }
-        .mapNotNull { it.children.first().originalToken }
+        .mapNotNull { it.children.first().token.original }
 
     override val isConstructor: Boolean = enclosingElement?.name?.equals(name) ?: false
 
@@ -42,7 +42,7 @@ class GumTreeJavaJDTFunctionInfo(
 
     private fun collectEnclosingClass(): EnclosingElement<GumTreeNode>? = extractWithLogger(logger) {
         val enclosingNode = getEnclosingClassNode(root.parent) ?: return@extractWithLogger null
-        val name = enclosingNode.getChildOfType(TypeLabels.simpleName)?.originalToken
+        val name = enclosingNode.getChildOfType(TypeLabels.simpleName)?.token?.original
         val type = when (enclosingNode.typeLabel) {
             TypeLabels.typeDeclaration -> EnclosingElementType.Class
             TypeLabels.enumDeclaration -> EnclosingElementType.Enum
@@ -66,10 +66,10 @@ class GumTreeJavaJDTFunctionInfo(
     }
 
     private fun GumTreeNode.getElementName(): String =
-        getChildOfType(TypeLabels.simpleName)?.originalToken ?: error("No name found for element")
+        getChildOfType(TypeLabels.simpleName)?.token?.original ?: error("No name found for element")
 
     private fun GumTreeNode.getElementType(): String? = children.firstOrNull { it.isTypeNode() }?.preOrder()
-        ?.mapNotNull { if (it.typeLabel == TypeLabels.arrayDimensions) "[]" else it.originalToken }
+        ?.mapNotNull { if (it.typeLabel == TypeLabels.arrayDimensions) "[]" else it.token.original }
         ?.joinToString(separator = "")
 
     private fun GumTreeNode.isTypeNode() = typeLabel.endsWith("Type")

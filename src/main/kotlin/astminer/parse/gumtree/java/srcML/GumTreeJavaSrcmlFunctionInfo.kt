@@ -30,7 +30,7 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
 
     override val annotations: List<String>? = run {
         root.children.filter { it.typeLabel == ANNOTATION }.map {
-            val token = it.getChildOfType(NAME)?.originalToken
+            val token = it.getChildOfType(NAME)?.token?.original
             if (token == null) {
                 logger.warn { "Annotation in function $name in file $filePath don't have a name" }
                 return@run null
@@ -42,7 +42,7 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
     override val modifiers: List<String>? = run {
         val type = checkNotNull(root.getChildOfType(TYPE)) { "Function $name in file $filePath doesn't have a type" }
         type.children.filter { it.typeLabel == MODIFIER }.map {
-            val token = it.originalToken
+            val token = it.token.original
             if (token == null) {
                 logger.warn { "Modifier in function $name in file $filePath doesn't have a name" }
                 return@run null
@@ -60,7 +60,7 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
 
     private fun assembleParameter(node: GumTreeNode): FunctionInfoParameter {
         val parameter = checkNotNull(node.getChildOfType(VAR_DECLARATION)) { "No variable found" }
-        val name = checkNotNull(parameter.getChildOfType(NAME)?.originalToken) { "Parameter name was not found" }
+        val name = checkNotNull(parameter.getChildOfType(NAME)?.token?.original) { "Parameter name was not found" }
         val type = parameter.extractType()
         return FunctionInfoParameter(name, type)
     }
@@ -73,7 +73,7 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
         }
         EnclosingElement(
             type = enclosingType,
-            name = this.getChildOfType(NAME)?.originalToken ?: return@extractWithLogger null,
+            name = this.getChildOfType(NAME)?.token?.original ?: return@extractWithLogger null,
             root = this
         )
     }
@@ -84,7 +84,7 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
             if (node.typeLabel == ARRAY_BRACKETS) {
                 "[]"
             } else {
-                checkNotNull(node.originalToken) { "No type found" }
+                checkNotNull(node.token.original) { "No type found" }
             }
         }
     }

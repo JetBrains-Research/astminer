@@ -57,7 +57,7 @@ object Tokens : TreeFeature<List<String>> {
 
     private fun findTokens(node: Node, tokensList: MutableList<String>): List<String> {
         node.children.forEach { findTokens(it, tokensList) }
-        tokensList.add(node.token)
+        tokensList.add(node.token.final)
         return tokensList
     }
 }

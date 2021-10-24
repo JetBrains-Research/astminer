@@ -12,7 +12,7 @@ class DummyNode(
 
     init {
         // Tokens may change after normalization, for tests we want tokens to be unchanged
-        technicalToken = typeLabel
+        token.technical = typeLabel
     }
 
     override fun removeChildrenOfType(typeLabel: String) {

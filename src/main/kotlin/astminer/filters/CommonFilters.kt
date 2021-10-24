@@ -24,7 +24,7 @@ class TreeSizeFilter(private val minSize: Int = 0, private val maxSize: Int? = n
  */
 class WordsNumberFilter(private val maxWordsNumber: Int) : FunctionFilter, FileFilter {
     private fun validateTree(root: Node) =
-        !root.preOrder().any { node -> node.token.split(Node.TOKEN_DELIMITER).size > maxWordsNumber }
+        !root.preOrder().any { node -> node.token.final.split(Code2VecNormalization.TOKEN_DELIMITER).size > maxWordsNumber }
 
     override fun validate(functionInfo: FunctionInfo<out Node>) = validateTree(functionInfo.root)
 

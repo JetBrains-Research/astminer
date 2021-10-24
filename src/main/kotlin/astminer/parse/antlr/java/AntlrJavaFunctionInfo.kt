@@ -23,12 +23,12 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
     override val modifiers: List<String>? =
         root.parent?.children
             ?.filter { it.hasFirstLabel(METHOD_MODIFIER) && !it.hasLastLabel(METHOD_ANNOTATION) }
-            ?.mapNotNull { it.originalToken }
+            ?.mapNotNull { it.token.original }
 
     override val annotations: List<String>? =
         root.parent?.children
             ?.filter { it.hasLastLabel(METHOD_ANNOTATION) }
-            ?.mapNotNull { it.getChildOfType(ANNOTATION_NAME)?.originalToken }
+            ?.mapNotNull { it.getChildOfType(ANNOTATION_NAME)?.token?.original }
 
     override val body: AntlrNode? = root.children.find { it.hasFirstLabel(METHOD_BODY_NODE) }
 
@@ -51,7 +51,7 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
         }
         EnclosingElement(
             type = enclosingType,
-            name = enclosingClassNode.getChildOfType(ENCLOSING_NAME_NODE)?.originalToken,
+            name = enclosingClassNode.getChildOfType(ENCLOSING_NAME_NODE)?.token?.original,
             root = enclosingClassNode
         )
     }

@@ -1,6 +1,5 @@
 package astminer.parse.antlr
 
-import astminer.common.EMPTY_TOKEN
 import astminer.common.model.Node
 import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.Vocabulary
@@ -58,7 +57,7 @@ fun compressTree(root: AntlrNode): AntlrNode {
         val compressedNode = AntlrNode(
             root.typeLabel + "|" + child.typeLabel,
             root.parent,
-            child.originalToken
+            child.token.original
         )
         compressedNode.replaceChildren(child.children)
         compressedNode
@@ -83,7 +82,7 @@ fun AntlrNode.hasFirstLabel(label: String): Boolean = firstLabel() == label
 fun AntlrNode.firstLabelIn(labels: List<String>): Boolean = labels.contains(firstLabel())
 
 fun Node.getTokensFromSubtree(): String =
-    if (isLeaf()) originalToken ?: EMPTY_TOKEN else children.joinToString(separator = "") { it.getTokensFromSubtree() }
+    if (isLeaf()) token.original ?: "" else children.joinToString(separator = "") { it.getTokensFromSubtree() }
 
 fun AntlrNode.getItOrChildrenOfType(typeLabel: String): List<AntlrNode> =
     if (hasLastLabel(typeLabel)) listOf(this) else this.getChildrenOfType(typeLabel).map { it }
