@@ -26,6 +26,8 @@ style:
     max: 5
   WildcardImport:
     active: false
+  UseDataClass:
+    allowVars: true
 
 formatting:
   autoCorrect: true

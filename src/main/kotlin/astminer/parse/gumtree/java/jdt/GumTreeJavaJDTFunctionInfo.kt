@@ -4,7 +4,6 @@ import astminer.common.model.EnclosingElement
 import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
 import astminer.common.model.FunctionInfoParameter
-import astminer.parse.antlr.getTokensFromSubtree
 import astminer.parse.gumtree.GumTreeNode
 import mu.KotlinLogging
 

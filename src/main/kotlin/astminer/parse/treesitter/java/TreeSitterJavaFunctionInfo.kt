@@ -1,7 +1,7 @@
 package astminer.parse.treesitter.java
 
-import astminer.common.model.Code2VecNormalization
 import astminer.common.model.*
+import astminer.common.model.Code2VecNormalization
 import astminer.parse.antlr.getTokensFromSubtree
 import astminer.parse.findEnclosingElementBy
 import mu.KotlinLogging

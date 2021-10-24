@@ -4,13 +4,14 @@ import java.io.File
 import java.io.InputStream
 
 abstract class Node(val token: Token) {
-    constructor(originalToken: String?): this(Token(originalToken, null))
-
     abstract val typeLabel: String
     abstract val children: List<Node>
     abstract val parent: Node?
 
     val metadata: MutableMap<String, Any> = HashMap()
+
+    constructor(originalToken: String?) : this(Token(originalToken, null))
+
     fun isLeaf() = children.isEmpty()
 
     override fun toString(): String = "$typeLabel : $token"

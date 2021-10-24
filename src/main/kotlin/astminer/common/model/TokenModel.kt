@@ -1,9 +1,9 @@
 package astminer.common.model
 
-data class Token(
+class Token(
     val original: String?,
     val range: TokenRange?,
-    val normalization: Normalization = Code2VecNormalization
+    private val normalization: Normalization = Code2VecNormalization
 ) {
     init {
         if (original == null) require(range == null) { "Token range without token was provided" }

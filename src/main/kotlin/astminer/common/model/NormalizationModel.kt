@@ -4,9 +4,17 @@ interface Normalization {
     fun normalizeToken(token: String?): String
 }
 
-object Code2VecNormalization: Normalization {
+object Code2VecNormalization : Normalization {
     const val EMPTY_TOKEN = "EMPTY"
     const val TOKEN_DELIMITER = "|"
+
+    private val newLineReg = "\\\\n".toRegex()
+    private val whitespaceReg = "//s+".toRegex()
+    private val quotesApostrophesCommasReg = "[\"',]".toRegex()
+    private val unicodeWeirdCharReg = "\\P{Print}".toRegex()
+    private val notALetterReg = "[^A-Za-z]".toRegex()
+
+    private val splitRegex = "(?<=[a-z])(?=[A-Z])|_|[0-9]|(?<=[A-Z])(?=[A-Z][a-z])|\\s+".toRegex()
 
     override fun normalizeToken(token: String?): String {
         if (token == null) return EMPTY_TOKEN
@@ -24,9 +32,6 @@ object Code2VecNormalization: Normalization {
         .map { s -> normalizeSubToken(s, "") }
         .filter { it.isNotEmpty() }
         .toList()
-
-    private val splitRegex = "(?<=[a-z])(?=[A-Z])|_|[0-9]|(?<=[A-Z])(?=[A-Z][a-z])|\\s+".toRegex()
-
 
     /**
      * The function was adopted from the original code2vec implementation in order to match their behavior:
@@ -48,10 +53,4 @@ object Code2VecNormalization: Normalization {
             }
         }
     }
-
-    private val newLineReg = "\\\\n".toRegex()
-    private val whitespaceReg = "//s+".toRegex()
-    private val quotesApostrophesCommasReg = "[\"',]".toRegex()
-    private val unicodeWeirdCharReg = "\\P{Print}".toRegex()
-    private val notALetterReg = "[^A-Za-z]".toRegex()
 }

@@ -23,8 +23,8 @@ class TreeSizeFilter(private val minSize: Int = 0, private val maxSize: Int? = n
  * Filter that excludes trees that have more words than [maxWordsNumber] in any token of their node.
  */
 class WordsNumberFilter(private val maxWordsNumber: Int) : FunctionFilter, FileFilter {
-    private fun validateTree(root: Node) =
-        !root.preOrder().any { node -> node.token.final.split(Code2VecNormalization.TOKEN_DELIMITER).size > maxWordsNumber }
+    private fun validateTree(root: Node) = root.preOrder()
+        .none { node -> node.token.final.split(Code2VecNormalization.TOKEN_DELIMITER).size > maxWordsNumber }
 
     override fun validate(functionInfo: FunctionInfo<out Node>) = validateTree(functionInfo.root)
 
