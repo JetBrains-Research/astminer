@@ -15,8 +15,8 @@ private val logger = KotlinLogging.logger("JavaParser-Node")
 /**
  * Representation of JavaParser nodes inside `astminer`
  *
- * @property jpNode node from javapParser. JPNode is an alias for Node from javaparser
- * @property parent parent of this node. Null if it's a root.
+ * @param jpNode node from JavaParser. JPNode is an alias for Node from javaparser
+ * @param parent parent of this node. Null if it's a root.
  */
 class JavaParserNode(jpNode: JPNode, override val parent: JavaParserNode?) : Node(getJavaParserNodeToken(jpNode)) {
     override val children: MutableList<JavaParserNode> =
