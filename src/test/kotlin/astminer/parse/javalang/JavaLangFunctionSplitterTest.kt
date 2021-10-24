@@ -1,7 +1,9 @@
 package astminer.parse.javalang
 
+import astminer.checkExecutable
 import astminer.common.model.FunctionInfo
 import astminer.common.model.SimpleNode
+import org.junit.Assume
 import org.junit.BeforeClass
 import org.junit.Test
 import java.io.File
@@ -154,6 +156,7 @@ internal class JavaLangFunctionSplitterTest {
         @BeforeClass
         @JvmStatic
         fun parseFunctions() {
+            Assume.assumeTrue(checkExecutable("aw_javalang"))
             val testTree = parser.parseInputStream(File(FILE_PATH).inputStream())
             assertNotNull(testTree)
             functionInfos = functionSplitter.splitIntoFunctions(testTree, FILE_PATH)
