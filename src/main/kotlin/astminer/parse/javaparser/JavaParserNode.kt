@@ -1,6 +1,8 @@
 package astminer.parse.javaparser
 
 import astminer.common.model.Node
+import astminer.common.model.Token
+import astminer.common.model.TokenRange
 import com.github.javaparser.ast.expr.AssignExpr
 import com.github.javaparser.ast.expr.BinaryExpr
 import com.github.javaparser.ast.expr.Name
@@ -64,10 +66,18 @@ private fun JPNode.isLeaf(): Boolean = this.childNodes.isEmpty()
 
 private fun JPNode.hasNoToken(): Boolean = !this.tokenRange.isPresent
 
-private fun getJavaParserNodeToken(jpNode: JPNode): String? {
-    return when {
+private fun getJavaParserNodeToken(jpNode: JPNode): Token {
+    val originalToken = when {
         jpNode is Name -> jpNode.asString()
         jpNode.isLeaf() -> jpNode.tokenRange.get().toString()
         else -> null
     }
+    val tokenRange = if (jpNode.hasNoToken()) {
+        null
+    } else {
+        val start = jpNode.begin.get()
+        val end = jpNode.end.get()
+        TokenRange(start.line to start.column, end.line to end.column)
+    }
+    return Token(originalToken, tokenRange)
 }
