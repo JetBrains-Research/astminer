@@ -1,9 +1,10 @@
 package astminer.common
 
+import astminer.common.model.Code2VecNormalization
 import org.junit.Assert
 import org.junit.Test
 
-class TreeUtilTest {
+class Code2VecNormalizationTest {
     private val defaultToken = "EMPTY"
 
     @Test
@@ -29,7 +30,7 @@ class TreeUtilTest {
         Assert.assertEquals(
             "All whitespace characters and punctuation should be removed, keeping only letters",
             expectedToken,
-            normalizeToken(token, defaultToken)
+            Code2VecNormalization.normalizeSubToken(token, defaultToken)
         )
     }
 
@@ -40,18 +41,18 @@ class TreeUtilTest {
         Assert.assertEquals(
             "Token without letters have whitespaces replaced with underscores",
             expectedToken,
-            normalizeToken(token, defaultToken)
+            Code2VecNormalization.normalizeSubToken(token, defaultToken)
         )
     }
 
     @Test
     fun testNormalizeEmptyToken() {
         val token = "\n\n"
-        val expectedToken = EMPTY_TOKEN
+        val expectedToken = Code2VecNormalization.EMPTY_TOKEN
         Assert.assertEquals(
             "Token without letters have whitespaces replaced with underscores",
             expectedToken,
-            normalizeToken(token, defaultToken)
+            Code2VecNormalization.normalizeSubToken(token, defaultToken)
         )
     }
 
@@ -62,7 +63,7 @@ class TreeUtilTest {
         Assert.assertEquals(
             "Token with snake, camel and combined case should be split into list of its parts",
             expectedToken,
-            splitToSubtokens(token)
+            Code2VecNormalization.splitToSubtokens(token)
         )
     }
 }

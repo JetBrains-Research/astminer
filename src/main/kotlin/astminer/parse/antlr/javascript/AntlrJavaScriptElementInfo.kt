@@ -30,7 +30,7 @@ abstract class AntlrJavaScriptElementInfo(override val root: AntlrNode, override
     private fun getEnclosingElementName(enclosingRoot: AntlrNode?): String? {
         return enclosingRoot?.children?.firstOrNull {
             it.hasLastLabel(ENCLOSING_ELEMENT_NAME_NODE)
-        }?.originalToken
+        }?.token?.original
     }
 
     private fun getEnclosingElementType(enclosingRoot: AntlrNode): EnclosingElementType {
@@ -59,8 +59,8 @@ abstract class AntlrJavaScriptElementInfo(override val root: AntlrNode, override
                     .map { it.getChildOfType(PARAMETER_NAME_NODE) ?: it }
         }
         return parameterNameNodes.map {
-            check(it.originalToken != null) { "Parameter name wasn't found" }
-            FunctionInfoParameter(name = it.originalToken, type = null)
+            check(it.token.original != null) { "Parameter name wasn't found" }
+            FunctionInfoParameter(name = it.token.original, type = null)
         }
     }
 

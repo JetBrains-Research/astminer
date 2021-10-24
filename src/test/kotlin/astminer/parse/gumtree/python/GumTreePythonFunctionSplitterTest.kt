@@ -134,7 +134,7 @@ class GumTreePythonFunctionSplitterTest {
                 root.getChildOfType("body")
                     ?.getChildOfType("Expr")
                     ?.getChildOfType("Constant-str")
-                    ?.originalToken
+                    ?.token?.original
             )
             assertEquals(4, parameters?.size)
             assertEquals(

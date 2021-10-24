@@ -1,31 +1,20 @@
 package astminer.common.model
 
-import astminer.common.EMPTY_TOKEN
-import astminer.common.splitToSubtokens
 import java.io.File
 import java.io.InputStream
-import java.util.*
 
-abstract class Node(val originalToken: String?) {
+abstract class Node(val token: Token) {
+    constructor(originalToken: String?): this(Token(originalToken, null))
+
     abstract val typeLabel: String
     abstract val children: List<Node>
     abstract val parent: Node?
-
-    val normalizedToken: String =
-        originalToken?.let {
-            val subtokens = splitToSubtokens(it)
-            if (subtokens.isEmpty()) EMPTY_TOKEN else subtokens.joinToString(TOKEN_DELIMITER)
-        } ?: EMPTY_TOKEN
-
-    var technicalToken: String? = null
-
-    val token: String
-        get() = technicalToken ?: normalizedToken
 
     val metadata: MutableMap<String, Any> = HashMap()
     fun isLeaf() = children.isEmpty()
 
     override fun toString(): String = "$typeLabel : $token"
+
     fun prettyPrint(indent: Int = 0, indentSymbol: String = "--") {
         repeat(indent) { print(indentSymbol) }
         println(this)
@@ -52,10 +41,6 @@ abstract class Node(val originalToken: String?) {
 
     fun postOrderIterator(): Iterator<Node> = postOrder().listIterator()
     open fun postOrder(): List<Node> = mutableListOf<Node>().also { doTraversePostOrder(it) }
-
-    companion object {
-        const val TOKEN_DELIMITER = "|"
-    }
 }
 
 /** Node simplest implementation **/
@@ -63,7 +48,7 @@ class SimpleNode(
     override val typeLabel: String,
     override val children: MutableList<SimpleNode>,
     override val parent: Node?,
-    token: String?
+    token: Token
 ) : Node(token) {
     override fun removeChildrenOfType(typeLabel: String) {
         children.removeIf { it.typeLabel == typeLabel }

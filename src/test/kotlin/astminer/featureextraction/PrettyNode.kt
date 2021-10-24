@@ -15,7 +15,7 @@ class PrettyNode(override val typeLabel: String, originalToken: String) : Node(o
     fun toPrettyString(indent: Int = 0, indentSymbol: String = "--"): String = with(StringBuilder()) {
         repeat(indent) { append(indentSymbol) }
         append(typeLabel)
-        if (token.isNotEmpty()) {
+        if (token.final.isNotEmpty()) {
             appendLine(" : $token")
         } else {
             appendLine()

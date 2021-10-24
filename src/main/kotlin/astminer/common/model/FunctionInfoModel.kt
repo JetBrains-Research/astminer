@@ -20,7 +20,7 @@ interface NamedTree<T : Node> {
     val nameNode: T?
         get() = notImplemented("nameNode")
     val name: String?
-        get() = nameNode?.originalToken
+        get() = nameNode?.token?.original
     val root: T
         get() = notImplemented("root")
     val body: T?

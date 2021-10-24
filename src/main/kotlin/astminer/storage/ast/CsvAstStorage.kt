@@ -28,7 +28,7 @@ class CsvAstStorage(override val outputDirectoryPath: String) : Storage {
 
     override fun store(labeledResult: LabeledResult<out Node>, holdout: DatasetHoldout) {
         for (node in labeledResult.root.preOrder()) {
-            tokensMap.record(node.token)
+            tokensMap.record(node.token.final)
             nodeTypesMap.record(node.typeLabel)
         }
         val writer = astsPrintWriters.getOrPut(holdout) { holdout.resolveHoldout() }
@@ -55,7 +55,7 @@ class CsvAstStorage(override val outputDirectoryPath: String) : Storage {
     }
 
     internal fun astString(node: Node): String {
-        return "${tokensMap.getId(node.token)} ${nodeTypesMap.getId(node.typeLabel)}{${
+        return "${tokensMap.getId(node.token.final)} ${nodeTypesMap.getId(node.typeLabel)}{${
         node.children.joinToString(separator = "", transform = ::astString)
         }}"
     }

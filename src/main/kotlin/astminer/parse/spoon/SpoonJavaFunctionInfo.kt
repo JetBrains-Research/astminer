@@ -23,11 +23,11 @@ class SpoonJavaFunctionInfo(override val root: SpoonNode, override val filePath:
 
     override val annotations: List<String>? = run {
         root.getChildrenOfType(ANNOTATION_NODE_TYPE).map {
-            it.getChildOfType(TYPE_REFERENCE)?.originalToken ?: return@run null
+            it.getChildOfType(TYPE_REFERENCE)?.token?.original ?: return@run null
         }
     }
 
-    override val returnType: String? = root.children.find { it.typeLabel in POSSIBLE_PARAMETER_TYPES }?.originalToken
+    override val returnType: String? = root.children.find { it.typeLabel in POSSIBLE_PARAMETER_TYPES }?.token?.original
 
     override val body: SpoonNode? = root.getChildOfType(BLOCK)
 
@@ -37,8 +37,8 @@ class SpoonJavaFunctionInfo(override val root: SpoonNode, override val filePath:
         root.findEnclosingElementBy { it.typeLabel in POSSIBLE_ENCLOSING_ELEMENTS }?.assembleEnclosingClass()
 
     private fun assembleParameter(parameterNode: SpoonNode): FunctionInfoParameter {
-        val type = parameterNode.children.find { it.typeLabel in POSSIBLE_PARAMETER_TYPES }?.originalToken
-        val name = parameterNode.originalToken
+        val type = parameterNode.children.find { it.typeLabel in POSSIBLE_PARAMETER_TYPES }?.token?.original
+        val name = parameterNode.token.original
         checkNotNull(name) { "Couldn't find parameter name token" }
         return FunctionInfoParameter(name, type)
     }
@@ -49,7 +49,7 @@ class SpoonJavaFunctionInfo(override val root: SpoonNode, override val filePath:
             CLASS_DECLARATION_TYPE -> EnclosingElementType.Class
             else -> error("Can't find any enclosing type association")
         }
-        EnclosingElement(type, this.originalToken, root)
+        EnclosingElement(type, this.token.original, root)
     }
 
     companion object {

@@ -43,7 +43,7 @@ class GumTreePythonFunctionInfo(
         val enclosing = findEnclosingClass() ?: return null
         return EnclosingElement(
             type = EnclosingElementType.Class,
-            name = enclosing.originalToken,
+            name = enclosing.token.original,
             root = enclosing
         )
     }
@@ -63,7 +63,7 @@ class GumTreePythonFunctionInfo(
             }
         }
         return params.mapNotNull {
-            FunctionInfoParameter(it.originalToken ?: return@mapNotNull null, getElementType(it)?.originalToken)
+            FunctionInfoParameter(it.token.original ?: return@mapNotNull null, getElementType(it)?.token?.original)
         }
     }
 
