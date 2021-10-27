@@ -1,8 +1,10 @@
 package astminer.parse.treesitter.java
 
+import astminer.checkExecutable
 import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
 import astminer.common.model.SimpleNode
+import org.junit.Assume
 import org.junit.BeforeClass
 import org.junit.Test
 import java.io.File
@@ -163,6 +165,7 @@ class TreeSitterJavaMethodSplitterTest {
         @BeforeClass
         @JvmStatic
         fun parseTree() {
+            Assume.assumeTrue(checkExecutable("aw_tree_sitter"))
             val testTree = parser.parseInputStream(File(FILE_PATH).inputStream())
             assertNotNull(testTree)
             functionInfos = functionSplitter.splitIntoFunctions(testTree, FILE_PATH)
