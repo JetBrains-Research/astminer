@@ -1,8 +1,11 @@
 package astminer.parse.gumtree.java.srcML
 
+import astminer.checkExecutable
 import astminer.common.getProjectFilesWithExtension
 import astminer.parseFiles
 import org.junit.Assert
+import org.junit.Assume
+import org.junit.BeforeClass
 import org.junit.Test
 import java.io.File
 
@@ -24,5 +27,13 @@ internal class GumTreeJavaSrcmlParserTest {
         val trees = parser.parseFiles(getProjectFilesWithExtension(projectRoot, "java"))
         Assert.assertEquals("There is only 2 file with .java extension in 'testData/examples' folder", 2, trees.size)
         trees.forEach { Assert.assertNotNull("Parse tree for a valid file should not be null", it) }
+    }
+
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun checkSrcmlInstalled() {
+            Assume.assumeTrue(checkExecutable("srcml"))
+        }
     }
 }

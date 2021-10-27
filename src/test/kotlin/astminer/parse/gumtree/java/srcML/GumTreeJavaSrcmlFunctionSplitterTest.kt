@@ -1,7 +1,10 @@
 package astminer.parse.gumtree.java.srcML
 
+import astminer.checkExecutable
 import astminer.common.model.FunctionInfo
 import astminer.parse.gumtree.GumTreeNode
+import org.junit.Assume
+import org.junit.BeforeClass
 import org.junit.Test
 import java.io.File
 import kotlin.test.assertEquals
@@ -96,6 +99,14 @@ internal class GumTreeJavaSrcmlFunctionSplitterTest {
             assertEquals("someAbstractClass", enclosingElement?.name)
             assertEquals(setOf("public", "abstract"), modifiers?.toSet())
             assertTrue(isBlank())
+        }
+    }
+
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun checkTreeSitterInstalled() {
+            Assume.assumeTrue(checkExecutable("aw_tree_sitter"))
         }
     }
 }
