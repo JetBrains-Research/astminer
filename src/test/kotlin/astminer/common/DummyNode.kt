@@ -10,6 +10,8 @@ class DummyNode(
 
     override val parent: Node? = null
 
+    override val range: NodeRange? = null
+
     init {
         // Tokens may change after normalization, for tests we want tokens to be unchanged
         token.technical = typeLabel
