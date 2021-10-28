@@ -106,7 +106,7 @@ internal class GumTreeJavaSrcmlFunctionSplitterTest {
         @BeforeClass
         @JvmStatic
         fun checkTreeSitterInstalled() {
-            Assume.assumeTrue(checkExecutable("aw_tree_sitter"))
+            Assume.assumeTrue(checkExecutable("srcml"))
         }
     }
 }
