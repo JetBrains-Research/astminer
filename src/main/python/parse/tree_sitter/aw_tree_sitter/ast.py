@@ -1,7 +1,11 @@
 from tree_sitter import TreeCursor
 from typing import Optional, TypedDict, List
 
-NodeAsDict = TypedDict("NodeAsDict", {"token": Optional[str], "nodeType": str, "children": List[int]})
+Position = TypedDict("Position", {"line": int, "column": int})
+NodeRange = TypedDict("NodeRange", {"start": Position, "end": Position})
+NodeAsDict = TypedDict(
+    "NodeAsDict", {"token": Optional[str], "nodeType": str, "range": NodeRange, "children": List[int]}
+)
 TreeAsDict = TypedDict("TreeAsDict", {"tree": List[NodeAsDict]})
 
 
@@ -13,15 +17,26 @@ class TreeBuilder:
         self._cursor = cursor
         self._file_bytes = file_bytes
 
+    def _get_current_node_range(self) -> NodeRange:
+        node = self._cursor.node
+        start = node.start_point
+        end = node.end_point
+        return {
+            "start": {"line": start[0], "column": start[1]},
+            "end": {"line": end[0], "column": end[1]}
+        }
+
     def _get_current_node_as_dict(self) -> NodeAsDict:
         node_type = self._cursor.node.type
+        node_range = self._get_current_node_range()
+
         if len(self._cursor.node.children) == 0:
             node_value_bytes = self._file_bytes[self._cursor.node.start_byte : self._cursor.node.end_byte]
             node_value: Optional[str] = node_value_bytes.decode("utf-8")
         else:
             node_value = None
 
-        return {"token": node_value, "nodeType": node_type, "children": []}
+        return {"token": node_value, "nodeType": node_type, "range": node_range, "children": []}
 
     def get_tree_as_dict(self) -> TreeAsDict:
         depth = 0
