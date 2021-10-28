@@ -44,8 +44,8 @@ import kotlin.io.path.createTempDirectory
  *        "nodeType": "right_child",
  *        "children": [],
  *        "range" : {
- *          "start" : { "line" : 1, "column" : 0},
- *          "end" : { "line" : 1, "column" : 6}
+ *          "start" : { "line" : 1, "column" : 0 },
+ *          "end" : { "line" : 1, "column" : 6 }
  *        }
  *      }
  *    ]
