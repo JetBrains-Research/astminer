@@ -2,6 +2,7 @@ package astminer.parse.spoon
 
 import astminer.common.model.Node
 import astminer.common.model.NodeRange
+import astminer.common.model.Position
 import spoon.reflect.code.*
 import spoon.reflect.cu.position.NoSourcePosition
 import spoon.reflect.declaration.CtElement
@@ -18,8 +19,8 @@ class SpoonNode(el: CtElement, override val parent: SpoonNode?) : Node(el.getSpo
         el.position !is NoSourcePosition
     ) {
         NodeRange(
-            el.position.line to el.position.column,
-            el.position.endLine to el.position.endColumn
+            Position(el.position.line, el.position.column),
+            Position(el.position.endLine, el.position.endColumn)
         )
     } else null
 

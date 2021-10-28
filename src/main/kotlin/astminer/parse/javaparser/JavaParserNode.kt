@@ -2,6 +2,7 @@ package astminer.parse.javaparser
 
 import astminer.common.model.Node
 import astminer.common.model.NodeRange
+import astminer.common.model.Position
 import com.github.javaparser.ast.expr.AssignExpr
 import com.github.javaparser.ast.expr.BinaryExpr
 import com.github.javaparser.ast.expr.Name
@@ -35,7 +36,10 @@ class JavaParserNode(jpNode: JPNode, override val parent: JavaParserNode?) : Nod
     override val range: NodeRange? = if (jpNode.hasNoToken()) { null } else {
         val start = jpNode.begin.get()
         val end = jpNode.end.get()
-        NodeRange(start.line to start.column, end.line to end.column)
+        NodeRange(
+            Position(start.line, start.column),
+            Position(end.line, end.column)
+        )
     }
 
     /**

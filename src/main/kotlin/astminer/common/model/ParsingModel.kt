@@ -1,5 +1,6 @@
 package astminer.common.model
 
+import kotlinx.serialization.Serializable
 import java.io.File
 import java.io.InputStream
 
@@ -43,10 +44,14 @@ abstract class Node(originalToken: String?) {
     open fun postOrder(): List<Node> = mutableListOf<Node>().also { doTraversePostOrder(it) }
 }
 
-typealias Line = Int
-typealias Column = Int
+@Serializable
+data class NodeRange(val start: Position, val end: Position) {
+    override fun toString(): String = "[${start.line}, ${start.column}] - [${end.line}, ${end.column}]"
+}
 
-data class NodeRange(val start: Pair<Line, Column>, val end: Pair<Line, Column>)
+@Serializable
+data class Position(val line: Int, val column: Int)
+
 
 interface Parser<T : Node> {
     /**

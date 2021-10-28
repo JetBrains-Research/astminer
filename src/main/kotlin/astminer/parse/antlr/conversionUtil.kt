@@ -1,6 +1,7 @@
 package astminer.parse.antlr
 
 import astminer.common.model.NodeRange
+import astminer.common.model.Position
 import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.Vocabulary
 import org.antlr.v4.runtime.tree.ErrorNode
@@ -33,8 +34,8 @@ private fun convertRuleContext(
 private fun ParserRuleContext.getNodeRange(): NodeRange? {
     if (start == null || stop == null) return null
     return NodeRange(
-        start.line to start.charPositionInLine,
-        stop.line to stop.charPositionInLine + stop.stopIndex - stop.startIndex
+        Position(start.line, start.charPositionInLine),
+        Position(stop.line, stop.charPositionInLine + stop.stopIndex - stop.startIndex)
     )
 }
 
@@ -49,8 +50,8 @@ private fun convertTerminal(terminalNode: TerminalNode, parent: AntlrNode?, voca
 private fun TerminalNode.getNodeRange(): NodeRange? {
     if (symbol == null) return null
     return NodeRange(
-        symbol.line to symbol.charPositionInLine,
-        symbol.line to symbol.charPositionInLine + symbol.stopIndex - symbol.startIndex
+        Position(symbol.line, symbol.charPositionInLine),
+        Position(symbol.line, symbol.charPositionInLine + symbol.stopIndex - symbol.startIndex)
     )
 }
 
