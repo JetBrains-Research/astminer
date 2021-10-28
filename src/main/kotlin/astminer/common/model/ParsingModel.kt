@@ -52,7 +52,6 @@ data class NodeRange(val start: Position, val end: Position) {
 @Serializable
 data class Position(val line: Int, val column: Int)
 
-
 interface Parser<T : Node> {
     /**
      * Parse input stream into an AST.
