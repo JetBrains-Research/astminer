@@ -1,6 +1,6 @@
 package astminer.filters
 
-import astminer.common.model.Code2VecNormalization
+import astminer.common.Code2VecNormalization
 import astminer.common.model.FunctionFilter
 import astminer.common.model.FunctionInfo
 import astminer.common.model.Node

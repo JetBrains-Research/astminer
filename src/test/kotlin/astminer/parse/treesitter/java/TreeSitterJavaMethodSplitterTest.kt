@@ -1,8 +1,8 @@
 package astminer.parse.treesitter.java
 
+import astminer.common.SimpleNode
 import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
-import astminer.common.model.SimpleNode
 import org.junit.BeforeClass
 import org.junit.Test
 import java.io.File

@@ -1,8 +1,6 @@
-package astminer.common.model
+package astminer.common
 
-interface Normalization {
-    fun normalizeToken(token: String?): String
-}
+import astminer.common.model.Normalization
 
 object Code2VecNormalization : Normalization {
     const val EMPTY_TOKEN = "EMPTY"

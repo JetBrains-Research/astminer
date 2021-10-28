@@ -1,5 +1,6 @@
 package astminer.filters
 
+import astminer.common.Code2VecNormalization
 import astminer.common.model.*
 import astminer.featureextraction.NumberOfNodes
 

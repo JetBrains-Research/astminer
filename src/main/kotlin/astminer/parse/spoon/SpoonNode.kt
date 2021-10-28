@@ -1,8 +1,7 @@
 package astminer.parse.spoon
 
 import astminer.common.model.Node
-import astminer.common.model.Token
-import astminer.common.model.TokenRange
+import astminer.common.model.NodeRange
 import spoon.reflect.code.*
 import spoon.reflect.declaration.CtElement
 import spoon.reflect.declaration.CtNamedElement
@@ -13,6 +12,13 @@ class SpoonNode(el: CtElement, override val parent: SpoonNode?) : Node(el.getSpo
     override val typeLabel = el.javaClass.simpleName.substring(startIndex = 2).dropLast(4)
 
     override val children = run { el.directChildren.map { SpoonNode(it, this) } }.toMutableList()
+
+    override val range: NodeRange? = if (el.position.isValidPosition && el.position != null) {
+        NodeRange(
+            el.position.line to el.position.column,
+            el.position.endLine to el.position.endColumn
+        )
+    } else null
 
     override fun removeChildrenOfType(typeLabel: String) {
         children.removeIf { it.typeLabel == typeLabel }
@@ -28,7 +34,7 @@ class SpoonNode(el: CtElement, override val parent: SpoonNode?) : Node(el.getSpo
     override fun postOrder(): List<SpoonNode> = super.postOrder().map { it as SpoonNode }
 }
 
-private fun CtElement.getSpoonToken(): Token {
+private fun CtElement.getSpoonToken(): String? {
     val originalToken = when {
         this is CtNamedElement -> this.simpleName
         this is CtVariableAccess<*> -> this.variable.simpleName
@@ -42,15 +48,5 @@ private fun CtElement.getSpoonToken(): Token {
         this.directChildren.size == 0 -> this.toString()
         else -> null
     }
-    val range = if (this.position.isValidPosition) {
-        try {
-            TokenRange(
-                this.position.line to this.position.column,
-                this.position.endLine to this.position.endColumn
-            )
-        } catch (e: NullPointerException) {
-            null
-        }
-    } else null
-    return Token(originalToken, range)
+    return originalToken
 }

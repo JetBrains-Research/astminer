@@ -3,14 +3,13 @@ package astminer.common.model
 import java.io.File
 import java.io.InputStream
 
-abstract class Node(val token: Token) {
+abstract class Node(originalToken: String?) {
     abstract val typeLabel: String
     abstract val children: List<Node>
     abstract val parent: Node?
-
+    abstract val range: NodeRange?
     val metadata: MutableMap<String, Any> = HashMap()
-
-    constructor(originalToken: String?) : this(Token(originalToken, null))
+    val token = Token(originalToken)
 
     fun isLeaf() = children.isEmpty()
 
@@ -44,23 +43,10 @@ abstract class Node(val token: Token) {
     open fun postOrder(): List<Node> = mutableListOf<Node>().also { doTraversePostOrder(it) }
 }
 
-/** Node simplest implementation **/
-class SimpleNode(
-    override val typeLabel: String,
-    override val children: MutableList<SimpleNode>,
-    override val parent: Node?,
-    token: Token
-) : Node(token) {
-    override fun removeChildrenOfType(typeLabel: String) {
-        children.removeIf { it.typeLabel == typeLabel }
-    }
+typealias Line = Int
+typealias Column = Int
 
-    override fun getChildrenOfType(typeLabel: String) = super.getChildrenOfType(typeLabel).map { it as SimpleNode }
-    override fun getChildOfType(typeLabel: String) = super.getChildOfType(typeLabel) as? SimpleNode
-
-    override fun preOrder() = super.preOrder().map { it as SimpleNode }
-    override fun postOrder() = super.postOrder().map { it as SimpleNode }
-}
+data class NodeRange(val start: Pair<Line, Column>, val end: Pair<Line, Column>)
 
 interface Parser<T : Node> {
     /**

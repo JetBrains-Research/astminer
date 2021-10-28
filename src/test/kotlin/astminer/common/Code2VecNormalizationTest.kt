@@ -1,6 +1,5 @@
 package astminer.common
 
-import astminer.common.model.Code2VecNormalization
 import org.junit.Assert
 import org.junit.Test
 
