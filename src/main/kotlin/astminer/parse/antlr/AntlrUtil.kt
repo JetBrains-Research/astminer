@@ -1,6 +1,8 @@
 package astminer.parse.antlr
 
 import astminer.common.model.Node
+import astminer.common.model.NodeRange
+import com.github.javaparser.TokenRange
 import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.Vocabulary
 import org.antlr.v4.runtime.tree.ErrorNode
@@ -16,7 +18,7 @@ private fun convertRuleContext(
     vocabulary: Vocabulary
 ): AntlrNode {
     val typeLabel = ruleNames[ruleContext.ruleIndex]
-    val currentNode = AntlrNode(typeLabel, parent, null)
+    val currentNode = AntlrNode(typeLabel, parent, null, ruleContext.getNodeRange())
     val children: MutableList<AntlrNode> = ArrayList()
 
     ruleContext.children?.forEach {
@@ -30,11 +32,32 @@ private fun convertRuleContext(
     return currentNode
 }
 
+private fun ParserRuleContext.getNodeRange(): NodeRange? {
+    if (start == null || stop == null) return null
+    return NodeRange(
+        start.line to start.charPositionInLine,
+        stop.line to stop.charPositionInLine + stop.stopIndex - stop.startIndex
+    )
+}
+
 private fun convertTerminal(terminalNode: TerminalNode, parent: AntlrNode?, vocabulary: Vocabulary): AntlrNode =
-    AntlrNode(vocabulary.getSymbolicName(terminalNode.symbol.type), parent, terminalNode.symbol.text)
+    AntlrNode(
+        vocabulary.getSymbolicName(terminalNode.symbol.type),
+        parent,
+        terminalNode.symbol.text,
+        terminalNode.getNodeRange()
+    )
+
+private fun TerminalNode.getNodeRange(): NodeRange? {
+    if (symbol == null) return null
+    return NodeRange(
+        symbol.line to symbol.charPositionInLine,
+        symbol.line to symbol.charPositionInLine + symbol.stopIndex - symbol.startIndex
+    )
+}
 
 private fun convertErrorNode(errorNode: ErrorNode, parent: AntlrNode?): AntlrNode =
-    AntlrNode("Error", parent, errorNode.text)
+    AntlrNode("Error", parent, errorNode.text, errorNode.getNodeRange())
 
 /**
  * Remove intermediate nodes that have a single child.
@@ -57,7 +80,8 @@ fun compressTree(root: AntlrNode): AntlrNode {
         val compressedNode = AntlrNode(
             root.typeLabel + "|" + child.typeLabel,
             root.parent,
-            child.token.original
+            child.token.original,
+            root.range
         )
         compressedNode.replaceChildren(child.children)
         compressedNode

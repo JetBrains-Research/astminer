@@ -6,10 +6,9 @@ import astminer.common.model.NodeRange
 class AntlrNode(
     override val typeLabel: String,
     override var parent: AntlrNode?,
-    originalToken: String?
-) : Node(originalToken) {
-
+    originalToken: String?,
     override val range: NodeRange? = null
+) : Node(originalToken) {
 
     override val children: MutableList<AntlrNode> = mutableListOf()
 
