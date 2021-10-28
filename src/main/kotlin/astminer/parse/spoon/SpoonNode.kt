@@ -3,6 +3,7 @@ package astminer.parse.spoon
 import astminer.common.model.Node
 import astminer.common.model.NodeRange
 import spoon.reflect.code.*
+import spoon.reflect.cu.position.NoSourcePosition
 import spoon.reflect.declaration.CtElement
 import spoon.reflect.declaration.CtNamedElement
 import spoon.reflect.reference.CtReference
@@ -13,7 +14,9 @@ class SpoonNode(el: CtElement, override val parent: SpoonNode?) : Node(el.getSpo
 
     override val children = run { el.directChildren.map { SpoonNode(it, this) } }.toMutableList()
 
-    override val range: NodeRange? = if (el.position.isValidPosition && el.position != null) {
+    override val range: NodeRange? = if (el.position.compilationUnit.originalSourceCode != null &&
+        el.position !is NoSourcePosition
+    ) {
         NodeRange(
             el.position.line to el.position.column,
             el.position.endLine to el.position.endColumn
