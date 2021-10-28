@@ -1,6 +1,7 @@
 package astminer.parse
 
 import astminer.common.SimpleNode
+import astminer.common.model.NodeRange
 import astminer.common.model.Parser
 import astminer.config.FileExtension
 import astminer.config.ParserType
@@ -23,17 +24,29 @@ import kotlin.io.path.createTempDirectory
  *      {
  *        "token": null,
  *        "nodeType": "i_am_root",
- *        "children": [1,2]
+ *        "children": [1,2],
+ *        "range" : {
+ *          "start" : { "line" : 0, "column" : 0 },
+ *          "end" : { "line" 1, "column" : 4 }
+ *        }
  *      },
  *      {
  *        "token": "Hello",
  *        "nodeType": "left_child",
  *        "children": []
+ *        "range" : {
+ *          "start" : { "line" : 0, "column": 0 },
+ *          "end" : { "line: 0, "column": 5 }
+ *        }
  *      },
  *      {
  *        "token": "World!",
  *        "nodeType": "right_child",
- *        "children": []
+ *        "children": [],
+ *        "range" : {
+ *          "start" : { "line" : 1, "column" : 0},
+ *          "end" : { "line" : 1, "column" : 6}
+ *        }
  *      }
  *    ]
  *  }
@@ -57,12 +70,13 @@ private fun launchScript(args: List<String>): String {
 
 private fun convertFromForeignTree(context: ForeignTree, rootId: Int = 0, parent: SimpleNode? = null): SimpleNode {
     val foreignNode = context.tree[rootId]
+
     val node = SimpleNode(
         children = mutableListOf(),
         parent = parent,
         typeLabel = foreignNode.nodeType,
         token = foreignNode.token,
-        range = null
+        range = foreignNode.range
     )
     val children = foreignNode.children.map { convertFromForeignTree(context, it, node) }
     node.children.addAll(children)
@@ -73,7 +87,12 @@ private fun convertFromForeignTree(context: ForeignTree, rootId: Int = 0, parent
 private data class ForeignTree(val tree: List<ForeignNode>)
 
 @Serializable
-private data class ForeignNode(val token: String?, val nodeType: String, val children: List<Int>)
+private data class ForeignNode(
+    val token: String?,
+    val nodeType: String,
+    val range: NodeRange? = null,
+    val children: List<Int>
+)
 
 /** Use this parser to get a tree from external script.
  *  It uses `getTreeFromScript` and `getArguments` functions to generate
