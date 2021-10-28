@@ -7,8 +7,8 @@ import astminer.common.model.NodeRange
 class SimpleNode(
     override val typeLabel: String,
     override val children: MutableList<SimpleNode>,
-    override val parent: Node?,
-    override val range: NodeRange?,
+    override val parent: Node? = null,
+    override val range: NodeRange? = null,
     token: String?
 ) : Node(token) {
     override fun removeChildrenOfType(typeLabel: String) {
