@@ -25,11 +25,11 @@ dependencies {
     // ===== Parsers =====
     antlr("org.antlr:antlr4:4.7.1")
     // https://mvnrepository.com/artifact/com.github.gumtreediff
-    api("com.github.gumtreediff", "core", "2.1.2")
-    api("com.github.gumtreediff", "client", "2.1.2")
-    api("com.github.gumtreediff", "gen.jdt", "2.1.2")
-    api("com.github.gumtreediff", "gen.srcml","2.1.2")
-    api("com.github.gumtreediff", "gen.python", "2.1.2")
+    api("com.github.gumtreediff", "core", "3.0.0")
+    api("com.github.gumtreediff", "client", "3.0.0")
+    api("com.github.gumtreediff", "gen.jdt", "3.0.0")
+    api("com.github.gumtreediff", "gen.srcml","3.0.0")
+    api("com.github.gumtreediff", "gen.python", "3.0.0")
 
     // https://github.com/javaparser/javaparser
     implementation("com.github.javaparser:javaparser-symbol-solver-core:3.22.1")
