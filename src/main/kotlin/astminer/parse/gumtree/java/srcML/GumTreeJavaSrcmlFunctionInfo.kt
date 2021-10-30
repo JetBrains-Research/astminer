@@ -30,7 +30,7 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
     override val modifiers: List<String>? = extractWithLogger(logger) {
         val type = checkNotNull(root.getChildOfType(TYPE)) { "Function doesn't have a type" }
         type.children.filter { it.typeLabel == MODIFIER }.map {
-            checkNotNull(it.originalToken) {"Modifier doesn't have a name"}
+            checkNotNull(it.originalToken) { "Modifier doesn't have a name" }
         }
     }
 
