@@ -157,8 +157,7 @@ internal class JavaLangFunctionSplitterTest {
         @JvmStatic
         fun parseFunctions() {
             Assume.assumeTrue(checkExecutable("aw_javalang"))
-            val testTree = parser.parseInputStream(File(FILE_PATH).inputStream())
-            assertNotNull(testTree)
+            val testTree = parser.parseFile(File(FILE_PATH))
             functionInfos = functionSplitter.splitIntoFunctions(testTree, FILE_PATH)
         }
     }
