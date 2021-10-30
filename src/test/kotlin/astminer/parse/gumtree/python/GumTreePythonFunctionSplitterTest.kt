@@ -53,7 +53,7 @@ class GumTreePythonFunctionSplitterTest {
         assertNotNull(functionInfo)
         with(functionInfo) {
             assertEquals("complex_args_full_typed", name)
-            assertEquals(null, returnType)
+            assertEquals("JsonNodeType", returnType)
             assertEquals(1, parameters?.size)
             assertEquals(listOf("node"), parameters?.map { it.name }?.toList())
             assertEquals(listOf("JsonNodeType"), parameters?.map { it.type }?.toList())
@@ -67,7 +67,7 @@ class GumTreePythonFunctionSplitterTest {
         assertNotNull(functionInfo)
         with(functionInfo) {
             assertEquals("func_dif_args_typed_return", name)
-            assertEquals("Constant-int", returnType)
+            assertEquals("int", returnType)
             assertEquals(6, parameters?.size)
             assertEquals(listOf("a", "b", "c", "d", "e", "f"), parameters?.map { it.name }?.toList())
             assertEquals(emptyList(), parameters?.mapNotNull { it.type }?.toList())
@@ -111,9 +111,9 @@ class GumTreePythonFunctionSplitterTest {
         assertNotNull(functionInfo)
         with(functionInfo) {
             assertEquals("async_schrecklich_typed", name)
-            assertEquals("AsyncFunctionDef", root.typeLabel)
+            assertEquals("funcdef", root.typeLabel)
             assertEquals(null, enclosingElement?.name)
-            assertEquals("Constant-int", returnType)
+            assertEquals("int", returnType)
             assertEquals(4, parameters?.size)
             assertEquals(listOf("event", "x", "args", "kwargs"), parameters?.map { it.name }?.toList())
             assertEquals(listOf("str", "int", null, null), parameters?.map { it.type }?.toList())
@@ -127,7 +127,7 @@ class GumTreePythonFunctionSplitterTest {
         assertNotNull(functionInfo)
         with(functionInfo) {
             assertEquals("async_simple_no_typed", name)
-            assertEquals("AsyncFunctionDef", root.typeLabel)
+            assertEquals("funcdef", root.typeLabel)
             assertEquals(null, enclosingElement?.name)
             assertEquals(
                 "\n    async doc\n    ",
