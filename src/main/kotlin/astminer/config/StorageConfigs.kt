@@ -48,7 +48,8 @@ class JsonAstStorageConfig(
 ) : StorageConfig() {
     override fun createStorage(outputDirectoryPath: String) =
         JsonAstStorage(
-            outputDirectoryPath, withPaths,
+            outputDirectoryPath,
+            withPaths,
             withRanges
         )
 }

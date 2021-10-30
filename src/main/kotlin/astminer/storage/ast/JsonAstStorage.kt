@@ -44,7 +44,12 @@ class JsonAstStorage(
     )
 
     private fun TreeFlattener.EnumeratedNode.toOutputNode() =
-        OutputNode(node.token.final, node.typeLabel, node.range, children.map { it.id })
+        OutputNode(
+            node.token.final,
+            node.typeLabel,
+            if (withRanges) node.range else null,
+            children.map { it.id }
+        )
 
     override fun store(labeledResult: LabeledResult<out Node>, holdout: DatasetHoldout) {
         val outputNodes = treeFlattener.flatten(labeledResult.root).map { it.toOutputNode() }
