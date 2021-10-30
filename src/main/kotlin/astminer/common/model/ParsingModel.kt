@@ -1,5 +1,6 @@
 package astminer.common.model
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.io.File
 import java.io.InputStream
@@ -50,7 +51,7 @@ data class NodeRange(val start: Position, val end: Position) {
 }
 
 @Serializable
-data class Position(val line: Int, val column: Int)
+data class Position(@SerialName("l") val line: Int, @SerialName("c") val column: Int)
 
 interface Parser<T : Node> {
     /**

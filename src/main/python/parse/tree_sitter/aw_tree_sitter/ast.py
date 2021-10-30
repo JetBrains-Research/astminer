@@ -1,7 +1,7 @@
 from tree_sitter import TreeCursor
 from typing import Optional, TypedDict, List
 
-Position = TypedDict("Position", {"line": int, "column": int})
+Position = TypedDict("Position", {"l": int, "c": int})
 NodeRange = TypedDict("NodeRange", {"start": Position, "end": Position})
 NodeAsDict = TypedDict(
     "NodeAsDict", {"token": Optional[str], "nodeType": str, "range": NodeRange, "children": List[int]}
@@ -22,8 +22,8 @@ class TreeBuilder:
         start = node.start_point
         end = node.end_point
         return {
-            "start": {"line": start[0], "column": start[1]},
-            "end": {"line": end[0], "column": end[1]}
+            "start": {"l": start[0], "c": start[1]},
+            "end": {"l": end[0], "c": end[1]}
         }
 
     def _get_current_node_as_dict(self) -> NodeAsDict:
