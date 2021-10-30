@@ -17,6 +17,8 @@ class GumTreePythonFunctionInfo(
 ) : FunctionInfo<GumTreeNode> {
     override val nameNode: GumTreeNode? = root.getChildOfType(NAME)
 
+    override val isConstructor: Boolean = name == CONSTRUCTOR_NAME
+
     override val returnType = if (root.children.find { it.originalToken == RETURN_TYPE_OPERATOR } == null) {
         null
     } else root.getChildrenOfType(NAME).lastOrNull()?.preOrder()?.mapNotNull { it.originalToken }?.joinToString("")
@@ -58,6 +60,7 @@ class GumTreePythonFunctionInfo(
 
     companion object {
         const val NAME = "name"
+        const val CONSTRUCTOR_NAME = "__init__"
         const val TYPE = "type"
         const val TYPE_DEFINITION = "tfpdef"
         const val PARAMETERS = "parameters"
