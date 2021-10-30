@@ -1,9 +1,6 @@
 package astminer.storage.ast
 
-import astminer.common.model.DatasetHoldout
-import astminer.common.model.LabeledResult
-import astminer.common.model.Node
-import astminer.common.model.Storage
+import astminer.common.model.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -17,7 +14,11 @@ private typealias Id = Int
  * Each line in the output file is a single json object that corresponds to one of the labeled trees.
  * Each tree is flattened and represented as a list of nodes.
  */
-class JsonAstStorage(override val outputDirectoryPath: String, private val withPaths: Boolean) : Storage {
+class JsonAstStorage(
+    override val outputDirectoryPath: String,
+    private val withPaths: Boolean,
+    private val withRanges: Boolean
+) : Storage {
     private val treeFlattener = TreeFlattener()
 
     private val datasetWriters = mutableMapOf<DatasetHoldout, PrintWriter>()
@@ -28,13 +29,22 @@ class JsonAstStorage(override val outputDirectoryPath: String, private val withP
     }
 
     @Serializable
-    private data class LabeledAst(val label: String, val path: String? = null, val ast: List<OutputNode>)
+    private data class LabeledAst(
+        val label: String,
+        val path: String? = null,
+        val ast: List<OutputNode>
+    )
 
     @Serializable
-    private data class OutputNode(val token: String, val typeLabel: String, val children: List<Id>)
+    private data class OutputNode(
+        val token: String,
+        val typeLabel: String,
+        val range: NodeRange? = null,
+        val children: List<Id>
+    )
 
     private fun TreeFlattener.EnumeratedNode.toOutputNode() =
-        OutputNode(node.token.final, node.typeLabel, children.map { it.id })
+        OutputNode(node.token.final, node.typeLabel, node.range, children.map { it.id })
 
     override fun store(labeledResult: LabeledResult<out Node>, holdout: DatasetHoldout) {
         val outputNodes = treeFlattener.flatten(labeledResult.root).map { it.toOutputNode() }
