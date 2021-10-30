@@ -41,10 +41,9 @@ class GumTreePythonFunctionInfo(
         parameters.children.filter { it.typeLabel == PARAMETER }.map { param ->
             // Simple case: param has name and possibly default
             if (param.getChildOfType(TYPE_DEFINITION) == null) {
-                FunctionInfoParameter(
-                    name = checkNotNull(param.getChildOfType(NAME)?.originalToken),
-                    type = null
-                )
+                val name = param.getChildOfType(NAME)?.originalToken
+                checkNotNull(name) { "Parameter has no name" }
+                FunctionInfoParameter(name, null)
             } else {
                 // Complicated case: parameter has some type
                 val variableDef = param.getChildOfType(TYPE_DEFINITION)
