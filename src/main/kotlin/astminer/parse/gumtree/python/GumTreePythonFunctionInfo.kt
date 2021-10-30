@@ -39,12 +39,14 @@ class GumTreePythonFunctionInfo(
         val parameters = root.getChildOfType(PARAMETERS)
         checkNotNull(parameters) { "Node has no parameter node" }
         parameters.children.filter { it.typeLabel == PARAMETER }.map { param ->
+            // Simple case: param has name and possibly default
             if (param.getChildOfType(TYPE_DEFINITION) == null) {
                 FunctionInfoParameter(
                     name = checkNotNull(param.getChildOfType(NAME)?.originalToken),
                     type = null
                 )
             } else {
+                // Complicated case: parameter has some type
                 val variableDef = param.getChildOfType(TYPE_DEFINITION)
                     ?: error("Tree structure was changed while function info collection")
                 val name = variableDef.getChildOfType(NAME)?.originalToken
@@ -66,48 +68,4 @@ class GumTreePythonFunctionInfo(
         const val CLASS_DECLARATION = "classdef"
         val possibleEnclosingElements = listOf(FUNCTION_DECLARATION, CLASS_DECLARATION)
     }
-
-//    override val isConstructor: Boolean = name == TypeLabels.constructorFunctionName
-//
-//    private fun getElementType(node: GumTreeNode): GumTreeNode? {
-//        if (node.typeLabel == TypeLabels.arg) {
-//            return node.getChildOfType(TypeLabels.nameLoad)
-//        }
-//        // if return statement has "Constant-`Type`" return value => function type is `Type`
-//        if (TypeLabels.methodDefinitions.contains(node.typeLabel)) {
-//            return node.getChildOfType(TypeLabels.body)?.getChildOfType(TypeLabels.returnTypeLabel)?.let {
-//                it.children.firstOrNull { child ->
-//                    child.typeLabel.startsWith(TypeLabels.constantType)
-//                }
-//            }
-//        }
-//        return null
-//    }
-//
-//    companion object {
-//        private object TypeLabels {
-//            const val NAME = "name"
-//
-//            const val classDefinition = "ClassDef"
-//            const val constructorFunctionName = "__init__"
-//            const val functionDefinition = "FunctionDef"
-//            const val asyncFunctionDefinition = "AsyncFunctionDef"
-//            const val nameLoad = "Name_Load"
-//            const val posOnlyArgs = "posonlyargs"
-//            const val kwOnlyArgs = "kwonlyargs"
-//            const val arguments = "arguments"
-//            const val vararg = "vararg"
-//            const val kwarg = "kwarg"
-//            const val args = "args"
-//            const val arg = "arg"
-//
-//            const val body = "body"
-//            const val returnTypeLabel = "Return"
-//            const val passTypeLabel = "Pass"
-//            const val constantType = "Constant-"
-//
-//            val methodDefinitions = listOf(functionDefinition, asyncFunctionDefinition)
-//            val funcArgsTypesNodes = listOf(args, posOnlyArgs, kwOnlyArgs)
-//        }
-//    }
 }
