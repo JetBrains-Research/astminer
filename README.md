@@ -16,6 +16,7 @@ Supported languages of the input:
 | Fuzzy   |      |        | ✅     |            |     |
 | JavaParser | ✅ |        |        |             |      |
 | TreeSitter | ✅ |       |        |            |     |
+| JavaLang| ✅    |       |        |           |      |
 
 
 
