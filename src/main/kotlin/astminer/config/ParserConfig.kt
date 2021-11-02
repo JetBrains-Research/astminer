@@ -36,6 +36,9 @@ enum class ParserType {
     @SerialName("spoon")
     Spoon,
 
+    @SerialName("javalang")
+    JavaLang,
+
     @SerialName("tree_sitter")
     TreeSitter
 }
