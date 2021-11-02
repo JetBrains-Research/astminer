@@ -27,7 +27,7 @@ class GumTreePythonFunctionInfo(
         val enclosing = root.findEnclosingElementBy { it.typeLabel in possibleEnclosingElements }
             ?: return@extractWithLogger null
         val type = when (enclosing.typeLabel) {
-            FUNCTION_DECLARATION -> EnclosingElementType.Function
+            GumTreePythonFunctionSplitter.FUNCTION_DECLARATION -> EnclosingElementType.Function
             CLASS_DECLARATION -> EnclosingElementType.Class
             else -> error("No enclosing type can be associated")
         }
@@ -39,7 +39,7 @@ class GumTreePythonFunctionInfo(
     }
     override val parameters: List<FunctionInfoParameter>? = extractWithLogger(logger) {
         val parameters = root.getChildOfType(PARAMETERS)
-        checkNotNull(parameters) { "Node has no parameter node" }
+        checkNotNull(parameters) { "Method node has no parameter node" }
         parameters.children.filter { it.typeLabel == PARAMETER }.map { param ->
             // Simple case: param has name and possibly default
             if (param.getChildOfType(TYPE_DEFINITION) == null) {
@@ -66,8 +66,7 @@ class GumTreePythonFunctionInfo(
         const val PARAMETERS = "parameters"
         const val PARAMETER = "param"
         const val RETURN_TYPE_OPERATOR = "->"
-        const val FUNCTION_DECLARATION = "funcdef"
         const val CLASS_DECLARATION = "classdef"
-        val possibleEnclosingElements = listOf(FUNCTION_DECLARATION, CLASS_DECLARATION)
+        val possibleEnclosingElements = listOf(GumTreePythonFunctionSplitter.FUNCTION_DECLARATION, CLASS_DECLARATION)
     }
 }
