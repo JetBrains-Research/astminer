@@ -2,7 +2,6 @@ package astminer.parse.gumtree
 
 import astminer.common.model.Node
 import com.github.gumtreediff.tree.Tree
-import com.github.gumtreediff.tree.TreeContext
 
 class GumTreeNode(val wrappedNode: Tree, override var parent: GumTreeNode? = null) :
     Node(wrappedNode.label) {
