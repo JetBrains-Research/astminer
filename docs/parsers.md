@@ -56,6 +56,15 @@ When working with Javaparser `astminer` implements an algorithm similar to the a
 the [JavaExtractor module](https://github.com/tech-srl/code2vec/tree/master/JavaExtractor)
 in the Code2Vec repository to get similar trees.
 
+## JavaLang parser
+Java parser written in pure python. In order to work with it, you need to install our
+self-written translator package that will reformat javalang inner AST into json AST that `astminer`
+can understand.
+To install this package simply run in the root of the project:
+```
+pip install src/main/python/parse/javalang
+```
+
 ## Other languages and parsers
 
 Support for a new programming language can be implemented in a few simple steps.

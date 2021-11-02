@@ -11,6 +11,7 @@ import astminer.parse.fuzzy.FuzzyParsingResultFactory
 import astminer.parse.gumtree.GumtreeJavaJDTParsingResultFactory
 import astminer.parse.gumtree.GumtreeJavaSrcmlParsingResultFactory
 import astminer.parse.gumtree.GumtreePythonParsingResultFactory
+import astminer.parse.javalang.JavaLangParsingResultFactory
 import astminer.parse.javaparser.JavaParserParsedFileFactory
 import astminer.parse.spoon.SpoonParsingResultFactory
 import astminer.parse.treesitter.java.TreeSitterJavaFactory
@@ -23,6 +24,7 @@ fun getParsingResultFactory(extension: FileExtension, parserType: ParserType): P
         ParserType.JavaParser -> getJavaParserParsingFactory(extension)
         ParserType.GumTreeSrcml -> getGumTreeSrcmlFactory(extension)
         ParserType.Spoon -> getSpoonParsingResultFactory(extension)
+        ParserType.JavaLang -> getJavaLangFactory(extension)
         ParserType.TreeSitter -> getTreeSitterFactory(extension)
     }
 }
@@ -71,6 +73,14 @@ private fun getJavaParserParsingFactory(extension: FileExtension): ParsingResult
 private fun getSpoonParsingResultFactory(extension: FileExtension): ParsingResultFactory {
     if (extension == FileExtension.Java) {
         return SpoonParsingResultFactory()
+    } else {
+        throw UnsupportedOperationException()
+    }
+}
+
+private fun getJavaLangFactory(extension: FileExtension): ParsingResultFactory {
+    if (extension == FileExtension.Java) {
+        return JavaLangParsingResultFactory
     } else {
         throw UnsupportedOperationException()
     }

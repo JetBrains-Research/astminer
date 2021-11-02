@@ -1,5 +1,5 @@
 # input directory (path to project)
-inputDir: src/test/resources/
+inputDir: src/test/resources/examples
 # output directory
 outputDir: output
 
@@ -22,3 +22,4 @@ label:
 # save to disk ASTs in the JSON format
 storage:
   name: json AST
+  withPaths: true
