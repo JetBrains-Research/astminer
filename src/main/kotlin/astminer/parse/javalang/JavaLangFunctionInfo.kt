@@ -1,5 +1,6 @@
 package astminer.parse.javalang
 
+import astminer.common.SimpleNode
 import astminer.common.model.*
 import astminer.parse.findEnclosingElementBy
 import mu.KotlinLogging
@@ -14,14 +15,14 @@ class JavaLangFunctionInfo(override val root: SimpleNode, override val filePath:
     override val annotations: List<String>? = extractWithLogger(logger) {
         val annotations = root.getChildOfType(ANNOTATIONS) ?: return@extractWithLogger listOf<String>()
         annotations.children
-            .map { it.getChildOfType(NAME)?.originalToken }
+            .map { it.getChildOfType(NAME)?.token?.original }
             .map { checkNotNull(it) { "No name for annotation found" } }
     }
 
     override val modifiers: List<String>? = extractWithLogger(logger) {
         val modifiers = root.getChildOfType(MODIFIERS) ?: return@extractWithLogger listOf<String>()
         modifiers.children
-            .map { it.originalToken }
+            .map { it.token.original }
             .map { checkNotNull(it) { "No name for modifier found" } }
     }
 
@@ -30,7 +31,7 @@ class JavaLangFunctionInfo(override val root: SimpleNode, override val filePath:
         parameters.children.map { parameter ->
             val type = parameter.children.find { it.typeLabel in possibleTypes }?.extractType()
             checkNotNull(type) { "Can't extract parameter type" }
-            val name = parameter.children.find { it.typeLabel == NAME }?.originalToken
+            val name = parameter.children.find { it.typeLabel == NAME }?.token?.original
             checkNotNull(name) { "Can't find parameter name" }
             return@map FunctionInfoParameter(name, type)
         }
@@ -46,14 +47,14 @@ class JavaLangFunctionInfo(override val root: SimpleNode, override val filePath:
             ENUM_DECLARATION -> EnclosingElementType.Enum
             else -> error("No type can be associated with enclosing node type label")
         }
-        val name = enclosingNode.getChildOfType(NAME)?.originalToken
+        val name = enclosingNode.getChildOfType(NAME)?.token?.original
         EnclosingElement(type, name, enclosingNode)
     }
 
     override val isConstructor: Boolean = false
 
     private fun SimpleNode.extractType(): String = this.preOrder()
-        .mapNotNull { if (it.typeLabel == "dimensions" && it.isLeaf()) "[]" else it.originalToken }
+        .mapNotNull { if (it.typeLabel == "dimensions" && it.isLeaf()) "[]" else it.token.original }
         .joinToString(separator = "")
 
     companion object {

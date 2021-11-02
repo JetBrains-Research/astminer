@@ -1,7 +1,7 @@
 package astminer.parse.javalang
 
 import astminer.common.model.FunctionInfo
-import astminer.common.model.SimpleNode
+import astminer.common.SimpleNode
 import astminer.common.model.TreeFunctionSplitter
 
 class JavaLangFunctionSplitter : TreeFunctionSplitter<SimpleNode> {
