@@ -3,7 +3,8 @@ package astminer.parse.treesitter.java
 import astminer.checkExecutable
 import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
-import astminer.common.model.SimpleNode
+import astminer.common.SimpleNode
+import org.junit.Assume
 import org.junit.BeforeClass
 import org.junit.Test
 import java.io.File
