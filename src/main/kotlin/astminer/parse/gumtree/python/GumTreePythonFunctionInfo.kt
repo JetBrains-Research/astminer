@@ -4,6 +4,7 @@ import astminer.common.model.EnclosingElement
 import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
 import astminer.common.model.FunctionInfoParameter
+import astminer.parse.antlr.getTokensFromSubtree
 import astminer.parse.findEnclosingElementBy
 import astminer.parse.gumtree.GumTreeNode
 import mu.KotlinLogging
@@ -14,81 +15,58 @@ class GumTreePythonFunctionInfo(
     override val root: GumTreeNode,
     override val filePath: String
 ) : FunctionInfo<GumTreeNode> {
-    override val nameNode: GumTreeNode = root
-    override val enclosingElement: EnclosingElement<GumTreeNode>? = collectEnclosingClass()
-    override val returnType: String? = getElementType(root)?.typeLabel
-    override val isConstructor: Boolean = name == TypeLabels.constructorFunctionName
-    override val parameters: List<FunctionInfoParameter>? =
-        try { collectParameters() } catch (e: IllegalStateException) {
-            logger.warn { e.message }
-            null
-        }
+    override val nameNode: GumTreeNode? = root.getChildOfType(NAME)
 
-    private fun getElementType(node: GumTreeNode): GumTreeNode? {
-        if (node.typeLabel == TypeLabels.arg) {
-            return node.getChildOfType(TypeLabels.nameLoad)
-        }
-        // if return statement has "Constant-`Type`" return value => function type is `Type`
-        if (TypeLabels.methodDefinitions.contains(node.typeLabel)) {
-            return node.getChildOfType(TypeLabels.body)?.getChildOfType(TypeLabels.returnTypeLabel)?.let {
-                it.children.firstOrNull { child ->
-                    child.typeLabel.startsWith(TypeLabels.constantType)
-                }
-            }
-        }
-        return null
-    }
+    override val isConstructor: Boolean = name == CONSTRUCTOR_NAME
 
-    private fun collectEnclosingClass(): EnclosingElement<GumTreeNode>? {
-        val enclosing = findEnclosingClass() ?: return null
-        return EnclosingElement(
-            type = EnclosingElementType.Class,
-            name = enclosing.token.original,
+    override val returnType = if (root.children.find { it.originalToken == RETURN_TYPE_OPERATOR } == null) {
+        null
+    } else root.getChildrenOfType(NAME).lastOrNull()?.preOrder()?.mapNotNull { it.originalToken }?.joinToString("")
+
+    override val enclosingElement: EnclosingElement<GumTreeNode>? = extractWithLogger(logger) {
+        val enclosing = root.findEnclosingElementBy { it.typeLabel in possibleEnclosingElements }
+            ?: return@extractWithLogger null
+        val type = when (enclosing.typeLabel) {
+            GumTreePythonFunctionSplitter.FUNCTION_DECLARATION -> EnclosingElementType.Function
+            CLASS_DECLARATION -> EnclosingElementType.Class
+            else -> error("No enclosing type can be associated")
+        }
+        EnclosingElement(
+            name = enclosing.getChildOfType(NAME)?.originalToken,
+            type = type,
             root = enclosing
         )
     }
-
-    private fun findEnclosingClass(): GumTreeNode? =
-        root.findEnclosingElementBy { it.typeLabel == TypeLabels.classDefinition }
-
-    private fun collectParameters(): List<FunctionInfoParameter> {
-        val arguments = root.getChildrenOfType(TypeLabels.arguments).flatMap { it.children }
-        val params = arguments.flatMap { node ->
-            when (node.typeLabel) {
-                in TypeLabels.funcArgsTypesNodes ->
-                    node.children
-                        .filter { it.typeLabel == TypeLabels.arg }
-                TypeLabels.vararg, TypeLabels.kwarg -> listOf(node)
-                else -> emptyList()
+    override val parameters: List<FunctionInfoParameter>? = extractWithLogger(logger) {
+        val parameters = root.getChildOfType(PARAMETERS)
+        checkNotNull(parameters) { "Method node has no parameter node" }
+        parameters.children.filter { it.typeLabel == PARAMETER }.map { param ->
+            // Simple case: param has name and possibly default
+            if (param.getChildOfType(TYPE_DEFINITION) == null) {
+                val name = param.getChildOfType(NAME)?.originalToken
+                checkNotNull(name) { "Parameter has no name" }
+                FunctionInfoParameter(name, null)
+            } else {
+                // Complicated case: parameter has some type
+                val variableDef = param.getChildOfType(TYPE_DEFINITION)
+                    ?: error("Tree structure was changed while function info collection")
+                val name = variableDef.getChildOfType(NAME)?.originalToken
+                    ?: error("Parameter has no name")
+                val type = if (variableDef.children.size > 1) variableDef.children[1].getTokensFromSubtree() else null
+                FunctionInfoParameter(name, type)
             }
-        }
-        return params.mapNotNull {
-            FunctionInfoParameter(it.token.original ?: return@mapNotNull null, getElementType(it)?.token?.original)
         }
     }
 
     companion object {
-        private object TypeLabels {
-            const val classDefinition = "ClassDef"
-            const val constructorFunctionName = "__init__"
-            const val functionDefinition = "FunctionDef"
-            const val asyncFunctionDefinition = "AsyncFunctionDef"
-            const val nameLoad = "Name_Load"
-            const val posOnlyArgs = "posonlyargs"
-            const val kwOnlyArgs = "kwonlyargs"
-            const val arguments = "arguments"
-            const val vararg = "vararg"
-            const val kwarg = "kwarg"
-            const val args = "args"
-            const val arg = "arg"
-
-            const val body = "body"
-            const val returnTypeLabel = "Return"
-            const val passTypeLabel = "Pass"
-            const val constantType = "Constant-"
-
-            val methodDefinitions = listOf(functionDefinition, asyncFunctionDefinition)
-            val funcArgsTypesNodes = listOf(args, posOnlyArgs, kwOnlyArgs)
-        }
+        const val NAME = "name"
+        const val CONSTRUCTOR_NAME = "__init__"
+        const val TYPE = "type"
+        const val TYPE_DEFINITION = "tfpdef"
+        const val PARAMETERS = "parameters"
+        const val PARAMETER = "param"
+        const val RETURN_TYPE_OPERATOR = "->"
+        const val CLASS_DECLARATION = "classdef"
+        val possibleEnclosingElements = listOf(GumTreePythonFunctionSplitter.FUNCTION_DECLARATION, CLASS_DECLARATION)
     }
 }

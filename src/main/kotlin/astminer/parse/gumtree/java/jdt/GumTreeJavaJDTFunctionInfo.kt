@@ -17,13 +17,7 @@ class GumTreeJavaJDTFunctionInfo(
     override val nameNode: GumTreeNode? = root.getChildOfType(TypeLabels.simpleName)
     override val returnType: String? = root.getElementType()
     override val enclosingElement: EnclosingElement<GumTreeNode>? = collectEnclosingClass()
-    override val parameters: List<FunctionInfoParameter>? =
-        try {
-            collectParameters()
-        } catch (e: IllegalStateException) {
-            logger.warn { e.message }
-            null
-        }
+    override val parameters: List<FunctionInfoParameter>? = extractWithLogger(logger) { collectParameters() }
 
     override val modifiers: List<String> = root
         .children

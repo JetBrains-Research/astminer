@@ -6,8 +6,7 @@ import com.github.gumtreediff.tree.Tree
 
 class GumTreeNode(val wrappedNode: Tree, posConverter: PositionConverter, override var parent: GumTreeNode? = null) :
     Node(wrappedNode.label) {
-    override val typeLabel: String
-        get() = wrappedNode.type.name
+    override val typeLabel: String = wrappedNode.type.name
 
     override val children: MutableList<GumTreeNode> by lazy {
         wrappedNode.children.map { GumTreeNode(it, posConverter, this) }.toMutableList()

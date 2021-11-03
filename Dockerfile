@@ -9,13 +9,13 @@ RUN apt-get update && apt-get install -y default-jre
 RUN apt-get update && apt-get install -y g++
 
 # Install PythonParser for GumTree
-ARG PYTHONPARSER_REPO=https://raw.githubusercontent.com/JetBrains-Research/pythonparser/master
+ARG PYTHONPARSER_REPO=https://raw.githubusercontent.com/GumTreeDiff/pythonparser/master
 RUN apt-get update && \
     apt-get install -y python3.8 python3-pip git wget && \
     mkdir pythonparser && \
     cd pythonparser && \
     wget $PYTHONPARSER_REPO/requirements.txt && \
-    wget $PYTHONPARSER_REPO/src/main/python/pythonparser/pythonparser_3.py -O pythonparser && \
+    wget $PYTHONPARSER_REPO/pythonparser && \
     pip3 install -r requirements.txt && \
     chmod +x pythonparser
 ENV PATH="/pythonparser:${PATH}"

@@ -16,38 +16,21 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
 
     override val returnType: String = root.extractType()
 
-    override val parameters: List<FunctionInfoParameter>? = run {
-        root.preOrder().filter { it.typeLabel == PARAMETER }
-            .map {
-                try {
-                    assembleParameter(it)
-                } catch (e: IllegalStateException) {
-                    logger.warn { e.message }
-                    return@run null
-                }
-            }
+    override val parameters: List<FunctionInfoParameter>? = extractWithLogger(logger) {
+        root.preOrder().filter { it.typeLabel == PARAMETER }.map { assembleParameter(it) }
     }
 
-    override val annotations: List<String>? = run {
+    override val annotations: List<String>? = extractWithLogger(logger) {
         root.children.filter { it.typeLabel == ANNOTATION }.map {
             val token = it.getChildOfType(NAME)?.token?.original
-            if (token == null) {
-                logger.warn { "Annotation in function $name in file $filePath don't have a name" }
-                return@run null
-            }
-            return@map token
+            checkNotNull(token) { "Annotation doesn't have a name" }
         }
     }
 
-    override val modifiers: List<String>? = run {
-        val type = checkNotNull(root.getChildOfType(TYPE)) { "Function $name in file $filePath doesn't have a type" }
+    override val modifiers: List<String>? = extractWithLogger(logger) {
+        val type = checkNotNull(root.getChildOfType(TYPE)) { "Function doesn't have a type" }
         type.children.filter { it.typeLabel == MODIFIER }.map {
-            val token = it.token.original
-            if (token == null) {
-                logger.warn { "Modifier in function $name in file $filePath doesn't have a name" }
-                return@run null
-            }
-            return@map token
+            checkNotNull(it.token.original) { "Modifier doesn't have a name" }
         }
     }
 
