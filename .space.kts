@@ -7,7 +7,7 @@ job("Release") {
         }
     }
 
-    container(image="voudy/astminer:0.8.0") {
+    container(image="voudy/astminer") {
         env["PUBLISH_USER"] = Secrets("publish_user")
         env["PUBLISH_PASSWORD"] = Secrets("publish_password")
 

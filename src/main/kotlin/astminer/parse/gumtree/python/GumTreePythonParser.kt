@@ -4,7 +4,6 @@ import astminer.common.model.Parser
 import astminer.common.model.ParserNotInstalledException
 import astminer.parse.ParsingException
 import astminer.parse.gumtree.GumTreeNode
-import astminer.parse.gumtree.wrapGumTreeNode
 import com.github.gumtreediff.client.Run
 import com.github.gumtreediff.gen.python.PythonTreeGenerator
 import java.io.IOException
@@ -18,7 +17,7 @@ class GumTreePythonParser : Parser<GumTreeNode> {
 
     override fun parseInputStream(content: InputStream): GumTreeNode = try {
         val context = PythonTreeGenerator().generate(InputStreamReader(content))
-        wrapGumTreeNode(context)
+        GumTreeNode(context.root)
     } catch (e: RuntimeException) {
         throw ParsingException("GumTree", "Python", e)
     } catch (e: IOException) {
