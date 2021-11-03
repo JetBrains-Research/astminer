@@ -1,8 +1,8 @@
 package astminer.parse.javalang
 
 import astminer.checkExecutable
-import astminer.common.model.FunctionInfo
 import astminer.common.SimpleNode
+import astminer.common.model.FunctionInfo
 import org.junit.Assume
 import org.junit.BeforeClass
 import org.junit.Test
