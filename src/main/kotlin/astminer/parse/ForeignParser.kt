@@ -26,8 +26,8 @@ import kotlin.io.path.createTempDirectory
  *        "nodeType": "i_am_root",
  *        "children": [1,2],
  *        "range" : {
- *          "start" : { "line" : 0, "column" : 0 },
- *          "end" : { "line" 1, "column" : 4 }
+ *          "start" : { "l" : 0, "c" : 0 },
+ *          "end" : { "l" 1, "c" : 4 }
  *        }
  *      },
  *      {
@@ -35,8 +35,8 @@ import kotlin.io.path.createTempDirectory
  *        "nodeType": "left_child",
  *        "children": []
  *        "range" : {
- *          "start" : { "line" : 0, "column": 0 },
- *          "end" : { "line: 0, "column": 5 }
+ *          "start" : { "l" : 0, "c": 0 },
+ *          "end" : { "l": 0, "c": 5 }
  *        }
  *      },
  *      {
@@ -44,8 +44,8 @@ import kotlin.io.path.createTempDirectory
  *        "nodeType": "right_child",
  *        "children": [],
  *        "range" : {
- *          "start" : { "line" : 1, "column" : 0 },
- *          "end" : { "line" : 1, "column" : 6 }
+ *          "start" : { "l" : 1, "c" : 0 },
+ *          "end" : { "l" : 1, "c" : 6 }
  *        }
  *      }
  *    ]
