@@ -22,8 +22,8 @@ class TreeBuilder:
         start = node.start_point
         end = node.end_point
         return {
-            "start": {"l": start[0], "c": start[1]},
-            "end": {"l": end[0], "c": end[1]}
+            "start": {"l": start[0] + 1, "c": start[1] + 1},
+            "end": {"l": end[0] + 1, "c": end[1] + 1}
         }
 
     def _get_current_node_as_dict(self) -> NodeAsDict:
