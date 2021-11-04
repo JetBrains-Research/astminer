@@ -164,7 +164,7 @@ internal class JavaLangFunctionSplitterTest {
         private val functionSplitter = JavaLangFunctionSplitter()
         val parser = JavaLangParser()
         lateinit var functionInfos: Collection<FunctionInfo<SimpleNode>>
-        val functionLinePositions = listOf(2, 4, 8, 12, 16, 19, 22, 24, 26, 28, 30, 33, 37, 42, 44)
+        val functionLinePositions = listOf(2, 4, 8, 12, 16, 19, 22, 24, 26, 28, 31, 35, 38, 42, 44)
 
         @BeforeClass
         @JvmStatic
