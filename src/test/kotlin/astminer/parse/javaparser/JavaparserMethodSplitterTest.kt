@@ -2,7 +2,6 @@ package astminer.parse.javaparser
 
 import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
-import astminer.parse.javalang.JavaLangFunctionSplitterTest
 import org.junit.BeforeClass
 import org.junit.Test
 import java.io.File

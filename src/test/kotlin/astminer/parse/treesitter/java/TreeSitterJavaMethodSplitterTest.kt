@@ -4,7 +4,6 @@ import astminer.checkExecutable
 import astminer.common.SimpleNode
 import astminer.common.model.EnclosingElementType
 import astminer.common.model.FunctionInfo
-import astminer.parse.javalang.JavaLangFunctionSplitterTest
 import org.junit.Assume
 import org.junit.BeforeClass
 import org.junit.Test

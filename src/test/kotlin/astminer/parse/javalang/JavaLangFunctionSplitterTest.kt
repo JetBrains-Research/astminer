@@ -3,7 +3,6 @@ package astminer.parse.javalang
 import astminer.checkExecutable
 import astminer.common.SimpleNode
 import astminer.common.model.FunctionInfo
-import astminer.parse.antlr.java.JavaFunctionSplitterTest
 import org.junit.Assume
 import org.junit.BeforeClass
 import org.junit.Test
