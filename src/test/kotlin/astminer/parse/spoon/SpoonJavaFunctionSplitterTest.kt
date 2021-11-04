@@ -171,7 +171,7 @@ internal class SpoonJavaFunctionSplitterTest {
             8 to 10,
             12 to 14,
             16 to 16,
-            18 to 20,
+            19 to 19,
             22 to 22,
             24 to 24,
             26 to 26,
