@@ -147,10 +147,40 @@ internal class SpoonJavaFunctionSplitterTest {
         assertTrue(blankFunction.isBlank())
     }
 
+    @Test
+    fun testPositions() {
+        assertTrue(
+            functionInfos.mapNotNull { it.root.range }.zip(functionLinePositions).all {
+                val actualStart = it.first.start.line
+                val actualEnd = it.first.end.line
+                val expectedStart = it.second.first
+                val expectedEnd = it.second.second
+                (actualStart..actualEnd).intersect(expectedStart..expectedEnd).isNotEmpty()
+            }
+        )
+    }
+
     companion object {
         const val FILE_PATH = "src/test/resources/methodSplitting/testMethodSplitting.java"
         const val N_FUNCTIONS = 15
         val functionSplitter = SpoonJavaFunctionSplitter()
         val parser = SpoonJavaParser()
+        val functionLinePositions = listOf(
+            2 to 2,
+            4 to 6,
+            8 to 10,
+            12 to 14,
+            16 to 16,
+            18 to 20,
+            22 to 22,
+            24 to 24,
+            26 to 26,
+            28 to 28,
+            30 to 31,
+            33 to 35,
+            37 to 38,
+            42 to 42,
+            44 to 44
+        )
     }
 }
