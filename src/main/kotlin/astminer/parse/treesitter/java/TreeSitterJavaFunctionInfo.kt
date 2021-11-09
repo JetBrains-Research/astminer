@@ -1,6 +1,6 @@
 package astminer.parse.treesitter.java
 
-import astminer.common.Code2VecNormalization
+import astminer.common.TokenNormalization
 import astminer.common.SimpleNode
 import astminer.common.model.*
 import astminer.parse.antlr.getTokensFromSubtree
@@ -58,7 +58,7 @@ class TreeSitterJavaFunctionInfo(override val root: SimpleNode, override val fil
 
         var collectedType = returnTypeNode.getTokensFromSubtree()
         if (returnTypeNode.typeLabel == ARRAY_TYPE) {
-            collectedType = collectedType.replace(Code2VecNormalization.EMPTY_TOKEN, "[]")
+            collectedType = collectedType.replace(TokenNormalization.EMPTY_TOKEN, "[]")
         }
         return@run collectedType
     }

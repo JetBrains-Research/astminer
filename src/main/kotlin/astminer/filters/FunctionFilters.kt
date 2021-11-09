@@ -1,6 +1,6 @@
 package astminer.filters
 
-import astminer.common.Code2VecNormalization
+import astminer.common.TokenNormalization
 import astminer.common.model.FunctionFilter
 import astminer.common.model.FunctionInfo
 import astminer.common.model.Node
@@ -38,7 +38,7 @@ object ConstructorFilter : FunctionFilter {
 class FunctionNameWordsNumberFilter(private val maxWordsNumber: Int) : FunctionFilter {
     override fun validate(functionInfo: FunctionInfo<out Node>): Boolean {
         val name = functionInfo.name
-        return name != null && Code2VecNormalization.splitToSubtokens(name).size <= maxWordsNumber
+        return name != null && TokenNormalization.splitToSubtokens(name).size <= maxWordsNumber
     }
 }
 

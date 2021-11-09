@@ -3,7 +3,7 @@ package astminer.common
 import org.junit.Assert
 import org.junit.Test
 
-class Code2VecNormalizationTest {
+class TokenNormalizationTest {
     private val defaultToken = "EMPTY"
 
     @Test
@@ -29,7 +29,7 @@ class Code2VecNormalizationTest {
         Assert.assertEquals(
             "All whitespace characters and punctuation should be removed, keeping only letters",
             expectedToken,
-            Code2VecNormalization.normalizeSubToken(token, defaultToken)
+            TokenNormalization.normalizeSubToken(token, defaultToken)
         )
     }
 
@@ -40,18 +40,18 @@ class Code2VecNormalizationTest {
         Assert.assertEquals(
             "Token without letters have whitespaces replaced with underscores",
             expectedToken,
-            Code2VecNormalization.normalizeSubToken(token, defaultToken)
+            TokenNormalization.normalizeSubToken(token, defaultToken)
         )
     }
 
     @Test
     fun testNormalizeEmptyToken() {
         val token = "\n\n"
-        val expectedToken = Code2VecNormalization.EMPTY_TOKEN
+        val expectedToken = TokenNormalization.EMPTY_TOKEN
         Assert.assertEquals(
             "Token without letters have whitespaces replaced with underscores",
             expectedToken,
-            Code2VecNormalization.normalizeSubToken(token, defaultToken)
+            TokenNormalization.normalizeSubToken(token, defaultToken)
         )
     }
 
@@ -62,7 +62,7 @@ class Code2VecNormalizationTest {
         Assert.assertEquals(
             "Token with snake, camel and combined case should be split into list of its parts",
             expectedToken,
-            Code2VecNormalization.splitToSubtokens(token)
+            TokenNormalization.splitToSubtokens(token)
         )
     }
 }

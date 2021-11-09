@@ -1,8 +1,6 @@
 package astminer.common
 
-import astminer.common.model.Normalization
-
-object Code2VecNormalization : Normalization {
+object TokenNormalization {
     const val EMPTY_TOKEN = "EMPTY"
     const val TOKEN_DELIMITER = "|"
 
@@ -14,7 +12,7 @@ object Code2VecNormalization : Normalization {
 
     private val splitRegex = "(?<=[a-z])(?=[A-Z])|_|[0-9]|(?<=[A-Z])(?=[A-Z][a-z])|\\s+".toRegex()
 
-    override fun normalizeToken(token: String?): String {
+    fun normalizeToken(token: String?): String {
         if (token == null) return EMPTY_TOKEN
         val subTokens = splitToSubtokens(token)
         return if (subTokens.isEmpty()) EMPTY_TOKEN else subTokens.joinToString(TOKEN_DELIMITER)
