@@ -1,7 +1,7 @@
 package astminer.parse.treesitter.java
 
-import astminer.common.TokenNormalization
 import astminer.common.SimpleNode
+import astminer.common.TokenNormalization
 import astminer.common.model.*
 import astminer.parse.antlr.getTokensFromSubtree
 import astminer.parse.findEnclosingElementBy
