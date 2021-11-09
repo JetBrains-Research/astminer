@@ -1,7 +1,7 @@
 package astminer.common
 
 object TokenNormalization {
-    const val EMPTY_TOKEN = "EMPTY"
+    const val EMPTY_TOKEN = "<E>"
     const val TOKEN_DELIMITER = "|"
 
     private val newLineReg = "\\\\n".toRegex()
