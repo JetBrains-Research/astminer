@@ -20,4 +20,4 @@ fun Node.getTokensFromSubtree(): String =
     if (isLeaf()) token.original ?: "" else children.joinToString(separator = "") { it.getTokensFromSubtree() }
 
 fun AntlrNode.getItOrChildrenOfType(typeLabel: String): List<AntlrNode> =
-    if (hasLastLabel(typeLabel)) listOf(this) else this.getChildrenOfType(typeLabel).map { it }
+    if (hasLastLabel(typeLabel)) listOf(this) else this.getChildrenOfType(typeLabel)
