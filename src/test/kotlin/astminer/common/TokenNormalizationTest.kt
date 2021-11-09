@@ -4,7 +4,7 @@ import org.junit.Assert
 import org.junit.Test
 
 class TokenNormalizationTest {
-    private val defaultToken = "EMPTY"
+    private val defaultToken = TokenNormalization.EMPTY_TOKEN
 
     @Test
     fun testPreOrder() {
