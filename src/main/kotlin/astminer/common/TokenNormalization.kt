@@ -48,4 +48,3 @@ fun normalizeSubToken(token: String, defaultToken: String): String {
         }
     }
 }
-
