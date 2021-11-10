@@ -1,9 +1,9 @@
 package astminer.filters
 
-import astminer.common.TokenNormalization
 import astminer.common.model.FunctionFilter
 import astminer.common.model.FunctionInfo
 import astminer.common.model.Node
+import astminer.common.splitToSubtokens
 
 /**
  * Filter that excludes functions that have at least one of modifiers from the [excludeModifiers] list.
@@ -38,7 +38,7 @@ object ConstructorFilter : FunctionFilter {
 class FunctionNameWordsNumberFilter(private val maxWordsNumber: Int) : FunctionFilter {
     override fun validate(functionInfo: FunctionInfo<out Node>): Boolean {
         val name = functionInfo.name
-        return name != null && TokenNormalization.splitToSubtokens(name).size <= maxWordsNumber
+        return name != null && splitToSubtokens(name).size <= maxWordsNumber
     }
 }
 

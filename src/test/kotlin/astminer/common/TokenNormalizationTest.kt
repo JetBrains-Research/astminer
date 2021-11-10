@@ -4,7 +4,7 @@ import org.junit.Assert
 import org.junit.Test
 
 class TokenNormalizationTest {
-    private val defaultToken = TokenNormalization.EMPTY_TOKEN
+    private val defaultToken = EMPTY_TOKEN
 
     @Test
     fun testPreOrder() {
@@ -29,7 +29,7 @@ class TokenNormalizationTest {
         Assert.assertEquals(
             "All whitespace characters and punctuation should be removed, keeping only letters",
             expectedToken,
-            TokenNormalization.normalizeSubToken(token, defaultToken)
+            normalizeSubToken(token, defaultToken)
         )
     }
 
@@ -40,18 +40,18 @@ class TokenNormalizationTest {
         Assert.assertEquals(
             "Token without letters have whitespaces replaced with underscores",
             expectedToken,
-            TokenNormalization.normalizeSubToken(token, defaultToken)
+            normalizeSubToken(token, defaultToken)
         )
     }
 
     @Test
     fun testNormalizeEmptyToken() {
         val token = "\n\n"
-        val expectedToken = TokenNormalization.EMPTY_TOKEN
+        val expectedToken = EMPTY_TOKEN
         Assert.assertEquals(
             "Token without letters have whitespaces replaced with underscores",
             expectedToken,
-            TokenNormalization.normalizeSubToken(token, defaultToken)
+            normalizeSubToken(token, defaultToken)
         )
     }
 
@@ -62,7 +62,7 @@ class TokenNormalizationTest {
         Assert.assertEquals(
             "Token with snake, camel and combined case should be split into list of its parts",
             expectedToken,
-            TokenNormalization.splitToSubtokens(token)
+            splitToSubtokens(token)
         )
     }
 }

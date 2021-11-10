@@ -1,6 +1,6 @@
 package astminer.common.model
 
-import astminer.common.TokenNormalization
+import astminer.common.normalizeToken
 
 class Token(val original: String?) {
     val final: String
@@ -8,7 +8,7 @@ class Token(val original: String?) {
 
     var technical: String? = null
 
-    val normalized = TokenNormalization.normalizeToken(original)
+    val normalized = normalizeToken(original)
 
     override fun toString(): String = final
 }

@@ -1,6 +1,6 @@
 package astminer.filters
 
-import astminer.common.TokenNormalization
+import astminer.common.TOKEN_DELIMITER
 import astminer.common.model.*
 import astminer.featureextraction.NumberOfNodes
 
@@ -25,7 +25,7 @@ class TreeSizeFilter(private val minSize: Int = 0, private val maxSize: Int? = n
  */
 class WordsNumberFilter(private val maxWordsNumber: Int) : FunctionFilter, FileFilter {
     private fun validateTree(root: Node) = root.preOrder()
-        .none { node -> node.token.final.split(TokenNormalization.TOKEN_DELIMITER).size > maxWordsNumber }
+        .none { node -> node.token.final.split(TOKEN_DELIMITER).size > maxWordsNumber }
 
     override fun validate(functionInfo: FunctionInfo<out Node>) = validateTree(functionInfo.root)
 

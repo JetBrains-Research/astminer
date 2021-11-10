@@ -1,7 +1,7 @@
 package astminer.parse.treesitter.java
 
+import astminer.common.EMPTY_TOKEN
 import astminer.common.SimpleNode
-import astminer.common.TokenNormalization
 import astminer.common.model.*
 import astminer.parse.antlr.getTokensFromSubtree
 import astminer.parse.findEnclosingElementBy
@@ -58,7 +58,7 @@ class TreeSitterJavaFunctionInfo(override val root: SimpleNode, override val fil
 
         var collectedType = returnTypeNode.getTokensFromSubtree()
         if (returnTypeNode.typeLabel == ARRAY_TYPE) {
-            collectedType = collectedType.replace(TokenNormalization.EMPTY_TOKEN, "[]")
+            collectedType = collectedType.replace(EMPTY_TOKEN, "[]")
         }
         return@run collectedType
     }
