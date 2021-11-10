@@ -3,14 +3,9 @@ package astminer.common
 const val EMPTY_TOKEN = "<E>"
 const val TOKEN_DELIMITER = "|"
 
-private val newLineReg = "\\\\n".toRegex()
-private val whitespaceReg = "//s+".toRegex()
-private val quotesApostrophesCommasReg = "[\"',]".toRegex()
-private val unicodeWeirdCharReg = "\\P{Print}".toRegex()
-private val notALetterReg = "[^A-Za-z]".toRegex()
-
-private val splitRegex = "(?<=[a-z])(?=[A-Z])|_|[0-9]|(?<=[A-Z])(?=[A-Z][a-z])|\\s+".toRegex()
-
+/** Splits tokens in sub-tokens and normalizes them by removing new lines, whitespaces, quotes etc
+ * @see splitToSubtokens
+ * @see normalizeSubToken**/
 fun normalizeToken(token: String?): String {
     if (token == null) return EMPTY_TOKEN
     val subTokens = splitToSubtokens(token)
@@ -27,6 +22,8 @@ fun splitToSubtokens(token: String) = token
     .map { s -> normalizeSubToken(s, "") }
     .filter { it.isNotEmpty() }
     .toList()
+
+private val splitRegex = "(?<=[a-z])(?=[A-Z])|_|[0-9]|(?<=[A-Z])(?=[A-Z][a-z])|\\s+".toRegex()
 
 /**
  * The function was adopted from the original code2vec implementation in order to match their behavior:
@@ -48,3 +45,9 @@ fun normalizeSubToken(token: String, defaultToken: String): String {
         }
     }
 }
+
+private val newLineReg = "\\\\n".toRegex()
+private val whitespaceReg = "//s+".toRegex()
+private val quotesApostrophesCommasReg = "[\"',]".toRegex()
+private val unicodeWeirdCharReg = "\\P{Print}".toRegex()
+private val notALetterReg = "[^A-Za-z]".toRegex()
