@@ -1,23 +1,37 @@
 package astminer.common.model
 
-import astminer.common.normalizeToken
+import astminer.common.*
 
+/**
+ * Class to wrap logic with token processing.
+ * It is responsible for token normalization or replacing it with technical information.
+ * Use `token.original` to access the original token.
+ */
 class Token(val original: String?) {
-    /** Final token after all normalizations and shadowing
-     * @see technical
-     * @see normalized **/
-    val final: String
-        get() = technical ?: normalized
-
-    /** Token that shadows any original or normalized token
-     * and have the most priority in calculating final token
-     * that will be saved. It can be useful when it's necessary to hide something
-     * (for example method name in method name prediction problem) **/
+    /**
+     * Technical token is used to shadow the original token with mining pipeline specific value.
+     * For example, for the method name prediction problem
+     * we want to set technical `<METHOD_NAME>` token to hide real method name.
+     */
     var technical: String? = null
 
-    /** Original token after string normalization
-     * @see normalizeToken **/
-    val normalized = normalizeToken(original)
+    /**
+     * Original token with normalization applied
+     * @see normalizeToken
+     */
+    val normalized = run {
+        if (original == null) return@run EMPTY_TOKEN
+        val subTokens = splitToSubtokens(original)
+        if (subTokens.isEmpty()) EMPTY_TOKEN else subTokens.joinToString(TOKEN_DELIMITER)
+    }
 
-    override fun toString(): String = final
+    /**
+     * Access to the final representation of the token after normalization and other preprocessing.
+     * It returns technical assign token if it exists or normalized token otherwise.
+     * @see technical
+     * @see normalized
+     */
+    fun final() = technical ?: normalized
+
+    override fun toString(): String = final()
 }

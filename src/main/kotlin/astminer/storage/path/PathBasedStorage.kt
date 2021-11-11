@@ -54,7 +54,7 @@ abstract class PathBasedStorage(
         return LabeledPathContexts(
             labeledResult.label,
             paths.map { astPath ->
-                toPathContext(astPath) { it.token.final.replace("\n", "\\n") }
+                toPathContext(astPath) { it.token.final().replace("\n", "\\n") }
             }
         )
     }

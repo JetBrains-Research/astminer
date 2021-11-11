@@ -45,7 +45,7 @@ class JsonAstStorage(
 
     private fun TreeFlattener.EnumeratedNode.toOutputNode() =
         OutputNode(
-            node.token.final,
+            node.token.final(),
             node.typeLabel,
             if (withRanges) node.range else null,
             children.map { it.id }

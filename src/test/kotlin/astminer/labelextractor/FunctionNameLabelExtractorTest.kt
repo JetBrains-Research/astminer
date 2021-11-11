@@ -38,20 +38,20 @@ class FunctionNameLabelExtractorTest {
     @Test
     fun `test FunctionNameProblem hides function name node token with METHOD_NAME`() {
         FunctionNameLabelExtractor.process(functionInfo)
-        assertEquals("METHOD_NAME", functionInfo.nameNode?.token?.final)
+        assertEquals("METHOD_NAME", functionInfo.nameNode?.token?.final())
     }
 
     @Test
     fun `test FunctionNameProblem hides function root token with METHOD_NAME if it is the name node`() {
         FunctionNameLabelExtractor.process(functionInfo)
-        assertEquals("METHOD_NAME", functionInfo.root.token.final)
+        assertEquals("METHOD_NAME", functionInfo.root.token.final())
     }
 
     @Test
     fun `test function name problem should hide recursive call tokens with SELF`() {
         FunctionNameLabelExtractor.process(functionInfo)
         val recursiveCallNode = functionInfo.root.children.firstOrNull()?.children?.firstOrNull()
-        assertEquals("SELF", recursiveCallNode?.token?.final)
+        assertEquals("SELF", recursiveCallNode?.token?.final())
     }
 
     companion object {

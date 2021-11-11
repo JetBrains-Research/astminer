@@ -49,7 +49,7 @@ class PathWorker {
         val paths: MutableList<ASTPath> = ArrayList()
         iterator.forEach { currentNode ->
             if (currentNode.isLeaf()) {
-                if (currentNode.token.final.isNotEmpty()) {
+                if (currentNode.token.final().isNotEmpty()) {
                     currentNode.setPathPieces(listOf(listOf(currentNode)))
                 }
             } else {

@@ -25,11 +25,11 @@ class TokenNormalizationTest {
     @Test
     fun testNormalizeTokenCleaning() {
         val token = "   Token THAT  \n contains Whi\"t,es''pace characters!!!and pu.n.c.t.u.a.tion  \n"
-        val expectedToken = "token" + "that" + "contains" + "whitespace" + "characters" + "and" + "punctuation"
+        val normalizedSubTokens = listOf("token", "that", "contains", "whitespace", "characters", "and", "punctuation")
         Assert.assertEquals(
             "All whitespace characters and punctuation should be removed, keeping only letters",
-            expectedToken,
-            normalizeSubToken(token, defaultToken)
+            normalizedSubTokens.joinToString(""),
+            normalizeToken(token, defaultToken)
         )
     }
 
@@ -40,7 +40,7 @@ class TokenNormalizationTest {
         Assert.assertEquals(
             "Token without letters have whitespaces replaced with underscores",
             expectedToken,
-            normalizeSubToken(token, defaultToken)
+            normalizeToken(token, defaultToken)
         )
     }
 
@@ -51,7 +51,7 @@ class TokenNormalizationTest {
         Assert.assertEquals(
             "Token without letters have whitespaces replaced with underscores",
             expectedToken,
-            normalizeSubToken(token, defaultToken)
+            normalizeToken(token, defaultToken)
         )
     }
 
