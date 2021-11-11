@@ -52,6 +52,24 @@ In this format, each line represents an AST with its [label](label_extractors.md
   ]
 ```
 
+Possible configuration options for Json storage:
+
+```yaml
+storage:
+  name: json AST
+  withPaths: true
+```
+
+_For every saved tree also save its filepath._
+
+```yaml
+storage:
+  name: json AST
+  withRanges: true
+```
+
+_For each node, store the start and end positions of the code snippet that this node represents._
+
 ## Path-based representations
 
 Path-based representation was introduced by [Alon et al.](https://arxiv.org/abs/1803.09544).
