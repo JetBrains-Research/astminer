@@ -43,7 +43,7 @@ Saves each tree with its label in the JSON lines format inspired by the [150k Py
 
 In this format, each line represents an AST with its [label](label_extractors.md), path, and all vertices:
 
-```json
+```json lines
 {
   "label": "1.java",
   "path": "src/test/resources/examples/1.java",
