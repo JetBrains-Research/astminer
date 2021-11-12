@@ -11,15 +11,9 @@ import astminer.common.model.Node
  */
 object FunctionNameLabelExtractor : FunctionLabelExtractor {
     private const val HIDDEN_METHOD_NAME_TOKEN = "METHOD_NAME"
-    private const val RECURSIVE_CALL_TOKEN = "SELF"
 
     override fun process(functionInfo: FunctionInfo<out Node>): LabeledResult<out Node>? {
         val normalizedName = functionInfo.nameNode?.token?.normalized ?: return null
-        functionInfo.root.preOrder().forEach { node ->
-            if (node.token.original == functionInfo.nameNode?.token?.original) {
-                node.token.technical = RECURSIVE_CALL_TOKEN
-            }
-        }
         functionInfo.nameNode?.token?.technical = HIDDEN_METHOD_NAME_TOKEN
         return LabeledResult(functionInfo.root, normalizedName, functionInfo.qualifiedPath)
     }

@@ -48,10 +48,10 @@ class FunctionNameLabelExtractorTest {
     }
 
     @Test
-    fun `test function name problem should hide recursive call tokens with SELF`() {
-        FunctionNameLabelExtractor.process(functionInfo)
+    fun `test function name problem should not hide tokens with same content`() {
+        val labeledResult = FunctionNameLabelExtractor.process(functionInfo)
         val recursiveCallNode = functionInfo.root.children.firstOrNull()?.children?.firstOrNull()
-        assertEquals("SELF", recursiveCallNode?.token?.final())
+        assertEquals(labeledResult?.label, recursiveCallNode?.token?.final())
     }
 
     companion object {
