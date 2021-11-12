@@ -1,15 +1,18 @@
 package astminer.parse.gumtree
 
 import astminer.common.model.Node
+import astminer.common.model.NodeRange
 import com.github.gumtreediff.tree.Tree
 
-class GumTreeNode(val wrappedNode: Tree, override var parent: GumTreeNode? = null) :
+class GumTreeNode(val wrappedNode: Tree, posConverter: PositionConverter, override var parent: GumTreeNode? = null) :
     Node(wrappedNode.label) {
     override val typeLabel: String = wrappedNode.type.name
 
     override val children: MutableList<GumTreeNode> by lazy {
-        wrappedNode.children.map { GumTreeNode(it, this) }.toMutableList()
+        wrappedNode.children.map { GumTreeNode(it, posConverter, this) }.toMutableList()
     }
+
+    override val range: NodeRange = posConverter.getRange(wrappedNode.pos, wrappedNode.endPos)
 
     override fun removeChildrenOfType(typeLabel: String) {
         children.removeIf { it.typeLabel == typeLabel }

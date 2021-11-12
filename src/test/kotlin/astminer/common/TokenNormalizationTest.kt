@@ -3,8 +3,8 @@ package astminer.common
 import org.junit.Assert
 import org.junit.Test
 
-class TreeUtilTest {
-    private val defaultToken = "EMPTY"
+class TokenNormalizationTest {
+    private val defaultToken = EMPTY_TOKEN
 
     @Test
     fun testPreOrder() {
@@ -25,10 +25,10 @@ class TreeUtilTest {
     @Test
     fun testNormalizeTokenCleaning() {
         val token = "   Token THAT  \n contains Whi\"t,es''pace characters!!!and pu.n.c.t.u.a.tion  \n"
-        val expectedToken = "token" + "that" + "contains" + "whitespace" + "characters" + "and" + "punctuation"
+        val normalizedSubTokens = listOf("token", "that", "contains", "whitespace", "characters", "and", "punctuation")
         Assert.assertEquals(
             "All whitespace characters and punctuation should be removed, keeping only letters",
-            expectedToken,
+            normalizedSubTokens.joinToString(""),
             normalizeToken(token, defaultToken)
         )
     }

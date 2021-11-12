@@ -1,7 +1,7 @@
 package astminer.parse.antlr
 
-import astminer.common.EMPTY_TOKEN
-import astminer.common.model.Node
+import astminer.common.model.NodeRange
+import astminer.common.model.Position
 import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.Vocabulary
 import org.antlr.v4.runtime.tree.ErrorNode
@@ -17,7 +17,7 @@ private fun convertRuleContext(
     vocabulary: Vocabulary
 ): AntlrNode {
     val typeLabel = ruleNames[ruleContext.ruleIndex]
-    val currentNode = AntlrNode(typeLabel, parent, null)
+    val currentNode = AntlrNode(typeLabel, parent, null, ruleContext.getNodeRange())
     val children: MutableList<AntlrNode> = ArrayList()
 
     ruleContext.children?.forEach {
@@ -31,11 +31,32 @@ private fun convertRuleContext(
     return currentNode
 }
 
+private fun ParserRuleContext.getNodeRange(): NodeRange? {
+    if (start == null || stop == null) return null
+    return NodeRange(
+        Position(start.line, start.charPositionInLine),
+        Position(stop.line, stop.charPositionInLine + stop.stopIndex - stop.startIndex)
+    )
+}
+
 private fun convertTerminal(terminalNode: TerminalNode, parent: AntlrNode?, vocabulary: Vocabulary): AntlrNode =
-    AntlrNode(vocabulary.getSymbolicName(terminalNode.symbol.type), parent, terminalNode.symbol.text)
+    AntlrNode(
+        vocabulary.getSymbolicName(terminalNode.symbol.type),
+        parent,
+        terminalNode.symbol.text,
+        terminalNode.getNodeRange()
+    )
+
+private fun TerminalNode.getNodeRange(): NodeRange? {
+    if (symbol == null) return null
+    return NodeRange(
+        Position(symbol.line, symbol.charPositionInLine),
+        Position(symbol.line, symbol.charPositionInLine + symbol.stopIndex - symbol.startIndex)
+    )
+}
 
 private fun convertErrorNode(errorNode: ErrorNode, parent: AntlrNode?): AntlrNode =
-    AntlrNode("Error", parent, errorNode.text)
+    AntlrNode("Error", parent, errorNode.text, errorNode.getNodeRange())
 
 /**
  * Remove intermediate nodes that have a single child.
@@ -58,7 +79,8 @@ fun compressTree(root: AntlrNode): AntlrNode {
         val compressedNode = AntlrNode(
             root.typeLabel + "|" + child.typeLabel,
             root.parent,
-            child.originalToken
+            child.token.original,
+            root.range
         )
         compressedNode.replaceChildren(child.children)
         compressedNode
@@ -67,23 +89,3 @@ fun compressTree(root: AntlrNode): AntlrNode {
         root
     }
 }
-
-fun decompressTypeLabel(typeLabel: String) = typeLabel.split("|")
-
-fun AntlrNode.lastLabel() = decompressTypeLabel(typeLabel).last()
-
-fun AntlrNode.firstLabel() = decompressTypeLabel(typeLabel).first()
-
-fun AntlrNode.hasLastLabel(label: String): Boolean = lastLabel() == label
-
-fun AntlrNode.lastLabelIn(labels: List<String>): Boolean = labels.contains(lastLabel())
-
-fun AntlrNode.hasFirstLabel(label: String): Boolean = firstLabel() == label
-
-fun AntlrNode.firstLabelIn(labels: List<String>): Boolean = labels.contains(firstLabel())
-
-fun Node.getTokensFromSubtree(): String =
-    if (isLeaf()) originalToken ?: EMPTY_TOKEN else children.joinToString(separator = "") { it.getTokensFromSubtree() }
-
-fun AntlrNode.getItOrChildrenOfType(typeLabel: String): List<AntlrNode> =
-    if (hasLastLabel(typeLabel)) listOf(this) else this.getChildrenOfType(typeLabel).map { it }

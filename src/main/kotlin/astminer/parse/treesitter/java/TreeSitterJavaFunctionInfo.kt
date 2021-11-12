@@ -1,6 +1,7 @@
 package astminer.parse.treesitter.java
 
 import astminer.common.EMPTY_TOKEN
+import astminer.common.SimpleNode
 import astminer.common.model.*
 import astminer.parse.antlr.getTokensFromSubtree
 import astminer.parse.findEnclosingElementBy
@@ -20,7 +21,7 @@ class TreeSitterJavaFunctionInfo(override val root: SimpleNode, override val fil
         annotations.children
             .filter { it.typeLabel in possibleAnnotations }
             .map { annotation -> annotation.preOrder().filter { it.typeLabel in listOf(NAME, SCOPE_IDENTIFIER, DOT) } }
-            .map { nameNodes -> nameNodes.map { it.originalToken ?: "" } }
+            .map { nameNodes -> nameNodes.map { it.token.original ?: "" } }
             .map { nameNodesWithToken -> nameNodesWithToken.joinToString(separator = "") }
     }
 
@@ -28,7 +29,7 @@ class TreeSitterJavaFunctionInfo(override val root: SimpleNode, override val fil
         val modifiers = root.getChildOfType(MODIFIERS) ?: return@extractWithLogger listOf<String>()
         modifiers.children
             .filter { it.typeLabel in possibleModifiers }
-            .map { it.originalToken }
+            .map { it.token.original }
             .map { checkNotNull(it) { "Modifier without a token" } }
     }
 
@@ -37,9 +38,9 @@ class TreeSitterJavaFunctionInfo(override val root: SimpleNode, override val fil
         parametersRoot.children.filter { it.typeLabel in possibleParameters }.map { parameter ->
             val possibleNameNode = parameter.getChildOfType(NAME)
             val name = if (possibleNameNode != null) {
-                possibleNameNode.originalToken
+                possibleNameNode.token.original
             } else {
-                parameter.getChildOfType(VARIABLE_DECLARATOR)?.getChildOfType(NAME)?.originalToken
+                parameter.getChildOfType(VARIABLE_DECLARATOR)?.getChildOfType(NAME)?.token?.original
             }
             checkNotNull(name) { "Can't find parameter name" }
 
@@ -65,7 +66,7 @@ class TreeSitterJavaFunctionInfo(override val root: SimpleNode, override val fil
     override val enclosingElement: EnclosingElement<SimpleNode>? = extractWithLogger(logger) {
         val enclosingNode = root.findEnclosingElementBy { it.typeLabel in possible_enclosings }
             ?: return@extractWithLogger null
-        val name = enclosingNode.getChildOfType(NAME)?.originalToken
+        val name = enclosingNode.getChildOfType(NAME)?.token?.original
         val type = when (enclosingNode.typeLabel) {
             CLASS_DECLARATION -> EnclosingElementType.Class
             ENUM_DECLARATION -> EnclosingElementType.Enum

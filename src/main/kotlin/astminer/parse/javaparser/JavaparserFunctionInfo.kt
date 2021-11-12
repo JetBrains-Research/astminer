@@ -27,7 +27,7 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
 
     override val modifiers: List<String>? = run {
         root.children.filter { it.typeLabel == MODIFIER }.map {
-            val token = it.originalToken
+            val token = it.token.original
             if (token == null) {
                 logger.warn { "Modifier for function $name in file $filePath doesn't have a token" }
                 return@run null
@@ -38,7 +38,7 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
 
     override val annotations: List<String>? = run {
         root.children.filter { it.typeLabel in POSSIBLE_ANNOTATION_TYPES }.map {
-            val token = it.getChildOfType(ANNOTATION_NAME)?.originalToken?.split(".")?.last()
+            val token = it.getChildOfType(ANNOTATION_NAME)?.token?.original?.split(".")?.last()
             if (token == null) {
                 logger.warn { "Annotation for function $name in file $filePath doesn't have a token" }
                 return@run null
@@ -62,8 +62,8 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
         checkNotNull(possibleTypeNode) { "Couldn't find parameter type node" }
         val typeToken = when (possibleTypeNode.typeLabel) {
             ARRAY_TYPE -> getParameterType(possibleTypeNode) + ARRAY_BRACKETS
-            PRIMITIVE_TYPE -> possibleTypeNode.originalToken
-            CLASS_OR_INTERFACE_TYPE -> possibleTypeNode.getChildOfType(CLASS_NAME)?.originalToken
+            PRIMITIVE_TYPE -> possibleTypeNode.token.original
+            CLASS_OR_INTERFACE_TYPE -> possibleTypeNode.getChildOfType(CLASS_NAME)?.token?.original
             else -> null
         }
         checkNotNull(typeToken) { "Couldn't extract parameter type from node" }
@@ -71,12 +71,12 @@ class JavaparserFunctionInfo(override val root: JavaParserNode, override val fil
     }
 
     private fun getParameterName(node: JavaParserNode): String {
-        val name = checkNotNull(node.getChildOfType(PARAMETER_NAME)?.originalToken) { "Couldn't find parameter name" }
+        val name = checkNotNull(node.getChildOfType(PARAMETER_NAME)?.token?.original) { "Couldn't find parameter name" }
         return name.replace(ARRAY_BRACKETS_REGEX, "")
     }
 
     private fun JavaParserNode.assembleEnclosingClass(): EnclosingElement<JavaParserNode>? = extractWithLogger(logger) {
-        val name = this.getChildOfType(CLASS_NAME)?.originalToken
+        val name = this.getChildOfType(CLASS_NAME)?.token?.original
         val type = when (this.typeLabel) {
             CLASS_OR_INTERFACE_DECLARATION -> EnclosingElementType.Class
             ENUM_DECLARATION -> EnclosingElementType.Enum

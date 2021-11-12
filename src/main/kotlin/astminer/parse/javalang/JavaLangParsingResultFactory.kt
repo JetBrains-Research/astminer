@@ -1,6 +1,10 @@
 package astminer.parse.javalang
 
-import astminer.common.model.*
+import astminer.common.SimpleNode
+import astminer.common.model.Node
+import astminer.common.model.ParsingResult
+import astminer.common.model.ParsingResultFactory
+import astminer.common.model.TreeFunctionSplitter
 import java.io.File
 
 object JavaLangParsingResultFactory : ParsingResultFactory {

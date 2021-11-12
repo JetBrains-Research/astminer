@@ -1,6 +1,8 @@
 package astminer.parse.javaparser
 
 import astminer.common.model.Node
+import astminer.common.model.NodeRange
+import astminer.common.model.Position
 import com.github.javaparser.ast.expr.AssignExpr
 import com.github.javaparser.ast.expr.BinaryExpr
 import com.github.javaparser.ast.expr.Name
@@ -13,8 +15,8 @@ private val logger = KotlinLogging.logger("JavaParser-Node")
 /**
  * Representation of JavaParser nodes inside `astminer`
  *
- * @property jpNode node from javapParser. JPNode is an alias for Node from javaparser
- * @property parent parent of this node. Null if it's a root.
+ * @param jpNode node from JavaParser. JPNode is an alias for Node from javaparser
+ * @param parent parent of this node. Null if it's a root.
  */
 class JavaParserNode(jpNode: JPNode, override val parent: JavaParserNode?) : Node(getJavaParserNodeToken(jpNode)) {
     override val children: MutableList<JavaParserNode> =
@@ -29,6 +31,15 @@ class JavaParserNode(jpNode: JPNode, override val parent: JavaParserNode?) : Nod
     override val typeLabel: String = run {
         val rawType = getRawType(jpNode)
         SHORTEN_VALUES.getOrDefault(rawType, rawType)
+    }
+
+    override val range: NodeRange? = if (jpNode.hasNoToken()) { null } else {
+        val start = jpNode.begin.get()
+        val end = jpNode.end.get()
+        NodeRange(
+            Position(start.line, start.column),
+            Position(end.line, end.column)
+        )
     }
 
     /**
@@ -65,9 +76,10 @@ private fun JPNode.isLeaf(): Boolean = this.childNodes.isEmpty()
 private fun JPNode.hasNoToken(): Boolean = !this.tokenRange.isPresent
 
 private fun getJavaParserNodeToken(jpNode: JPNode): String? {
-    return when {
+    val originalToken = when {
         jpNode is Name -> jpNode.asString()
         jpNode.isLeaf() -> jpNode.tokenRange.get().toString()
         else -> null
     }
+    return originalToken
 }

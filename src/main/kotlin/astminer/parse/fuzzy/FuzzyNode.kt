@@ -1,6 +1,7 @@
 package astminer.parse.fuzzy
 
 import astminer.common.model.Node
+import astminer.common.model.NodeRange
 import com.google.common.collect.TreeMultiset
 
 /**
@@ -22,6 +23,8 @@ class FuzzyNode(
 
     override val children
         get() = childrenMultiset.toList()
+
+    override val range: NodeRange? = null
 
     fun addChild(node: FuzzyNode) {
         childrenMultiset.add(node)

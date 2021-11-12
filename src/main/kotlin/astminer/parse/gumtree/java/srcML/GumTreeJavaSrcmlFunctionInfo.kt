@@ -22,7 +22,7 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
 
     override val annotations: List<String>? = extractWithLogger(logger) {
         root.children.filter { it.typeLabel == ANNOTATION }.map {
-            val token = it.getChildOfType(NAME)?.originalToken
+            val token = it.getChildOfType(NAME)?.token?.original
             checkNotNull(token) { "Annotation doesn't have a name" }
         }
     }
@@ -30,7 +30,7 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
     override val modifiers: List<String>? = extractWithLogger(logger) {
         val type = checkNotNull(root.getChildOfType(TYPE)) { "Function doesn't have a type" }
         type.children.filter { it.typeLabel == MODIFIER }.map {
-            checkNotNull(it.originalToken) { "Modifier doesn't have a name" }
+            checkNotNull(it.token.original) { "Modifier doesn't have a name" }
         }
     }
 
@@ -43,7 +43,7 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
 
     private fun assembleParameter(node: GumTreeNode): FunctionInfoParameter {
         val parameter = checkNotNull(node.getChildOfType(VAR_DECLARATION)) { "No variable found" }
-        val name = checkNotNull(parameter.getChildOfType(NAME)?.originalToken) { "Parameter name was not found" }
+        val name = checkNotNull(parameter.getChildOfType(NAME)?.token?.original) { "Parameter name was not found" }
         val type = parameter.extractType()
         return FunctionInfoParameter(name, type)
     }
@@ -56,7 +56,7 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
         }
         EnclosingElement(
             type = enclosingType,
-            name = this.getChildOfType(NAME)?.originalToken ?: return@extractWithLogger null,
+            name = this.getChildOfType(NAME)?.token?.original ?: return@extractWithLogger null,
             root = this
         )
     }
@@ -67,7 +67,7 @@ class GumTreeJavaSrcmlFunctionInfo(override val root: GumTreeNode, override val 
             if (node.typeLabel == ARRAY_BRACKETS) {
                 "[]"
             } else {
-                checkNotNull(node.originalToken) { "No type found" }
+                checkNotNull(node.token.original) { "No type found" }
             }
         }
     }

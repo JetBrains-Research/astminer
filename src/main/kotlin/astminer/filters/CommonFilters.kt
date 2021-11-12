@@ -1,5 +1,6 @@
 package astminer.filters
 
+import astminer.common.TOKEN_DELIMITER
 import astminer.common.model.*
 import astminer.featureextraction.NumberOfNodes
 
@@ -23,8 +24,8 @@ class TreeSizeFilter(private val minSize: Int = 0, private val maxSize: Int? = n
  * Filter that excludes trees that have more words than [maxWordsNumber] in any token of their node.
  */
 class WordsNumberFilter(private val maxWordsNumber: Int) : FunctionFilter, FileFilter {
-    private fun validateTree(root: Node) =
-        !root.preOrder().any { node -> node.token.split(Node.TOKEN_DELIMITER).size > maxWordsNumber }
+    private fun validateTree(root: Node) = root.preOrder()
+        .none { node -> node.token.final().split(TOKEN_DELIMITER).size > maxWordsNumber }
 
     override fun validate(functionInfo: FunctionInfo<out Node>) = validateTree(functionInfo.root)
 

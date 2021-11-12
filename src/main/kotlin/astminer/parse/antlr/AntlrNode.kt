@@ -1,11 +1,13 @@
 package astminer.parse.antlr
 
 import astminer.common.model.Node
+import astminer.common.model.NodeRange
 
 class AntlrNode(
     override val typeLabel: String,
     override var parent: AntlrNode?,
-    originalToken: String?
+    originalToken: String?,
+    override val range: NodeRange? = null
 ) : Node(originalToken) {
 
     override val children: MutableList<AntlrNode> = mutableListOf()

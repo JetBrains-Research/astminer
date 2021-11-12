@@ -1,31 +1,22 @@
 package astminer.common.model
 
-import astminer.common.EMPTY_TOKEN
-import astminer.common.splitToSubtokens
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import java.io.File
 import java.io.InputStream
-import java.util.*
 
-abstract class Node(val originalToken: String?) {
+abstract class Node(originalToken: String?) {
     abstract val typeLabel: String
     abstract val children: List<Node>
     abstract val parent: Node?
-
-    val normalizedToken: String =
-        originalToken?.let {
-            val subtokens = splitToSubtokens(it)
-            if (subtokens.isEmpty()) EMPTY_TOKEN else subtokens.joinToString(TOKEN_DELIMITER)
-        } ?: EMPTY_TOKEN
-
-    var technicalToken: String? = null
-
-    val token: String
-        get() = technicalToken ?: normalizedToken
-
+    abstract val range: NodeRange?
     val metadata: MutableMap<String, Any> = HashMap()
+    val token = Token(originalToken)
+
     fun isLeaf() = children.isEmpty()
 
     override fun toString(): String = "$typeLabel : $token"
+
     fun prettyPrint(indent: Int = 0, indentSymbol: String = "--") {
         repeat(indent) { print(indentSymbol) }
         println(this)
@@ -52,29 +43,15 @@ abstract class Node(val originalToken: String?) {
 
     fun postOrderIterator(): Iterator<Node> = postOrder().listIterator()
     open fun postOrder(): List<Node> = mutableListOf<Node>().also { doTraversePostOrder(it) }
-
-    companion object {
-        const val TOKEN_DELIMITER = "|"
-    }
 }
 
-/** Node simplest implementation **/
-class SimpleNode(
-    override val typeLabel: String,
-    override val children: MutableList<SimpleNode>,
-    override val parent: Node?,
-    token: String?
-) : Node(token) {
-    override fun removeChildrenOfType(typeLabel: String) {
-        children.removeIf { it.typeLabel == typeLabel }
-    }
-
-    override fun getChildrenOfType(typeLabel: String) = super.getChildrenOfType(typeLabel).map { it as SimpleNode }
-    override fun getChildOfType(typeLabel: String) = super.getChildOfType(typeLabel) as? SimpleNode
-
-    override fun preOrder() = super.preOrder().map { it as SimpleNode }
-    override fun postOrder() = super.postOrder().map { it as SimpleNode }
+@Serializable
+data class NodeRange(val start: Position, val end: Position) {
+    override fun toString(): String = "[${start.line}, ${start.column}] - [${end.line}, ${end.column}]"
 }
+
+@Serializable
+data class Position(@SerialName("l") val line: Int, @SerialName("c") val column: Int)
 
 interface Parser<T : Node> {
     /**

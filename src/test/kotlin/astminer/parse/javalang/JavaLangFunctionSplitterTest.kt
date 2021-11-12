@@ -1,14 +1,15 @@
 package astminer.parse.javalang
 
 import astminer.checkExecutable
+import astminer.common.SimpleNode
 import astminer.common.model.FunctionInfo
-import astminer.common.model.SimpleNode
 import org.junit.Assume
 import org.junit.BeforeClass
 import org.junit.Test
 import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 internal class JavaLangFunctionSplitterTest {
     @Test
@@ -146,12 +147,24 @@ internal class JavaLangFunctionSplitterTest {
         assertEquals(setOf("Deprecated"), annotations.toSet())
     }
 
+    @Test
+    fun testPositions() {
+        assertTrue(
+            functionInfos.mapNotNull { it.root.range }.zip(functionLinePositions).all {
+                val actualStart = it.first.start.line
+                val expectedStart = it.second
+                actualStart == expectedStart
+            }
+        )
+    }
+
     companion object {
         private const val FILE_PATH = "src/test/resources/methodSplitting/testMethodSplitting.java"
         const val N_FUNCTIONS = 15
         private val functionSplitter = JavaLangFunctionSplitter()
         val parser = JavaLangParser()
         lateinit var functionInfos: Collection<FunctionInfo<SimpleNode>>
+        val functionLinePositions = listOf(2, 4, 8, 12, 16, 19, 22, 24, 26, 28, 31, 35, 38, 42, 44)
 
         @BeforeClass
         @JvmStatic

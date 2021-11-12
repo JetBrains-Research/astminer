@@ -19,9 +19,9 @@ class GumTreePythonFunctionInfo(
 
     override val isConstructor: Boolean = name == CONSTRUCTOR_NAME
 
-    override val returnType = if (root.children.find { it.originalToken == RETURN_TYPE_OPERATOR } == null) {
+    override val returnType = if (root.children.find { it.token.original == RETURN_TYPE_OPERATOR } == null) {
         null
-    } else root.getChildrenOfType(NAME).lastOrNull()?.preOrder()?.mapNotNull { it.originalToken }?.joinToString("")
+    } else root.getChildrenOfType(NAME).lastOrNull()?.preOrder()?.mapNotNull { it.token.original }?.joinToString("")
 
     override val enclosingElement: EnclosingElement<GumTreeNode>? = extractWithLogger(logger) {
         val enclosing = root.findEnclosingElementBy { it.typeLabel in possibleEnclosingElements }
@@ -32,7 +32,7 @@ class GumTreePythonFunctionInfo(
             else -> error("No enclosing type can be associated")
         }
         EnclosingElement(
-            name = enclosing.getChildOfType(NAME)?.originalToken,
+            name = enclosing.getChildOfType(NAME)?.token?.original,
             type = type,
             root = enclosing
         )
@@ -43,14 +43,14 @@ class GumTreePythonFunctionInfo(
         parameters.children.filter { it.typeLabel == PARAMETER }.map { param ->
             // Simple case: param has name and possibly default
             if (param.getChildOfType(TYPE_DEFINITION) == null) {
-                val name = param.getChildOfType(NAME)?.originalToken
+                val name = param.getChildOfType(NAME)?.token?.original
                 checkNotNull(name) { "Parameter has no name" }
                 FunctionInfoParameter(name, null)
             } else {
                 // Complicated case: parameter has some type
                 val variableDef = param.getChildOfType(TYPE_DEFINITION)
                     ?: error("Tree structure was changed while function info collection")
-                val name = variableDef.getChildOfType(NAME)?.originalToken
+                val name = variableDef.getChildOfType(NAME)?.token?.original
                     ?: error("Parameter has no name")
                 val type = if (variableDef.children.size > 1) variableDef.children[1].getTokensFromSubtree() else null
                 FunctionInfoParameter(name, type)

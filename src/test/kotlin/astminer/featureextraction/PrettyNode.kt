@@ -1,6 +1,7 @@
 package astminer.featureextraction
 
 import astminer.common.model.Node
+import astminer.common.model.NodeRange
 
 class PrettyNode(override val typeLabel: String, originalToken: String) : Node(originalToken) {
     override var children: MutableList<PrettyNode> = ArrayList()
@@ -10,12 +11,14 @@ class PrettyNode(override val typeLabel: String, originalToken: String) : Node(o
             field = value
         }
 
+    override val range: NodeRange? = null
+
     fun addChild(node: PrettyNode) = children.add(node)
 
     fun toPrettyString(indent: Int = 0, indentSymbol: String = "--"): String = with(StringBuilder()) {
         repeat(indent) { append(indentSymbol) }
         append(typeLabel)
-        if (token.isNotEmpty()) {
+        if (token.final().isNotEmpty()) {
             appendLine(" : $token")
         } else {
             appendLine()

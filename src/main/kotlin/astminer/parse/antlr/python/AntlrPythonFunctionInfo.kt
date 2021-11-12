@@ -38,7 +38,7 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode, override val filePat
         val parameterHaveNoDefaultOrType = parameterNode.hasLastLabel(PARAMETER_NAME_NODE)
         val parameterNameNode =
             if (parameterHaveNoDefaultOrType) parameterNode else parameterNode.getChildOfType(PARAMETER_NAME_NODE)
-        val parameterName = parameterNameNode?.originalToken
+        val parameterName = parameterNameNode?.token?.original
         require(parameterName != null) { "Method name was not found" }
 
         val parameterType = parameterNode.getChildOfType(PARAMETER_TYPE_NODE)?.getTokensFromSubtree()
@@ -63,7 +63,7 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode, override val filePat
             EnclosingElementType.Method, EnclosingElementType.Function ->
                 enclosingNode.getChildOfType(FUNCTION_NAME_NODE)
             else -> error("Enclosing node can only be function or class")
-        }?.originalToken
+        }?.token?.original
         return EnclosingElement(
             type = type,
             name = name,

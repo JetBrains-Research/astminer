@@ -15,7 +15,9 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: 
     override val nameNode: AntlrNode? = root.getChildOfType(FUNCTION_NAME)
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingElement()
     override val parameters: List<FunctionInfoParameter>? =
-        try { collectParameters() } catch (e: IllegalStateException) {
+        try {
+            collectParameters()
+        } catch (e: IllegalStateException) {
             logger.warn { e.message }
             null
         }
@@ -65,18 +67,18 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: 
         val isPassedByReference = parameterNode.getChildOfType(REFERENCE) != null
 
         if (parameterNode.hasLastLabel(PARAMETER_NAME)) {
-            return parameterNode.originalToken ?: error("No name was found for a parameter")
+            return parameterNode.token.original ?: error("No name was found for a parameter")
         }
 
         val varInit = parameterNode.getItOrChildrenOfType(VAR_DECLARATION).first()
 
-        val name = varInit.getItOrChildrenOfType(PARAMETER_NAME).first().originalToken
+        val name = varInit.getItOrChildrenOfType(PARAMETER_NAME).first().token.original
             ?: error("No name was found for a parameter")
 
         return (if (isPassedByReference) "&" else "") + (if (isSplattedArg) "..." else "") + name
     }
 
-    private fun getElementType(element: AntlrNode): String? = element.getChildOfType(TYPE)?.originalToken
+    private fun getElementType(element: AntlrNode): String? = element.getChildOfType(TYPE)?.token?.original
 
     private fun collectEnclosingElement(): EnclosingElement<AntlrNode>? {
         val enclosing = root.findEnclosingElementBy { it.isPossibleEnclosing() } ?: return null
@@ -102,12 +104,10 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: 
         }
     }
 
-    private fun getEnclosingElementName(enclosing: AntlrNode): String? {
-        return when {
-            enclosing.isFunction() || enclosing.isClass() -> enclosing.getChildOfType(FUNCTION_NAME)?.originalToken
-            enclosing.isAssignExpression() -> enclosing.children.find { it.hasLastLabel(PARAMETER_NAME) }?.originalToken
-            else -> error("No type can be associated")
-        }
+    private fun getEnclosingElementName(enclosing: AntlrNode): String? = when {
+        enclosing.isFunction() || enclosing.isClass() -> enclosing.getChildOfType(FUNCTION_NAME)?.token?.original
+        enclosing.isAssignExpression() -> enclosing.children.find { it.hasLastLabel(PARAMETER_NAME) }?.token?.original
+        else -> error("No type can be associated")
     }
 
     // No check for method because method is a function
