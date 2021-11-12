@@ -15,6 +15,6 @@ object FunctionNameLabelExtractor : FunctionLabelExtractor {
     override fun process(functionInfo: FunctionInfo<out Node>): LabeledResult<out Node>? {
         val normalizedName = functionInfo.nameNode?.token?.normalized ?: return null
         functionInfo.nameNode?.token?.technical = HIDDEN_METHOD_NAME_TOKEN
-        return LabeledResult(functionInfo.root, normalizedName, functionInfo.qualifiedPath)
+        return LabeledResult(functionInfo.root, normalizedName, functionInfo.filePath)
     }
 }

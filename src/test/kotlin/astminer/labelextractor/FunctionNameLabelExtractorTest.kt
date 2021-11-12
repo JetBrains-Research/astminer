@@ -31,8 +31,7 @@ class FunctionNameLabelExtractorTest {
     @Test
     fun `test FunctionNameProblem extracts correct method name`() {
         val labeledResult = FunctionNameLabelExtractor.process(functionInfo)
-        val dottedPath = PATH.substringBeforeLast(".").replace("/", ".")
-        assertEquals(LabeledResult(functionRoot, FUNCTION_NAME, dottedPath), labeledResult)
+        assertEquals(LabeledResult(functionRoot, FUNCTION_NAME, PATH), labeledResult)
     }
 
     @Test
