@@ -37,6 +37,8 @@ Saves each tree with its label in the JSON lines format inspired by the [150k Py
 
  ```yaml
  name: json AST
+ withPaths: true # can be omitted
+ withRanges: true # can be omitted
  ```
 
 In this format, each line represents an AST with its [label](label_extractors.md), path, and all vertices:
@@ -50,25 +52,12 @@ In this format, each line represents an AST with its [label](label_extractors.md
     { "token": "class", "typeLabel": "TypeDeclaration", "children": [2, 3, 4] },
     ...
   ]
+}
 ```
 
 Possible configuration options for Json storage:
-
-```yaml
-storage:
-  name: json AST
-  withPaths: true
-```
-
-_For every saved tree also save its filepath._
-
-```yaml
-storage:
-  name: json AST
-  withRanges: true
-```
-
-_For each node, store the start and end positions of the code snippet that this node represents._
+1. `withPaths` allows for each tree to save the path to the file where it appears. Default: `false`.
+2. `withRanges` allows for each node to save start and end positions in the corresponding source code. Default: `false`.
 
 ## Path-based representations
 
