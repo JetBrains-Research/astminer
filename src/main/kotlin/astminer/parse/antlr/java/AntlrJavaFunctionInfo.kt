@@ -15,22 +15,27 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
     override val isConstructor: Boolean = false
 
     override val parameters: List<FunctionInfoParameter>? =
-        try { collectParameters() } catch (e: IllegalStateException) {
+        try {
+            collectParameters()
+        } catch (e: IllegalStateException) {
             logger.warn { e.message }
             null
         }
 
-    override val modifiers: List<String>? =
-        root.parent?.children
-            ?.filter { it.hasFirstLabel(METHOD_MODIFIER) && !it.hasLastLabel(METHOD_ANNOTATION) }
-            ?.mapNotNull { it.token.original }
+    override val modifiers: List<String>? = run {
+        root.traverseUp().parent?.children
+            ?.filter { it.typeLabel == METHOD_MODIFIER && !it.hasLastLabel(METHOD_ANNOTATION) }
+            ?.mapNotNull { it.traverseDown().token.original }
+    }
 
-    override val annotations: List<String>? =
-        root.parent?.children
-            ?.filter { it.hasLastLabel(METHOD_ANNOTATION) }
-            ?.mapNotNull { it.getChildOfType(ANNOTATION_NAME)?.token?.original }
+    override val annotations: List<String>? = run {
+        val declaration = root.traverseUp().parent
+        val annotationModifiers = declaration?.children?.filter { it.hasLastLabel(METHOD_ANNOTATION) }
+        val annotations = annotationModifiers?.map { it.traverseDown().getChildOfType(ANNOTATION_NAME) }
+        annotations?.mapNotNull { it?.getChildOfType(ANNOTATION_NAME_LITERAL)?.token?.original }
+    }
 
-    override val body: AntlrNode? = root.children.find { it.hasFirstLabel(METHOD_BODY_NODE) }
+    override val body: AntlrNode? = root.children.find { it.typeLabel == METHOD_BODY_NODE }
 
     override fun isBlank() = body == null || body.children.size <= 2
 
@@ -60,12 +65,8 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
         val parametersRoot = root.getChildOfType(METHOD_PARAMETER_NODE)
         val innerParametersRoot = parametersRoot?.getChildOfType(METHOD_PARAMETER_INNER_NODE) ?: return emptyList()
 
-        if (innerParametersRoot.lastLabelIn(METHOD_SINGLE_PARAMETER_NODES)) {
-            return listOf(getParameterInfo(innerParametersRoot))
-        }
-
         return innerParametersRoot.children.filter {
-            it.firstLabelIn(METHOD_SINGLE_PARAMETER_NODES)
+            it.typeLabel in METHOD_SINGLE_PARAMETER_NODES
         }.map { singleParameter -> getParameterInfo(singleParameter) }
     }
 
@@ -85,6 +86,7 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
         private const val METHOD_MODIFIER = "modifier"
         private const val METHOD_ANNOTATION = "annotation"
         private const val ANNOTATION_NAME = "qualifiedName"
+        private const val ANNOTATION_NAME_LITERAL = "IDENTIFIER"
         private const val METHOD_BODY_NODE = "methodBody"
 
         private const val CLASS_DECLARATION_NODE = "classDeclaration"

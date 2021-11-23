@@ -8,9 +8,7 @@ class JavaFunctionSplitter : TreeFunctionSplitter<AntlrNode> {
     private val methodNodeType = "methodDeclaration"
 
     override fun splitIntoFunctions(root: AntlrNode, filePath: String): Collection<FunctionInfo<AntlrNode>> {
-        val methodRoots = root.preOrder().filter {
-            it.hasLastLabel(methodNodeType)
-        }
+        val methodRoots = root.preOrder().filter { it.typeLabel == methodNodeType }
         return methodRoots.map { AntlrJavaFunctionInfo(it, filePath) }
     }
 }
