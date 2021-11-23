@@ -8,7 +8,7 @@ import org.antlr.v4.runtime.tree.ErrorNode
 import org.antlr.v4.runtime.tree.TerminalNode
 
 fun convertAntlrTree(tree: ParserRuleContext, ruleNames: Array<String>, vocabulary: Vocabulary): AntlrNode =
-    compressTree(convertRuleContext(tree, ruleNames, null, vocabulary))
+    convertRuleContext(tree, ruleNames, null, vocabulary)
 
 private fun convertRuleContext(
     ruleContext: ParserRuleContext,
