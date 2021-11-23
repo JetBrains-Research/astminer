@@ -9,7 +9,7 @@ class PythonFunctionSplitter : TreeFunctionSplitter<AntlrNode> {
 
     override fun splitIntoFunctions(root: AntlrNode, filePath: String): Collection<FunctionInfo<AntlrNode>> {
         val methodRoots = root.preOrder().filter {
-            it.hasLastLabel(methodNode)
+            it.typeLabel == methodNode
         }
         return methodRoots.map { AntlrPythonFunctionInfo(it, filePath) }
     }
