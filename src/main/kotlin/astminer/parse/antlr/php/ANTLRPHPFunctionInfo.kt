@@ -12,15 +12,12 @@ private val logger = KotlinLogging.logger("ANTLR-PHP-function-info")
 
 class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: String) : FunctionInfo<AntlrNode> {
     override val returnType = getElementType(root)
-    override val nameNode: AntlrNode? = root.getChildOfType(FUNCTION_NAME)
+    override val nameNode: AntlrNode? = root.getChildOfType(FUNCTION_NAME)?.traverseDown()
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingElement()
-    override val parameters: List<FunctionInfoParameter>? =
-        try {
-            collectParameters()
-        } catch (e: IllegalStateException) {
-            logger.warn { e.message }
-            null
-        }
+    override val parameters: List<FunctionInfoParameter>? = extractWithLogger(logger) {
+        val parameters = collectParameters()
+        parameters
+    }
 
     private fun collectParameters(): List<FunctionInfoParameter> {
         // Parameters in this grammar have following structure (children order may be wrong):
@@ -34,16 +31,8 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: 
         // No parameters
         val parameterList = root.getChildOfType(PARAMETERS_LIST) ?: return emptyList()
 
-        // Checking if function have only one parameter
-        // without ellipsis, type hint or default value
-        if (parameterList.hasLastLabel(PARAMETER_NAME) || parameterList.hasLastLabel(VAR_DECLARATION)) {
-            return listOf(assembleParameter(parameterList))
-        }
-
         // Otherwise find all parameters
-        return parameterList
-            .getItOrChildrenOfType(PARAMETER)
-            .mapNotNull {
+        return parameterList.getChildrenOfType(PARAMETER).mapNotNull {
                 try {
                     assembleParameter(it)
                 } catch (e: IllegalStateException) {
@@ -54,31 +43,33 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: 
     }
 
     private fun assembleParameter(parameterNode: AntlrNode): FunctionInfoParameter {
-        return FunctionInfoParameter(
+        val parameter = FunctionInfoParameter(
             name = getParameterName(parameterNode),
             type = getElementType(parameterNode)
         )
+        return parameter
     }
 
     private fun getParameterName(parameterNode: AntlrNode): String {
         // "...$args" in php equivalent to *args in python
-        val isSplattedArg = parameterNode.getChildOfType(ELLIPSIS) != null
+        val isSplattedArg = parameterNode.traverseDown().getChildOfType(ELLIPSIS) != null
 
         val isPassedByReference = parameterNode.getChildOfType(REFERENCE) != null
 
         if (parameterNode.hasLastLabel(PARAMETER_NAME)) {
-            return parameterNode.token.original ?: error("No name was found for a parameter")
+            return parameterNode.traverseDown().token.original ?: error("No name was found for a parameter")
         }
 
-        val varInit = parameterNode.getItOrChildrenOfType(VAR_DECLARATION).first()
+        val varInit = parameterNode.getChildOfType(VAR_DECLARATION)
 
-        val name = varInit.getItOrChildrenOfType(PARAMETER_NAME).first().token.original
+        val name = varInit?.traverseDown()?.getItOrChildrenOfType(PARAMETER_NAME)?.firstOrNull()?.token?.original
             ?: error("No name was found for a parameter")
 
         return (if (isPassedByReference) "&" else "") + (if (isSplattedArg) "..." else "") + name
     }
 
-    private fun getElementType(element: AntlrNode): String? = element.getChildOfType(TYPE)?.token?.original
+    private fun getElementType(element: AntlrNode): String? =
+        element.getChildOfType(TYPE)?.traverseDown()?.token?.original
 
     private fun collectEnclosingElement(): EnclosingElement<AntlrNode>? {
         val enclosing = root.findEnclosingElementBy { it.isPossibleEnclosing() } ?: return null
@@ -105,8 +96,8 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: 
     }
 
     private fun getEnclosingElementName(enclosing: AntlrNode): String? = when {
-        enclosing.isFunction() || enclosing.isClass() -> enclosing.getChildOfType(FUNCTION_NAME)?.token?.original
-        enclosing.isAssignExpression() -> enclosing.children.find { it.hasLastLabel(PARAMETER_NAME) }?.token?.original
+        enclosing.isFunction() || enclosing.isClass() -> enclosing.getChildOfType(FUNCTION_NAME)?.traverseDown()?.token?.original
+        enclosing.isAssignExpression() -> enclosing.children.find { it.hasLastLabel(PARAMETER_NAME) }?.traverseDown()?.token?.original
         else -> error("No type can be associated")
     }
 
