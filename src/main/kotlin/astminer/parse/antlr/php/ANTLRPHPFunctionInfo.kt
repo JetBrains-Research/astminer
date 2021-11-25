@@ -56,7 +56,7 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: 
 
         val isPassedByReference = parameterNode.getChildOfType(REFERENCE) != null
 
-        if (parameterNode.hasLastLabel(PARAMETER_NAME)) {
+        if (parameterNode.hasLastLabelInBamboo(PARAMETER_NAME)) {
             return parameterNode.traverseDown().token.original ?: error("No name was found for a parameter")
         }
 
@@ -97,20 +97,20 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: 
 
     private fun getEnclosingElementName(enclosing: AntlrNode): String? = when {
         enclosing.isFunction() || enclosing.isClass() -> enclosing.getChildOfType(FUNCTION_NAME)?.traverseDown()?.token?.original
-        enclosing.isAssignExpression() -> enclosing.children.find { it.hasLastLabel(PARAMETER_NAME) }?.traverseDown()?.token?.original
+        enclosing.isAssignExpression() -> enclosing.children.find { it.hasLastLabelInBamboo(PARAMETER_NAME) }?.traverseDown()?.token?.original
         else -> error("No type can be associated")
     }
 
     // No check for method because method is a function
     private fun AntlrNode.isPossibleEnclosing() = isFunction() || isClass() || isAssignExpression()
 
-    private fun AntlrNode.isMethod() = isFunction() && hasFirstLabel(CLASS_MEMBER)
+    private fun AntlrNode.isMethod() = isFunction() && hasFirstLabelInBamboo(CLASS_MEMBER)
 
     private fun AntlrNode.isFunction() = getChildOfType(LAMBDA_TOKEN) != null || getChildOfType(FUNCTION_TOKEN) != null
 
-    private fun AntlrNode.isAssignExpression() = hasFirstLabel(EXPRESSION) && getChildOfType(ASSIGN_OP) != null
+    private fun AntlrNode.isAssignExpression() = hasFirstLabelInBamboo(EXPRESSION) && getChildOfType(ASSIGN_OP) != null
 
-    private fun AntlrNode.isClass(): Boolean = hasLastLabel(CLASS_DECLARATION)
+    private fun AntlrNode.isClass(): Boolean = hasLastLabelInBamboo(CLASS_DECLARATION)
 
     companion object {
         const val PARAMETERS_LIST = "formalParameterList"

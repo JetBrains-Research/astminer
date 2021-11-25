@@ -10,11 +10,9 @@ private val logger = KotlinLogging.logger("Antlr-python-function-info")
 class AntlrPythonFunctionInfo(override val root: AntlrNode, override val filePath: String) : FunctionInfo<AntlrNode> {
     override val nameNode: AntlrNode? = collectNameNode()
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingElement()
-    override val parameters: List<FunctionInfoParameter>? =
-        try { collectParameters() } catch (e: IllegalStateException) {
-            logger.warn { e.message }
-            null
-        }
+    override val parameters: List<FunctionInfoParameter>? = extractWithLogger(logger) {
+        collectParameters()
+    }
     override val isConstructor: Boolean = name == CONSTRUCTOR_FUNCTION_NAME
 
     private fun collectNameNode(): AntlrNode? = root.getChildOfType(FUNCTION_NAME_NODE)
@@ -35,13 +33,12 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode, override val filePat
     }
 
     private fun assembleMethodInfoParameter(parameterNode: AntlrNode): FunctionInfoParameter {
-        val parameterHaveNoDefaultOrType = parameterNode.hasLastLabel(PARAMETER_NAME_NODE)
+        val parameterHaveNoDefaultOrType = parameterNode.hasLastLabelInBamboo(PARAMETER_NAME_NODE)
         val parameterNameNode =
-            if (parameterHaveNoDefaultOrType) parameterNode else parameterNode.getChildOfType(PARAMETER_NAME_NODE)
-        val parameterName = parameterNameNode?.token?.original
-        require(parameterName != null) { "Method name was not found" }
+            if (parameterHaveNoDefaultOrType) parameterNode else parameterNode.traverseDown().getChildOfType(PARAMETER_NAME_NODE)
+        val parameterName = parameterNameNode?.traverseDown()?.token?.original ?: error("Parameter name wasn't found")
 
-        val parameterType = parameterNode.getChildOfType(PARAMETER_TYPE_NODE)?.getTokensFromSubtree()
+        val parameterType = parameterNode.traverseDown().getChildOfType(PARAMETER_TYPE_NODE)?.getTokensFromSubtree()
 
         return FunctionInfoParameter(
             name = parameterName,
@@ -51,17 +48,17 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode, override val filePat
 
     // TODO: refactor remove nested whens
     private fun collectEnclosingElement(): EnclosingElement<AntlrNode>? {
-        val enclosingNode = root.findEnclosingElementBy { it.lastLabelIn(POSSIBLE_ENCLOSING_ELEMENTS) } ?: return null
-        val type = when {
-            enclosingNode.hasLastLabel(CLASS_DECLARATION_NODE) -> EnclosingElementType.Class
-            enclosingNode.hasLastLabel(FUNCTION_NODE) ->
+        val enclosingNode = root.findEnclosingElementBy { it.typeLabel in POSSIBLE_ENCLOSING_ELEMENTS } ?: return null
+        val type = when(enclosingNode.typeLabel) {
+            CLASS_DECLARATION_NODE -> EnclosingElementType.Class
+            FUNCTION_NODE ->
                 if (enclosingNode.isMethod()) EnclosingElementType.Method else EnclosingElementType.Function
             else -> error("Enclosing node can only be function or class")
         }
         val name = when (type) {
             EnclosingElementType.Class -> enclosingNode.getChildOfType(CLASS_NAME_NODE)
             EnclosingElementType.Method, EnclosingElementType.Function ->
-                enclosingNode.getChildOfType(FUNCTION_NAME_NODE)
+                enclosingNode.traverseDown().getChildOfType(FUNCTION_NAME_NODE)
             else -> error("Enclosing node can only be function or class")
         }?.token?.original
         return EnclosingElement(
@@ -72,7 +69,7 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode, override val filePat
     }
 
     private fun Node.isMethod(): Boolean {
-        val outerBody = parent
+        val outerBody = traverseUp().parent
         if (outerBody?.typeLabel != BODY) return false
 
         val enclosingNode = outerBody.parent

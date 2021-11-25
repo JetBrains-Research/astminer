@@ -24,13 +24,13 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
 
     override val modifiers: List<String>? = run {
         root.traverseUp().parent?.children
-            ?.filter { it.typeLabel == METHOD_MODIFIER && !it.hasLastLabel(METHOD_ANNOTATION) }
+            ?.filter { it.typeLabel == METHOD_MODIFIER && !it.hasLastLabelInBamboo(METHOD_ANNOTATION) }
             ?.mapNotNull { it.traverseDown().token.original }
     }
 
     override val annotations: List<String>? = run {
         val declaration = root.traverseUp().parent
-        val annotationModifiers = declaration?.children?.filter { it.hasLastLabel(METHOD_ANNOTATION) }
+        val annotationModifiers = declaration?.children?.filter { it.hasLastLabelInBamboo(METHOD_ANNOTATION) }
         val annotations = annotationModifiers?.map { it.traverseDown().getChildOfType(ANNOTATION_NAME) }
         annotations?.mapNotNull { it?.getChildOfType(ANNOTATION_NAME_LITERAL)?.token?.original }
     }
@@ -50,8 +50,8 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
         val enclosingClassNode = root
             .findEnclosingElementBy { it.lastLabelIn(possibleEnclosingElements) } ?: return@extractWithLogger null
         val enclosingType = when {
-            enclosingClassNode.hasLastLabel(CLASS_DECLARATION_NODE) -> EnclosingElementType.Class
-            enclosingClassNode.hasLastLabel(ENUM_DECLARATION_NODE) -> EnclosingElementType.Enum
+            enclosingClassNode.hasLastLabelInBamboo(CLASS_DECLARATION_NODE) -> EnclosingElementType.Class
+            enclosingClassNode.hasLastLabelInBamboo(ENUM_DECLARATION_NODE) -> EnclosingElementType.Enum
             else -> error("No enclosing element type found")
         }
         EnclosingElement(

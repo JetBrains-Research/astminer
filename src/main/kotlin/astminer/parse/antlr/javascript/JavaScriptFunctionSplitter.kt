@@ -2,9 +2,6 @@ package astminer.parse.antlr.javascript
 
 import astminer.common.model.*
 import astminer.parse.antlr.AntlrNode
-import astminer.parse.antlr.decompressTypeLabel
-import astminer.parse.antlr.hasLastLabel
-import astminer.parse.antlr.traverseDown
 
 /**
  * Get all methods (in JavaScript there are divided into functions, arrow functions and methods) and information

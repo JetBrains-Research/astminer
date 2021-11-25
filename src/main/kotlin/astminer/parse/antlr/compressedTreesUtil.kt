@@ -16,20 +16,20 @@ inline fun <reified T: Node> T.traverseUp(): T {
     return curNode as T
 }
 
-fun AntlrNode.lastLabel() = traverseDown().typeLabel
+fun AntlrNode.lastLabelInBamboo() = traverseDown().typeLabel
 
-fun AntlrNode.firstLabel(): String = traverseUp().typeLabel
+fun AntlrNode.firstLabelInBamboo(): String = traverseUp().typeLabel
 
-fun AntlrNode.hasLastLabel(label: String): Boolean = lastLabel() == label
+fun AntlrNode.hasLastLabelInBamboo(label: String): Boolean = lastLabelInBamboo() == label
 
-fun AntlrNode.lastLabelIn(labels: List<String>): Boolean = labels.contains(lastLabel())
+fun AntlrNode.lastLabelIn(labels: List<String>): Boolean = labels.contains(lastLabelInBamboo())
 
-fun AntlrNode.hasFirstLabel(label: String): Boolean = firstLabel() == label
+fun AntlrNode.hasFirstLabelInBamboo(label: String): Boolean = firstLabelInBamboo() == label
 
-fun AntlrNode.firstLabelIn(labels: List<String>): Boolean = labels.contains(firstLabel())
+fun AntlrNode.firstLabelIn(labels: List<String>): Boolean = labels.contains(firstLabelInBamboo())
 
 fun Node.getTokensFromSubtree(): String =
     if (isLeaf()) token.original ?: "" else children.joinToString(separator = "") { it.getTokensFromSubtree() }
 
 fun AntlrNode.getItOrChildrenOfType(typeLabel: String): List<AntlrNode> =
-    if (hasLastLabel(typeLabel)) listOf(this) else this.getChildrenOfType(typeLabel)
+    if (hasLastLabelInBamboo(typeLabel)) listOf(this) else this.getChildrenOfType(typeLabel)
