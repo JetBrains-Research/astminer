@@ -8,23 +8,48 @@ import astminer.common.model.Node
 const val GENERATED_NODE = "<G>"
 
 /**
- * Compress every node that has 1 child into one node.
+ * Compress every consecutive nodes that has 1 child into one node.
  * Type labels will be concatenated with `TOKEN_DELIMITER`.
  * If node with non-empty token will be compressed, new node with
  * the same token will be created to avoid information loss.
  */
-fun Node.compressTree(): SimpleNode {
+fun Node.structurallyNormalized() = this.convertToSimple().extractToken().compressTree()
+
+fun Node.convertToSimple(newParent: SimpleNode? = null): SimpleNode {
+    val new = SimpleNode(typeLabel, mutableListOf(), newParent, range, token.original)
+    new.token.technical = token.technical
+    new.children.addAll(children.map { it.convertToSimple(new) })
+    return new
+}
+
+fun SimpleNode.extractToken(): SimpleNode {
+    if (!isLeaf() && token.final() != EMPTY_TOKEN) {
+        val new = SimpleNode(
+            typeLabel,
+            children.map { it.extractToken() }.toMutableList(),
+            parent,
+            range,
+            null
+        )
+        val dummy = generateDummy()
+        dummy.token.technical = token.technical
+        new.children.add(dummy)
+        return new
+    }
+    val newChildren = children.map { it.extractToken() }
+    children.clear()
+    children.addAll(newChildren)
+    return this
+}
+
+private fun Node.compressTree(): SimpleNode {
     val bamboo = bambooBranch()
     val newLabel = bamboo.joinToString(TOKEN_DELIMITER) { it.typeLabel }
-    var newToken = bamboo.lastOrNull()?.token?.original
+    val newToken = bamboo.lastOrNull()?.token?.original
     val newChildren = if (bamboo.isNotEmpty()) {
         bamboo.last().children.map { it.compressTree() }.toMutableList()
     } else {
         mutableListOf()
-    }
-    if (!isLeaf() && token.final() != EMPTY_TOKEN) {
-        newChildren.add(generateDummy())
-        newToken = null
     }
     val newNode = SimpleNode(
         typeLabel = newLabel,

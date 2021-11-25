@@ -8,6 +8,7 @@ import astminer.parse.getParsingResultFactory
 import astminer.pipeline.branch.FilePipelineBranch
 import astminer.pipeline.branch.FunctionPipelineBranch
 import astminer.pipeline.branch.IllegalLabelExtractorException
+import astminer.storage.structurallyNormalized
 import me.tongfei.progressbar.ProgressBar
 import java.io.File
 
@@ -50,7 +51,12 @@ class Pipeline(private val config: PipelineConfig) {
                 printHoldoutStat(holdoutFiles, holdoutType)
                 val progressBar = ProgressBar("", holdoutFiles.size.toLong())
                 parsingResultFactory.parseFilesInThreads(holdoutFiles, config.numOfThreads, inputDirectory.path) {
-                    val labeledResults = branch.process(it)
+                    var labeledResults = branch.process(it)
+                    if (config.compressBeforeSaving) {
+                        labeledResults = labeledResults.map { result ->
+                            LabeledResult(result.root.structurallyNormalized(), result.label, result.filePath)
+                        }
+                    }
                     storage.storeSynchronously(labeledResults, holdoutType)
                     progressBar.step()
                 }
