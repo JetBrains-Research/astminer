@@ -57,35 +57,3 @@ private fun TerminalNode.getNodeRange(): NodeRange? {
 
 private fun convertErrorNode(errorNode: ErrorNode, parent: AntlrNode?): AntlrNode =
     AntlrNode("Error", parent, errorNode.text, errorNode.getNodeRange())
-
-/**
- * Remove intermediate nodes that have a single child.
- */
-fun simplifyTree(tree: AntlrNode): AntlrNode {
-    return if (tree.children.size == 1) {
-        simplifyTree(tree.children.first())
-    } else {
-        tree.replaceChildren(tree.children.map { simplifyTree(it) }.toMutableList())
-        tree
-    }
-}
-
-/**
- * Compress paths of intermediate nodes that have a single child into individual nodes.
- */
-fun compressTree(root: AntlrNode): AntlrNode {
-    return if (root.children.size == 1) {
-        val child = compressTree(root.children.first())
-        val compressedNode = AntlrNode(
-            root.typeLabel + "|" + child.typeLabel,
-            root.parent,
-            child.token.original,
-            root.range
-        )
-        compressedNode.replaceChildren(child.children)
-        compressedNode
-    } else {
-        root.replaceChildren(root.children.map { compressTree(it) }.toMutableList())
-        root
-    }
-}
