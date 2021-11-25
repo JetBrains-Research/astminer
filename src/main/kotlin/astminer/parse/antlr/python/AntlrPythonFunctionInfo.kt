@@ -34,8 +34,11 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode, override val filePat
 
     private fun assembleMethodInfoParameter(parameterNode: AntlrNode): FunctionInfoParameter {
         val parameterHaveNoDefaultOrType = parameterNode.hasLastLabelInBamboo(PARAMETER_NAME_NODE)
-        val parameterNameNode =
-            if (parameterHaveNoDefaultOrType) parameterNode else parameterNode.traverseDown().getChildOfType(PARAMETER_NAME_NODE)
+        val parameterNameNode = if (parameterHaveNoDefaultOrType) { parameterNode } else {
+            parameterNode.traverseDown().getChildOfType(
+                PARAMETER_NAME_NODE
+            )
+        }
         val parameterName = parameterNameNode?.traverseDown()?.token?.original ?: error("Parameter name wasn't found")
 
         val parameterType = parameterNode.traverseDown().getChildOfType(PARAMETER_TYPE_NODE)?.getTokensFromSubtree()
@@ -49,7 +52,7 @@ class AntlrPythonFunctionInfo(override val root: AntlrNode, override val filePat
     // TODO: refactor remove nested whens
     private fun collectEnclosingElement(): EnclosingElement<AntlrNode>? {
         val enclosingNode = root.findEnclosingElementBy { it.typeLabel in POSSIBLE_ENCLOSING_ELEMENTS } ?: return null
-        val type = when(enclosingNode.typeLabel) {
+        val type = when (enclosingNode.typeLabel) {
             CLASS_DECLARATION_NODE -> EnclosingElementType.Class
             FUNCTION_NODE ->
                 if (enclosingNode.isMethod()) EnclosingElementType.Method else EnclosingElementType.Function

@@ -22,9 +22,6 @@ abstract class AntlrJavaScriptElementInfo(override val root: AntlrNode, override
         return EnclosingElement(type, name, root)
     }
 
-    private fun AntlrNode.containsLabelIn(labels: List<String>): Boolean =
-        decompressTypeLabel(typeLabel).intersect(labels).isNotEmpty()
-
     private fun getEnclosingElementName(enclosingRoot: AntlrNode?): String? {
         return enclosingRoot?.preOrder()?.firstOrNull {
             it.typeLabel == ENCLOSING_ELEMENT_NAME_NODE
@@ -52,7 +49,7 @@ abstract class AntlrJavaScriptElementInfo(override val root: AntlrNode, override
         }
 
         // Many parameters or one with default
-        val parameterNodes = parametersRoot.children.filter { it.typeLabel == SINGLE_PARAMETER_NODE}
+        val parameterNodes = parametersRoot.children.filter { it.typeLabel == SINGLE_PARAMETER_NODE }
         return@extractWithLogger parameterNodes.map { parameter ->
             val name = parameter.preOrder().find { it.typeLabel == PARAMETER_NAME_NODE }?.token?.original
                 ?: error("Parameter with no name")

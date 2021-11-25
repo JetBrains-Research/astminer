@@ -33,13 +33,13 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: 
 
         // Otherwise find all parameters
         return parameterList.getChildrenOfType(PARAMETER).mapNotNull {
-                try {
-                    assembleParameter(it)
-                } catch (e: IllegalStateException) {
-                    logger.warn { "Error during collecting parameters for $name in $filePath: ${e.message}" }
-                    null
-                }
+            try {
+                assembleParameter(it)
+            } catch (e: IllegalStateException) {
+                logger.warn { "Error during collecting parameters for $name in $filePath: ${e.message}" }
+                null
             }
+        }
     }
 
     private fun assembleParameter(parameterNode: AntlrNode): FunctionInfoParameter {
@@ -96,8 +96,10 @@ class ANTLRPHPFunctionInfo(override val root: AntlrNode, override val filePath: 
     }
 
     private fun getEnclosingElementName(enclosing: AntlrNode): String? = when {
-        enclosing.isFunction() || enclosing.isClass() -> enclosing.getChildOfType(FUNCTION_NAME)?.traverseDown()?.token?.original
-        enclosing.isAssignExpression() -> enclosing.children.find { it.hasLastLabelInBamboo(PARAMETER_NAME) }?.traverseDown()?.token?.original
+        enclosing.isFunction() || enclosing.isClass() ->
+            enclosing.getChildOfType(FUNCTION_NAME)?.traverseDown()?.token?.original
+        enclosing.isAssignExpression() ->
+            enclosing.children.find { it.hasLastLabelInBamboo(PARAMETER_NAME) }?.traverseDown()?.token?.original
         else -> error("No type can be associated")
     }
 

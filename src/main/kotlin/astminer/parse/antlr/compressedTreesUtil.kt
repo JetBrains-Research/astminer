@@ -4,15 +4,15 @@ import astminer.common.model.Node
 
 fun decompressTypeLabel(typeLabel: String) = typeLabel.split("|")
 
-inline fun <reified T: Node> T.traverseDown(): T {
+inline fun <reified T : Node> T.traverseDown(): T {
     var curNode: Node = this
-    while (curNode.children.size == 1) { curNode = curNode.children.first()}
+    while (curNode.children.size == 1) { curNode = curNode.children.first() }
     return curNode as T
 }
 
-inline fun <reified T: Node> T.traverseUp(): T {
+inline fun <reified T : Node> T.traverseUp(): T {
     var curNode: Node? = this
-    while (curNode?.parent?.children?.size == 1) { curNode = curNode.parent}
+    while (curNode?.parent?.children?.size == 1) { curNode = curNode.parent }
     return curNode as T
 }
 
