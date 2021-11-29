@@ -13,62 +13,40 @@ const val GENERATED_NODE = "<G>"
  * If node with non-empty token will be compressed, new node with
  * the same token will be created to avoid information loss.
  */
-fun Node.structurallyNormalized() = this.convertToSimple().extractToken().compressTree()
+fun Node.structurallyNormalized() = this.extractToken().compressTree()
 
-fun Node.convertToSimple(newParent: SimpleNode? = null): SimpleNode {
-    val new = SimpleNode(typeLabel, mutableListOf(), newParent, range, token.original)
-    new.token.technical = token.technical
-    new.children.addAll(children.map { it.convertToSimple(new) })
+/**
+ * Extracts tokens from non-leaf nodes into separate children
+ * by converting the tree into a simple form.
+ */
+private fun Node.extractToken(parent: SimpleNode? = null): SimpleNode {
+    if (isLeaf()) {
+        val new = SimpleNode(typeLabel, mutableListOf(), parent, range, token.original)
+        new.token.technical = token.technical
+        return new
+    }
+    val new = SimpleNode(typeLabel, mutableListOf(), parent, range, null)
+    if (token.final() != EMPTY_TOKEN) {
+        val generated = SimpleNode(GENERATED_NODE, mutableListOf(), new, range, token.original)
+        generated.token.technical = token.technical
+        new.children.add(generated)
+    }
+    new.children.addAll(this.children.map { it.extractToken(new) })
     return new
 }
 
-fun SimpleNode.extractToken(): SimpleNode {
-    if (!isLeaf() && token.final() != EMPTY_TOKEN) {
-        val new = SimpleNode(
-            typeLabel,
-            children.map { it.extractToken() }.toMutableList(),
-            parent,
-            range,
-            null
-        )
-        val dummy = generateDummy()
-        dummy.token.technical = token.technical
-        new.children.add(dummy)
-        return new
-    }
-    val newChildren = children.map { it.extractToken() }
-    children.clear()
-    children.addAll(newChildren)
-    return this
-}
-
-private fun Node.compressTree(): SimpleNode {
+private fun SimpleNode.compressTree(): SimpleNode {
     val bamboo = bambooBranch()
+    if (bamboo.isEmpty()) { return this.also { children.replaceAll { it.compressTree() } }}
     val newLabel = bamboo.joinToString(TOKEN_DELIMITER) { it.typeLabel }
-    val newToken = bamboo.lastOrNull()?.token?.original
-    val newChildren = if (bamboo.isNotEmpty()) {
-        bamboo.last().children.map { it.compressTree() }.toMutableList()
-    } else {
-        mutableListOf()
-    }
-    val newNode = SimpleNode(
-        typeLabel = newLabel,
-        token = newToken,
-        parent = parent,
-        children = newChildren,
-        range = range
-    )
-    newNode.token.technical = token.technical
+    // we don't need lastOrNull because bamboo is not empty
+    val bambooEnd = bamboo.last()
+    val newToken = bambooEnd.token.original
+    val newNode = SimpleNode(newLabel, mutableListOf(), parent, range, newToken)
+    newNode.token.technical = bambooEnd.token.technical
+    newNode.children.addAll(bambooEnd.children.map { (it as SimpleNode).compressTree() })
     return newNode
 }
-
-private fun Node.generateDummy() = SimpleNode(
-    typeLabel = GENERATED_NODE,
-    token = token.original,
-    parent = this,
-    children = mutableListOf(),
-    range = null,
-)
 
 private fun Node.bambooBranch(): List<Node> {
     val branch = mutableListOf(this)

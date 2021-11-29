@@ -32,14 +32,14 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
         val declaration = root.traverseUp().parent
         val annotationModifiers = declaration?.children?.filter { it.hasLastLabelInBamboo(METHOD_ANNOTATION) }
         val annotations = annotationModifiers?.map { it.traverseDown().getChildOfType(ANNOTATION_NAME) }
-        annotations?.mapNotNull { it?.getChildOfType(ANNOTATION_NAME_LITERAL)?.token?.original }
+        annotations?.mapNotNull { it?.getChildOfType(IDENTIFIER_NODE)?.token?.original }
     }
 
     override val body: AntlrNode? = root.children.find { it.typeLabel == METHOD_BODY_NODE }
 
     override fun isBlank() = body == null || body.children.size <= 2
 
-    private fun collectNameNode(): AntlrNode? = root.getChildOfType(METHOD_NAME_NODE)
+    private fun collectNameNode(): AntlrNode? = root.getChildOfType(IDENTIFIER_NODE)
 
     private fun collectReturnType(): String? {
         val returnTypeNode = root.getChildOfType(METHOD_RETURN_TYPE_NODE)
@@ -82,11 +82,10 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
 
     companion object {
         private const val METHOD_RETURN_TYPE_NODE = "typeTypeOrVoid"
-        private const val METHOD_NAME_NODE = "IDENTIFIER"
         private const val METHOD_MODIFIER = "modifier"
         private const val METHOD_ANNOTATION = "annotation"
         private const val ANNOTATION_NAME = "qualifiedName"
-        private const val ANNOTATION_NAME_LITERAL = "IDENTIFIER"
+        private const val IDENTIFIER_NODE = "IDENTIFIER"
         private const val METHOD_BODY_NODE = "methodBody"
 
         private const val CLASS_DECLARATION_NODE = "classDeclaration"
