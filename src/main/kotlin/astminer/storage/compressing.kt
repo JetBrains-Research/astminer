@@ -49,11 +49,15 @@ private fun SimpleNode.compressTree(): SimpleNode {
 }
 
 private fun Node.bambooBranch(): List<Node> {
-    val branch = mutableListOf(this)
     var curNode: Node = this
+    val branch = mutableListOf<Node>()
     while (curNode.isBamboo()) {
-        curNode = curNode.children.first()
         branch.add(curNode)
+        curNode = curNode.children.first()
+        if (curNode.isLeaf()) {
+            branch.add(curNode)
+            break
+        }
     }
     return branch
 }
