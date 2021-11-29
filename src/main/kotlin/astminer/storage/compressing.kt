@@ -37,7 +37,7 @@ private fun Node.extractToken(parent: SimpleNode? = null): SimpleNode {
 
 private fun SimpleNode.compressTree(): SimpleNode {
     val bamboo = bambooBranch()
-    if (bamboo.isEmpty()) { return this.also { children.replaceAll { it.compressTree() } }}
+    if (bamboo.isEmpty()) { return this.also { children.replaceAll { it.compressTree() } } }
     val newLabel = bamboo.joinToString(TOKEN_DELIMITER) { it.typeLabel }
     // we don't need lastOrNull because bamboo is not empty
     val bambooEnd = bamboo.last()
