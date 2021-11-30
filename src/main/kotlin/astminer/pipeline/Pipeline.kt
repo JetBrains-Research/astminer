@@ -53,7 +53,7 @@ class Pipeline(private val config: PipelineConfig) {
                 val progressBar = ProgressBar("", holdoutFiles.size.toLong())
                 parsingResultFactory.parseFilesInThreads(holdoutFiles, config.numOfThreads, inputDirectory.path) {
                     val labeledResults = branch.process(it).let { results ->
-                        if (config.compressBeforeSaving) { results.withCompressedTree() } else { results }
+                        if (config.compressBeforeSaving) { results.toStructurallyNormalized() } else { results }
                     }
                     storage.storeSynchronously(labeledResults, holdoutType)
                     progressBar.step()
