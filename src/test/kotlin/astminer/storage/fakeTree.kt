@@ -7,8 +7,13 @@ import kotlin.test.assertEquals
 
 fun tree(treeConf: TreeContext.() -> Unit): SimpleNode {
     val config = TreeContext().also(treeConf)
-    val new = SimpleNode(config.typeLabel, config.children, config.parent, config.range, config.originalToken)
-    new.token.technical = config.technicalToken
+    return buildFromContext(config)
+}
+
+private fun buildFromContext(context: TreeContext, parent: SimpleNode? = null): SimpleNode {
+    val new = SimpleNode(context.typeLabel, mutableListOf(), parent, context.range, context.originalToken)
+    new.token.technical = context.technicalToken
+    new.children.addAll(context.children.map { buildFromContext(it, new) })
     return new
 }
 
@@ -16,12 +21,11 @@ class TreeContext {
     lateinit var typeLabel: String
     var originalToken: String? = null
     var technicalToken: String? = null
-    var parent: SimpleNode? = null
-    val children: MutableList<SimpleNode> = mutableListOf()
+    val children: MutableList<TreeContext> = mutableListOf()
     val range: NodeRange? = null
 
     fun child(childContext: TreeContext.() -> Unit) {
-        val child = tree(childContext)
+        val child = TreeContext().also(childContext)
         children.add(child)
     }
 }
