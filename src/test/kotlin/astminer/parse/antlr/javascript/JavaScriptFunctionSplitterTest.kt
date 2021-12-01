@@ -46,10 +46,10 @@ class JavaScriptFunctionSplitterTest {
                 "}"
         }
 
-        val actualJsonInfos = functionInfos.map { it.getJsonInfo() }.sorted()
+        val actualJsonInfos = functionInfos.map { it.getJsonInfo() }.joinToString("\n")
 
         val text = File(testFilePath).readText()
-        val expectedJsonInfos = Regex("info : \\{.*}").findAll(text).toList().map { it.value }.sorted()
+        val expectedJsonInfos = Regex("info : \\{.*}").findAll(text).toList().map { it.value }.joinToString("\n")
 
         assertEquals(expectedJsonInfos, actualJsonInfos)
     }
