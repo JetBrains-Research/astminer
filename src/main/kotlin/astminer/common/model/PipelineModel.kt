@@ -1,5 +1,6 @@
 package astminer.common.model
 
+import kotlinx.serialization.Serializable
 import java.io.Closeable
 import java.io.File
 
@@ -62,6 +63,9 @@ interface Storage : Closeable {
         store(labeledResults, holdout)
     }
 }
+
+@Serializable
+data class MetaDataConfig(val withRanges: Boolean = true, val withPaths: Boolean = true)
 
 enum class DatasetHoldout(val dirName: String) {
     Train("train"),
