@@ -4,8 +4,12 @@ import astminer.common.model.*
 import astminer.common.storage.*
 import java.io.File
 
-class Code2VecPathStorage(outputDirectoryPath: String, private val config: PathBasedStorageConfig) :
-    PathBasedStorage(outputDirectoryPath, config) {
+class Code2VecPathStorage(
+    outputDirectoryPath: String,
+    private val config: PathBasedStorageConfig,
+    metaDataConfig: MetaDataConfig
+) :
+    PathBasedStorage(outputDirectoryPath, config, metaDataConfig) {
 
     private val tokensMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
     private val orientedNodeTypesMap: RankedIncrementalIdStorage<OrientedNodeType> = RankedIncrementalIdStorage()
@@ -14,8 +18,8 @@ class Code2VecPathStorage(outputDirectoryPath: String, private val config: PathB
     private fun dumpPathContexts(labeledPathContextIds: LabeledPathContextIds<String>): String {
         val pathContextIdsString = labeledPathContextIds.pathContexts.filter {
             val isNumberOfTokensValid = config.maxTokens == null ||
-                tokensMap.getIdRank(it.startTokenId) <= config.maxTokens &&
-                tokensMap.getIdRank(it.endTokenId) <= config.maxTokens
+                    tokensMap.getIdRank(it.startTokenId) <= config.maxTokens &&
+                    tokensMap.getIdRank(it.endTokenId) <= config.maxTokens
             val isNumberOfPathsValid = config.maxPaths == null || pathsMap.getIdRank(it.pathId) <= config.maxPaths
 
             isNumberOfTokensValid && isNumberOfPathsValid

@@ -102,7 +102,7 @@ abstract class PathBasedStorage(
         holdoutDir.mkdirs()
         val newOutputFile = holdoutDir.resolve(outputFile)
         newOutputFile.createNewFile()
-        return PrintWriter(newOutputFile)
+        return PrintWriter(newOutputFile.outputStream(), true)
     }
 
     private fun DatasetHoldout.resolveDataWriter() = resolveWriter("path_contexts.c2s")

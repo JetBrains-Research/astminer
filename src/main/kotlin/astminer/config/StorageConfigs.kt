@@ -1,5 +1,6 @@
 package astminer.config
 
+import astminer.common.model.MetaDataConfig
 import astminer.common.model.Storage
 import astminer.storage.ast.CsvAstStorage
 import astminer.storage.ast.DotAstStorage
@@ -65,13 +66,14 @@ data class Code2VecPathStorageConfig(
     val maxTokens: Long? = null,
     val maxPaths: Long? = null,
     val maxPathContextsPerEntity: Int? = null,
+    val metadata: MetaDataConfig = MetaDataConfig()
 ) : StorageConfig() {
     @Transient
     private val pathBasedStorageConfig =
         PathBasedStorageConfig(maxPathLength, maxPathWidth, maxTokens, maxPaths, maxPathContextsPerEntity)
 
     override fun createStorage(outputDirectoryPath: String) =
-        Code2VecPathStorage(outputDirectoryPath, pathBasedStorageConfig)
+        Code2VecPathStorage(outputDirectoryPath, pathBasedStorageConfig, metadata)
 }
 
 @Serializable
@@ -80,12 +82,13 @@ data class Code2SeqPathStorageConfig(
     @SerialName("length") val maxPathLength: Int,
     @SerialName("width") val maxPathWidth: Int,
     val maxPathContextsPerEntity: Int? = null,
-    val nodesToNumber: Boolean = true
+    val nodesToNumber: Boolean = true,
+    val metadata: MetaDataConfig = MetaDataConfig()
 ) : StorageConfig() {
     @Transient
     private val pathBasedStorageConfig =
         PathBasedStorageConfig(maxPathLength, maxPathWidth, maxPathContextsPerEntity = maxPathContextsPerEntity)
 
     override fun createStorage(outputDirectoryPath: String) =
-        Code2SeqPathStorage(outputDirectoryPath, pathBasedStorageConfig, nodesToNumber)
+        Code2SeqPathStorage(outputDirectoryPath, pathBasedStorageConfig, nodesToNumber, metadata)
 }
