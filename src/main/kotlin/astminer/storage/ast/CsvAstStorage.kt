@@ -65,7 +65,7 @@ class CsvAstStorage(override val outputDirectoryPath: String) : Storage {
         holdoutDir.mkdirs()
         val astFile = holdoutDir.resolve("asts.csv")
         astFile.createNewFile()
-        val newWriter = PrintWriter(astFile)
+        val newWriter = PrintWriter(astFile.outputStream(), true)
         newWriter.println("id,ast")
         return newWriter
     }

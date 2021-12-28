@@ -68,7 +68,7 @@ class JsonAstStorage(
         holdoutDir.mkdirs()
         val astFile = holdoutDir.resolve("asts.jsonl")
         astFile.createNewFile()
-        return PrintWriter(astFile)
+        return PrintWriter(astFile.outputStream(), true)
     }
 }
 
