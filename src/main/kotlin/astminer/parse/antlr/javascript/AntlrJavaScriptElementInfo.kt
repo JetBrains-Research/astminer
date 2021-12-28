@@ -15,21 +15,16 @@ abstract class AntlrJavaScriptElementInfo(override val root: AntlrNode, override
 
     protected fun collectEnclosingElement(): EnclosingElement<AntlrNode>? {
         val enclosingElement = root.findEnclosingElementBy {
-            it.containsLabelIn(ENCLOSING_ELEMENT_NODES)
+            it.typeLabel in ENCLOSING_ELEMENT_NODES
         } ?: return null
-        return EnclosingElement(
-            type = getEnclosingElementType(enclosingElement),
-            name = getEnclosingElementName(enclosingElement),
-            root = enclosingElement
-        )
+        val type = getEnclosingElementType(enclosingElement)
+        val name = getEnclosingElementName(enclosingElement)
+        return EnclosingElement(type, name, root)
     }
 
-    private fun AntlrNode.containsLabelIn(labels: List<String>): Boolean =
-        decompressTypeLabel(typeLabel).intersect(labels).isNotEmpty()
-
     private fun getEnclosingElementName(enclosingRoot: AntlrNode?): String? {
-        return enclosingRoot?.children?.firstOrNull {
-            it.hasLastLabel(ENCLOSING_ELEMENT_NAME_NODE)
+        return enclosingRoot?.preOrder()?.firstOrNull {
+            it.typeLabel == ENCLOSING_ELEMENT_NAME_NODE
         }?.token?.original
     }
 
@@ -43,24 +38,22 @@ abstract class AntlrJavaScriptElementInfo(override val root: AntlrNode, override
         }
     }
 
-    protected fun collectParameters(): List<FunctionInfoParameter> {
-        val parametersRoot = getParametersRoot()
-        val parameterNameNodes = when {
-            // No parameters found
-            parametersRoot == null -> emptyList()
+    protected fun collectParameters(): List<FunctionInfoParameter>? = extractWithLogger(logger) {
+        // No parameters
+        val parametersRoot = getParametersRoot() ?: return@extractWithLogger emptyList()
 
-            // Have only one parameter, which is indicated only by its name
-            parametersRoot.hasLastLabel(PARAMETER_NAME_NODE) -> listOf(parametersRoot)
-
-            // Have many parameters or one indicated not only by it's name
-            else ->
-                parametersRoot
-                    .getItOrChildrenOfType(SINGLE_PARAMETER_NODE)
-                    .map { it.getChildOfType(PARAMETER_NAME_NODE) ?: it }
+        // One simple parameter
+        if (parametersRoot.children.size == 1 && parametersRoot.children.first().typeLabel == PARAMETER_NAME_NODE) {
+            val name = parametersRoot.children.first().token.original ?: error("Parameter with no name")
+            return@extractWithLogger listOf(FunctionInfoParameter(name, null))
         }
-        return parameterNameNodes.map {
-            check(it.token.original != null) { "Parameter name wasn't found" }
-            FunctionInfoParameter(name = it.token.original, type = null)
+
+        // Many parameters or one with default
+        val parameterNodes = parametersRoot.children.filter { it.typeLabel == SINGLE_PARAMETER_NODE }
+        return@extractWithLogger parameterNodes.map { parameter ->
+            val name = parameter.preOrder().find { it.typeLabel == PARAMETER_NAME_NODE }?.token?.original
+                ?: error("Parameter with no name")
+            FunctionInfoParameter(name, type = null)
         }
     }
 
@@ -79,10 +72,12 @@ abstract class AntlrJavaScriptElementInfo(override val root: AntlrNode, override
 class JavaScriptArrowInfo(root: AntlrNode, filePath: String) : AntlrJavaScriptElementInfo(root, filePath) {
 
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingElement()
-    override val nameNode: AntlrNode? = root.getChildOfType(ARROW_NAME_NODE)
+    override val nameNode: AntlrNode? = root.traverseDown().getChildOfType(ARROW_NAME_NODE)
 
     override val parameters: List<FunctionInfoParameter>? =
-        try { collectParameters() } catch (e: IllegalStateException) {
+        try {
+            collectParameters()
+        } catch (e: IllegalStateException) {
             logger.warn { e.message }
             null
         }
@@ -104,19 +99,21 @@ class JavaScriptMethodInfo(root: AntlrNode, filePath: String) : AntlrJavaScriptE
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingElement()
     override val nameNode: AntlrNode? = collectNameNode()
     override val parameters: List<FunctionInfoParameter>? =
-        try { collectParameters() } catch (e: IllegalStateException) {
+        try {
+            collectParameters()
+        } catch (e: IllegalStateException) {
             logger.warn { e.message }
             null
         }
 
     private fun collectNameNode(): AntlrNode? {
         val methodNameParent = root.children.firstOrNull {
-            METHOD_GETTERS_SETTERS.contains(it.typeLabel)
+            it.typeLabel in METHOD_GETTERS_SETTERS
         } ?: root
 
-        return methodNameParent.children.firstOrNull {
-            decompressTypeLabel(it.typeLabel).contains(METHOD_NAME_NODE)
-        }
+        return methodNameParent.preOrder().firstOrNull {
+            it.typeLabel == METHOD_NAME_NODE
+        }?.traverseDown()
     }
 
     override fun getParametersRoot(): AntlrNode? = root.getChildOfType(METHOD_PARAMETER_NODE)
@@ -133,7 +130,9 @@ class JavaScriptFunctionInfo(root: AntlrNode, filePath: String) : AntlrJavaScrip
     override val enclosingElement: EnclosingElement<AntlrNode>? = collectEnclosingElement()
     override val nameNode: AntlrNode? = root.getChildOfType(FUNCTION_NAME_NODE)
     override val parameters: List<FunctionInfoParameter>? =
-        try { collectParameters() } catch (e: IllegalStateException) {
+        try {
+            collectParameters()
+        } catch (e: IllegalStateException) {
             logger.warn { e.message }
             null
         }

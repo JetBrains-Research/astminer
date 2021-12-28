@@ -31,40 +31,6 @@ class Pipeline(private val config: PipelineConfig) {
         else -> throw IllegalLabelExtractorException(labelExtractor::class.simpleName)
     }
 
-    private fun createStorageDirectory(extension: FileExtension): File {
-        val outputDirectoryForExtension = outputDirectory.resolve(extension.fileExtension)
-        outputDirectoryForExtension.mkdir()
-        return outputDirectoryForExtension
-    }
-
-    private fun createStorage(extension: FileExtension): Storage {
-        val storagePath = createStorageDirectory(extension).path
-        return config.storage.createStorage(storagePath)
-    }
-
-    private fun parseLanguage(language: FileExtension) {
-        val parsingResultFactory = getParsingResultFactory(language, config.parser.name)
-        createStorage(language).use { storage ->
-            for ((holdoutType, holdoutDir) in holdoutMap) {
-                val holdoutFiles = getProjectFilesWithExtension(holdoutDir, language.fileExtension)
-                printHoldoutStat(holdoutFiles, holdoutType)
-                val progressBar = ProgressBar("", holdoutFiles.size.toLong())
-                parsingResultFactory.parseFilesInThreads(holdoutFiles, config.numOfThreads, inputDirectory.path) {
-                    val labeledResults = branch.process(it)
-                    storage.storeSynchronously(labeledResults, holdoutType)
-                    progressBar.step()
-                }
-                progressBar.close()
-            }
-        }
-    }
-
-    private fun printHoldoutStat(files: List<File>, holdoutType: DatasetHoldout) {
-        val output = StringBuilder("${files.size} file(s) found")
-        if (isDataset) { output.append(" in ${holdoutType.name}") }
-        println(output.toString())
-    }
-
     /**
      * Runs the pipeline that is defined in the [config].
      */
@@ -76,5 +42,41 @@ class Pipeline(private val config: PipelineConfig) {
             parseLanguage(language)
         }
         println("Done!")
+    }
+
+    private fun parseLanguage(language: FileExtension) {
+        val parsingResultFactory = getParsingResultFactory(language, config.parser.name)
+        createStorage(language).use { storage ->
+            for ((holdoutType, holdoutDir) in holdoutMap) {
+                val holdoutFiles = getProjectFilesWithExtension(holdoutDir, language.fileExtension)
+                printHoldoutStat(holdoutFiles, holdoutType)
+                val progressBar = ProgressBar("", holdoutFiles.size.toLong())
+                parsingResultFactory.parseFilesInThreads(holdoutFiles, config.numOfThreads, inputDirectory.path) {
+                    val labeledResults = branch.process(it).let { results ->
+                        if (config.compressBeforeSaving) { results.toStructurallyNormalized() } else { results }
+                    }
+                    storage.storeSynchronously(labeledResults, holdoutType)
+                    progressBar.step()
+                }
+                progressBar.close()
+            }
+        }
+    }
+
+    private fun createStorage(extension: FileExtension): Storage {
+        val storagePath = createStorageDirectory(extension).path
+        return config.storage.createStorage(storagePath)
+    }
+
+    private fun createStorageDirectory(extension: FileExtension): File {
+        val outputDirectoryForExtension = outputDirectory.resolve(extension.fileExtension)
+        outputDirectoryForExtension.mkdir()
+        return outputDirectoryForExtension
+    }
+
+    private fun printHoldoutStat(files: List<File>, holdoutType: DatasetHoldout) {
+        val output = StringBuilder("${files.size} file(s) found")
+        if (isDataset) { output.append(" in ${holdoutType.name}") }
+        println(output.toString())
     }
 }

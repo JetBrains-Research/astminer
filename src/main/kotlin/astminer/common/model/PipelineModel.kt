@@ -1,6 +1,7 @@
 package astminer.common.model
 
 import kotlinx.serialization.Serializable
+import astminer.storage.structurallyNormalized
 import java.io.Closeable
 import java.io.File
 
@@ -31,6 +32,10 @@ interface FunctionLabelExtractor : LabelExtractor {
  * @property filePath The path to the source file where the AST is from.
  */
 data class LabeledResult<T : Node>(val root: T, val label: String, val filePath: String)
+
+fun LabeledResult<out Node>.toStructurallyNormalized() = LabeledResult(root.structurallyNormalized(), label, filePath)
+
+fun List<LabeledResult<out Node>>.toStructurallyNormalized() = map { it.toStructurallyNormalized() }
 
 fun <T : Node> ParsingResult<T>.labeledWith(label: String): LabeledResult<T> = LabeledResult(root, label, file.path)
 
