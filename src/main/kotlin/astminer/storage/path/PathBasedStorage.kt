@@ -83,7 +83,7 @@ abstract class PathBasedStorage(
         writer.println(output)
     }
 
-    private fun metadataRequested(): Boolean = listOf(metaDataConfig.withPaths, metaDataConfig.withRanges).any()
+    private fun metadataRequested(): Boolean = listOf(metaDataConfig.withPaths, metaDataConfig.withRanges).any { it }
 
     private fun writeMetadata(labeledResult: LabeledResult<out Node>, writer: PrintWriter) {
         val metadata = buildJsonObject {
