@@ -93,12 +93,12 @@ class PipelineMultiThreadStressTest {
             numOfThreads = 8
         )
         Pipeline(config).run()
-        val pathContextsPath = "$outputPath/java/data/path_contexts.c2s"
+        val pathContextsPath = "$outputPath/java/data/$pathContextsFileName"
         val expectedNumOfPathContexts = numOfFiles * numOfMethods
         val actualNumOfPathContexts = countLines(pathContextsPath)
         assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfPathContexts)
 
-        val metadataPath = "$outputPath/java/data/metadata.jsonl"
+        val metadataPath = "$outputPath/java/data/$metadataFileName"
         val actualNumOfMetadata = countLines(metadataPath)
         assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfMetadata)
 
@@ -120,6 +120,8 @@ class PipelineMultiThreadStressTest {
             val actualMethodName = Json.parseToJsonElement(metaline).jsonObject["label"]?.jsonPrimitive?.content
             assertEquals(expectedMethodName, actualMethodName)
         }
+        pathReader.close()
+        metaReader.close()
     }
 
     companion object {
@@ -128,6 +130,8 @@ class PipelineMultiThreadStressTest {
         private const val methodNameLength = 10
         private val tempInputDir = File("src/test/resources/someData")
         private val tempOutputDir = File("src/test/resources/someOutput")
+        private const val pathContextsFileName = "path_contexts.c2s"
+        private const val metadataFileName = "metadata.jsonl"
 
         private fun getRandomString(length: Int): String {
             val allowedChars = ('A'..'Z') + ('a'..'z')
