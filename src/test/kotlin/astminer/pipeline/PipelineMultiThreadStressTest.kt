@@ -88,7 +88,11 @@ class PipelineMultiThreadStressTest {
             storage = Code2SeqPathStorageConfig(
                 maxPathContextsPerEntity = null,
                 maxPathLength = 1000,
-                maxPathWidth = 1000
+                maxPathWidth = 1000,
+                metadata = MetaDataConfig(
+                    withPaths = true,
+                    withRanges = true
+                )
             ),
             numOfThreads = 8
         )
