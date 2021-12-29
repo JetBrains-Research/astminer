@@ -70,7 +70,7 @@ interface Storage : Closeable {
 }
 
 @Serializable
-data class MetaDataConfig(val withRanges: Boolean = true, val withPaths: Boolean = true)
+data class MetaDataConfig(val withRanges: Boolean = false, val withPaths: Boolean = false)
 
 enum class DatasetHoldout(val dirName: String) {
     Train("train"),
