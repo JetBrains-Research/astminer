@@ -35,7 +35,8 @@ data class PathBasedStorageConfig(
  * Base class for all path storages. Extracts paths from given LabellingResult and stores it in a specified format.
  * @property outputDirectoryPath The path to the output directory.
  * @property mainConfig The config that contains hyperparameters for path extraction.
- * @property metaDataConfig The config that contains parameters for saving metadata (for example enabling filepath storage)
+ * @property metaDataConfig The config that contains parameters for saving metadata
+ * (for example enabling filepath storage)
  */
 abstract class PathBasedStorage(
     final override val outputDirectoryPath: String,
@@ -87,6 +88,7 @@ abstract class PathBasedStorage(
 
     private fun writeMetadata(labeledResult: LabeledResult<out Node>, writer: PrintWriter) {
         val metadata = buildJsonObject {
+            put("label", labeledResult.label)
             if (metaDataConfig.withRanges) put("range", Json.encodeToJsonElement(labeledResult.root.range))
             if (metaDataConfig.withPaths) put("path", labeledResult.filePath)
         }

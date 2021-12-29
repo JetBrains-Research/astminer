@@ -18,8 +18,8 @@ class Code2VecPathStorage(
     private fun dumpPathContexts(labeledPathContextIds: LabeledPathContextIds<String>): String {
         val pathContextIdsString = labeledPathContextIds.pathContexts.filter {
             val isNumberOfTokensValid = config.maxTokens == null ||
-                    tokensMap.getIdRank(it.startTokenId) <= config.maxTokens &&
-                    tokensMap.getIdRank(it.endTokenId) <= config.maxTokens
+                tokensMap.getIdRank(it.startTokenId) <= config.maxTokens &&
+                tokensMap.getIdRank(it.endTokenId) <= config.maxTokens
             val isNumberOfPathsValid = config.maxPaths == null || pathsMap.getIdRank(it.pathId) <= config.maxPaths
 
             isNumberOfTokensValid && isNumberOfPathsValid

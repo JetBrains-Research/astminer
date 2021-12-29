@@ -1,6 +1,10 @@
 package astminer.pipeline
 
+import astminer.common.model.MetaDataConfig
 import astminer.config.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
@@ -48,14 +52,25 @@ class PipelineMultiThreadStressTest {
                 maxTokens = null,
                 maxPathContextsPerEntity = null,
                 maxPathLength = 1000,
-                maxPathWidth = 1000
+                maxPathWidth = 1000,
+                metadata = MetaDataConfig(
+                    withPaths = true,
+                    withRanges = true
+                )
             ),
             numOfThreads = 8
         )
         Pipeline(config).run()
+        val pathContextsPath = "$outputPath/java/data/path_contexts.c2s"
         val expectedNumOfPathContexts = numOfFiles * numOfMethods
-        val actualNumOfPathContexts = countLines("$outputPath/java/data/path_contexts.c2s")
+        val actualNumOfPathContexts = countLines(pathContextsPath)
         assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfPathContexts)
+
+        val metadataPath = "$outputPath/java/data/metadata.jsonl"
+        val actualNumOfMetadata = countLines(metadataPath)
+        assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfMetadata)
+
+        assertMethodOrder(File(pathContextsPath), File(metadataPath))
     }
 
     @Test
@@ -78,9 +93,16 @@ class PipelineMultiThreadStressTest {
             numOfThreads = 8
         )
         Pipeline(config).run()
+        val pathContextsPath = "$outputPath/java/data/path_contexts.c2s"
         val expectedNumOfPathContexts = numOfFiles * numOfMethods
-        val actualNumOfPathContexts = countLines("$outputPath/java/data/path_contexts.c2s")
+        val actualNumOfPathContexts = countLines(pathContextsPath)
         assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfPathContexts)
+
+        val metadataPath = "$outputPath/java/data/metadata.jsonl"
+        val actualNumOfMetadata = countLines(metadataPath)
+        assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfMetadata)
+
+        assertMethodOrder(File(pathContextsPath), File(metadataPath))
     }
 
     private fun countLines(filePath: String): Long {
@@ -90,11 +112,29 @@ class PipelineMultiThreadStressTest {
         return numOfLines
     }
 
+    private fun assertMethodOrder(pathContexts: File, metadata: File) {
+        val pathReader = pathContexts.bufferedReader()
+        val metaReader = metadata.bufferedReader()
+        for ((path, metaline) in pathReader.lineSequence().zip(metaReader.lineSequence())) {
+            val expectedMethodName = path.split(" ")[0]
+            val actualMethodName = Json.parseToJsonElement(metaline).jsonObject["label"]?.jsonPrimitive?.content
+            assertEquals(expectedMethodName, actualMethodName)
+        }
+    }
+
     companion object {
         private const val numOfFiles = 3000
         private const val numOfMethods = 100
+        private const val methodNameLength = 10
         private val tempInputDir = File("src/test/resources/someData")
         private val tempOutputDir = File("src/test/resources/someOutput")
+
+        private fun getRandomString(length: Int): String {
+            val allowedChars = ('A'..'Z') + ('a'..'z')
+            return (1..length)
+                .map { allowedChars.random() }
+                .joinToString("")
+        }
 
         @BeforeClass
         @JvmStatic
@@ -104,7 +144,7 @@ class PipelineMultiThreadStressTest {
                 val newFile = File.createTempFile("someFile", ".java", tempInputDir)
                 newFile.writeText("class someClass$index {\n")
                 repeat(numOfMethods) {
-                    newFile.appendText("public void someMethod${it + index * numOfMethods}() {} \n")
+                    newFile.appendText("public void ${getRandomString(methodNameLength)}() {} \n")
                 }
                 newFile.appendText("}")
             }
