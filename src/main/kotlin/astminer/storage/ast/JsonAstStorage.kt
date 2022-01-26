@@ -16,8 +16,7 @@ private typealias Id = Int
  */
 class JsonAstStorage(
     override val outputDirectoryPath: String,
-    private val withPaths: Boolean,
-    private val withRanges: Boolean
+    private val metaDataConfig: MetaDataConfig = MetaDataConfig(),
 ) : Storage {
     private val treeFlattener = TreeFlattener()
 
@@ -47,13 +46,13 @@ class JsonAstStorage(
         OutputNode(
             node.token.final(),
             node.typeLabel,
-            if (withRanges) node.range else null,
+            if (metaDataConfig.storeRanges) node.range else null,
             children.map { it.id }
         )
 
     override fun store(labeledResult: LabeledResult<out Node>, holdout: DatasetHoldout) {
         val outputNodes = treeFlattener.flatten(labeledResult.root).map { it.toOutputNode() }
-        val path = if (withPaths) labeledResult.filePath else null
+        val path = if (metaDataConfig.storePaths) labeledResult.filePath else null
         val labeledAst = LabeledAst(labeledResult.label, path, outputNodes)
         val writer = datasetWriters.getOrPut(holdout) { holdout.resolveHoldout() }
         writer.println(Json.encodeToString(labeledAst))

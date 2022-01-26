@@ -54,8 +54,8 @@ class PipelineMultiThreadStressTest {
                 maxPathLength = 1000,
                 maxPathWidth = 1000,
                 metadata = MetaDataConfig(
-                    withPaths = true,
-                    withRanges = true
+                    storePaths = true,
+                    storeRanges = true
                 )
             ),
             numOfThreads = 8
@@ -90,8 +90,8 @@ class PipelineMultiThreadStressTest {
                 maxPathLength = 1000,
                 maxPathWidth = 1000,
                 metadata = MetaDataConfig(
-                    withPaths = true,
-                    withRanges = true
+                    storePaths = true,
+                    storeRanges = true
                 )
             ),
             numOfThreads = 8

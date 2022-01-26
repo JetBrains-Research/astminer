@@ -34,17 +34,22 @@ data class PathBasedStorageConfig(
 /**
  * Base class for all path storages. Extracts paths from given LabellingResult and stores it in a specified format.
  * @property outputDirectoryPath The path to the output directory.
- * @property mainConfig The config that contains hyperparameters for path extraction.
+ * @property pathExtractionConfig The config that contains hyperparameters for path extraction.
  * @property metaDataConfig The config that contains parameters for saving metadata
  * (for example enabling filepath storage)
  */
 abstract class PathBasedStorage(
     final override val outputDirectoryPath: String,
-    private val mainConfig: PathBasedStorageConfig,
+    private val pathExtractionConfig: PathBasedStorageConfig,
     private val metaDataConfig: MetaDataConfig = MetaDataConfig()
 ) : Storage {
 
-    private val pathMiner = PathMiner(PathRetrievalSettings(mainConfig.maxPathLength, mainConfig.maxPathWidth))
+    private val pathMiner = PathMiner(
+        PathRetrievalSettings(
+            pathExtractionConfig.maxPathLength,
+            pathExtractionConfig.maxPathWidth
+        )
+    )
     private val datasetFileWriters = mutableMapOf<DatasetHoldout, PrintWriter>()
     private val metadataWriters = mutableMapOf<DatasetHoldout, PrintWriter>()
 
@@ -52,8 +57,8 @@ abstract class PathBasedStorage(
         File(outputDirectoryPath).mkdirs()
     }
 
-    private fun retrievePaths(node: Node) = if (mainConfig.maxPathContextsPerEntity != null) {
-        pathMiner.retrievePaths(node).shuffled().take(mainConfig.maxPathContextsPerEntity)
+    private fun retrievePaths(node: Node) = if (pathExtractionConfig.maxPathContextsPerEntity != null) {
+        pathMiner.retrievePaths(node).shuffled().take(pathExtractionConfig.maxPathContextsPerEntity)
     } else {
         pathMiner.retrievePaths(node)
     }
@@ -77,26 +82,25 @@ abstract class PathBasedStorage(
         val labeledPathContexts = retrieveLabeledPathContexts(labeledResult)
         val output = labeledPathContextsToString(labeledPathContexts)
         val writer = datasetFileWriters.getOrPut(holdout) { holdout.resolveDataWriter() }
-        if (metadataRequested()) {
+        if (metaDataConfig.metadataRequested) {
             val metaWriter = metadataWriters.getOrPut(holdout) { holdout.resolveMetaWriter() }
             writeMetadata(labeledResult, metaWriter)
         }
         writer.println(output)
     }
 
-    private fun metadataRequested(): Boolean = listOf(metaDataConfig.withPaths, metaDataConfig.withRanges).any { it }
-
     private fun writeMetadata(labeledResult: LabeledResult<out Node>, writer: PrintWriter) {
         val metadata = buildJsonObject {
             put("label", labeledResult.label)
-            if (metaDataConfig.withRanges) put("range", Json.encodeToJsonElement(labeledResult.root.range))
-            if (metaDataConfig.withPaths) put("path", labeledResult.filePath)
+            if (metaDataConfig.storeRanges) put("range", Json.encodeToJsonElement(labeledResult.root.range))
+            if (metaDataConfig.storePaths) put("path", labeledResult.filePath)
         }
         writer.println(Json.encodeToString(metadata))
     }
 
     override fun close() {
         datasetFileWriters.values.map { it.close() }
+        metadataWriters.values.map { it.close() }
     }
 
     private fun DatasetHoldout.resolveWriter(outputFile: String): PrintWriter {
