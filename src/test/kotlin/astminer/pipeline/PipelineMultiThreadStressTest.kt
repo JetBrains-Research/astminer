@@ -1,6 +1,6 @@
 package astminer.pipeline
 
-import astminer.common.model.MetaDataConfig
+import astminer.common.model.AdditionalStorageParameters
 import astminer.config.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
@@ -11,6 +11,7 @@ import org.junit.Test
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
+import kotlin.io.path.Path
 import kotlin.test.assertEquals
 
 class PipelineMultiThreadStressTest {
@@ -31,7 +32,7 @@ class PipelineMultiThreadStressTest {
         )
         Pipeline(config).run()
         val expectedNumOfAst = numOfFiles * numOfMethods
-        val actualNumOfAst = countLines("$outputPath/java/data/asts.jsonl")
+        val actualNumOfAst = countLines(Path(outputPath, "java", "data", "asts.jsonl").toFile())
         assertEquals(expected = expectedNumOfAst.toLong(), actual = actualNumOfAst)
     }
 
@@ -61,16 +62,16 @@ class PipelineMultiThreadStressTest {
             numOfThreads = 8
         )
         Pipeline(config).run()
-        val pathContextsPath = "$outputPath/java/data/path_contexts.c2s"
+        val pathContextsPath = Path(outputPath, "java", "data", "path_contexts.c2s")
         val expectedNumOfPathContexts = numOfFiles * numOfMethods
-        val actualNumOfPathContexts = countLines(pathContextsPath)
+        val actualNumOfPathContexts = countLines(pathContextsPath.toFile())
         assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfPathContexts)
 
-        val metadataPath = "$outputPath/java/data/metadata.jsonl"
-        val actualNumOfMetadata = countLines(metadataPath)
+        val metadataPath = Path(outputPath, "java", "data", "metadata.jsonl")
+        val actualNumOfMetadata = countLines(metadataPath.toFile())
         assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfMetadata)
 
-        assertMethodOrder(File(pathContextsPath), File(metadataPath))
+        assertMethodOrder(pathContextsPath.toFile(), metadataPath.toFile())
     }
 
     @Test
@@ -97,22 +98,24 @@ class PipelineMultiThreadStressTest {
             numOfThreads = 8
         )
         Pipeline(config).run()
-        val pathContextsPath = "$outputPath/java/data/$pathContextsFileName"
+        val pathContextsPath = Path(outputPath, "java", "data", pathContextsFileName)
         val expectedNumOfPathContexts = numOfFiles * numOfMethods
-        val actualNumOfPathContexts = countLines(pathContextsPath)
+        val actualNumOfPathContexts = countLines(pathContextsPath.toFile())
         assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfPathContexts)
 
-        val metadataPath = "$outputPath/java/data/$metadataFileName"
-        val actualNumOfMetadata = countLines(metadataPath)
+        val metadataPath = Path(outputPath, "java", "data", metadataFileName)
+        val actualNumOfMetadata = countLines(metadataPath.toFile())
         assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfMetadata)
 
-        assertMethodOrder(File(pathContextsPath), File(metadataPath))
+        assertMethodOrder(pathContextsPath.toFile(), metadataPath.toFile())
     }
 
-    private fun countLines(filePath: String): Long {
-        val reader = BufferedReader(FileReader(filePath))
+    private fun countLines(file: File): Long {
+        val reader = BufferedReader(FileReader(file))
         var numOfLines = 0L
-        while (reader.readLine() != null) { numOfLines++ }
+        while (reader.readLine() != null) {
+            numOfLines++
+        }
         return numOfLines
     }
 
@@ -132,8 +135,8 @@ class PipelineMultiThreadStressTest {
         private const val numOfFiles = 3000
         private const val numOfMethods = 100
         private const val methodNameLength = 10
-        private val tempInputDir = File("src/test/resources/someData")
-        private val tempOutputDir = File("src/test/resources/someOutput")
+        private val tempInputDir = Path("src", "test", "resources", "someData").toFile()
+        private val tempOutputDir = Path("src", "test", "resources", "someOutput").toFile()
         private const val pathContextsFileName = "path_contexts.c2s"
         private const val metadataFileName = "metadata.jsonl"
 
