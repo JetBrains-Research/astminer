@@ -22,7 +22,7 @@ class TreeContext {
     var originalToken: String? = null
     var technicalToken: String? = null
     val children: MutableList<TreeContext> = mutableListOf()
-    val range: NodeRange? = null
+    var range: NodeRange? = null
 
     fun child(childContext: TreeContext.() -> Unit) {
         val child = TreeContext().also(childContext)
