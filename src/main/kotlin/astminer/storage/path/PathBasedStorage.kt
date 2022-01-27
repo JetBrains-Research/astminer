@@ -31,6 +31,11 @@ data class PathBasedStorageConfig(
     val maxPathContextsPerEntity: Int? = null
 )
 
+const val METADATA_FILE_NAME = "metadata.jsonl"
+const val PATH_CONTEXT_FILE_NAME = "path_contexts.c2s"
+const val METADATA_PATH_FIELD = "path"
+const val METADATA_RANGE_FIELD = "range"
+
 /**
  * Base class for all path storages. Extracts paths from given LabellingResult and stores it in a specified format.
  * @property outputDirectoryPath The path to the output directory.
@@ -92,8 +97,8 @@ abstract class PathBasedStorage(
     private fun writeMetadata(labeledResult: LabeledResult<out Node>, writer: PrintWriter) {
         val metadata = buildJsonObject {
             put("label", labeledResult.label)
-            if (metaDataConfig.storeRanges) put("range", Json.encodeToJsonElement(labeledResult.root.range))
-            if (metaDataConfig.storePaths) put("path", labeledResult.filePath)
+            if (metaDataConfig.storeRanges) put(METADATA_RANGE_FIELD, Json.encodeToJsonElement(labeledResult.root.range))
+            if (metaDataConfig.storePaths) put(METADATA_PATH_FIELD, labeledResult.filePath)
         }
         writer.println(Json.encodeToString(metadata))
     }
@@ -111,6 +116,6 @@ abstract class PathBasedStorage(
         return PrintWriter(newOutputFile.outputStream(), true)
     }
 
-    private fun DatasetHoldout.resolveDataWriter() = resolveWriter("path_contexts.c2s")
-    private fun DatasetHoldout.resolveMetaWriter() = resolveWriter("metadata.jsonl")
+    private fun DatasetHoldout.resolveDataWriter() = resolveWriter(PATH_CONTEXT_FILE_NAME)
+    private fun DatasetHoldout.resolveMetaWriter() = resolveWriter(METADATA_FILE_NAME)
 }
