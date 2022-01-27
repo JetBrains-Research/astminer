@@ -1,7 +1,10 @@
 package astminer.pipeline
 
 import astminer.common.model.AdditionalStorageParameters
+import astminer.common.model.DatasetHoldout
 import astminer.config.*
+import astminer.storage.path.METADATA_FILE_NAME
+import astminer.storage.path.PATH_CONTEXT_FILE_NAME
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -32,7 +35,7 @@ class PipelineMultiThreadStressTest {
         )
         Pipeline(config).run()
         val expectedNumOfAst = numOfFiles * numOfMethods
-        val actualNumOfAst = countLines(Path(outputPath, "java", "data", "asts.jsonl").toFile())
+        val actualNumOfAst = countLines(Path(outputPath, "java", "data", METADATA_FILE_NAME).toFile())
         assertEquals(expected = expectedNumOfAst.toLong(), actual = actualNumOfAst)
     }
 
@@ -62,12 +65,12 @@ class PipelineMultiThreadStressTest {
             numOfThreads = 8
         )
         Pipeline(config).run()
-        val pathContextsPath = Path(outputPath, "java", "data", "path_contexts.c2s")
+        val pathContextsPath = Path(outputPath, "java", DatasetHoldout.None.dirName, PATH_CONTEXT_FILE_NAME)
         val expectedNumOfPathContexts = numOfFiles * numOfMethods
         val actualNumOfPathContexts = countLines(pathContextsPath.toFile())
         assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfPathContexts)
 
-        val metadataPath = Path(outputPath, "java", "data", "metadata.jsonl")
+        val metadataPath = Path(outputPath, "java", DatasetHoldout.None.dirName, METADATA_FILE_NAME)
         val actualNumOfMetadata = countLines(metadataPath.toFile())
         assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfMetadata)
 
@@ -137,8 +140,8 @@ class PipelineMultiThreadStressTest {
         private const val methodNameLength = 10
         private val tempInputDir = Path("src", "test", "resources", "someData").toFile()
         private val tempOutputDir = Path("src", "test", "resources", "someOutput").toFile()
-        private const val pathContextsFileName = "path_contexts.c2s"
-        private const val metadataFileName = "metadata.jsonl"
+        private const val pathContextsFileName = PATH_CONTEXT_FILE_NAME
+        private const val metadataFileName = METADATA_FILE_NAME
 
         private fun getRandomString(length: Int): String {
             val allowedChars = ('A'..'Z') + ('a'..'z')
