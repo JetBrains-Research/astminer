@@ -7,7 +7,7 @@ import java.io.File
 class Code2VecPathStorage(
     outputDirectoryPath: String,
     private val config: PathBasedStorageConfig,
-    metaDataConfig: MetaDataConfig
+    metaDataConfig: AdditionalStorageParameters
 ) :
     PathBasedStorage(outputDirectoryPath, config, metaDataConfig) {
 

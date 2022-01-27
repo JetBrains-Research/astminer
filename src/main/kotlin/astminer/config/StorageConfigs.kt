@@ -1,6 +1,6 @@
 package astminer.config
 
-import astminer.common.model.MetaDataConfig
+import astminer.common.model.AdditionalStorageParameters
 import astminer.common.model.Storage
 import astminer.storage.ast.CsvAstStorage
 import astminer.storage.ast.DotAstStorage
@@ -44,7 +44,7 @@ class DotAstStorageConfig : StorageConfig() {
 @Serializable
 @SerialName("json AST")
 class JsonAstStorageConfig(
-    private val metadata: MetaDataConfig = MetaDataConfig()
+    private val metadata: AdditionalStorageParameters = AdditionalStorageParameters()
 ) : StorageConfig() {
     override fun createStorage(outputDirectoryPath: String) =
         JsonAstStorage(
@@ -64,7 +64,7 @@ data class Code2VecPathStorageConfig(
     val maxTokens: Long? = null,
     val maxPaths: Long? = null,
     val maxPathContextsPerEntity: Int? = null,
-    val metadata: MetaDataConfig = MetaDataConfig()
+    val metadata: AdditionalStorageParameters = AdditionalStorageParameters()
 ) : StorageConfig() {
     @Transient
     private val pathBasedStorageConfig =
@@ -81,7 +81,7 @@ data class Code2SeqPathStorageConfig(
     @SerialName("width") val maxPathWidth: Int,
     val maxPathContextsPerEntity: Int? = null,
     val nodesToNumber: Boolean = true,
-    val metadata: MetaDataConfig = MetaDataConfig()
+    val metadata: AdditionalStorageParameters = AdditionalStorageParameters()
 ) : StorageConfig() {
     @Transient
     private val pathBasedStorageConfig =

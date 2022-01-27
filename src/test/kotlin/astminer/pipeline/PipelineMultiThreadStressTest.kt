@@ -54,7 +54,7 @@ class PipelineMultiThreadStressTest {
                 maxPathContextsPerEntity = null,
                 maxPathLength = 1000,
                 maxPathWidth = 1000,
-                metadata = MetaDataConfig(
+                metadata = AdditionalStorageParameters(
                     storePaths = true,
                     storeRanges = true
                 )
@@ -90,7 +90,7 @@ class PipelineMultiThreadStressTest {
                 maxPathContextsPerEntity = null,
                 maxPathLength = 1000,
                 maxPathWidth = 1000,
-                metadata = MetaDataConfig(
+                metadata = AdditionalStorageParameters(
                     storePaths = true,
                     storeRanges = true
                 )

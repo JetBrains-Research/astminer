@@ -41,7 +41,7 @@ data class PathBasedStorageConfig(
 abstract class PathBasedStorage(
     final override val outputDirectoryPath: String,
     private val pathExtractionConfig: PathBasedStorageConfig,
-    private val metaDataConfig: MetaDataConfig = MetaDataConfig()
+    private val metaDataConfig: AdditionalStorageParameters = AdditionalStorageParameters()
 ) : Storage {
 
     private val pathMiner = PathMiner(

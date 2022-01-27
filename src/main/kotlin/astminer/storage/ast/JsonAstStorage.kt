@@ -16,7 +16,7 @@ private typealias Id = Int
  */
 class JsonAstStorage(
     override val outputDirectoryPath: String,
-    private val metaDataConfig: MetaDataConfig = MetaDataConfig(),
+    private val metaDataConfig: AdditionalStorageParameters = AdditionalStorageParameters(),
 ) : Storage {
     private val treeFlattener = TreeFlattener()
 

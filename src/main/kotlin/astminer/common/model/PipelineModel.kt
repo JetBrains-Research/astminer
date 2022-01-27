@@ -70,7 +70,7 @@ interface Storage : Closeable {
 }
 
 @Serializable
-data class MetaDataConfig(val storeRanges: Boolean = false, val storePaths: Boolean = false) {
+data class AdditionalStorageParameters(val storeRanges: Boolean = false, val storePaths: Boolean = false) {
     val metadataRequested = listOf(storeRanges, storePaths).any { it }
 }
 
