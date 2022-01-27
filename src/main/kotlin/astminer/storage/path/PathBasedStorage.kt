@@ -97,8 +97,12 @@ abstract class PathBasedStorage(
     private fun writeMetadata(labeledResult: LabeledResult<out Node>, writer: PrintWriter) {
         val metadata = buildJsonObject {
             put("label", labeledResult.label)
-            if (metaDataConfig.storeRanges) put(METADATA_RANGE_FIELD, Json.encodeToJsonElement(labeledResult.root.range))
-            if (metaDataConfig.storePaths) put(METADATA_PATH_FIELD, labeledResult.filePath)
+            if (metaDataConfig.storeRanges) {
+                put(METADATA_RANGE_FIELD, Json.encodeToJsonElement(labeledResult.root.range))
+            }
+            if (metaDataConfig.storePaths) {
+                put(METADATA_PATH_FIELD, labeledResult.filePath)
+            }
         }
         writer.println(Json.encodeToString(metadata))
     }

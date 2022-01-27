@@ -1,7 +1,7 @@
 package astminer.storage.path
 
-import astminer.common.model.LabeledPathContexts
 import astminer.common.model.AdditionalStorageParameters
+import astminer.common.model.LabeledPathContexts
 import astminer.common.model.PathContext
 import astminer.common.storage.RankedIncrementalIdStorage
 import astminer.common.storage.dumpIdStorageToCsv
