@@ -4,8 +4,8 @@ import astminer.common.model.AdditionalStorageParameters
 import astminer.common.model.DatasetHoldout
 import astminer.config.*
 import astminer.storage.ast.AST_FILENAME
-import astminer.storage.path.METADATA_FILE_NAME
-import astminer.storage.path.PATH_CONTEXT_FILE_NAME
+import astminer.storage.path.METADATA_FILENAME
+import astminer.storage.path.PATH_CONTEXT_FILENAME
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -66,12 +66,12 @@ class PipelineMultiThreadStressTest {
             numOfThreads = 8
         )
         Pipeline(config).run()
-        val pathContextsPath = Path(outputPath, "java", DatasetHoldout.None.dirName, PATH_CONTEXT_FILE_NAME)
+        val pathContextsPath = Path(outputPath, "java", DatasetHoldout.None.dirName, PATH_CONTEXT_FILENAME)
         val expectedNumOfPathContexts = numOfFiles * numOfMethods
         val actualNumOfPathContexts = countLines(pathContextsPath.toFile())
         assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfPathContexts)
 
-        val metadataPath = Path(outputPath, "java", DatasetHoldout.None.dirName, METADATA_FILE_NAME)
+        val metadataPath = Path(outputPath, "java", DatasetHoldout.None.dirName, METADATA_FILENAME)
         val actualNumOfMetadata = countLines(metadataPath.toFile())
         assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfMetadata)
 
@@ -141,8 +141,8 @@ class PipelineMultiThreadStressTest {
         private const val methodNameLength = 10
         private val tempInputDir = Path("src", "test", "resources", "someData").toFile()
         private val tempOutputDir = Path("src", "test", "resources", "someOutput").toFile()
-        private const val pathContextsFileName = PATH_CONTEXT_FILE_NAME
-        private const val metadataFileName = METADATA_FILE_NAME
+        private const val pathContextsFileName = PATH_CONTEXT_FILENAME
+        private const val metadataFileName = METADATA_FILENAME
 
         private fun getRandomString(length: Int): String {
             val allowedChars = ('A'..'Z') + ('a'..'z')

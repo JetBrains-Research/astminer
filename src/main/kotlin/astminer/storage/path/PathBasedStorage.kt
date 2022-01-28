@@ -31,8 +31,8 @@ data class PathBasedStorageConfig(
     val maxPathContextsPerEntity: Int? = null
 )
 
-const val METADATA_FILE_NAME = "metadata.jsonl"
-const val PATH_CONTEXT_FILE_NAME = "path_contexts.c2s"
+const val METADATA_FILENAME = "metadata.jsonl"
+const val PATH_CONTEXT_FILENAME = "path_contexts.c2s"
 const val METADATA_PATH_FIELD = "path"
 const val METADATA_RANGE_FIELD = "range"
 
@@ -120,6 +120,6 @@ abstract class PathBasedStorage(
         return PrintWriter(newOutputFile.outputStream(), true)
     }
 
-    private fun DatasetHoldout.resolveDataWriter() = resolveWriter(PATH_CONTEXT_FILE_NAME)
-    private fun DatasetHoldout.resolveMetaWriter() = resolveWriter(METADATA_FILE_NAME)
+    private fun DatasetHoldout.resolveDataWriter() = resolveWriter(PATH_CONTEXT_FILENAME)
+    private fun DatasetHoldout.resolveMetaWriter() = resolveWriter(METADATA_FILENAME)
 }

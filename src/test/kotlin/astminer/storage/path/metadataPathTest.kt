@@ -16,7 +16,7 @@ fun checkPathBasedMetadataSaving(pathBasedStorage: PathBasedStorage) {
     val mockedTrees = generateMockedResults(NUM_OF_MOCKED_RESULTS)
     mockedTrees.forEach { pathBasedStorage.store(it) }
     val outputDirectory = File(pathBasedStorage.outputDirectoryPath)
-    val metaDataFile = outputDirectory.resolve(DatasetHoldout.None.dirName).resolve(METADATA_FILE_NAME).bufferedReader()
+    val metaDataFile = outputDirectory.resolve(DatasetHoldout.None.dirName).resolve(METADATA_FILENAME).bufferedReader()
     for ((jsonLine, result) in metaDataFile.lineSequence().zip(mockedTrees.asSequence())) {
         val json = Json.parseToJsonElement(jsonLine).jsonObject
 
