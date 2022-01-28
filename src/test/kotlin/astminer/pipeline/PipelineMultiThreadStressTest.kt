@@ -3,6 +3,7 @@ package astminer.pipeline
 import astminer.common.model.AdditionalStorageParameters
 import astminer.common.model.DatasetHoldout
 import astminer.config.*
+import astminer.storage.ast.AST_FILENAME
 import astminer.storage.path.METADATA_FILE_NAME
 import astminer.storage.path.PATH_CONTEXT_FILE_NAME
 import kotlinx.serialization.json.Json
@@ -35,7 +36,7 @@ class PipelineMultiThreadStressTest {
         )
         Pipeline(config).run()
         val expectedNumOfAst = numOfFiles * numOfMethods
-        val actualNumOfAst = countLines(Path(outputPath, "java", "data", METADATA_FILE_NAME).toFile())
+        val actualNumOfAst = countLines(Path(outputPath, "java", DatasetHoldout.None.dirName, AST_FILENAME).toFile())
         assertEquals(expected = expectedNumOfAst.toLong(), actual = actualNumOfAst)
     }
 
@@ -101,12 +102,12 @@ class PipelineMultiThreadStressTest {
             numOfThreads = 8
         )
         Pipeline(config).run()
-        val pathContextsPath = Path(outputPath, "java", "data", pathContextsFileName)
+        val pathContextsPath = Path(outputPath, "java", DatasetHoldout.None.dirName, pathContextsFileName)
         val expectedNumOfPathContexts = numOfFiles * numOfMethods
         val actualNumOfPathContexts = countLines(pathContextsPath.toFile())
         assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfPathContexts)
 
-        val metadataPath = Path(outputPath, "java", "data", metadataFileName)
+        val metadataPath = Path(outputPath, "java", DatasetHoldout.None.dirName, metadataFileName)
         val actualNumOfMetadata = countLines(metadataPath.toFile())
         assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfMetadata)
 

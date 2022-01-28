@@ -9,6 +9,8 @@ import java.io.PrintWriter
 
 private typealias Id = Int
 
+const val AST_FILENAME = "asts.jsonl"
+
 /**
  * Formats the output in the json format by flattening the trees.
  * Each line in the output file is a single json object that corresponds to one of the labeled trees.
