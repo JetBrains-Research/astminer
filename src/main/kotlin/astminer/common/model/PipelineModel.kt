@@ -1,7 +1,6 @@
 package astminer.common.model
 
 import astminer.storage.structurallyNormalized
-import kotlinx.serialization.Serializable
 import java.io.Closeable
 import java.io.File
 import java.nio.file.Path

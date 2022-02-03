@@ -43,7 +43,7 @@ class DotAstStorageConfig : StorageConfig() {
  */
 @Serializable
 @SerialName("json AST")
-class JsonAstStorageConfig() : StorageConfig() {
+class JsonAstStorageConfig : StorageConfig() {
     override fun createStorage(outputDirectoryPath: String) =
         JsonAstStorage(
             outputDirectoryPath
@@ -88,9 +88,9 @@ data class Code2SeqPathStorageConfig(
 
 @Serializable
 data class MetaDataConfig(
-    val storePaths: Boolean,
-    val storeRanges: Boolean
-): StorageConfig() {
+    val storePaths: Boolean = false,
+    val storeRanges: Boolean = false
+) : StorageConfig() {
     override fun createStorage(outputDirectoryPath: String) =
         MetaDataStorage(outputDirectoryPath, storePaths = storePaths, storeRanges = storeRanges)
 }
