@@ -1,7 +1,7 @@
 package astminer.config
 
-import astminer.common.model.AdditionalStorageParameters
 import astminer.common.model.Storage
+import astminer.storage.MetaDataStorage
 import astminer.storage.ast.CsvAstStorage
 import astminer.storage.ast.DotAstStorage
 import astminer.storage.ast.JsonAstStorage
@@ -43,13 +43,10 @@ class DotAstStorageConfig : StorageConfig() {
  */
 @Serializable
 @SerialName("json AST")
-class JsonAstStorageConfig(
-    private val metadata: AdditionalStorageParameters = AdditionalStorageParameters()
-) : StorageConfig() {
+class JsonAstStorageConfig() : StorageConfig() {
     override fun createStorage(outputDirectoryPath: String) =
         JsonAstStorage(
-            outputDirectoryPath,
-            metadata
+            outputDirectoryPath
         )
 }
 
@@ -64,14 +61,13 @@ data class Code2VecPathStorageConfig(
     val maxTokens: Long? = null,
     val maxPaths: Long? = null,
     val maxPathContextsPerEntity: Int? = null,
-    val metadata: AdditionalStorageParameters = AdditionalStorageParameters()
 ) : StorageConfig() {
     @Transient
     private val pathBasedStorageConfig =
         PathBasedStorageConfig(maxPathLength, maxPathWidth, maxTokens, maxPaths, maxPathContextsPerEntity)
 
     override fun createStorage(outputDirectoryPath: String) =
-        Code2VecPathStorage(outputDirectoryPath, pathBasedStorageConfig, metadata)
+        Code2VecPathStorage(outputDirectoryPath, pathBasedStorageConfig)
 }
 
 @Serializable
@@ -80,13 +76,21 @@ data class Code2SeqPathStorageConfig(
     @SerialName("length") val maxPathLength: Int,
     @SerialName("width") val maxPathWidth: Int,
     val maxPathContextsPerEntity: Int? = null,
-    val nodesToNumber: Boolean = true,
-    val metadata: AdditionalStorageParameters = AdditionalStorageParameters()
+    val nodesToNumber: Boolean = true
 ) : StorageConfig() {
     @Transient
     private val pathBasedStorageConfig =
         PathBasedStorageConfig(maxPathLength, maxPathWidth, maxPathContextsPerEntity = maxPathContextsPerEntity)
 
     override fun createStorage(outputDirectoryPath: String) =
-        Code2SeqPathStorage(outputDirectoryPath, pathBasedStorageConfig, nodesToNumber, metadata)
+        Code2SeqPathStorage(outputDirectoryPath, pathBasedStorageConfig, nodesToNumber)
+}
+
+@Serializable
+data class MetaDataConfig(
+    val storePaths: Boolean,
+    val storeRanges: Boolean
+): StorageConfig() {
+    override fun createStorage(outputDirectoryPath: String) =
+        MetaDataStorage(outputDirectoryPath, storePaths = storePaths, storeRanges = storeRanges)
 }

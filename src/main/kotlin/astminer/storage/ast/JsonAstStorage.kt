@@ -6,6 +6,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.PrintWriter
+import kotlin.io.path.Path
 
 private typealias Id = Int
 
@@ -17,8 +18,7 @@ const val AST_FILENAME = "asts.jsonl"
  * Each tree is flattened and represented as a list of nodes.
  */
 class JsonAstStorage(
-    override val outputDirectoryPath: String,
-    private val metaDataConfig: AdditionalStorageParameters = AdditionalStorageParameters(),
+    override val outputDirectoryPath: String
 ) : Storage {
     private val treeFlattener = TreeFlattener()
 
@@ -32,7 +32,6 @@ class JsonAstStorage(
     @Serializable
     private data class LabeledAst(
         val label: String,
-        val path: String? = null,
         val ast: List<OutputNode>
     )
 
@@ -40,7 +39,6 @@ class JsonAstStorage(
     private data class OutputNode(
         val token: String,
         val typeLabel: String,
-        val range: NodeRange? = null,
         val children: List<Id>
     )
 
@@ -48,14 +46,12 @@ class JsonAstStorage(
         OutputNode(
             node.token.final(),
             node.typeLabel,
-            if (metaDataConfig.storeRanges) node.range else null,
             children.map { it.id }
         )
 
     override fun store(labeledResult: LabeledResult<out Node>, holdout: DatasetHoldout) {
         val outputNodes = treeFlattener.flatten(labeledResult.root).map { it.toOutputNode() }
-        val path = if (metaDataConfig.storePaths) labeledResult.filePath else null
-        val labeledAst = LabeledAst(labeledResult.label, path, outputNodes)
+        val labeledAst = LabeledAst(labeledResult.label, outputNodes)
         val writer = datasetWriters.getOrPut(holdout) { holdout.resolveHoldout() }
         writer.println(Json.encodeToString(labeledAst))
     }
@@ -65,11 +61,9 @@ class JsonAstStorage(
     }
 
     private fun DatasetHoldout.resolveHoldout(): PrintWriter {
-        val holdoutDir = File(outputDirectoryPath).resolve(this.dirName)
-        holdoutDir.mkdirs()
-        val astFile = holdoutDir.resolve("asts.jsonl")
-        astFile.createNewFile()
-        return PrintWriter(astFile.outputStream(), true)
+        val newOutputFile = this.createDir(Path(outputDirectoryPath)).resolve(AST_FILENAME)
+        newOutputFile.createNewFile()
+        return PrintWriter(newOutputFile.outputStream(), true)
     }
 }
 

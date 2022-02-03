@@ -4,6 +4,8 @@ import astminer.storage.structurallyNormalized
 import kotlinx.serialization.Serializable
 import java.io.Closeable
 import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.Path
 
 interface Filter
 
@@ -69,16 +71,17 @@ interface Storage : Closeable {
     }
 }
 
-@Serializable
-data class AdditionalStorageParameters(val storeRanges: Boolean = false, val storePaths: Boolean = false) {
-    val metadataRequested = listOf(storeRanges, storePaths).any { it }
-}
-
 enum class DatasetHoldout(val dirName: String) {
     Train("train"),
     Validation("val"),
     Test("test"),
     None("data");
+
+    fun createDir(parent: Path = Path("")): File {
+        val holdoutDir = parent.toFile().resolve(this.dirName)
+        holdoutDir.mkdirs()
+        return holdoutDir
+    }
 }
 
 /** Returns map with three entries (keys: train data pool, validation data pool and test data pool;

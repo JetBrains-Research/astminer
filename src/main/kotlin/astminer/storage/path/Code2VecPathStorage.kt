@@ -7,9 +7,8 @@ import java.io.File
 class Code2VecPathStorage(
     outputDirectoryPath: String,
     private val config: PathBasedStorageConfig,
-    metaDataConfig: AdditionalStorageParameters
 ) :
-    PathBasedStorage(outputDirectoryPath, config, metaDataConfig) {
+    PathBasedStorage(outputDirectoryPath, config) {
 
     private val tokensMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
     private val orientedNodeTypesMap: RankedIncrementalIdStorage<OrientedNodeType> = RankedIncrementalIdStorage()

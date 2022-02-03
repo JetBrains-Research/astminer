@@ -1,6 +1,5 @@
 package astminer.storage.path
 
-import astminer.common.model.AdditionalStorageParameters
 import astminer.common.model.LabeledPathContexts
 import astminer.common.model.PathContext
 import astminer.common.storage.RankedIncrementalIdStorage
@@ -10,9 +9,8 @@ import java.io.File
 class Code2SeqPathStorage(
     outputDirectoryPath: String,
     config: PathBasedStorageConfig,
-    private val nodesToNumbers: Boolean = true,
-    metaDataConfig: AdditionalStorageParameters = AdditionalStorageParameters()
-) : PathBasedStorage(outputDirectoryPath, config, metaDataConfig) {
+    private val nodesToNumbers: Boolean = true
+) : PathBasedStorage(outputDirectoryPath, config) {
 
     private val nodeTypesMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()
 

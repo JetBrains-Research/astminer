@@ -4,6 +4,7 @@ import astminer.common.getProjectFilesWithExtension
 import astminer.common.model.*
 import astminer.config.FileExtension
 import astminer.config.PipelineConfig
+import astminer.config.StorageConfig
 import astminer.parse.getParsingResultFactory
 import astminer.pipeline.branch.FilePipelineBranch
 import astminer.pipeline.branch.FunctionPipelineBranch
@@ -46,7 +47,9 @@ class Pipeline(private val config: PipelineConfig) {
 
     private fun parseLanguage(language: FileExtension) {
         val parsingResultFactory = getParsingResultFactory(language, config.parser.name)
-        createStorage(language).use { storage ->
+        val dataStorage = createStorage(config.storage, language)
+        val metaDataStorage = createStorage(config.metadata, language)
+        try {
             for ((holdoutType, holdoutDir) in holdoutMap) {
                 val holdoutFiles = getProjectFilesWithExtension(holdoutDir, language.fileExtension)
                 printHoldoutStat(holdoutFiles, holdoutType)
@@ -55,17 +58,23 @@ class Pipeline(private val config: PipelineConfig) {
                     val labeledResults = branch.process(it).let { results ->
                         if (config.compressBeforeSaving) { results.toStructurallyNormalized() } else { results }
                     }
-                    storage.storeSynchronously(labeledResults, holdoutType)
+                    synchronized(this) {
+                        dataStorage.store(labeledResults, holdoutType)
+                        metaDataStorage.store(labeledResults, holdoutType)
+                    }
                     progressBar.step()
                 }
                 progressBar.close()
             }
+        } finally {
+            dataStorage.close()
+            metaDataStorage.close()
         }
     }
 
-    private fun createStorage(extension: FileExtension): Storage {
+    private fun createStorage(storageConfig: StorageConfig, extension: FileExtension): Storage {
         val storagePath = createStorageDirectory(extension).path
-        return config.storage.createStorage(storagePath)
+        return storageConfig.createStorage(storagePath)
     }
 
     private fun createStorageDirectory(extension: FileExtension): File {

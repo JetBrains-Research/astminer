@@ -16,6 +16,7 @@ data class PipelineConfig(
     val filters: List<FilterConfig> = emptyList(),
     @SerialName("label") val labelExtractor: LabelExtractorConfig,
     val storage: StorageConfig,
+    val metadata: MetaDataConfig,
     val numOfThreads: Int = 1,
     val compressBeforeSaving: Boolean = false
 ) {
