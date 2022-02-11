@@ -1,17 +1,13 @@
 package astminer.storage
 
 import astminer.common.model.DatasetHoldout
-import astminer.storage.path.PathBasedStorage
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import org.junit.Test
 import kotlin.io.path.bufferedReader
 import kotlin.io.path.createTempDirectory
 import kotlin.io.path.pathString
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 
 class MetaDataStorageTest {
     @Test
@@ -28,15 +24,9 @@ class MetaDataStorageTest {
             .bufferedReader()
 
         for ((jsonLine, result) in metaDataFile.lineSequence().zip(mockedTrees.asSequence())) {
-            val json = Json.parseToJsonElement(jsonLine).jsonObject
-
-            val path = json[MetaDataStorage.METADATA_FILENAME]?.jsonPrimitive?.content
-            assertNotNull(path)
-            assertEquals(result.filePath, path)
-
-            val rawRange = json[PathBasedStorage.PATH_CONTEXT_FILENAME]?.jsonObject
-            assertNotNull(rawRange)
-            assertEquals(result.root.range, Json.decodeFromJsonElement(rawRange))
+            val treeMetaData = Json.decodeFromString<TreeMetaData>(jsonLine)
+            val expectedTreeMetaData = TreeMetaData(result)
+            assertEquals(expectedTreeMetaData, treeMetaData)
         }
         metaDataFile.close()
         outputDir.toFile().deleteRecursively()

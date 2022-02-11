@@ -1,16 +1,20 @@
 package astminer.storage
 
-import astminer.common.model.DatasetHoldout
-import astminer.common.model.LabeledResult
-import astminer.common.model.Node
-import astminer.common.model.Storage
+import astminer.common.model.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.encodeToJsonElement
-import kotlinx.serialization.json.put
 import java.io.PrintWriter
 import kotlin.io.path.Path
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class TreeMetaData(val label: String, val path: String, val range: NodeRange?) {
+    constructor(labeledResult: LabeledResult<out Node>) : this(
+        labeledResult.label,
+        labeledResult.filePath,
+        labeledResult.root.range
+    )
+}
 
 class MetaDataStorage(override val outputDirectoryPath: String) : Storage {
     private val metadataWriters = mutableMapOf<DatasetHoldout, PrintWriter>()
@@ -22,12 +26,7 @@ class MetaDataStorage(override val outputDirectoryPath: String) : Storage {
     }
 
     private fun PrintWriter.writeMetadata(labeledResult: LabeledResult<out Node>) {
-        val metadata = buildJsonObject {
-            put("label", labeledResult.label)
-            put(RANGE_FIELD, Json.encodeToJsonElement(labeledResult.root.range))
-            put(PATH_FIELD, labeledResult.filePath)
-        }
-        this.println(Json.encodeToString(metadata))
+        this.println(Json.encodeToString(TreeMetaData(labeledResult)))
     }
 
     override fun store(labeledResult: LabeledResult<out Node>, holdout: DatasetHoldout) {
@@ -40,8 +39,6 @@ class MetaDataStorage(override val outputDirectoryPath: String) : Storage {
     }
 
     companion object {
-        const val PATH_FIELD = "path"
-        const val RANGE_FIELD = "range"
         const val METADATA_FILENAME = "metadata.jsonl"
     }
 }
