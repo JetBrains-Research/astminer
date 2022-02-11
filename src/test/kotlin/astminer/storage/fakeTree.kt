@@ -1,8 +1,10 @@
 package astminer.storage
 
 import astminer.common.SimpleNode
+import astminer.common.model.LabeledResult
 import astminer.common.model.Node
 import astminer.common.model.NodeRange
+import astminer.common.model.Position
 import kotlin.test.assertEquals
 
 fun tree(treeConf: TreeContext.() -> Unit): SimpleNode {
@@ -22,7 +24,7 @@ class TreeContext {
     var originalToken: String? = null
     var technicalToken: String? = null
     val children: MutableList<TreeContext> = mutableListOf()
-    val range: NodeRange? = null
+    var range: NodeRange? = null
 
     fun child(childContext: TreeContext.() -> Unit) {
         val child = TreeContext().also(childContext)
@@ -37,4 +39,20 @@ fun assertTreesEquals(expected: Node, actual: Node) {
     assertEquals(expected.token.technical, actual.token.technical)
     assertEquals(expected.children.size, actual.children.size)
     expected.children.zip(actual.children).forEach { (ex, ac) -> assertTreesEquals(ex, ac) }
+}
+
+fun generateMockedResults(count: Int): List<LabeledResult<out Node>> {
+    return List(count) {
+        LabeledResult(
+            root = tree {
+                typeLabel = "mockedNode"
+                range = NodeRange(
+                    Position(it, it),
+                    Position(it + 1, it + 1)
+                )
+            },
+            label = "$it",
+            filePath = "/$it/$it/$it"
+        )
+    }
 }

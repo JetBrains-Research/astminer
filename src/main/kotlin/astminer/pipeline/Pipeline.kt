@@ -8,6 +8,7 @@ import astminer.parse.getParsingResultFactory
 import astminer.pipeline.branch.FilePipelineBranch
 import astminer.pipeline.branch.FunctionPipelineBranch
 import astminer.pipeline.branch.IllegalLabelExtractorException
+import astminer.storage.MetaDataStorage
 import me.tongfei.progressbar.ProgressBar
 import java.io.File
 
@@ -46,26 +47,44 @@ class Pipeline(private val config: PipelineConfig) {
 
     private fun parseLanguage(language: FileExtension) {
         val parsingResultFactory = getParsingResultFactory(language, config.parser.name)
-        createStorage(language).use { storage ->
+        val storage = createStorage(language)
+        val metaStorage = if (config.collectMetadata) createMetaStorage(language) else null
+        try {
             for ((holdoutType, holdoutDir) in holdoutMap) {
                 val holdoutFiles = getProjectFilesWithExtension(holdoutDir, language.fileExtension)
                 printHoldoutStat(holdoutFiles, holdoutType)
                 val progressBar = ProgressBar("", holdoutFiles.size.toLong())
-                parsingResultFactory.parseFilesInThreads(holdoutFiles, config.numOfThreads, inputDirectory.path) {
+
+                parsingResultFactory.parseFilesInThreads(
+                    files = holdoutFiles,
+                    numOfThreads = config.numOfThreads,
+                    inputDirectoryPath = inputDirectory.path,
+                ) {
                     val labeledResults = branch.process(it).let { results ->
                         if (config.compressBeforeSaving) { results.toStructurallyNormalized() } else { results }
                     }
-                    storage.storeSynchronously(labeledResults, holdoutType)
+                    synchronized(this) {
+                        storage.store(labeledResults)
+                        metaStorage?.store(labeledResults)
+                    }
                     progressBar.step()
                 }
                 progressBar.close()
             }
+        } finally {
+            storage.close()
+            metaStorage?.close()
         }
     }
 
     private fun createStorage(extension: FileExtension): Storage {
         val storagePath = createStorageDirectory(extension).path
         return config.storage.createStorage(storagePath)
+    }
+
+    private fun createMetaStorage(extension: FileExtension): MetaDataStorage {
+        val metaStoragePath = createStorageDirectory(extension).path
+        return MetaDataStorage(metaStoragePath)
     }
 
     private fun createStorageDirectory(extension: FileExtension): File {

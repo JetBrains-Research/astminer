@@ -4,7 +4,10 @@ import astminer.common.model.*
 import astminer.common.storage.*
 import java.io.File
 
-class Code2VecPathStorage(outputDirectoryPath: String, private val config: PathBasedStorageConfig) :
+class Code2VecPathStorage(
+    outputDirectoryPath: String,
+    private val config: PathBasedStorageConfig,
+) :
     PathBasedStorage(outputDirectoryPath, config) {
 
     private val tokensMap: RankedIncrementalIdStorage<String> = RankedIncrementalIdStorage()

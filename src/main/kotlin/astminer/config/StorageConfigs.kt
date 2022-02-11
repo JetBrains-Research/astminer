@@ -42,15 +42,10 @@ class DotAstStorageConfig : StorageConfig() {
  */
 @Serializable
 @SerialName("json AST")
-class JsonAstStorageConfig(
-    private val withPaths: Boolean = false,
-    private val withRanges: Boolean = false
-) : StorageConfig() {
+class JsonAstStorageConfig : StorageConfig() {
     override fun createStorage(outputDirectoryPath: String) =
         JsonAstStorage(
-            outputDirectoryPath,
-            withPaths,
-            withRanges
+            outputDirectoryPath
         )
 }
 

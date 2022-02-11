@@ -3,6 +3,8 @@ package astminer.common.model
 import astminer.storage.structurallyNormalized
 import java.io.Closeable
 import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.Path
 
 interface Filter
 
@@ -73,6 +75,12 @@ enum class DatasetHoldout(val dirName: String) {
     Validation("val"),
     Test("test"),
     None("data");
+
+    fun createDir(parent: Path = Path("")): File {
+        val holdoutDir = parent.toFile().resolve(this.dirName)
+        holdoutDir.mkdirs()
+        return holdoutDir
+    }
 }
 
 /** Returns map with three entries (keys: train data pool, validation data pool and test data pool;

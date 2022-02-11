@@ -8,6 +8,7 @@ import astminer.paths.PathRetrievalSettings
 import astminer.paths.toPathContext
 import java.io.File
 import java.io.PrintWriter
+import kotlin.io.path.Path
 
 /**
  * Config for CountingPathStorage which contains all hyperparameters for path extraction.
@@ -29,22 +30,26 @@ data class PathBasedStorageConfig(
 /**
  * Base class for all path storages. Extracts paths from given LabellingResult and stores it in a specified format.
  * @property outputDirectoryPath The path to the output directory.
- * @property config The config that contains hyperparameters for path extraction.
+ * @property pathExtractionConfig The config that contains hyperparameters for path extraction.
+ * (for example enabling filepath storage)
  */
 abstract class PathBasedStorage(
     final override val outputDirectoryPath: String,
-    private val config: PathBasedStorageConfig,
+    private val pathExtractionConfig: PathBasedStorageConfig,
 ) : Storage {
 
-    private val pathMiner = PathMiner(PathRetrievalSettings(config.maxPathLength, config.maxPathWidth))
+    private val pathMiner = PathMiner(
+        PathRetrievalSettings(
+            pathExtractionConfig.maxPathLength,
+            pathExtractionConfig.maxPathWidth
+        )
+    )
     private val datasetFileWriters = mutableMapOf<DatasetHoldout, PrintWriter>()
 
-    init {
-        File(outputDirectoryPath).mkdirs()
-    }
+    init { File(outputDirectoryPath).mkdirs() }
 
-    private fun retrievePaths(node: Node) = if (config.maxPathContextsPerEntity != null) {
-        pathMiner.retrievePaths(node).shuffled().take(config.maxPathContextsPerEntity)
+    private fun retrievePaths(node: Node) = if (pathExtractionConfig.maxPathContextsPerEntity != null) {
+        pathMiner.retrievePaths(node).shuffled().take(pathExtractionConfig.maxPathContextsPerEntity)
     } else {
         pathMiner.retrievePaths(node)
     }
@@ -67,7 +72,7 @@ abstract class PathBasedStorage(
     override fun store(labeledResult: LabeledResult<out Node>, holdout: DatasetHoldout) {
         val labeledPathContexts = retrieveLabeledPathContexts(labeledResult)
         val output = labeledPathContextsToString(labeledPathContexts)
-        val writer = datasetFileWriters.getOrPut(holdout) { holdout.resolveWriter() }
+        val writer = datasetFileWriters.getOrPut(holdout) { holdout.resolveDataWriter() }
         writer.println(output)
     }
 
@@ -75,11 +80,15 @@ abstract class PathBasedStorage(
         datasetFileWriters.values.map { it.close() }
     }
 
-    private fun DatasetHoldout.resolveWriter(): PrintWriter {
-        val holdoutDir = File(outputDirectoryPath).resolve(this.dirName)
-        holdoutDir.mkdirs()
-        val pathContextFile = holdoutDir.resolve("path_contexts.c2s")
-        pathContextFile.createNewFile()
-        return PrintWriter(pathContextFile)
+    private fun DatasetHoldout.resolveWriter(outputFile: String): PrintWriter {
+        val newOutputFile = this.createDir(Path(outputDirectoryPath)).resolve(outputFile)
+        newOutputFile.createNewFile()
+        return PrintWriter(newOutputFile.outputStream(), true)
+    }
+
+    private fun DatasetHoldout.resolveDataWriter() = resolveWriter(PATH_CONTEXT_FILENAME)
+
+    companion object {
+        const val PATH_CONTEXT_FILENAME = "path_contexts.c2s"
     }
 }
