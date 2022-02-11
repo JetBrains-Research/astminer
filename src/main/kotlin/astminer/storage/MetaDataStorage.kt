@@ -1,11 +1,11 @@
 package astminer.storage
 
 import astminer.common.model.*
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.PrintWriter
 import kotlin.io.path.Path
-import kotlinx.serialization.Serializable
 
 @Serializable
 data class TreeMetaData(val label: String, val path: String, val range: NodeRange?) {

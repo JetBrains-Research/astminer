@@ -37,7 +37,9 @@ class Pipeline(private val config: PipelineConfig) {
      */
     fun run() {
         println("Working in ${config.numOfThreads} thread(s)")
-        if (isDataset) { println("Dataset structure found") }
+        if (isDataset) {
+            println("Dataset structure found")
+        }
         for (language in config.parser.languages) {
             println("Parsing $language")
             parseLanguage(language)
@@ -54,13 +56,14 @@ class Pipeline(private val config: PipelineConfig) {
                 val holdoutFiles = getProjectFilesWithExtension(holdoutDir, language.fileExtension)
                 printHoldoutStat(holdoutFiles, holdoutType)
                 val progressBar = ProgressBar("", holdoutFiles.size.toLong())
-                parsingResultFactory.parseFilesInThreads(holdoutFiles, config.numOfThreads, inputDirectory.path) {
+
+                parsingResultFactory.parseFilesInThreads(
+                    files = holdoutFiles,
+                    numOfThreads = config.numOfThreads,
+                    inputDirectoryPath = inputDirectory.path,
+                ) {
                     val labeledResults = branch.process(it).let { results ->
-                        if (config.compressBeforeSaving) {
-                            results.toStructurallyNormalized()
-                        } else {
-                            results
-                        }
+                        if (config.compressBeforeSaving) { results.toStructurallyNormalized() } else { results }
                     }
                     synchronized(this) {
                         storage.store(labeledResults)
@@ -94,7 +97,9 @@ class Pipeline(private val config: PipelineConfig) {
 
     private fun printHoldoutStat(files: List<File>, holdoutType: DatasetHoldout) {
         val output = StringBuilder("${files.size} file(s) found")
-        if (isDataset) { output.append(" in ${holdoutType.name}") }
+        if (isDataset) {
+            output.append(" in ${holdoutType.name}")
+        }
         println(output.toString())
     }
 }
