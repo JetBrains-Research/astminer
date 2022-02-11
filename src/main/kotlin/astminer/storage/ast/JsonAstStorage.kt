@@ -10,8 +10,6 @@ import kotlin.io.path.Path
 
 private typealias Id = Int
 
-const val AST_FILENAME = "asts.jsonl"
-
 /**
  * Formats the output in the json format by flattening the trees.
  * Each line in the output file is a single json object that corresponds to one of the labeled trees.
@@ -64,6 +62,10 @@ class JsonAstStorage(
         val newOutputFile = this.createDir(Path(outputDirectoryPath)).resolve(AST_FILENAME)
         newOutputFile.createNewFile()
         return PrintWriter(newOutputFile.outputStream(), true)
+    }
+
+    companion object {
+        const val AST_FILENAME = "asts.jsonl"
     }
 }
 

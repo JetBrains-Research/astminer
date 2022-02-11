@@ -27,8 +27,6 @@ data class PathBasedStorageConfig(
     val maxPathContextsPerEntity: Int? = null
 )
 
-const val PATH_CONTEXT_FILENAME = "path_contexts.c2s"
-
 /**
  * Base class for all path storages. Extracts paths from given LabellingResult and stores it in a specified format.
  * @property outputDirectoryPath The path to the output directory.
@@ -89,4 +87,8 @@ abstract class PathBasedStorage(
     }
 
     private fun DatasetHoldout.resolveDataWriter() = resolveWriter(PATH_CONTEXT_FILENAME)
+
+    companion object {
+        const val PATH_CONTEXT_FILENAME = "path_contexts.c2s"
+    }
 }

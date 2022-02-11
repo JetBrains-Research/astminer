@@ -12,10 +12,6 @@ import kotlinx.serialization.json.put
 import java.io.PrintWriter
 import kotlin.io.path.Path
 
-const val METADATA_PATH_FIELD = "path"
-const val METADATA_RANGE_FIELD = "range"
-const val METADATA_FILENAME = "metadata.jsonl"
-
 class MetaDataStorage(override val outputDirectoryPath: String) : Storage {
     private val metadataWriters = mutableMapOf<DatasetHoldout, PrintWriter>()
 
@@ -28,8 +24,8 @@ class MetaDataStorage(override val outputDirectoryPath: String) : Storage {
     private fun PrintWriter.writeMetadata(labeledResult: LabeledResult<out Node>) {
         val metadata = buildJsonObject {
             put("label", labeledResult.label)
-            put(METADATA_RANGE_FIELD, Json.encodeToJsonElement(labeledResult.root.range))
-            put(METADATA_PATH_FIELD, labeledResult.filePath)
+            put(RANGE_FIELD, Json.encodeToJsonElement(labeledResult.root.range))
+            put(PATH_FIELD, labeledResult.filePath)
         }
         this.println(Json.encodeToString(metadata))
     }
@@ -41,5 +37,11 @@ class MetaDataStorage(override val outputDirectoryPath: String) : Storage {
 
     override fun close() {
         metadataWriters.values.forEach { it.close() }
+    }
+
+    companion object {
+        const val PATH_FIELD = "path"
+        const val RANGE_FIELD = "range"
+        const val METADATA_FILENAME = "metadata.jsonl"
     }
 }

@@ -2,9 +2,9 @@ package astminer.pipeline
 
 import astminer.common.model.DatasetHoldout
 import astminer.config.*
-import astminer.storage.METADATA_FILENAME
-import astminer.storage.ast.AST_FILENAME
-import astminer.storage.path.PATH_CONTEXT_FILENAME
+import astminer.storage.MetaDataStorage
+import astminer.storage.ast.JsonAstStorage
+import astminer.storage.path.PathBasedStorage
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -35,7 +35,14 @@ class PipelineMultiThreadStressTest {
         )
         Pipeline(config).run()
         val expectedNumOfAst = numOfFiles * numOfMethods
-        val actualNumOfAst = countLines(Path(outputPath, "java", DatasetHoldout.None.dirName, AST_FILENAME).toFile())
+        val actualNumOfAst = countLines(
+            Path(
+                outputPath,
+                "java",
+                DatasetHoldout.None.dirName,
+                JsonAstStorage.AST_FILENAME
+            ).toFile()
+        )
         assertEquals(expected = expectedNumOfAst.toLong(), actual = actualNumOfAst)
     }
 
@@ -62,12 +69,21 @@ class PipelineMultiThreadStressTest {
             numOfThreads = 8
         )
         Pipeline(config).run()
-        val pathContextsPath = Path(outputPath, "java", DatasetHoldout.None.dirName, PATH_CONTEXT_FILENAME)
+        val pathContextsPath = Path(
+            outputPath,
+            "java",
+            DatasetHoldout.None.dirName,
+            PathBasedStorage.PATH_CONTEXT_FILENAME
+        )
         val expectedNumOfPathContexts = numOfFiles * numOfMethods
         val actualNumOfPathContexts = countLines(pathContextsPath.toFile())
         assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfPathContexts)
 
-        val metadataPath = Path(outputPath, "java", DatasetHoldout.None.dirName, METADATA_FILENAME)
+        val metadataPath = Path(
+            outputPath, "java",
+            DatasetHoldout.None.dirName,
+            MetaDataStorage.METADATA_FILENAME
+        )
         val actualNumOfMetadata = countLines(metadataPath.toFile())
         assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfMetadata)
 
@@ -95,12 +111,21 @@ class PipelineMultiThreadStressTest {
             numOfThreads = 8
         )
         Pipeline(config).run()
-        val pathContextsPath = Path(outputPath, "java", DatasetHoldout.None.dirName, PATH_CONTEXT_FILENAME)
+        val pathContextsPath = Path(
+            outputPath, "java",
+            DatasetHoldout.None.dirName,
+            PathBasedStorage.PATH_CONTEXT_FILENAME
+        )
         val expectedNumOfPathContexts = numOfFiles * numOfMethods
         val actualNumOfPathContexts = countLines(pathContextsPath.toFile())
         assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfPathContexts)
 
-        val metadataPath = Path(outputPath, "java", DatasetHoldout.None.dirName, METADATA_FILENAME)
+        val metadataPath = Path(
+            outputPath,
+            "java",
+            DatasetHoldout.None.dirName,
+            MetaDataStorage.METADATA_FILENAME
+        )
         val actualNumOfMetadata = countLines(metadataPath.toFile())
         assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfMetadata)
 
