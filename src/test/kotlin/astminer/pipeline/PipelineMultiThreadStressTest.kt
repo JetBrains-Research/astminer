@@ -80,7 +80,8 @@ class PipelineMultiThreadStressTest {
         assertEquals(expected = expectedNumOfPathContexts.toLong(), actual = actualNumOfPathContexts)
 
         val metadataPath = Path(
-            outputPath, "java",
+            outputPath,
+            "java",
             DatasetHoldout.None.dirName,
             MetaDataStorage.METADATA_FILENAME
         )
@@ -112,7 +113,8 @@ class PipelineMultiThreadStressTest {
         )
         Pipeline(config).run()
         val pathContextsPath = Path(
-            outputPath, "java",
+            outputPath,
+            "java",
             DatasetHoldout.None.dirName,
             PathBasedStorage.PATH_CONTEXT_FILENAME
         )
