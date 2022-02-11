@@ -85,12 +85,3 @@ data class Code2SeqPathStorageConfig(
     override fun createStorage(outputDirectoryPath: String) =
         Code2SeqPathStorage(outputDirectoryPath, pathBasedStorageConfig, nodesToNumber)
 }
-
-@Serializable
-data class MetaDataConfig(
-    val storePaths: Boolean = false,
-    val storeRanges: Boolean = false
-) : StorageConfig() {
-    override fun createStorage(outputDirectoryPath: String) =
-        MetaDataStorage(outputDirectoryPath, storePaths = storePaths, storeRanges = storeRanges)
-}

@@ -16,13 +16,7 @@ const val METADATA_PATH_FIELD = "path"
 const val METADATA_RANGE_FIELD = "range"
 const val METADATA_FILENAME = "metadata.jsonl"
 
-class MetaDataStorage(
-    override val outputDirectoryPath: String,
-    val storeRanges: Boolean = false,
-    val storePaths: Boolean = false
-) : Storage {
-    private val metaDataRequested = listOf(storePaths, storeRanges).any { it }
-
+class MetaDataStorage(override val outputDirectoryPath: String) : Storage {
     private val metadataWriters = mutableMapOf<DatasetHoldout, PrintWriter>()
 
     private fun DatasetHoldout.resolveHoldout(): PrintWriter {
@@ -34,21 +28,15 @@ class MetaDataStorage(
     private fun PrintWriter.writeMetadata(labeledResult: LabeledResult<out Node>) {
         val metadata = buildJsonObject {
             put("label", labeledResult.label)
-            if (storeRanges) {
-                put(METADATA_RANGE_FIELD, Json.encodeToJsonElement(labeledResult.root.range))
-            }
-            if (storePaths) {
-                put(METADATA_PATH_FIELD, labeledResult.filePath)
-            }
+            put(METADATA_RANGE_FIELD, Json.encodeToJsonElement(labeledResult.root.range))
+            put(METADATA_PATH_FIELD, labeledResult.filePath)
         }
         this.println(Json.encodeToString(metadata))
     }
 
     override fun store(labeledResult: LabeledResult<out Node>, holdout: DatasetHoldout) {
-        if (metaDataRequested) {
-            val writer = metadataWriters.getOrPut(holdout) { holdout.resolveHoldout() }
-            writer.writeMetadata(labeledResult)
-        }
+        val writer = metadataWriters.getOrPut(holdout) { holdout.resolveHoldout() }
+        writer.writeMetadata(labeledResult)
     }
 
     override fun close() {

@@ -18,7 +18,7 @@ class MetaDataStorageTest {
     @Test
     fun `Check metadata saving`() {
         val outputDir = createTempDirectory("metaData")
-        val metaDataStorage = MetaDataStorage(outputDir.pathString, storePaths = true, storeRanges = true)
+        val metaDataStorage = MetaDataStorage(outputDir.pathString)
         val mockedTrees = generateMockedResults(NUM_OF_MOCKED_RESULTS)
         mockedTrees.forEach { metaDataStorage.store(it) }
         val metaDataFile = outputDir.resolve(DatasetHoldout.None.dirName).resolve(METADATA_FILENAME).bufferedReader()
