@@ -37,9 +37,7 @@ class Pipeline(private val config: PipelineConfig) {
      */
     fun run() {
         println("Working in ${config.numOfThreads} thread(s)")
-        if (isDataset) {
-            println("Dataset structure found")
-        }
+        if (isDataset) { println("Dataset structure found") }
         for (language in config.parser.languages) {
             println("Parsing $language")
             parseLanguage(language)
@@ -97,9 +95,7 @@ class Pipeline(private val config: PipelineConfig) {
 
     private fun printHoldoutStat(files: List<File>, holdoutType: DatasetHoldout) {
         val output = StringBuilder("${files.size} file(s) found")
-        if (isDataset) {
-            output.append(" in ${holdoutType.name}")
-        }
+        if (isDataset) { output.append(" in ${holdoutType.name}") }
         println(output.toString())
     }
 }

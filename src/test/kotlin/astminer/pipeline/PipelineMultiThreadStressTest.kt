@@ -137,9 +137,7 @@ class PipelineMultiThreadStressTest {
     private fun countLines(file: File): Long {
         val reader = BufferedReader(FileReader(file))
         var numOfLines = 0L
-        while (reader.readLine() != null) {
-            numOfLines++
-        }
+        while (reader.readLine() != null) { numOfLines++ }
         return numOfLines
     }
 
