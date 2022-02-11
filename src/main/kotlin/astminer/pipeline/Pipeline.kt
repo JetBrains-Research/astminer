@@ -71,7 +71,8 @@ class Pipeline(private val config: PipelineConfig) {
                 progressBar.close()
             }
         } finally {
-
+            storage.close()
+            metaStorage?.close()
         }
     }
 

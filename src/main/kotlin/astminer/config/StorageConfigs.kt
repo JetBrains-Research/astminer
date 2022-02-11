@@ -1,7 +1,6 @@
 package astminer.config
 
 import astminer.common.model.Storage
-import astminer.storage.MetaDataStorage
 import astminer.storage.ast.CsvAstStorage
 import astminer.storage.ast.DotAstStorage
 import astminer.storage.ast.JsonAstStorage
