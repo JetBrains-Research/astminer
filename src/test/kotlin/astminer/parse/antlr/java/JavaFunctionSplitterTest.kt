@@ -4,10 +4,7 @@ import astminer.common.model.FunctionInfo
 import astminer.parse.antlr.AntlrNode
 import org.junit.Test
 import java.io.File
-import kotlin.test.BeforeTest
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class JavaFunctionSplitterTest {
 
@@ -30,6 +27,7 @@ class JavaFunctionSplitterTest {
         val methodVoid = functionInfos.find { it.name == "functionReturningVoid" }
         assertNotNull(methodVoid)
         assertEquals("void", methodVoid.returnType)
+        assertTrue(methodVoid.isBlank())
     }
 
     @Test
@@ -37,6 +35,7 @@ class JavaFunctionSplitterTest {
         val methodInt = functionInfos.find { it.name == "functionReturningInt" }
         assertNotNull(methodInt)
         assertEquals("int", methodInt.returnType)
+        assertFalse(methodInt.isBlank())
     }
 
     @Test
@@ -44,6 +43,7 @@ class JavaFunctionSplitterTest {
         val methodStrings = functionInfos.find { it.name == "functionReturningStrings" }
         assertNotNull(methodStrings)
         assertEquals("String[]", methodStrings.returnType)
+        assertFalse(methodStrings.isBlank())
     }
 
     @Test
@@ -51,6 +51,7 @@ class JavaFunctionSplitterTest {
         val methodClass = functionInfos.find { it.name == "functionReturningClass" }
         assertNotNull(methodClass)
         assertEquals("Class1", methodClass.returnType)
+        assertFalse(methodClass.isBlank())
     }
 
     @Test
@@ -58,6 +59,7 @@ class JavaFunctionSplitterTest {
         val methodClass = functionInfos.find { it.name == "functionInClass1" }
         assertNotNull(methodClass)
         assertEquals("Class1", methodClass.enclosingElement?.name)
+        assertTrue(methodClass.isBlank())
     }
 
     @Test
@@ -65,6 +67,7 @@ class JavaFunctionSplitterTest {
         val methodClass = functionInfos.find { it.name == "functionInClass2" }
         assertNotNull(methodClass)
         assertEquals("Class2", methodClass.enclosingElement?.name)
+        assertTrue(methodClass.isBlank())
     }
 
     @Test
@@ -72,6 +75,7 @@ class JavaFunctionSplitterTest {
         val methodNoParameters = functionInfos.find { it.name == "functionWithNoParameters" }
         assertNotNull(methodNoParameters)
         assertEquals(0, methodNoParameters.parameters?.size)
+        assertTrue(methodNoParameters.isBlank())
     }
 
     @Test
@@ -82,6 +86,7 @@ class JavaFunctionSplitterTest {
         val parameter = methodOneParameter.parameters?.get(0)
         assertEquals("p1", parameter?.name)
         assertEquals("int", parameter?.type)
+        assertTrue(methodOneParameter.isBlank())
     }
 
     @Test
@@ -95,6 +100,7 @@ class JavaFunctionSplitterTest {
             assertEquals("p${i + 1}", parameter?.name)
             assertEquals(methodTypes[i], parameter?.type)
         }
+        assertTrue(methodThreeParameters.isBlank())
     }
 
     @Test
@@ -105,6 +111,7 @@ class JavaFunctionSplitterTest {
         val weirdParameter = methodWeirdArrayParameter.parameters?.get(0)
         assertEquals(weirdParameter?.name, "arr[]")
         assertEquals(weirdParameter?.type, "int")
+        assertTrue(methodWeirdArrayParameter.isBlank())
     }
 
     @Test
@@ -114,6 +121,7 @@ class JavaFunctionSplitterTest {
         val modifiers = methodWithOneModifier.modifiers
         assertNotNull(modifiers)
         assertEquals("abstract", modifiers.first())
+        assertTrue(methodWithOneModifier.isBlank())
     }
 
     @Test
@@ -123,6 +131,7 @@ class JavaFunctionSplitterTest {
         val modifiers = methodWithMultipleModifiers.modifiers
         assertNotNull(modifiers)
         assertEquals(setOf("static", "public", "final"), modifiers.toSet())
+        assertFalse(methodWithMultipleModifiers.isBlank())
     }
 
     @Test
@@ -132,6 +141,7 @@ class JavaFunctionSplitterTest {
         val annotations = methodWithOneAnnotation.annotations
         assertNotNull(annotations)
         assertEquals(setOf("Deprecated"), annotations.toSet())
+        assertTrue(methodWithOneAnnotation.isBlank())
     }
 
     @Test
@@ -141,6 +151,7 @@ class JavaFunctionSplitterTest {
         val annotations = methodWithOneAnnotation.annotations
         assertNotNull(annotations)
         assertEquals(setOf("Deprecated", "SuppressWarnings"), annotations.toSet())
+        assertTrue(methodWithOneAnnotation.isBlank())
     }
 
     @Test
@@ -153,6 +164,7 @@ class JavaFunctionSplitterTest {
         assertNotNull(annotations)
         assertEquals(setOf("public", "static"), modifiers.toSet())
         assertEquals(setOf("Deprecated"), annotations.toSet())
+        assertTrue(methodWithModifierAndAnnotation.isBlank())
     }
 
     @Test
