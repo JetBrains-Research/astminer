@@ -37,7 +37,11 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
 
     override val body: AntlrNode? = root.children.find { it.typeLabel == METHOD_BODY_NODE }
 
-    override fun isBlank() = body == null || body.children.size <= 2
+    override fun isBlank(): Boolean {
+        if (body == null) return true
+        val block = body.getChildOfType(METHOD_BLOCK_NODE) ?: return true
+        return block.children.size <= 2
+    }
 
     private fun collectNameNode(): AntlrNode? = root.getChildOfType(IDENTIFIER_NODE)
 
@@ -87,6 +91,7 @@ class AntlrJavaFunctionInfo(override val root: AntlrNode, override val filePath:
         private const val ANNOTATION_NAME = "qualifiedName"
         private const val IDENTIFIER_NODE = "IDENTIFIER"
         private const val METHOD_BODY_NODE = "methodBody"
+        private const val METHOD_BLOCK_NODE = "block"
 
         private const val CLASS_DECLARATION_NODE = "classDeclaration"
         private const val ENUM_DECLARATION_NODE = "enumDeclaration"
