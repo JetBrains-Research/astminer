@@ -64,8 +64,8 @@ class Pipeline(private val config: PipelineConfig) {
                         if (config.compressBeforeSaving) { results.toStructurallyNormalized() } else { results }
                     }
                     synchronized(this) {
-                        storage.store(labeledResults)
-                        metaStorage?.store(labeledResults)
+                        storage.store(labeledResults, holdoutType)
+                        metaStorage?.store(labeledResults, holdoutType)
                     }
                     progressBar.step()
                 }
