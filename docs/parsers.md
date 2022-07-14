@@ -73,7 +73,7 @@ If there is an ANTLR grammar for the language:
 1. Add the corresponding [ANTLR4 grammar file](https://github.com/antlr/grammars-v4) to the `antlr` directory.
 2. Run the `generateGrammarSource` Gradle task to generate the parser.
 3. Implement a small wrapper around the generated parser.
-   See [JavaParser](src/main/kotlin/astminer/parse/antlr/java/JavaParser.kt) or [PythonParser](src/main/kotlin/astminer/parse/antlr/python/PythonParser.kt) for an example of such a wrapper.
+   See [JavaParser](https://github.com/JetBrains-Research/astminer/blob/5692fa522863b76b0fe2260a075cdba402fe1122/src/main/kotlin/astminer/parse/antlr/java/JavaParser.kt), [AntlrJavaParsingResultFactory](https://github.com/JetBrains-Research/astminer/blob/5692fa522863b76b0fe2260a075cdba402fe1122/src/main/kotlin/astminer/parse/antlr/AntlrParsingResult.kt#L14), and [`getParsingResultFactory`](https://github.com/JetBrains-Research/astminer/blob/5692fa522863b76b0fe2260a075cdba402fe1122/src/main/kotlin/astminer/parse/factory.kt#L19) for an example of building such a wrapper and integrating it in the pipeline.
 
 If the language has a parsing tool that is available as a Java library:
 1. Add the library as a dependency in [build.gradle.kts](/build.gradle.kts).
