@@ -11,7 +11,7 @@ plugins {
     id("org.jetbrains.dokka") version "1.4.32"
     id("tanvd.kosogor") version "1.0.10"
     id("io.gitlab.arturbosch.detekt") version "1.17.1"
-    kotlin("jvm") version "1.5.21" apply true
+    kotlin("jvm") version "1.7.21" apply true
     kotlin("plugin.serialization") version "1.5.21"
 }
 
@@ -38,7 +38,7 @@ dependencies {
     implementation("fr.inria.gforge.spoon:spoon-core:9.1.0-beta-16")
 
     // https://mvnrepository.com/artifact/io.shiftleft/fuzzyc2cpg
-    api("io.shiftleft", "fuzzyc2cpg_2.13", "1.2.30")
+    api("io.shiftleft", "fuzzyc2cpg_2.13", "1.3.415")
 
     // ===== Main =====
     implementation(kotlin("stdlib"))
@@ -72,6 +72,7 @@ tasks.generateGrammarSource {
     // Keep a copy of generated sources
     doLast {
         println("Copying generated grammar lexer/parser files to main directory.")
+        println("To: $generatedSourcesPath/me/vovak/antlr/parser")
         copy {
             from("$buildDir/generated-src/antlr/main")
             into("$generatedSourcesPath/me/vovak/antlr/parser")
