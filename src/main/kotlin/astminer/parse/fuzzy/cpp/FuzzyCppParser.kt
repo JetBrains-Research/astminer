@@ -5,8 +5,9 @@ import astminer.parse.ParsingException
 import astminer.parse.fuzzy.FuzzyNode
 import io.shiftleft.codepropertygraph.Cpg
 import io.shiftleft.codepropertygraph.generated.EdgeTypes
-import io.shiftleft.codepropertygraph.generated.NodeKeys
 import io.shiftleft.codepropertygraph.generated.NodeTypes
+import io.shiftleft.codepropertygraph.generated.PropertyNames
+import io.shiftleft.codepropertygraph.generated.nodes.NamespaceBlock
 import io.shiftleft.fuzzyc2cpg.FuzzyC2Cpg
 import overflowdb.Edge
 import overflowdb.Node
@@ -82,6 +83,12 @@ class FuzzyCppParser : Parser<FuzzyNode> {
                 }
                 return vertexToNode[it] ?: throw ParsingException("Fuzzy", "C++")
             }
+            if (it.label() == NodeTypes.NAMESPACE_BLOCK) {
+                val actualFilePath = (it as NamespaceBlock).filename()
+                if (File(actualFilePath).absolutePath == File(filePath).absolutePath) {
+                    return vertexToNode[it] ?: createNodeFromVertex(it)
+                }
+            }
         }
         throw ParsingException("Fuzzy", "C++")
     }
@@ -93,8 +100,8 @@ class FuzzyCppParser : Parser<FuzzyNode> {
     }
 
     private fun createNodeFromVertex(v: Node): FuzzyNode {
-        val token: String? = v.property(NodeKeys.CODE)
-        val order: Int? = v.property(NodeKeys.ORDER)
+        val token: String? = v.property(PropertyNames.CODE) as? String
+        val order: Int? = v.property(PropertyNames.ORDER) as? Int
 
         for (replaceableNodeKey in replaceableNodeKeys) {
             if (replaceableNodeKey.condition(v)) {

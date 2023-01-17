@@ -1,7 +1,7 @@
 import tanvd.kosogor.proxy.shadowJar
 
 group = "io.github.vovak"
-version = "0.9.0"
+version = "0.9.1"
 
 plugins {
     id("java")
@@ -11,8 +11,8 @@ plugins {
     id("org.jetbrains.dokka") version "1.4.32"
     id("tanvd.kosogor") version "1.0.10"
     id("io.gitlab.arturbosch.detekt") version "1.17.1"
-    kotlin("jvm") version "1.5.21" apply true
-    kotlin("plugin.serialization") version "1.5.21"
+    kotlin("jvm") version "1.7.21" apply true
+    kotlin("plugin.serialization") version "1.7.21"
 }
 
 defaultTasks("run")
@@ -38,13 +38,13 @@ dependencies {
     implementation("fr.inria.gforge.spoon:spoon-core:9.1.0-beta-16")
 
     // https://mvnrepository.com/artifact/io.shiftleft/fuzzyc2cpg
-    api("io.shiftleft", "fuzzyc2cpg_2.13", "1.2.30")
+    api("io.shiftleft", "fuzzyc2cpg_2.13", "1.3.415")
 
     // ===== Main =====
     implementation(kotlin("stdlib"))
     implementation("com.github.ajalt.clikt:clikt:3.2.0")
     implementation("com.charleskorn.kaml:kaml:0.33.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
 
     // ===== Logging =====
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
@@ -72,6 +72,7 @@ tasks.generateGrammarSource {
     // Keep a copy of generated sources
     doLast {
         println("Copying generated grammar lexer/parser files to main directory.")
+        println("To: $generatedSourcesPath/me/vovak/antlr/parser")
         copy {
             from("$buildDir/generated-src/antlr/main")
             into("$generatedSourcesPath/me/vovak/antlr/parser")
