@@ -1,6 +1,8 @@
 [![JetBrains Research](https://jb.gg/badges/research.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
 ![astminer version](https://img.shields.io/badge/astminer-v0.9.0-blue)
 
+## `astminer` is no longer maintained.
+
 # `astminer`
 A library for mining [path-based representations of code](https://arxiv.org/pdf/1803.09544.pdf) and more
 supported by the
