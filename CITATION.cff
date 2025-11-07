@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+preferred-citation:
+  type: conference-paper
+  title: "PathMiner: a library for mining of path-based representations of code"
+  authors:
+    - family-names: Kovalenko
+      given-names: Vladimir
+    - family-names: Bogomolov
+      given-names: Egor
+    - family-names: Bryksin
+      given-names: Timofey
+    - family-names: Bacchelli
+      given-names: Alberto
+  year: 2019
+  collection-title: "Proceedings of the 16th International Conference on Mining Software Repositories"
+  pages:
+    start: 13
+    end: 17
+  publisher: "IEEE Press"
